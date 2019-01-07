@@ -43,3 +43,4 @@ numactl
 
 ###Version
 The current version of BriskStream is 1.2
+The original history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/.
