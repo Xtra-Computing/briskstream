@@ -43,7 +43,8 @@ public class OBBolt_ts extends OBBolt {
         state = new ValueState();
     }
 
-    private void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException {
+    @Override
+    protected void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException {
 
         BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
 
@@ -55,7 +56,8 @@ public class OBBolt_ts extends OBBolt {
 
     }
 
-    private void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 
         alert_request(event, this.fid, event.getBid());
@@ -70,7 +72,8 @@ public class OBBolt_ts extends OBBolt {
         collector.force_emit(event.getBid(), event.getTimestamp());//the tuple is immediately finished.
     }
 
-    private void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 
         topping_request(event, this.fid, event.getBid());
@@ -199,13 +202,7 @@ public class OBBolt_ts extends OBBolt {
             Object event = db.eventManager.get((int) bid);
 
             auth(bid, timestamp);//do nothing for now..
-            if (event instanceof BuyingEvent) {
-                buy_handle((BuyingEvent) event, timestamp);//buy item at certain price.
-            } else if (event instanceof AlertEvent) {
-                altert_handle((AlertEvent) event, timestamp);//alert price
-            } else if (event instanceof ToppingEvent) {
-                topping_handle((ToppingEvent) event, timestamp);//topping qty
-            }
+            dispatch_process(event, timestamp);
         }
     }
 }

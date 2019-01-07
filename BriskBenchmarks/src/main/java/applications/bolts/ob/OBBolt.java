@@ -137,4 +137,21 @@ public abstract class OBBolt extends TransactionalBolt {
         }
         collector.force_emit(event.getBid(), new BidingResult(event, true), event.getTimestamp());
     }
+
+
+    protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
+        if (event instanceof BuyingEvent) {
+            buy_handle((BuyingEvent) event, timestamp);//buy item at certain price.
+        } else if (event instanceof AlertEvent) {
+            altert_handle((AlertEvent) event, timestamp);//alert price
+        } else if (event instanceof ToppingEvent) {
+            topping_handle((ToppingEvent) event, timestamp);//topping qty
+        }
+    }
+
+    protected abstract void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+
+    protected abstract void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+
+    protected abstract void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException;
 }

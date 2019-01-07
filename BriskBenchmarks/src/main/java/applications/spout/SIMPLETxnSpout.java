@@ -24,7 +24,7 @@ import static applications.constants.OnlineBidingSystemConstants.Constant.num_ev
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
-public class OnlineBidingSpout extends TransactionalSpout {
+public class SIMPLETxnSpout extends TransactionalSpout {
     private static final Logger LOG = LoggerFactory.getLogger(MicroBenchmarkSpout.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
@@ -34,7 +34,7 @@ public class OnlineBidingSpout extends TransactionalSpout {
 
     private Random r = new Random();
 
-    public OnlineBidingSpout() {
+    public SIMPLETxnSpout() {
         super(LOG);
         this.scalable = false;
         state = new ValueState();
@@ -77,32 +77,32 @@ public class OnlineBidingSpout extends TransactionalSpout {
 
     }
 
-    private void spout_pid() {
-        RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
-
-        String jvmName = runtimeBean.getName();
-        long pid = Long.valueOf(jvmName.split("@")[0]);
-        LOG.info("JVM PID  = " + pid);
-
-        FileWriter fw;
-        try {
-            fw = new FileWriter(new File(config.getString("metrics.output")
-                    + OsUtils.OS_wrapper("spout_threadId.txt")));
-            writer = new BufferedWriter(fw);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            String s_pid = String.valueOf(pid);
-            writer.write(s_pid);
-            writer.flush();
-            //writer.relax_reset();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
+//    private void spout_pid() {
+//        RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+//
+//        String jvmName = runtimeBean.getName();
+//        long pid = Long.valueOf(jvmName.split("@")[0]);
+//        LOG.info("JVM PID  = " + pid);
+//
+//        FileWriter fw;
+//        try {
+//            fw = new FileWriter(new File(config.getString("metrics.output")
+//                    + OsUtils.OS_wrapper("spout_threadId.txt")));
+//            writer = new BufferedWriter(fw);
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        try {
+//            String s_pid = String.valueOf(pid);
+//            writer.write(s_pid);
+//            writer.flush();
+//            //writer.relax_reset();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//    }
 
     private void control_emit() throws InterruptedException {
         if (control < target_Hz) {
@@ -115,7 +115,7 @@ public class OnlineBidingSpout extends TransactionalSpout {
     @Override
     public void nextTuple() throws InterruptedException {
         if (ccOption == CCOption_TStream)
-            forward_checkpoint(-1, bid, null); // This is required by T-Stream.
+            forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
         if (bid < num_events) {
             if (enable_admission_control) {

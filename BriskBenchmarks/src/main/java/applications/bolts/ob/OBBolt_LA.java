@@ -3,56 +3,38 @@ package applications.bolts.ob;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
-import brisk.components.context.TopologyContext;
-import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Tuple;
-import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
-import engine.transaction.dedicated.ordered.TxnManagerSStore;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.Metrics.MeasureTools.END_COMPUTE_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_TRANSACTION_TIME_MEASURE;
 
-public class OBBolt_sstore extends OBBolt {
-    private static final Logger LOG = LoggerFactory.getLogger(OBBolt_sstore.class);
+public abstract class OBBolt_LA extends OBBolt {
 
-    public OBBolt_sstore(int fid) {
-        super(LOG, fid);
-        state = new ValueState();
+    public OBBolt_LA(Logger log, int fid) {
+        super(log, fid);
     }
 
     @Override
     protected void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
+
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(event.getBid_array()[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Topping_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -71,33 +53,20 @@ public class OBBolt_sstore extends OBBolt {
         END_TRANSACTION_TIME_MEASURE(thread_Id);
 
     }
-
     @Override
     protected void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(event.getBid_array()[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Alert_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -120,30 +89,16 @@ public class OBBolt_sstore extends OBBolt {
     protected void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-
-        int _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(event.getBid_array()[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
-
+        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Buying_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = event.getPid();
-        for (int k = 0; k < event.num_p(); k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -164,23 +119,14 @@ public class OBBolt_sstore extends OBBolt {
 
 
     @Override
-    public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-        super.initialize(thread_Id, thisTaskId, graph);
-        transactionManager = new TxnManagerSStore(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
-    }
-
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
-//        prepareEvents();
-        context.getGraph().topology.tableinitilizer.loadData(thread_Id, context.getGraph().topology.spinlock, this.context);
-    }
-
-
-    @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
 
         long bid = in.getBID();
-        Long timestamp;//in.getLong(1);
+
         Object event = db.eventManager.get((int) bid);
+
+        Long timestamp;//in.getLong(1);
+
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
         else
@@ -189,5 +135,6 @@ public class OBBolt_sstore extends OBBolt {
         auth(bid, timestamp);//do nothing for now..
 
         dispatch_process(event, timestamp);
+
     }
 }
