@@ -236,7 +236,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "OnlineBiding" #"CrossTables" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "CrossTables" #"CrossTables" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -562,7 +562,7 @@ do
                 do
                     for theta in 0.6 #0.8
                     do
-                        for tt in 38 32 24 16 8 2 #38 32 24 16 8 2
+                        for tt in 38 #32 24 16 8 2 #38 32 24 16 8 2
                         do
                             for CCOption in 3
                             do
@@ -574,7 +574,7 @@ do
                                         for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75 1
                                         do
                                             ratio_of_multi_partition=0
-                                            number_partitions=6
+                                            number_partitions=4
                                             CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
@@ -591,7 +591,7 @@ do
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=6
-                                            CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            #CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
