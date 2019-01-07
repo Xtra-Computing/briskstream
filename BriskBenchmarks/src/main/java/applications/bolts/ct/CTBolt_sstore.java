@@ -46,7 +46,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
@@ -54,7 +54,7 @@ public class CTBolt_sstore extends CTBolt {
 
         _pid = event.getPid();
 
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -84,7 +84,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(),   tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
@@ -92,7 +92,7 @@ public class CTBolt_sstore extends CTBolt {
 
         _pid = event.getPid();
 
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 

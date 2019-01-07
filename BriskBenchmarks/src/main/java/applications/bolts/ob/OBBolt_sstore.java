@@ -4,7 +4,6 @@ import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
 import brisk.components.context.TopologyContext;
-import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Tuple;
@@ -18,8 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.enable_latency_measurement;
-import static brisk.components.operators.api.TransactionalBolt.LA_LOCK;
-import static brisk.components.operators.api.TransactionalBolt.LA_UNLOCK;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public class OBBolt_sstore extends OBBolt {
@@ -38,14 +35,14 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Topping_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -73,14 +70,14 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Alert_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -108,7 +105,7 @@ public class OBBolt_sstore extends OBBolt {
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
 
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
 
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
@@ -116,7 +113,7 @@ public class OBBolt_sstore extends OBBolt {
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 

@@ -47,20 +47,20 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         OsUtils.configLOG(LOG);
     }
 
-    public static void LA_LOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, long[] bid_array, boolean b) {
+    public static void LA_LOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, long[] bid_array, int tthread) {
         for (int k = 0; k < i; k++) {
             orderLock.blocking_wait(bid_array[_pid]);
             _pid++;
-            if (b)
+            if (_pid == tthread)
                 _pid = 0;
         }
     }
 
-    public static void LA_UNLOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, boolean b) {
+    public static void LA_UNLOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, int tthread) {
         for (int k = 0; k < i; k++) {
             orderLock.advance();
             _pid++;
-            if (b)
+            if (_pid == tthread)
                 _pid = 0;
         }
     }
