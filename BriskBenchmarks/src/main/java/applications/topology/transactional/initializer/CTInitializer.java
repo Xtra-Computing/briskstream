@@ -81,7 +81,6 @@ public class CTInitializer extends TableInitilizer {
 
         for (int key = left_bound; key < right_bound; key++) {
             int pid = get_pid(partition_interval, key);
-
             String _key = GenerateKey(ACCOUNT_ID_PREFIX, key);
             insertAccountRecord(_key, 0, pid, spinlock);
             _key = GenerateKey(BOOK_ENTRY_ID_PREFIX, key);
@@ -191,6 +190,7 @@ public class CTInitializer extends TableInitilizer {
             String _key = GenerateKey(ACCOUNT_ID_PREFIX, key);
 
             insertAccountRecord(_key, 0, pid, spinlock_);
+
             _key = GenerateKey(BOOK_ENTRY_ID_PREFIX, key);
 
             insertAssetRecord(_key, 0, pid, spinlock_);
@@ -289,8 +289,8 @@ public class CTInitializer extends TableInitilizer {
             if (split[4].endsWith("DepositEvent")) {//DepositEvent
                 event = new DepositEvent(
                         Integer.parseInt(split[0]), //bid
+                        Integer.parseInt(split[1]), //pid
                         split[2], //bid_array
-                        Integer.parseInt(split[1]),//pid
                         Integer.parseInt(split[3]),//num_of_partition
                         split[5],//getAccountId
                         split[6],//getBookEntryId
@@ -312,9 +312,7 @@ public class CTInitializer extends TableInitilizer {
                 );
             }
             db.eventManager.put(event, Integer.parseInt(split[0]));
-
         }
-
         return true;
     }
 
@@ -336,7 +334,7 @@ public class CTInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(Arrays.toString(((DepositEvent) event).getBid_array()));//2
                 sb.append(split_exp);
-                sb.append(((DepositEvent) event).num_p());//3
+                sb.append(((DepositEvent) event).num_p());////3 num of p
                 sb.append(split_exp);
                 sb.append("DepositEvent");//event types.
                 sb.append(split_exp);
@@ -351,11 +349,11 @@ public class CTInitializer extends TableInitilizer {
             } else if (event instanceof TransactionEvent) {
                 sb.append(((TransactionEvent) event).getBid());//0 -- bid
                 sb.append(split_exp);
-                sb.append(((TransactionEvent) event).getPid());
+                sb.append(((TransactionEvent) event).getPid());//1 -- pid.
                 sb.append(split_exp);
-                sb.append(Arrays.toString(((TransactionEvent) event).getBid_array()));
+                sb.append(Arrays.toString(((TransactionEvent) event).getBid_array()));//2 -- bid array
                 sb.append(split_exp);
-                sb.append(((TransactionEvent) event).num_p());
+                sb.append(((TransactionEvent) event).num_p());//3 num of p
                 sb.append(split_exp);
                 sb.append("TransactionEvent");//event types.
                 sb.append(split_exp);
@@ -377,6 +375,7 @@ public class CTInitializer extends TableInitilizer {
         w.close();
     }
 
+    private int i = 0;
 
     protected int next_decision2() {
 
@@ -397,24 +396,27 @@ public class CTInitializer extends TableInitilizer {
 
             final int sourceAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
 
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
+            if (number_of_partitions > 1) {//multi-partition
+                _pid++;
+                if (_pid == tthread)
+                    _pid = 0;
+            }
 
             final int targetAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
 
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
+            if (number_of_partitions > 1) {//multi-partition
+                _pid++;
+                if (_pid == tthread)
+                    _pid = 0;
+            }
 
             final int sourceBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
 
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
+            if (number_of_partitions > 1) {//multi-partition
+                _pid++;
+                if (_pid == tthread)
+                    _pid = 0;
+            }
 
             final int targetBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
 
@@ -427,8 +429,8 @@ public class CTInitializer extends TableInitilizer {
                     bid_array,
                     number_of_partitions,
                     ACCOUNT_ID_PREFIX + sourceAcct,
-                    ACCOUNT_ID_PREFIX + targetAcct,
                     BOOK_ENTRY_ID_PREFIX + sourceBook,
+                    ACCOUNT_ID_PREFIX + targetAcct,
                     BOOK_ENTRY_ID_PREFIX + targetBook,
                     accountsTransfer,
                     transfer,
@@ -439,14 +441,18 @@ public class CTInitializer extends TableInitilizer {
     }
 
     private Object randomDepositEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
+
+
         int _pid = partition_id;
 
         //key
         final int account = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
 
-        _pid++;
-        if (_pid == tthread)
-            _pid = 0;
+        if (number_of_partitions > 1) {//multi-partition
+            _pid++;
+            if (_pid == tthread)
+                _pid = 0;
+        }
 
         final int book = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
 
@@ -468,12 +474,17 @@ public class CTInitializer extends TableInitilizer {
 
 
     @Override
-    protected Object create_new_event(int num_p, int index) {
+    protected Object create_new_event(int num_p, int bid) {
         int flag = next_decision2();
         if (flag == 0) {
-            return randomDepositEvent(p, p_bid.clone(), num_p, i, rnd);
+
+            if (num_p != 1)
+                return randomDepositEvent(p, p_bid.clone(), 2, bid, rnd);
+            return randomDepositEvent(p, p_bid.clone(), 1, bid, rnd);
         } else if (flag == 1) {
-            return randomTransactionEvent(p, p_bid.clone(), num_p, i, rnd);
+            if (num_p != 1)
+                return randomTransactionEvent(p, p_bid.clone(), 4, bid, rnd);
+            return randomTransactionEvent(p, p_bid.clone(), 1, bid, rnd);
         }
         return null;
     }

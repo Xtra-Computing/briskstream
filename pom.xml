@@ -11,7 +11,7 @@
     <modules>
         <module>common</module>
         <module>Database</module>
-        <module>Java-Thread-Affinity-master/affinity</module>
+        <module>Java-Thread-Affinity-master</module>
         <module>BriskBenchmarks</module>
         <!--<module>SparkBenchmarks</module>-->
         <!--<module>StormBenchmarks</module>-->

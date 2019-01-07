@@ -35,14 +35,16 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
+
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Topping_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
+
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -70,14 +72,15 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Alert_REQUEST_LA(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
+
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -105,7 +108,7 @@ public class OBBolt_sstore extends OBBolt {
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
 
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
@@ -113,7 +116,7 @@ public class OBBolt_sstore extends OBBolt {
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 

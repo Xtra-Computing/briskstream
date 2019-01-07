@@ -37,7 +37,8 @@ public class AlertEvent extends Event {
     private int[] itemId;
     private long[] ask_price;//new ask price
 
-    public AlertEvent(int bid, String bid_array, int partition_id, int number_of_partitions, int num_access, String key_array, String alert_array) {
+    public AlertEvent(int bid, String bid_array, int partition_id, int number_of_partitions,
+                      int num_access, String key_array, String alert_array) {
         super(bid, partition_id, bid_array, number_of_partitions);
         this.num_access = num_access;
         record_refs = new SchemaRecordRef[num_access];

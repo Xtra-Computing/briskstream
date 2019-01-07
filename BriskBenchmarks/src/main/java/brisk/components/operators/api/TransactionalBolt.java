@@ -6,7 +6,6 @@ import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Marker;
-import engine.common.PartitionedOrderLock;
 import engine.profiler.Metrics;
 import engine.transaction.TxnManager;
 import org.slf4j.Logger;
@@ -15,14 +14,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SplittableRandom;
 
-import static applications.constants.CrossTableConstants.Constant.*;
 import static applications.topology.transactional.State.partioned_store;
 import static applications.topology.transactional.State.shared_store;
 
 public abstract class TransactionalBolt<T> extends MapBolt implements Checkpointable {
-    private static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
     private static final long serialVersionUID = -3899457584889441657L;
 
     protected TxnManager transactionManager;
@@ -47,18 +44,18 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         OsUtils.configLOG(LOG);
     }
 
-    public static void LA_LOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, long[] bid_array, int tthread) {
-        for (int k = 0; k < i; k++) {
-            orderLock.blocking_wait(bid_array[_pid]);
+    public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long[] bid_array, int tthread) {
+        for (int k = 0; k < num_P; k++) {
+            txnManager.getOrderLock(_pid).blocking_wait(bid_array[_pid]);
             _pid++;
             if (_pid == tthread)
                 _pid = 0;
         }
     }
 
-    public static void LA_UNLOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, int tthread) {
-        for (int k = 0; k < i; k++) {
-            orderLock.advance();
+    public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, int tthread) {
+        for (int k = 0; k < num_P; k++) {
+            txnManager.getOrderLock(_pid).advance();
             _pid++;
             if (_pid == tthread)
                 _pid = 0;

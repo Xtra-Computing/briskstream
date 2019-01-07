@@ -18,7 +18,7 @@ public class CTBolt_LA extends CTBolt {
 
 
     @Override
-    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException {
+    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
         txn_context = new TxnContext(thread_Id, this.fid, event.getBid());

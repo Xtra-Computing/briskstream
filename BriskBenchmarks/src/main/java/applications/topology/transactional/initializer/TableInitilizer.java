@@ -1,5 +1,7 @@
 package applications.topology.transactional.initializer;
 
+import applications.param.DepositEvent;
+import applications.param.TransactionEvent;
 import applications.tools.FastZipfGenerator;
 import applications.topology.transactional.State;
 import applications.util.Configuration;
@@ -31,7 +33,7 @@ public abstract class TableInitilizer {
     protected int number_partitions;
     protected boolean[] multi_partion_decision;
     SplittableRandom rnd = new SplittableRandom(1234);
-    int i = 0;
+
     int j = 0;
     int p;
 
@@ -72,7 +74,7 @@ public abstract class TableInitilizer {
         }
         floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
         p_generator = new FastZipfGenerator(NUM_ITEMS, theta, 0);
-        this.number_partitions = Math.min(tthread, number_partitions);
+        this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
     }
 
     public void loadData(int maxContestants, String contestants) {
@@ -133,12 +135,19 @@ public abstract class TableInitilizer {
                 if (multi_parition_txn_flag) {//multi-partition
                     p = key_to_partition(p_generator.next());//randomly pick a starting point.
                     event = create_new_event(number_partitions, i);
-                    for (int k = 0; k < number_partitions; k++) {
+
+                    if (event instanceof DepositEvent)
+                        number_partitions = 2;
+                    else if (event instanceof TransactionEvent)
+                        number_partitions = 4;
+
+                    for (int k = 0; k < number_partitions; k++) {//depo event only allows 2 partition
                         p_bid[p]++;
                         p++;
                         if (p == tthread)
                             p = 0;
                     }
+
                 } else {
                     event = create_new_event(1, i);
                     p_bid[p]++;
@@ -154,5 +163,5 @@ public abstract class TableInitilizer {
 
     protected abstract void dump(String file_path) throws IOException;
 
-    protected abstract Object create_new_event(int number_partitions, int index);
+    protected abstract Object create_new_event(int number_partitions, int bid);
 }

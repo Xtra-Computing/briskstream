@@ -118,7 +118,7 @@ public class SIMPLETxnSpout extends TransactionalSpout {
                 collector.emit_single(bid);//combined R/W executor.
             }
 
-//            LOG.info("Emit:" + bid);
+
             bid++;
         }
     }

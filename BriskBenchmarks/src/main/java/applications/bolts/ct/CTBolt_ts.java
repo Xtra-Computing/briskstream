@@ -11,6 +11,7 @@ import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
 import engine.transaction.function.Condition;
+import engine.transaction.function.DEC;
 import engine.transaction.function.INC;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
@@ -39,9 +40,8 @@ public class CTBolt_ts extends CTBolt {
     }
 
     @Override
-    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException {
+    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
-
 
         deposite_request(event, event.getBid());
 
@@ -51,6 +51,19 @@ public class CTBolt_ts extends CTBolt {
 
         END_READ_HANDLE_TIME_MEASURE(thread_Id);
 
+        collector.force_emit(event.getBid(), null, event.getTimestamp());
+    }
+
+    /**
+     * @param event
+     * @param bid
+     * @throws DatabaseException
+     */
+    private void deposite_request(DepositEvent event, long bid) throws DatabaseException {
+        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
+        //it simply construct the operations and return.
+        transactionManager.Asy_ModifyRecord(txn_context, "accounts", event.getAccountId(), new INC(event.getAccountTransfer()));// read and modify the account itself.
+        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries", event.getBookEntryId(), new INC(event.getBookEntryTransfer()));// read and modify the asset itself.
     }
 
     @Override
@@ -78,17 +91,6 @@ public class CTBolt_ts extends CTBolt {
         loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
 
-    /**
-     * @param event
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void deposite_request(DepositEvent event, long bid) throws DatabaseException {
-        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
-        //it simply construct the operations and return.
-        transactionManager.Asy_ModifyRecord(txn_context, "accounts", event.getAccountId(), new INC(event.getAccountTransfer()));// read and modify the account itself.
-        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries", event.getBookEntryId(), new INC(event.getBookEntryTransfer()));// read and modify the asset itself.
-    }
 
     /**
      * @param bid
@@ -103,18 +105,26 @@ public class CTBolt_ts extends CTBolt {
         String[] srcID = new String[]{event.getSourceAccountId(), event.getSourceBookEntryId()};
 
         transactionManager.Asy_ModifyRecord_Read(txn_context, "accounts", event.getSourceAccountId()
-                , event.src_account_value, new INC(event.getAccountTransfer()), srcTable, srcID,
-                new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()), event.success);          //asynchronously return.
+                , event.src_account_value,
+                new DEC(event.getAccountTransfer()),
+                srcTable, srcID,
+                new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                event.success);          //asynchronously return.
 
         transactionManager.Asy_ModifyRecord_Read(txn_context, "accounts", event.getTargetAccountId()
-                , event.dst_account_value, new INC(event.getAccountTransfer()), srcTable, srcID
-                , new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()), event.success);          //asynchronously return.
+                , event.dst_account_value,
+                new INC(event.getAccountTransfer()), srcTable, srcID
+                , new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                event.success);          //asynchronously return.
 
-        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries", event.getSourceBookEntryId()
-                , new INC(event.getBookEntryTransfer()), srcTable, srcID, new Condition(event.getMinAccountBalance()
-                        , event.getAccountTransfer(), event.getBookEntryTransfer()), event.success);   //asynchronously return.
+        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries",
+                event.getSourceBookEntryId()
+                , new DEC(event.getBookEntryTransfer()), srcTable, srcID,
+                new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                event.success);   //asynchronously return.
 
-        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries", event.getTargetBookEntryId()
+        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries",
+                event.getTargetBookEntryId()
                 , new INC(event.getBookEntryTransfer()), srcTable, srcID, new Condition(event.getMinAccountBalance()
                         , event.getAccountTransfer(), event.getBookEntryTransfer()), event.success);   //asynchronously return.
 

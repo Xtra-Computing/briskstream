@@ -207,7 +207,6 @@ public class OBInitializer extends TableInitilizer {
     }
 
 
-
     /**
      * OB
      *
@@ -354,27 +353,26 @@ public class OBInitializer extends TableInitilizer {
 
     }
 
+    private int i = 0;
+
     protected int next_decision3() {
-
         int rt = triple_decision[i];
-
         i++;
         if (i == 8)
             i = 0;
-
         return rt;
 
     }
 
     @Override
-    protected Object create_new_event(int num_p, int i) {
+    protected Object create_new_event(int num_p, int bid) {
         int flag = next_decision3();
         if (flag == 0) {
-            return randomBuyEvents(p, p_bid.clone(), num_p, i, rnd);
+            return randomBuyEvents(p, p_bid.clone(), num_p, bid, rnd);
         } else if (flag == 1) {
-            return randomAlertEvents(p, p_bid.clone(), num_p, i, rnd);//(AlertEvent) in.getValue(0);
+            return randomAlertEvents(p, p_bid.clone(), num_p, bid, rnd);//(AlertEvent) in.getValue(0);
         } else {
-            return randomToppingEvents(p, p_bid.clone(), num_p, i, rnd);//(AlertEvent) in.getValue(0);
+            return randomToppingEvents(p, p_bid.clone(), num_p, bid, rnd);//(AlertEvent) in.getValue(0);
         }
     }
 

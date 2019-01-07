@@ -8,9 +8,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-/**
- * This is a failed try. Order lock must be globally shared and can not be partitioned.
- */
 public class PartitionedOrderLock implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(PartitionedOrderLock.class);
     private static final long serialVersionUID = 1347267778748318967L;

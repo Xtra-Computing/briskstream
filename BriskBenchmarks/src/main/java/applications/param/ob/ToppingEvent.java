@@ -46,7 +46,8 @@ public class ToppingEvent extends Event {
      * @param key_array
      * @param top_array
      */
-    public ToppingEvent(int bid, String bid_array, int partition_id, int number_of_partitions, int num_access, String key_array, String top_array) {
+    public ToppingEvent(int bid, String bid_array, int partition_id, int number_of_partitions,
+                        int num_access, String key_array, String top_array) {
         super(bid, partition_id, bid_array, number_of_partitions);
         this.num_access = num_access;
 

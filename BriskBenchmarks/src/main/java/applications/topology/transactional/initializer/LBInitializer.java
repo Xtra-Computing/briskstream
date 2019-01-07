@@ -364,7 +364,7 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected Object create_new_event(int number_partitions, int index) {
+    protected Object create_new_event(int number_partitions, int bid) {
         return null;
     }
 }

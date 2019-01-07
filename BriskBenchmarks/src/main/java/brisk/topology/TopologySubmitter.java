@@ -66,7 +66,7 @@ public class TopologySubmitter {
 
             int tthread = conf.getInt("tthread");
             g.topology.spinlock = new SpinLock[tthread];//number of threads -- number of cores -- number of partitions.
-            g.topology.tableinitilizer = topology.txnTopology.initializeDB(g.topology.spinlock);
+            g.topology.tableinitilizer = topology.txnTopology.initializeDB(g.topology.spinlock); //For simplicity, assume all table shares the same partition mapping.
             long end = System.nanoTime();
 
             LOG.info("DB initialize takes:" + (end - start) / 1E6 + " ms");

@@ -18,6 +18,14 @@ public abstract class CTBolt extends TransactionalBolt {
     }
 
 
+
+    protected void deposite_request_lock_ahead(DepositEvent event) throws DatabaseException {
+
+        transactionManager.lock_ahead(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
+        transactionManager.lock_ahead(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+
+    }
+
     protected boolean deposite_request(DepositEvent event) throws DatabaseException {
 
         transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
@@ -30,13 +38,22 @@ public abstract class CTBolt extends TransactionalBolt {
     }
 
 
-    protected void deposite_request_lock_ahead(DepositEvent event) throws DatabaseException {
 
-        transactionManager.lock_ahead(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
-        transactionManager.lock_ahead(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+    protected void DEPOSITE_CORE(DepositEvent event) throws InterruptedException {
+        List<DataBox> values = event.account_value.record.getValues();
 
+        long newAccountValue = values.get(1).getLong() + event.getAccountTransfer();
+
+        values.get(1).setLong(newAccountValue);
+
+        List<DataBox> asset_values = event.asset_value.record.getValues();
+
+        long newAssetValue = values.get(1).getLong() + event.getBookEntryTransfer();
+
+        asset_values.get(1).setLong(newAssetValue);
+
+        collector.force_emit(event.getBid(), null, event.getTimestamp());
     }
-
 
     protected void transfer_request_lock_ahead(TransactionEvent event) throws DatabaseException {
         transactionManager.lock_ahead(txn_context, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
@@ -58,19 +75,7 @@ public abstract class CTBolt extends TransactionalBolt {
         return true;
     }
 
-    protected void DEPOSITE_CORE(DepositEvent event) {
-        List<DataBox> values = event.account_value.record.getValues();
 
-        long newAccountValue = values.get(1).getLong() + event.getAccountTransfer();
-
-        values.get(1).setLong(newAccountValue);
-
-        List<DataBox> asset_values = event.asset_value.record.getValues();
-
-        long newAssetValue = values.get(1).getLong() + event.getBookEntryTransfer();
-
-        asset_values.get(1).setLong(newAssetValue);
-    }
 
     protected void TRANSFER_CORE(TransactionEvent event) throws InterruptedException {
         // check the preconditions
@@ -127,8 +132,10 @@ public abstract class CTBolt extends TransactionalBolt {
 
     protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
         if (event instanceof DepositEvent) {
+//            LOG.info(((DepositEvent) event).getBid() + " " + event.toString());
             deposite_handle((DepositEvent) event, timestamp);//buy item at certain price.
         } else if (event instanceof TransactionEvent) {
+//            LOG.info(((TransactionEvent) event).getBid() + " " + event.toString());
             transfer_handle((TransactionEvent) event, timestamp);//alert price
         } else {
             throw new UnsupportedOperationException();
@@ -137,5 +144,5 @@ public abstract class CTBolt extends TransactionalBolt {
 
     protected abstract void transfer_handle(TransactionEvent event, Long timestamp) throws DatabaseException, InterruptedException;
 
-    protected abstract void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException;
+    protected abstract void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException, InterruptedException;
 }

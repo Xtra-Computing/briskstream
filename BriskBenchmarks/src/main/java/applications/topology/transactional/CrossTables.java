@@ -48,8 +48,7 @@ public class CrossTables extends TransactionTopology {
         double scale_factor = config.getDouble("scale_factor", 1);
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
-        setPartition_interval((int) (Math.ceil(NUM_ITEMS / (double) tthread)), tthread);
-
+        setPartition_interval((int) (Math.ceil(NUM_ACCOUNTS / (double) tthread)), tthread);
         TableInitilizer ini = new CTInitializer(db, scale_factor, theta, tthread, config);
 
         ini.creates_Table();

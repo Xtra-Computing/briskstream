@@ -22,7 +22,6 @@ public class DepositEvent extends Event {
     private String bookEntryId;
     private long accountTransfer;
     private long bookEntryTransfer;
-    private long timestamp;//emit timestamp
 
     /**
      * Creates a new DepositEvent.
@@ -42,17 +41,16 @@ public class DepositEvent extends Event {
 
     /**
      * Loading a DepositEvent.
-     *
-     * @param bid
-     * @param bid_array
+     *  @param bid
      * @param pid
+     * @param bid_array
      * @param num_of_partition
      * @param accountId
      * @param bookEntryId
      * @param accountTransfer
      * @param bookEntryTransfer
      */
-    public DepositEvent(int bid, String bid_array, int pid, int num_of_partition,
+    public DepositEvent(int bid, int pid, String bid_array, int num_of_partition,
                         String accountId,
                         String bookEntryId,
                         long accountTransfer,
@@ -72,9 +70,6 @@ public class DepositEvent extends Event {
     public String getBookEntryId() {
         return bookEntryId;
     }
-
-
-
 
     public long getAccountTransfer() {
         return accountTransfer;

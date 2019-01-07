@@ -21,7 +21,6 @@ public class TransactionEvent extends Event {
     private long accountTransfer;
     private long bookEntryTransfer;
     private long minAccountBalance;
-    private long timestamp;
 
     /**
      * Creates a new TransactionEvent for the given accounts and book entries.
@@ -29,8 +28,8 @@ public class TransactionEvent extends Event {
     public TransactionEvent(
             long bid, int partition_id, long[] bid_array, int number_of_partitions,
             String sourceAccountId,
-            String targetAccountId,
             String sourceBookEntryId,
+            String targetAccountId,
             String targetBookEntryId,
             long accountTransfer,
             long bookEntryTransfer,
@@ -48,8 +47,8 @@ public class TransactionEvent extends Event {
 
     public TransactionEvent(int bid, int partition_id, String bid_array, int num_of_partition,
                             String sourceAccountId,
-                            String targetAccountId,
                             String sourceBookEntryId,
+                            String targetAccountId,
                             String targetBookEntryId,
                             long accountTransfer,
                             long bookEntryTransfer) {
@@ -80,16 +79,17 @@ public class TransactionEvent extends Event {
         return targetBookEntryId;
     }
 
-    public long getMinAccountBalance() {
-        return minAccountBalance;
-    }
-
     public long getAccountTransfer() {
         return accountTransfer;
     }
 
     public long getBookEntryTransfer() {
         return bookEntryTransfer;
+    }
+
+
+    public long getMinAccountBalance() {
+        return minAccountBalance;
     }
 
 

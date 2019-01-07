@@ -38,7 +38,7 @@ public class CTBolt_sstore extends CTBolt {
     }
 
     @Override
-    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException {
+    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
         txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
@@ -46,7 +46,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
@@ -54,7 +54,7 @@ public class CTBolt_sstore extends CTBolt {
 
         _pid = event.getPid();
 
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -84,7 +84,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = event.getPid();
-        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(),   tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(),   tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
@@ -92,7 +92,7 @@ public class CTBolt_sstore extends CTBolt {
 
         _pid = event.getPid();
 
-        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), tthread);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 

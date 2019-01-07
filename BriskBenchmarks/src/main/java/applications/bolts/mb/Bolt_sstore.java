@@ -55,12 +55,8 @@ public class Bolt_sstore extends MBBolt {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         int _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(bid[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+
+        LA_LOCK(_pid, number_of_partitions, transactionManager, bid, tthread);
 
         // //LOG.DEBUG("TaskID: " + thread_Id + " works on PID:" + pid + " bid:" + bid);
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
@@ -68,12 +64,7 @@ public class Bolt_sstore extends MBBolt {
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -105,27 +96,15 @@ public class Bolt_sstore extends MBBolt {
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //be careful if there is a deadlock.
         int _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(bid[_pid]);
-            _pid++;
+        LA_LOCK(_pid, number_of_partitions, transactionManager, bid, tthread);
 
-            if (_pid == tthread)
-                _pid = 0;
-        }
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         write_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-
-            if (_pid == tthread)
-                _pid = 0;
-
-        }
+        LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 

@@ -19,13 +19,13 @@ public class CTSink extends MeasureSink {
     @Override
     public void execute(Tuple input) {
 
-
-        TransactionResult result = (TransactionResult) input.getValue(0);
-        if (result.isSuccess()) {
-            success++;
-        } else
-            failure++;
-
+        if (input.getValue(0) instanceof TransactionResult) {
+            TransactionResult result = (TransactionResult) input.getValue(0);
+            if (result.isSuccess()) {
+                success++;
+            } else
+                failure++;
+        }
         if (cnt == 0) {
             helper.StartMeasurement();
         } else if (cnt == num_events - 1) {

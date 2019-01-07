@@ -12,16 +12,16 @@ import applications.util.OsUtils;
 public interface Constants {
 
     String STAT_Path = System.getProperty("user.home")
-            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
+//            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
             + OsUtils.OS_wrapper("briskstream") + OsUtils.OS_wrapper("STAT");
     String MAP_Path = System.getProperty("user.home")
-            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
+//            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
             + OsUtils.OS_wrapper("briskstream") + OsUtils.OS_wrapper("MAP");
     String System_Plan_Path = System.getProperty("user.home")
-            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
+//            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
             + OsUtils.OS_wrapper("briskstream") + OsUtils.OS_wrapper("PLAN");
     String Event_Path = System.getProperty("user.home")
-            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
+//            + (OsUtils.isMac() ? "" : OsUtils.OS_wrapper("Documents"))
             + OsUtils.OS_wrapper("briskstream") + OsUtils.OS_wrapper("EVENT");
 
 

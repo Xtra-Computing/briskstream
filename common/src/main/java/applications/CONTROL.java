@@ -3,7 +3,7 @@ package applications;
 public interface CONTROL {
 
     //application related.
-    int num_events = 1_000_000; //20_000_000;
+    int num_events = 10_000; //20_000_000;
     int app = 1;//1 means CT; 2 means OB.
 
 
