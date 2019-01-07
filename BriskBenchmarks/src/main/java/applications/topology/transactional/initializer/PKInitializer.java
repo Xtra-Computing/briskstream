@@ -13,6 +13,7 @@ import engine.storage.datatype.IntDataBox;
 import engine.storage.datatype.ListDoubleDataBox;
 import engine.storage.table.RecordSchema;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +68,21 @@ public class PKInitializer extends TableInitilizer {
         for (int key = 0; key < NUM_MACHINES * scale_factor; key++) {
             insertRecord(key);
         }
+    }
+
+    @Override
+    protected boolean load(String file) throws IOException {
+        return false;
+    }
+
+    @Override
+    protected void dump(String file_path) throws IOException {
+
+    }
+
+    @Override
+    protected Object create_new_event(int number_partitions, int index) {
+        return null;
     }
 
     @Override

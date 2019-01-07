@@ -27,16 +27,10 @@ public class State {
                 break;
             }
             case "CrossTables": {
-                if (config.getBoolean("partition")) {//only used in sstore.
-//                    interval = (int) Math.ceil(NUM_ACCOUNTS / (double) tthread);//NUM_ITEMS / tthread;
-                    floor_interval = (int) Math.floor(NUM_ACCOUNTS / (double) tthread);//NUM_ITEMS / tthread;
-                    partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
-                    for (int i = 0; i < tthread; i++) {
-                        partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
-                    }
-
-                } else {
-                    shared_store = new FastZipfGenerator((int) (NUM_ACCOUNTS * scale_factor), theta, 0);
+                floor_interval = (int) Math.floor(NUM_ACCOUNTS / (double) tthread);//NUM_ITEMS / tthread;
+                partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
+                for (int i = 0; i < tthread; i++) {
+                    partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
                 }
                 break;
             }

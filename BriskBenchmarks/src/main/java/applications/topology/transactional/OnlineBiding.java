@@ -44,17 +44,16 @@ public class OnlineBiding extends TransactionTopology {
         Random r = new Random();
         return r.nextInt(max) + min;
     }
-
-    public TableInitilizer initializeDB(SpinLock[] spinlock_) {
+    //configure set_executor_ready database table.
+    public TableInitilizer initializeDB(SpinLock[] spinlock_){
         double scale_factor = config.getDouble("scale_factor", 1);
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
-        int number_partitions = config.getInt("number_partitions");
         setPartition_interval((int) (Math.ceil(NUM_ITEMS / (double) tthread)), tthread);
 
-        TableInitilizer ini = new OBInitializer(db, scale_factor, theta, tthread, number_partitions, config);
-        ini.creates_Table();
+        TableInitilizer ini = new OBInitializer(db, scale_factor, theta, tthread, config);
 
+        ini.creates_Table();
 
         if (config.getBoolean("partition", false)) {
 
@@ -72,7 +71,6 @@ public class OnlineBiding extends TransactionTopology {
 
         return ini;
     }
-
     @Override
     public Topology buildTopology() {
 

@@ -5,12 +5,9 @@ import engine.storage.datatype.DataBox;
 
 import java.util.List;
 
-public class DepositEvent {
+public class DepositEvent extends Event {
 
-    //embeded state.
-    final long bid;//as msg id.
-    protected final int pid=0;
-    public double[] index_time = new double[1];
+
     //updated state...to be written.
     public long newAccountValue;
     public long newAssetValue;
@@ -31,16 +28,42 @@ public class DepositEvent {
      * Creates a new DepositEvent.
      */
     public DepositEvent(
-            long bid, String accountId,
+            long bid, int partition_id, long[] bid_array, int number_of_partitions,
+            String accountId,
             String bookEntryId,
             long accountTransfer,
             long bookEntryTransfer) {
-        this.bid = bid;
+        super(bid, partition_id, bid_array, number_of_partitions);
         this.accountId = accountId;
         this.bookEntryId = bookEntryId;
         this.accountTransfer = accountTransfer;
         this.bookEntryTransfer = bookEntryTransfer;
     }
+
+    /**
+     * Loading a DepositEvent.
+     *
+     * @param bid
+     * @param bid_array
+     * @param pid
+     * @param num_of_partition
+     * @param accountId
+     * @param bookEntryId
+     * @param accountTransfer
+     * @param bookEntryTransfer
+     */
+    public DepositEvent(int bid, String bid_array, int pid, int num_of_partition,
+                        String accountId,
+                        String bookEntryId,
+                        long accountTransfer,
+                        long bookEntryTransfer) {
+        super(bid, pid, bid_array, num_of_partition);
+        this.accountId = accountId;
+        this.bookEntryId = bookEntryId;
+        this.accountTransfer = accountTransfer;
+        this.bookEntryTransfer = bookEntryTransfer;
+    }
+
 
     public String getAccountId() {
         return accountId;
@@ -51,9 +74,7 @@ public class DepositEvent {
     }
 
 
-    public long getTimestamp() {
-        return timestamp;
-    }
+
 
     public long getAccountTransfer() {
         return accountTransfer;
@@ -86,23 +107,5 @@ public class DepositEvent {
                 + '}';
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 
-    public long getBid() {
-        return bid;
-    }
-
-    public int getPid() {
-        return pid;
-    }
-
-    public int num_p() {
-        return 0;
-    }
-
-    public long[] getBid_array() {
-        return new long[0];
-    }
 }

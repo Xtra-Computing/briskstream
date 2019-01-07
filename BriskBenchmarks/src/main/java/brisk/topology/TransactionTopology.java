@@ -1,9 +1,11 @@
 package brisk.topology;
 
+import applications.topology.transactional.initializer.OBInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import engine.CavaliaDatabase;
+import engine.common.PartitionedOrderLock;
 import engine.common.SpinLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static engine.profiler.Metrics.NUM_ITEMS;
+import static utils.PartitionHelper.setPartition_interval;
 
 /**
  * The basic topology has only one spout and one sink, configured by the default
@@ -29,7 +34,7 @@ public abstract class TransactionTopology extends BasicTopology {
 //		db.param = new MicroParam();
     }
 
-    public abstract TableInitilizer initializeDB(SpinLock[] spinlock);//configure set_executor_ready database table.
+
 
 //	public abstract void setSource();//configure benchmark source.
 
@@ -38,4 +43,6 @@ public abstract class TransactionTopology extends BasicTopology {
         sink = loadSink();
 //		setSource();
     }
+
+    public abstract TableInitilizer initializeDB(SpinLock[] spinlock);
 }

@@ -19,7 +19,6 @@ public interface OnlineBidingSystemConstants extends BaseConstants {
     }
 
     interface Constant {
-        int num_events = 1_000_000; //20_000_000;
 
         int NUM_ACCESSES_PER_BUY = 1;// each time only bid one item..
         int NUM_ACCESSES_PER_TOP = 20;// each time top up 20 items.

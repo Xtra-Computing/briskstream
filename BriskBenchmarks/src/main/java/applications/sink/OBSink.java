@@ -5,7 +5,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.OnlineBidingSystemConstants.Constant.num_events;
+import static applications.CONTROL.num_events;
 
 public class OBSink extends MeasureSink {
     private static final Logger LOG = LoggerFactory.getLogger(OBSink.class);

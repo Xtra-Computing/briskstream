@@ -16,6 +16,7 @@ import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -193,6 +194,21 @@ public class MBInitializer extends TableInitilizer {
                 i = 0;
             }
         }
+    }
+
+    @Override
+    protected boolean load(String file) throws IOException {
+        return false;
+    }
+
+    @Override
+    protected void dump(String file_path) throws IOException {
+
+    }
+
+    @Override
+    protected Object create_new_event(int number_partitions, int index) {
+        return null;
     }
 
 

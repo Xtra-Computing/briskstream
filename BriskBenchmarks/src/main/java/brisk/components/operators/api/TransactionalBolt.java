@@ -104,148 +104,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         }
 
 
-
         LOG.info("ratio_of_read: " + ratio_of_read + "\tREAD DECISIONS: " + Arrays.toString(read_decision));
     }
-
-
-    protected DepositEvent randomDepositEvent(int pid, int number_of_partitions, long bid, long timestamp, SplittableRandom rnd) {
-
-
-//        int partition_offset = pid * floor_interval;
-//        int account_range = floor_interval- 1;
-//        int asset_range = floor_interval - 1;
-
-//        FastZipfGenerator generator = partioned_store[pid];
-
-        int _pid = pid;
-
-        //key
-        final int account = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
-
-        _pid++;
-        if (_pid == tthread)
-            _pid = 0;
-
-        final int book = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
-
-
-        //value_list
-        final long accountsDeposit = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
-        final long deposit = rnd.nextLong(MAX_BOOK_TRANSFER);
-
-        return new DepositEvent(
-                bid, ACCOUNT_ID_PREFIX + account,
-                BOOK_ENTRY_ID_PREFIX + book,
-                accountsDeposit,
-                deposit);
-    }
-
-    /**
-     * Used in CT.
-     *
-     * @param bid
-     * @param rnd
-     * @return
-     */
-    protected DepositEvent randomDepositEvent(long bid, SplittableRandom rnd) {
-//        final int account = rnd.nextInt(NUM_ACCOUNTS - 1);
-//        final int book = rnd.nextInt(NUM_BOOK_ENTRIES - 1);
-        FastZipfGenerator generator = shared_store;
-
-
-        final long accountsDeposit = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
-        final long deposit = rnd.nextLong(MAX_BOOK_TRANSFER);
-
-        return new DepositEvent(
-                bid, ACCOUNT_ID_PREFIX + generator.next(),
-                BOOK_ENTRY_ID_PREFIX + generator.next(),
-                accountsDeposit,
-                deposit);
-    }
-
-    protected TransactionEvent randomTransactionEvent(int pid, int number_of_partitions, long bid, long timestamp, SplittableRandom rnd) {
-
-
-        final long accountsTransfer = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
-        final long transfer = rnd.nextLong(MAX_BOOK_TRANSFER);
-
-//        int partition_offset = pid * floor_interval;
-//        int account_range = floor_interval - 1;
-//        int asset_range = floor_interval - 1;
-
-//        FastZipfGenerator generator = partioned_store[pid];
-
-
-        while (!Thread.currentThread().isInterrupted()) {
-            int _pid = pid;
-
-            final int sourceAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
-
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
-
-            final int targetAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
-
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
-
-            final int sourceBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
-
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-
-
-            final int targetBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
-
-            if (sourceAcct == targetAcct || sourceBook == targetBook) {
-                continue;
-            }
-            return new TransactionEvent(
-                    bid, ACCOUNT_ID_PREFIX + sourceAcct,
-                    ACCOUNT_ID_PREFIX + targetAcct,
-                    BOOK_ENTRY_ID_PREFIX + sourceBook,
-                    BOOK_ENTRY_ID_PREFIX + targetBook,
-                    accountsTransfer,
-                    transfer,
-                    MIN_BALANCE);
-        }
-
-        return null;
-    }
-
-
-    protected TransactionEvent randomTransactionEvent(long bid, SplittableRandom rnd) {
-        final long accountsTransfer = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
-        final long transfer = rnd.nextLong(MAX_BOOK_TRANSFER);
-
-        FastZipfGenerator generator = shared_store;
-        while (!Thread.currentThread().isInterrupted()) {
-            final int sourceAcct = generator.next();//rnd.nextInt(NUM_ACCOUNTS - 1);
-            final int targetAcct = generator.next();//rnd.nextInt(NUM_ACCOUNTS - 1);
-            final int sourceBook = generator.next();//rnd.nextInt(NUM_BOOK_ENTRIES - 1);
-            final int targetBook = generator.next();//rnd.nextInt(NUM_BOOK_ENTRIES - 1);
-
-            if (sourceAcct == targetAcct || sourceBook == targetBook) {
-                continue;
-            }
-            return new TransactionEvent(
-                    bid, ACCOUNT_ID_PREFIX + sourceAcct,
-                    ACCOUNT_ID_PREFIX + targetAcct,
-                    BOOK_ENTRY_ID_PREFIX + sourceBook,
-                    BOOK_ENTRY_ID_PREFIX + targetBook,
-                    accountsTransfer,
-                    transfer,
-                    MIN_BALANCE);
-        }
-        return null;
-    }
-
 
     protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {
 
@@ -327,8 +187,6 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         return new MicroEvent(true, param.keys(), NUM_ACCESSES);
 
     }
-
-
 
 
     public void dummayCalculation() {

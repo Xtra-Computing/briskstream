@@ -31,7 +31,6 @@ public class CTBolt_ts extends CTBolt {
     private static final long serialVersionUID = -5968750340131744744L;
     private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
     private final ArrayDeque<TransactionEvent> transactionEvents = new ArrayDeque<>();
-    boolean flag = true;
     private int depositeEvents;
 
     public CTBolt_ts(int fid) {

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class EventManager {
     private transient final static Logger LOG = LoggerFactory.getLogger(EventManager.class);
     public Object[] input_events;
-    private int num_events;
+    private int num_events = 0;
 
     public void ini(int num_events) {
         input_events = new Object[num_events];
@@ -19,5 +19,6 @@ public class EventManager {
 
     public void put(Object event, int i) {
         input_events[i] = event;
+        num_events++;
     }
 }

@@ -4,6 +4,7 @@ package applications.topology.transactional;
 import applications.bolts.ct.*;
 import applications.constants.CrossTableConstants.Component;
 import applications.topology.transactional.initializer.CTInitializer;
+import applications.topology.transactional.initializer.OBInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;
 import applications.util.Configuration;
 import brisk.components.Topology;
@@ -21,6 +22,7 @@ import java.util.Random;
 import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
 import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
 import static applications.constants.CrossTableConstants.PREFIX;
+import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.setPartition_interval;
 
 /**
@@ -41,17 +43,16 @@ public class CrossTables extends TransactionTopology {
         Random r = new Random();
         return r.nextInt(max) + min;
     }
-
-    public TableInitilizer initializeDB(SpinLock[] spinlock_) {
+    //configure set_executor_ready database table.
+    public TableInitilizer initializeDB(SpinLock[] spinlock_){
         double scale_factor = config.getDouble("scale_factor", 1);
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
+        setPartition_interval((int) (Math.ceil(NUM_ITEMS / (double) tthread)), tthread);
 
         TableInitilizer ini = new CTInitializer(db, scale_factor, theta, tthread, config);
+
         ini.creates_Table();
-
-
-        setPartition_interval((int) (Math.ceil(NUM_ACCOUNTS / (double) tthread)), tthread);
 
         if (config.getBoolean("partition", false)) {
 
@@ -69,7 +70,6 @@ public class CrossTables extends TransactionTopology {
 
         return ini;
     }
-
     @Override
     public Topology buildTopology() {
 

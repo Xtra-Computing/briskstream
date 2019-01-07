@@ -1,5 +1,7 @@
 package applications.topology.transactional.initializer;
 
+import applications.param.DepositEvent;
+import applications.param.TransactionEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -13,13 +15,21 @@ import engine.storage.datatype.LongDataBox;
 import engine.storage.datatype.StringDataBox;
 import engine.storage.table.RecordSchema;
 import net.openhft.affinity.AffinityLock;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
+import static applications.Constants.Event_Path;
 import static applications.constants.CrossTableConstants.Constant.*;
+import static applications.topology.transactional.State.partioned_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static utils.PartitionHelper.getPartition_interval;
 import static xerial.jnuma.Numa.setLocalAlloc;
@@ -27,9 +37,11 @@ import static xerial.jnuma.Numa.setLocalAlloc;
 public class CTInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(CTInitializer.class);
 
+    //dual-decision
+    protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 deposite and transfer;
+
     public CTInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
-        floor_interval = (int) Math.floor(NUM_ACCOUNTS / (double) tthread);//NUM_ITEMS / tthread;
     }
 
 
@@ -236,7 +248,8 @@ public class CTInitializer extends TableInitilizer {
         }
     }
 
-    private RecordSchema AccountsScheme() {
+    @NotNull
+    private RecordSchema getRecordSchema() {
         List<DataBox> dataBoxes = new ArrayList<>();
         List<String> fieldNames = new ArrayList<>();
 
@@ -249,17 +262,220 @@ public class CTInitializer extends TableInitilizer {
         return new RecordSchema(fieldNames, dataBoxes);
     }
 
+    private RecordSchema AccountsScheme() {
+        return getRecordSchema();
+    }
+
+
     private RecordSchema BookEntryScheme() {
-        List<DataBox> dataBoxes = new ArrayList<>();
-        List<String> fieldNames = new ArrayList<>();
+        return getRecordSchema();
+    }
 
-        dataBoxes.add(new StringDataBox());
-        dataBoxes.add(new LongDataBox());
 
-        fieldNames.add("Key");//PK
-        fieldNames.add("Value");
+    @Override
+    protected boolean load(String file) throws IOException {
 
-        return new RecordSchema(fieldNames, dataBoxes);
+        if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
+            return false;
+
+        Scanner sc;
+        sc = new Scanner(new File(Event_Path + OsUtils.OS_wrapper(file)));
+
+        Object event = null;
+        while (sc.hasNextLine()) {
+            String read = sc.nextLine();
+            String[] split = read.split(split_exp);
+
+            if (split[4].endsWith("DepositEvent")) {//DepositEvent
+                event = new DepositEvent(
+                        Integer.parseInt(split[0]), //bid
+                        split[2], //bid_array
+                        Integer.parseInt(split[1]),//pid
+                        Integer.parseInt(split[3]),//num_of_partition
+                        split[5],//getAccountId
+                        split[6],//getBookEntryId
+                        Integer.parseInt(split[7]),  //getAccountTransfer
+                        Integer.parseInt(split[8])  //getBookEntryTransfer
+                );
+            } else if (split[4].endsWith("TransactionEvent")) {//TransactionEvent
+                event = new TransactionEvent(
+                        Integer.parseInt(split[0]), //bid
+                        Integer.parseInt(split[1]), //pid
+                        split[2], //bid_array
+                        Integer.parseInt(split[3]),//num_of_partition
+                        split[5],//getSourceAccountId
+                        split[6],//getSourceBookEntryId
+                        split[7],//getTargetAccountId
+                        split[8],//getTargetBookEntryId
+                        Integer.parseInt(split[9]),  //getAccountTransfer
+                        Integer.parseInt(split[10])  //getBookEntryTransfer
+                );
+            }
+            db.eventManager.put(event, Integer.parseInt(split[0]));
+
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void dump(String file_name) throws IOException {
+        File file = new File(Event_Path);
+        file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
+
+        BufferedWriter w;
+        w = new BufferedWriter(new FileWriter(new File(Event_Path + OsUtils.OS_wrapper(file_name))));
+
+        for (Object event : db.eventManager.input_events) {
+
+            StringBuilder sb = new StringBuilder();
+            if (event instanceof DepositEvent) {
+                sb.append(((DepositEvent) event).getBid());//0 -- bid
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).getPid());//1
+                sb.append(split_exp);
+                sb.append(Arrays.toString(((DepositEvent) event).getBid_array()));//2
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).num_p());//3
+                sb.append(split_exp);
+                sb.append("DepositEvent");//event types.
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).getAccountId());//5
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).getBookEntryId());//6
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).getAccountTransfer());//7
+                sb.append(split_exp);
+                sb.append(((DepositEvent) event).getBookEntryTransfer());//8
+
+            } else if (event instanceof TransactionEvent) {
+                sb.append(((TransactionEvent) event).getBid());//0 -- bid
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getPid());
+                sb.append(split_exp);
+                sb.append(Arrays.toString(((TransactionEvent) event).getBid_array()));
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).num_p());
+                sb.append(split_exp);
+                sb.append("TransactionEvent");//event types.
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getSourceAccountId());//5
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getSourceBookEntryId());//6
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getTargetAccountId());//7
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getTargetBookEntryId());//8
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getAccountTransfer());//9
+                sb.append(split_exp);
+                sb.append(((TransactionEvent) event).getBookEntryTransfer());//10
+            }
+
+            w.write(sb.toString() + "\n");
+        }
+        w.close();
+    }
+
+
+    protected int next_decision2() {
+
+        int rt = dual_decision[i];
+        i++;
+        if (i == 8)
+            i = 0;
+        return rt;
+    }
+
+
+    private Object randomTransactionEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
+        final long accountsTransfer = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
+        final long transfer = rnd.nextLong(MAX_BOOK_TRANSFER);
+
+        while (!Thread.currentThread().isInterrupted()) {
+            int _pid = partition_id;
+
+            final int sourceAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+
+            _pid++;
+            if (_pid == tthread)
+                _pid = 0;
+
+
+            final int targetAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+
+            _pid++;
+            if (_pid == tthread)
+                _pid = 0;
+
+
+            final int sourceBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+
+            _pid++;
+            if (_pid == tthread)
+                _pid = 0;
+
+
+            final int targetBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+
+            if (sourceAcct == targetAcct || sourceBook == targetBook) {
+                continue;
+            }
+            return new TransactionEvent(
+                    bid,
+                    partition_id,
+                    bid_array,
+                    number_of_partitions,
+                    ACCOUNT_ID_PREFIX + sourceAcct,
+                    ACCOUNT_ID_PREFIX + targetAcct,
+                    BOOK_ENTRY_ID_PREFIX + sourceBook,
+                    BOOK_ENTRY_ID_PREFIX + targetBook,
+                    accountsTransfer,
+                    transfer,
+                    MIN_BALANCE);
+        }
+
+        return null;
+    }
+
+    private Object randomDepositEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
+        int _pid = partition_id;
+
+        //key
+        final int account = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+
+        _pid++;
+        if (_pid == tthread)
+            _pid = 0;
+
+        final int book = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+
+
+        //value_list
+        final long accountsDeposit = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
+        final long deposit = rnd.nextLong(MAX_BOOK_TRANSFER);
+
+        return new DepositEvent(
+                bid,
+                partition_id,
+                bid_array,
+                number_of_partitions,
+                ACCOUNT_ID_PREFIX + account,
+                BOOK_ENTRY_ID_PREFIX + book,
+                accountsDeposit,
+                deposit);
+    }
+
+
+    @Override
+    protected Object create_new_event(int num_p, int index) {
+        int flag = next_decision2();
+        if (flag == 0) {
+            return randomDepositEvent(p, p_bid.clone(), num_p, i, rnd);
+        } else if (flag == 1) {
+            return randomTransactionEvent(p, p_bid.clone(), num_p, i, rnd);
+        }
+        return null;
     }
 
 
@@ -269,6 +485,13 @@ public class CTInitializer extends TableInitilizer {
 
         RecordSchema b = BookEntryScheme();
         db.createTable(b, "bookEntries");
+
+        try {
+            prepare_input_events("CT_Events");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
 }

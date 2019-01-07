@@ -12,6 +12,7 @@ import engine.storage.SchemaRecord;
 import engine.storage.datatype.*;
 import engine.storage.table.RecordSchema;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -350,5 +351,20 @@ public class LBInitializer extends TableInitilizer {
     @Override
     public void loadData(double scale_factor, double theta) {
 
+    }
+
+    @Override
+    protected boolean load(String file) throws IOException {
+        return false;
+    }
+
+    @Override
+    protected void dump(String file_path) throws IOException {
+
+    }
+
+    @Override
+    protected Object create_new_event(int number_partitions, int index) {
+        return null;
     }
 }

@@ -11,16 +11,10 @@ import brisk.faulttolerance.impl.ValueState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.util.Random;
 
 import static applications.CONTROL.enable_admission_control;
-import static applications.constants.OnlineBidingSystemConstants.Constant.num_events;
+import static applications.CONTROL.num_events;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 

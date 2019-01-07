@@ -35,14 +35,16 @@ import static applications.topology.transactional.State.partioned_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
-import static utils.PartitionHelper.key_to_partition;
 import static xerial.jnuma.Numa.setLocalAlloc;
 
 public class OBInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(OBInitializer.class);
-    Random r = new Random(1234);
+    //triple decisions
+    protected int[] triple_decision = new int[]{0, 0, 0, 0, 0, 0, 1, 2};//6:1:1 buy, alert, topping_handle.
 
-    private final String split_exp = ";";
+    public OBInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
+        super(db, scale_factor, theta, tthread, config);
+    }
 
     @Override
     public void loadData(int thread_id, TopologyContext context) {
@@ -165,7 +167,7 @@ public class OBInitializer extends TableInitilizer {
     private void insertItemRecords(int key, long value) {
         List<DataBox> values = new ArrayList<>();
         values.add(new IntDataBox(key));
-        values.add(new LongDataBox(r.nextInt(MAX_Price)));//random price goods.
+        values.add(new LongDataBox(rnd.nextInt(MAX_Price)));//random price goods.
         values.add(new LongDataBox(value));//by default 100 qty of each good.
         SchemaRecord schemaRecord = new SchemaRecord(values);
         try {
@@ -178,7 +180,7 @@ public class OBInitializer extends TableInitilizer {
     private void insertItemRecords(int key, long value, int pid, SpinLock[] spinlock_) {
         List<DataBox> values = new ArrayList<>();
         values.add(new IntDataBox(key));
-        values.add(new LongDataBox(r.nextInt(MAX_Price)));//random price goods.
+        values.add(new LongDataBox(rnd.nextInt(MAX_Price)));//random price goods.
         values.add(new LongDataBox(value));//by default 100 qty of each good.
         SchemaRecord schemaRecord = new SchemaRecord(values);
         try {
@@ -204,53 +206,7 @@ public class OBInitializer extends TableInitilizer {
         return new RecordSchema(fieldNames, dataBoxes);
     }
 
-    //triple decisions
-    protected int[] triple_decision = new int[]{0, 0, 0, 0, 0, 0, 1, 2};//6:1:1 buy, alert, topping_handle.
-    protected long[] p_bid;//used for partition.
-    protected transient FastZipfGenerator p_generator;
-    protected int number_partitions;
-    protected boolean[] multi_partion_decision;
-    SplittableRandom rnd = new SplittableRandom(1234);
-    int i = 0;
-    int j = 0;
-    int p;
 
-    public OBInitializer(Database db, double scale_factor, double theta, int tthread, int number_partitions, Configuration config) {
-        super(db, scale_factor, theta, tthread, config);
-        floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
-        p_generator = new FastZipfGenerator(NUM_ITEMS, theta, 0);
-        this.number_partitions = Math.min(tthread, number_partitions);
-
-        p_bid = new long[tthread];
-
-        for (int i = 0; i < tthread; i++) {
-            p_bid[i] = 0;
-        }
-
-
-        double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
-
-        if (ratio_of_multi_partition == 0) {
-            multi_partion_decision = new boolean[]{false, false, false, false, false, false, false, false};// all single.
-        } else if (ratio_of_multi_partition == 0.125) {
-            multi_partion_decision = new boolean[]{false, false, false, false, false, false, false, true};//75% single, 25% multi.
-        } else if (ratio_of_multi_partition == 0.25) {
-            multi_partion_decision = new boolean[]{false, false, false, false, false, false, true, true};//75% single, 25% multi.
-        } else if (ratio_of_multi_partition == 0.5) {
-            multi_partion_decision = new boolean[]{false, false, false, false, true, true, true, true};//equal ratio.
-        } else if (ratio_of_multi_partition == 0.75) {
-            multi_partion_decision = new boolean[]{false, false, true, true, true, true, true, true};//25% single, 75% multi.
-        } else if (ratio_of_multi_partition == 0.875) {
-            multi_partion_decision = new boolean[]{false, true, true, true, true, true, true, true};//25% single, 75% multi.
-        } else if (ratio_of_multi_partition == 1) {
-            multi_partion_decision = new boolean[]{true, true, true, true, true, true, true, true};// all multi.
-        } else {
-            throw new UnsupportedOperationException();
-        }
-
-        LOG.info("ratio_of_multi_partition: " + ratio_of_multi_partition + "\tDECISIONS: " + Arrays.toString(multi_partion_decision));
-
-    }
 
     /**
      * OB
@@ -410,7 +366,8 @@ public class OBInitializer extends TableInitilizer {
 
     }
 
-    private Object create_new_event(int num_p, int i) {
+    @Override
+    protected Object create_new_event(int num_p, int i) {
         int flag = next_decision3();
         if (flag == 0) {
             return randomBuyEvents(p, p_bid.clone(), num_p, i, rnd);
@@ -421,47 +378,9 @@ public class OBInitializer extends TableInitilizer {
         }
     }
 
-    public void prepare_input_events() throws IOException {
 
-        db.eventManager.ini(num_events);
-
-        //try to read from file.
-        if (!load("OB_events" + tthread)) {
-            //if failed, create new one.
-            Object event;
-            for (int i = 0; i < num_events; i++) {
-                boolean flag2 = multi_partion_decision[j];
-                j++;
-                if (j == 8)
-                    j = 0;
-
-                if (flag2) {//multi-partition
-                    p = key_to_partition(p_generator.next());//randomly pick a starting point.
-                    event = create_new_event(number_partitions, i);
-                    for (int k = 0; k < number_partitions; k++) {
-                        p_bid[p]++;
-                        p++;
-                        if (p == tthread)
-                            p = 0;
-                    }
-                } else {
-                    event = create_new_event(1, i);
-                    p_bid[p]++;
-                    p++;
-                    if (p == tthread)
-                        p = 0;
-                }
-
-
-                db.eventManager.put(event, i);
-
-
-            }
-            dump("OB_events" + tthread);
-        }
-    }
-
-    private boolean load(String file) throws IOException {
+    @Override
+    protected boolean load(String file) throws IOException {
 
         if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
             return false;
@@ -477,8 +396,8 @@ public class OBInitializer extends TableInitilizer {
             if (split[4].endsWith("BuyingEvent")) {//BuyingEvent
                 event = new BuyingEvent(
                         Integer.parseInt(split[0]), //bid
-                        split[2], Integer.parseInt(split[1]), //pid
-                        //bid_array
+                        split[2], //bid_array
+                        Integer.parseInt(split[1]),//pid
                         Integer.parseInt(split[3]),//num_of_partition
                         split[5],//key_array
                         split[6],//price_array
@@ -487,8 +406,8 @@ public class OBInitializer extends TableInitilizer {
             } else if (split[4].endsWith("AlertEvent")) {//AlertEvent
                 event = new AlertEvent(
                         Integer.parseInt(split[0]), //bid
-                        split[2], Integer.parseInt(split[1]), //pid
-                        //bid_array
+                        split[2], // bid_array
+                        Integer.parseInt(split[1]),//pid
                         Integer.parseInt(split[3]),//num_of_partition
                         Integer.parseInt(split[5]), //num_access
                         split[6],//key_array
@@ -512,7 +431,8 @@ public class OBInitializer extends TableInitilizer {
         return true;
     }
 
-    private void dump(String file_name) throws IOException {
+    @Override
+    protected void dump(String file_name) throws IOException {
 
         File file = new File(Event_Path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
@@ -584,7 +504,7 @@ public class OBInitializer extends TableInitilizer {
         RecordSchema s = Goods();
         db.createTable(s, "goods");
         try {
-            prepare_input_events();
+            prepare_input_events("OB_events");
         } catch (IOException e) {
             e.printStackTrace();
         }

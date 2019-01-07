@@ -58,6 +58,7 @@ public class MicroBenchmark extends TransactionTopology {
         int tthread = config.getInt("tthread");
 
         TableInitilizer ini = new MBInitializer(db, scale_factor, theta, tthread, config);
+
         ini.creates_Table();
 
         int num_partitions;

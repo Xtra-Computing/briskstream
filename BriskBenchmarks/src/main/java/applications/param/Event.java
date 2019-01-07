@@ -1,4 +1,4 @@
-package applications.param.ob;
+package applications.param;
 
 public class Event {
 
@@ -55,4 +55,11 @@ public class Event {
         return bid_array;
     }
 
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

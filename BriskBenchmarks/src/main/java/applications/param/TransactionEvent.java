@@ -5,20 +5,15 @@ import engine.storage.datatype.DataBox;
 
 import java.util.List;
 
-public class TransactionEvent {
+import static applications.constants.CrossTableConstants.Constant.MIN_BALANCE;
 
-	public long getBid() {
-		return bid;
-	}
+public class TransactionEvent extends Event {
 
-	//embeded state.
-    final long bid;
-    public double[] index_time = new double[1];
+    //embeded state.
     public SchemaRecordRef src_account_value = new SchemaRecordRef();
     public SchemaRecordRef dst_account_value = new SchemaRecordRef();
     public SchemaRecordRef src_asset_value = new SchemaRecordRef();
     public SchemaRecordRef dst_asset_value = new SchemaRecordRef();
-    public boolean[] success = new boolean[1];// pointer of event success.
     private String sourceAccountId;
     private String targetAccountId;
     private String sourceBookEntryId;
@@ -26,20 +21,21 @@ public class TransactionEvent {
     private long accountTransfer;
     private long bookEntryTransfer;
     private long minAccountBalance;
-	private long timestamp;
+    private long timestamp;
 
-	/**
+    /**
      * Creates a new TransactionEvent for the given accounts and book entries.
      */
     public TransactionEvent(
-            long bid, String sourceAccountId,
+            long bid, int partition_id, long[] bid_array, int number_of_partitions,
+            String sourceAccountId,
             String targetAccountId,
             String sourceBookEntryId,
             String targetBookEntryId,
             long accountTransfer,
             long bookEntryTransfer,
             long minAccountBalance) {
-        this.bid = bid;
+        super(bid, partition_id, bid_array, number_of_partitions);
 
         this.sourceAccountId = sourceAccountId;
         this.targetAccountId = targetAccountId;
@@ -48,6 +44,24 @@ public class TransactionEvent {
         this.accountTransfer = accountTransfer;
         this.bookEntryTransfer = bookEntryTransfer;
         this.minAccountBalance = minAccountBalance;
+    }
+
+    public TransactionEvent(int bid, int partition_id, String bid_array, int num_of_partition,
+                            String sourceAccountId,
+                            String targetAccountId,
+                            String sourceBookEntryId,
+                            String targetBookEntryId,
+                            long accountTransfer,
+                            long bookEntryTransfer) {
+
+        super(bid, partition_id, bid_array, num_of_partition);
+        this.sourceAccountId = sourceAccountId;
+        this.targetAccountId = targetAccountId;
+        this.sourceBookEntryId = sourceBookEntryId;
+        this.targetBookEntryId = targetBookEntryId;
+        this.accountTransfer = accountTransfer;
+        this.bookEntryTransfer = bookEntryTransfer;
+        this.minAccountBalance = MIN_BALANCE;
     }
 
     public String getSourceAccountId() {
@@ -78,9 +92,6 @@ public class TransactionEvent {
         return bookEntryTransfer;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
 
     public List<DataBox> getUpdatedSourceBalance() {
         return null;
@@ -116,19 +127,5 @@ public class TransactionEvent {
                 + '}';
     }
 
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
 
-    public int getPid() {
-        return 0;
-    }
-
-    public int num_p() {
-        return 0;
-    }
-
-    public long[] getBid_array() {
-        return new long[0];
-    }
 }
