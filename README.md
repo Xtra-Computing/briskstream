@@ -41,7 +41,7 @@ If you use BriskStream in your paper, please cite our work.
 ```
 @article{zhangbriskstream19,
  author = {Zhang, Shuhao and He, Jiong and Zhou, Chi (Amelie) and He, Bingsheng},
- title = {{BriskStream}: Scaling Stream Processing on Multicore Architectures},
+ title = {BriskStream: Scaling Stream Processing on Multicore Architectures},
  booktitle = {Proceedings of the 2019 International Conference on Management of Data},
  series = {SIGMOD '19},
  year={2019},
@@ -52,7 +52,7 @@ If you use BriskStream in your paper, please cite our work.
 ```
 
 
-### Other publications
+### Other related publications
 
 * **Shuhao Zhang**, Bingsheng He, Daniel Dahlmeier, Amelie Chi Zhou, Thomas Heinze. Revisiting the design of data stream processing systems on multi-core processors, ICDE, 2017
 
