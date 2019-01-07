@@ -4,7 +4,7 @@ public interface CONTROL {
 
     //application related.
 
-    int app = 2;//1 means CT; 2 means OB.
+    int app = 1;//1 means CT; 2 means OB.
 
 
     //db related.
