@@ -3,10 +3,13 @@ package applications.bolts.ct;
 import applications.param.DepositEvent;
 import applications.param.TransactionEvent;
 import brisk.components.operators.api.TransactionalBolt;
+import engine.DatabaseException;
 import engine.storage.datatype.DataBox;
 import org.slf4j.Logger;
 
 import java.util.List;
+
+import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 
 public abstract class CTBolt extends TransactionalBolt {
 
@@ -14,6 +17,46 @@ public abstract class CTBolt extends TransactionalBolt {
         super(log, fid);
     }
 
+
+    protected boolean deposite_request(DepositEvent event) throws DatabaseException {
+
+        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
+
+        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+
+        assert event.account_value.record != null && event.asset_value.record != null;
+
+        return true;
+    }
+
+
+    protected void deposite_request_lock_ahead(DepositEvent event) throws DatabaseException {
+
+        transactionManager.lock_ahead(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
+        transactionManager.lock_ahead(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+
+    }
+
+
+    protected void transfer_request_lock_ahead(TransactionEvent event) throws DatabaseException {
+        transactionManager.lock_ahead(txn_context, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
+        transactionManager.lock_ahead(txn_context, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
+        transactionManager.lock_ahead(txn_context, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
+        transactionManager.lock_ahead(txn_context, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
+    }
+
+    protected boolean transfer_request(TransactionEvent event) throws DatabaseException {
+
+
+        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
+
+
+        assert event.src_account_value.record != null && event.dst_account_value.record != null && event.src_asset_value.record != null && event.dst_asset_value.record != null;
+        return true;
+    }
 
     protected void DEPOSITE_CORE(DepositEvent event) {
         List<DataBox> values = event.account_value.record.getValues();
@@ -80,4 +123,19 @@ public abstract class CTBolt extends TransactionalBolt {
     public void prepareEvents() {
 
     }
+
+
+    protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
+        if (event instanceof DepositEvent) {
+            deposite_handle((DepositEvent) event, timestamp);//buy item at certain price.
+        } else if (event instanceof TransactionEvent) {
+            transfer_handle((TransactionEvent) event, timestamp);//alert price
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    protected abstract void transfer_handle(TransactionEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+
+    protected abstract void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException;
 }

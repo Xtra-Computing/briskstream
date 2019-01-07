@@ -82,12 +82,6 @@ public class CrossTables extends TransactionTopology {
 
             switch (config.getInt("CCOption", 0)) {
 
-                case 0: {//NOCC
-                    builder.setBolt(Component.CT, new CTBolt_nocc(0)//
-                            , config.getInt(CT_THREADS, 1)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
 
                 case 1: {//LOB
                     builder.setBolt(Component.CT, new CTBolt_olb(0)//

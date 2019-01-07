@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.SplittableRandom;
 
 import static applications.CONTROL.enable_latency_measurement;
-import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
@@ -38,37 +37,24 @@ public class CTBolt_sstore extends CTBolt {
         state = new ValueState();
     }
 
-
-    private void deposite_handle(long[] bid, int pid, int number_of_partitions, long msg_id, long timestamp) throws DatabaseException {
+    @Override
+    protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        DepositEvent event = randomDepositEvent(pid, number_of_partitions, msg_id, timestamp, rnd);//(DepositEvent) in.getValue(0);
-        END_PREPARE_TIME_MEASURE(thread_Id);
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
 
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(bid[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        int _pid = event.getPid();
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        _pid = event.getPid();
+
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -90,43 +76,28 @@ public class CTBolt_sstore extends CTBolt {
     }
 
 
-    private void transfer_handle(long[] bid, int pid, int number_of_partitions, long msg_id, long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void transfer_handle(TransactionEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
-
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        TransactionEvent event = randomTransactionEvent(pid, number_of_partitions, msg_id, timestamp, rnd);
-        event.setTimestamp(timestamp);
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).blocking_wait(bid[_pid]);
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        int _pid = event.getPid();
+        LA_LOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), event.getBid_array(), _pid == tthread);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = pid;
-        for (int k = 0; k < number_of_partitions; k++) {
-            transactionManager.getOrderLock(_pid).advance();
-            _pid++;
-            if (_pid == tthread)
-                _pid = 0;
-        }
+        _pid = event.getPid();
+
+        LA_UNLOCK(_pid, event.num_p(), transactionManager.getOrderLock(_pid), _pid == tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
-        transfer_request(event, bid[pid]);
+        transfer_request(event);
         END_TP_TIME_MEASURE(thread_Id);
 
 
@@ -141,6 +112,7 @@ public class CTBolt_sstore extends CTBolt {
 
     }
 
+
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
@@ -154,68 +126,19 @@ public class CTBolt_sstore extends CTBolt {
     }
 
 
-    private void deposite_request_lock_ahead(DepositEvent event) throws DatabaseException {
-
-        transactionManager.lock_ahead(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
-        transactionManager.lock_ahead(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
-
-    }
-
-    private boolean deposite_request(DepositEvent event) throws DatabaseException {
-
-        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
-
-        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
-
-        assert event.account_value.record != null && event.asset_value.record != null;
-
-        return true;
-    }
-
-    private void transfer_request_lock_ahead(TransactionEvent event) throws DatabaseException {
-        transactionManager.lock_ahead(txn_context, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
-        transactionManager.lock_ahead(txn_context, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
-        transactionManager.lock_ahead(txn_context, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
-        transactionManager.lock_ahead(txn_context, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
-    }
-
-    private boolean transfer_request(TransactionEvent event, long bid) throws DatabaseException {
-
-
-        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txn_context, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
-
-
-        assert event.src_account_value.record != null && event.dst_account_value.record != null && event.src_asset_value.record != null && event.dst_asset_value.record != null;
-        return true;
-    }
-
     boolean flag = true;
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
 
         long bid = in.getBID();
-        long[] partitionBID = in.getPartitionBID();
-
-//        boolean flag = in.getBoolean(0);
-        int pid = in.getInt(1);//start point.
-        int number_of_partitions = in.getInt(2);
         Long timestamp;//in.getLong(1);
-
+        Object event = db.eventManager.get((int) bid);
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
         else
             timestamp = 0L;//
 
-        if (flag) {
-            deposite_handle(partitionBID, pid, number_of_partitions, bid, timestamp);
-            flag = false;
-        } else {
-            transfer_handle(partitionBID, pid, number_of_partitions, bid, timestamp);
-            flag = true;
-        }
+        dispatch_process(event, timestamp);
     }
 }

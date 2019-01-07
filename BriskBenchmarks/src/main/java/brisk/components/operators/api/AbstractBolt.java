@@ -4,6 +4,7 @@ import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
+import engine.common.PartitionedOrderLock;
 import org.slf4j.Logger;
 
 import java.util.LinkedList;

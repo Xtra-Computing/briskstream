@@ -119,4 +119,16 @@ public class TransactionEvent {
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
+
+    public int getPid() {
+        return 0;
+    }
+
+    public int num_p() {
+        return 0;
+    }
+
+    public long[] getBid_array() {
+        return new long[0];
+    }
 }

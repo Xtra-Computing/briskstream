@@ -6,6 +6,7 @@ import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Marker;
+import engine.common.PartitionedOrderLock;
 import engine.profiler.Metrics;
 import engine.transaction.TxnManager;
 import org.slf4j.Logger;
@@ -44,6 +45,24 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         super(log);
         this.fid = fid;
         OsUtils.configLOG(LOG);
+    }
+
+    public static void LA_LOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, long[] bid_array, boolean b) {
+        for (int k = 0; k < i; k++) {
+            orderLock.blocking_wait(bid_array[_pid]);
+            _pid++;
+            if (b)
+                _pid = 0;
+        }
+    }
+
+    public static void LA_UNLOCK(int _pid, int i, PartitionedOrderLock.LOCK orderLock, boolean b) {
+        for (int k = 0; k < i; k++) {
+            orderLock.advance();
+            _pid++;
+            if (b)
+                _pid = 0;
+        }
     }
 
     protected boolean next_decision() {

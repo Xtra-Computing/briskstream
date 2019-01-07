@@ -9,6 +9,7 @@ public class DepositEvent {
 
     //embeded state.
     final long bid;//as msg id.
+    protected final int pid=0;
     public double[] index_time = new double[1];
     //updated state...to be written.
     public long newAccountValue;
@@ -24,9 +25,9 @@ public class DepositEvent {
     private String bookEntryId;
     private long accountTransfer;
     private long bookEntryTransfer;
-	private long timestamp;//emit timestamp
+    private long timestamp;//emit timestamp
 
-	/**
+    /**
      * Creates a new DepositEvent.
      */
     public DepositEvent(
@@ -85,7 +86,23 @@ public class DepositEvent {
                 + '}';
     }
 
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public long getBid() {
+        return bid;
+    }
+
+    public int getPid() {
+        return pid;
+    }
+
+    public int num_p() {
+        return 0;
+    }
+
+    public long[] getBid_array() {
+        return new long[0];
+    }
 }

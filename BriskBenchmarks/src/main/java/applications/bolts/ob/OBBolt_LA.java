@@ -7,12 +7,9 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
-import static engine.profiler.Metrics.MeasureTools.END_COMPUTE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_TRANSACTION_TIME_MEASURE;
 
 public abstract class OBBolt_LA extends OBBolt {
 

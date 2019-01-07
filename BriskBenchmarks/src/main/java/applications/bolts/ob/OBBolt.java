@@ -17,8 +17,6 @@ import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 
 public abstract class OBBolt extends TransactionalBolt {
 
-    transient SplittableRandom rnd;
-
     public OBBolt(Logger log, int fid) {
         super(log, fid);
     }
