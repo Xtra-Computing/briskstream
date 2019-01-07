@@ -155,7 +155,6 @@ public class OBBolt_ts extends OBBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
-        String componentId = context.getThisComponentId();
         long bid = in.getBID();
         if (in.isMarker()) {
 
