@@ -144,7 +144,7 @@ public class MeasureSink_latency extends BaseSink {
     }
 
     /**
-     * Only one sink will do the check.
+     * Only one sink will do the measure_end.
      */
     protected void check() {
         if (!profile) {

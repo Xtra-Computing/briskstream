@@ -316,9 +316,9 @@ public class scalingOptimization extends LocalPlanScheduler {
                 for (TopologyComponent tr : topology.getRecords().values()) {
                     tr.toCompress = true;
                 }
-//				final boolean check = cons.check(best_plan);
-//				if (!check) {
-//					LOG.info("Constraint check failed!!");
+//				final boolean measure_end = cons.measure_end(best_plan);
+//				if (!measure_end) {
+//					LOG.info("Constraint measure_end failed!!");
 //					cons.show(best_plan);
 //				}
             }

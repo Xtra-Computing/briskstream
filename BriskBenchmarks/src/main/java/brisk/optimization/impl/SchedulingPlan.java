@@ -690,8 +690,8 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
             } else {
                 validOperators += 2;//valid_collocation
 
-//				final boolean check = cons.valid_check(this);
-//				if (!check) {
+//				final boolean measure_end = cons.valid_check(this);
+//				if (!measure_end) {
 //					LOG.info("The plan returned from BnB is wrong!");
 //					LOG.info(cons.show(this));
 //					System.exit(-1);
@@ -721,8 +721,8 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
             return null;
         }
 
-//		final boolean check = cons.valid_check(this);
-//		if (!check) {
+//		final boolean measure_end = cons.valid_check(this);
+//		if (!measure_end) {
 //			LOG.info("The plan returned from BnB is wrong!");
 //			LOG.info(cons.show(this));
 //			System.exit(-1);

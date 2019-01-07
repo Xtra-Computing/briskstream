@@ -110,7 +110,7 @@ public class VehicleInfo implements Serializable {
         this.setToll(toll);
 
         // in case of compatibility replaying of tuples:
-        // check if we have duplicate processing of position report?
+        // measure_end if we have duplicate processing of position report?
         if (this.posreport.getTime() == this.lastSendToll) {
             return "";// getEmptyNotification("duplicate");
         }
@@ -119,7 +119,7 @@ public class VehicleInfo implements Serializable {
         // + this.posreport.getTimer().getOffset() + "," + (int)lav + "," + toll + "***" + this.posreport.getTime()
         // + "," + this.posreport.getProcessingTime() + "###" + this.posreport.show() + "###" + nov;
 
-        // check if time requirements are met if not stop computation
+        // measure_end if time requirements are met if not stop computation
         // long diff;
         // if(this.posreport.getProcessingTimeSec() > 5) {
         // LOG.error("Time Requirement not met: " + this.posreport.getProcessingTimeSec() + " for " + this.posreport

@@ -17,7 +17,7 @@ public class MeasureSink_Txn extends MeasureSink {
             this.setResults(results);
             LOG.info("Sink finished:" + results);
             if (thisTaskId == graph.getSink().getExecutorID()) {
-                check();
+                measure_end();
             }
         }
     }

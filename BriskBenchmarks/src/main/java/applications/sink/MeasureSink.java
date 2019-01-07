@@ -17,12 +17,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static applications.CONTROL.num_events;
 import static applications.Constants.System_Plan_Path;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
     private static final DescriptiveStatistics latency = new DescriptiveStatistics();
-    private static final LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
+    protected static final LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
     private static final long serialVersionUID = 6249684803036342603L;
     protected static String directory;
     protected static String algorithm;
@@ -97,7 +98,7 @@ public class MeasureSink extends BaseSink {
             this.setResults(results);
             LOG.info("Sink finished:" + results);
             if (LAST) {
-                check();
+                measure_end();
             }
         }
     }
@@ -115,19 +116,31 @@ public class MeasureSink extends BaseSink {
                 this.setResults(results);
                 LOG.info("Sink finished:" + results);
                 if (LAST) {
-                    check();
+                    measure_end();
                 }
             }
         }
 
+    }
 
+    protected void check(int cnt) {
+        if (cnt == 0) {
+            helper.StartMeasurement();
+        } else if (cnt == num_events - 1) {
+            double results = helper.EndMeasurement(cnt);
+            this.setResults(results);
+            LOG.info("Received:" + cnt + " throughput:" + results);
+            if (thisTaskId == graph.getSink().getExecutorID()) {
+                measure_end();
+            }
 
+        }
     }
 
     /**
-     * Only one sink will do the check.
+     * Only one sink will do the measure_end.
      */
-    protected void check() {
+    protected void measure_end() {
         if (!profile) {
 
             for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {

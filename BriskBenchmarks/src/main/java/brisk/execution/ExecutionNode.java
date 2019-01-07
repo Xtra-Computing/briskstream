@@ -200,7 +200,7 @@ public class ExecutionNode implements Serializable {
     }
 
 //    /**
-//     * TODO: It's too costly to check this flag every time. This is in Brisk.execution critical metric_path!!
+//     * TODO: It's too costly to measure_end this flag every time. This is in Brisk.execution critical metric_path!!
 //     * Move it to construction phase and Store it locally!
 //     */
 //    public SPSCController getPc(String streamId, String boltID) {

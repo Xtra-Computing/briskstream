@@ -141,7 +141,7 @@ public class LatestAverageVelocityBolt extends filterBolt {
 //			assert (m >= this.currentMinute);
 
 //			if (m > this.currentMinute) {
-//				// each time we step from one minute to another, we need to check the previous time range for "unfinished"
+//				// each time we step from one minute to another, we need to measure_end the previous time range for "unfinished"
 //				// open windows; this can happen, if there is not AvgSpeedTuple for a segment in the minute before the
 //				// current one; we need to truncate all open windows and compute LAV values for each open segment
 //

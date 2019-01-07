@@ -74,7 +74,7 @@ public class LRTopologyControl {
     public final static String CAR_COUNTS_STREAM_ID = "cnt";
     public final static String LAVS_STREAM_ID = "lav";
 
-    // TODO check usage
+    // TODO measure_end usage
     // bolts
     public final static String ACCOUNT_BALANCE_BOLT_NAME = "AB";
     public final static String ACCOUNT_BALANCE_FILE_WRITER_BOLT_NAME = "AccountBalanceFileWriterBolt";
@@ -123,7 +123,7 @@ public class LRTopologyControl {
     public final static String AVERAGE_SPEED_FIELD_NAME = "avgs";
     public final static String CAR_COUNT_FIELD_NAME = "cnt";
 
-    // TODO check if needed
+    // TODO measure_end if needed
     public final static String POS_REPORT_FIELD_NAME = "PosReport";
     public final static String TOLL_NOTIFICATION_FIELD_NAME = "tollnotification";
     public final static String ACCOUNT_BALANCE_REQUEST_FIELD_NAME = "AccBalRequests";

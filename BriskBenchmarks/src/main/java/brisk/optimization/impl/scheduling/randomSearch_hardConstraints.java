@@ -108,8 +108,8 @@ public class randomSearch_hardConstraints extends PlanScheduler {
                     l.add(i);
 
 //					sp.allocate(executor, i);
-//					final boolean check = cons.check(sp);
-//					if (!check) {
+//					final boolean measure_end = cons.measure_end(sp);
+//					if (!measure_end) {
 //						LOG.info("Something wrong in the algorithm!");
 //						LOG.info(cons.show(sp));
 //					}
@@ -128,8 +128,8 @@ public class randomSearch_hardConstraints extends PlanScheduler {
                 sp.setAllocated(executor);
                 sp.cache_clean();
 
-//				final boolean check = cons.check(sp);
-//				if (!check) {
+//				final boolean measure_end = cons.measure_end(sp);
+//				if (!measure_end) {
 //					LOG.info("Something wrong in the algorithm!");
 //					LOG.info(cons.show(sp));
 //				}
@@ -137,8 +137,8 @@ public class randomSearch_hardConstraints extends PlanScheduler {
             }
         }
 
-//		final boolean check = cons.check(sp);
-//		if (!check) {
+//		final boolean measure_end = cons.measure_end(sp);
+//		if (!measure_end) {
 //			LOG.info("Something wrong in the algorithm!");
 //			LOG.info(cons.show(sp));
 //		}

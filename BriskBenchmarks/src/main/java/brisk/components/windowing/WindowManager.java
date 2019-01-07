@@ -13,7 +13,7 @@ import static brisk.components.windowing.EvictionPolicy.Action.*;
 public class WindowManager<T> implements TriggerHandler {
     /**
      * Expire old events every EXPIRE_EVENTS_THRESHOLD to
-     * keep the window size in check.
+     * keep the window size in measure_end.
      * <p>
      * Note that if the eviction policy is based on watermarks, events will not be evicted until a new
      * watermark would cause them to be considered expired anyway, regardless of this limit
@@ -138,7 +138,7 @@ public class WindowManager<T> implements TriggerHandler {
 
 
     /**
-     * Scan events in the queue, using the expiration policy to check
+     * Scan events in the queue, using the expiration policy to measure_end
      * if the event should be evicted or not.
      *
      * @param fullScan if set, will scan the entire queue; if not set, will stop

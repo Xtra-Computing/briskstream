@@ -31,7 +31,7 @@ public abstract class MBBolt extends TransactionalBolt {
         }
 
         if (enable_speculative) {
-            //check if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
+            //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.
             //so nothing is send out.
 

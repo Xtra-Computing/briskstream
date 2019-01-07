@@ -131,7 +131,7 @@ public class Constraints implements Serializable {
     }
 
     public boolean valid_check(SchedulingPlan plan) {
-//		LOG.info("====check plan====");
+//		LOG.info("====measure_end plan====");
         final int satisfy = valid_satisfy(plan);
 //		LOG.info("ConstraintBy by:" + constraintBy(satisfy));
 //		LOG.info("\n" + this.show(plan));
@@ -144,7 +144,7 @@ public class Constraints implements Serializable {
      * @param plan
      */
     public boolean check(SchedulingPlan plan) {
-//		LOG.info("====check plan====");
+//		LOG.info("====measure_end plan====");
         final int satisfy = satisfy(plan);
 
         if (satisfy != this.allstatisfy) {

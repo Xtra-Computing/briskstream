@@ -68,7 +68,7 @@ public class SplitSentenceBolt extends splitBolt {
         int index = 0;
         int length = value.length;
         for (int c = 0; c < length; c++) {
-            if (value[c] == ',' || c == length - 1) {//double check.
+            if (value[c] == ',' || c == length - 1) {//double measure_end.
                 int len = c - index;
                 char[] word = new char[len];
                 System.arraycopy(value, index, word, 0, len);
@@ -87,7 +87,7 @@ public class SplitSentenceBolt extends splitBolt {
 //			int index = 0;
 //			int length = value_list.length;
 //			for (int c = 0; c < length; c++) {
-//				if (value_list[c] == ',' || c == length - 1) {//double check.
+//				if (value_list[c] == ',' || c == length - 1) {//double measure_end.
 //					int len = c - index;
 //					char[] word = new char[len];
 //					System.arraycopy(value_list, index, word, 0, len);
@@ -114,7 +114,7 @@ public class SplitSentenceBolt extends splitBolt {
 //			int index = 0;
 //			int length = value_list.length;
 //			for (int c = 0; c < length; c++) {
-//				if (value_list[c] == ',' || c == length - 1) {//double check.
+//				if (value_list[c] == ',' || c == length - 1) {//double measure_end.
 //					int len = c - index;
 //					char[] word = new char[len];
 //					System.arraycopy(value_list, index, word, 0, len);

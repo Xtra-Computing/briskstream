@@ -104,7 +104,7 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void Buying_CORE(BuyingEvent event) throws InterruptedException {
 
 
-        //check if any item is not able to buy.
+        //measure_end if any item is not able to buy.
 
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; ++i) {
             long bidPrice = event.getBidPrice(i);

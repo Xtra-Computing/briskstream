@@ -215,7 +215,7 @@ public final class PositionReport extends AbstractInputTuple implements IPositio
     }
 
     /**
-     * TODO check if needed (only if used multiple times)
+     * TODO measure_end if needed (only if used multiple times)
      *
      * @return TODO
      */

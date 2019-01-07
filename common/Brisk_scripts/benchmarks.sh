@@ -560,10 +560,11 @@ do
                 app="CrossTables"
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.6 #0.8
+                    for theta in 0.8
                     do
                         for tt in 38 #32 24 16 8 2 #38 32 24 16 8 2
                         do
+                            rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
@@ -573,14 +574,14 @@ do
                                         TP=$tt
                                         for checkpoint in 0.25 #0.025 0.05 0.1 0.25 0.5 0.75 1
                                         do
-                                            ratio_of_multi_partition=0
+                                            ratio_of_multi_partition=1
                                             number_partitions=4
                                             CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
-                             for CCOption in 1 2 4
+                             for CCOption in 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -589,15 +590,13 @@ do
                                         TP=$tt
                                         for checkpoint in 1
                                         do
-                                            ratio_of_multi_partition=0.5
+                                            ratio_of_multi_partition=1
                                             number_partitions=4
                                             CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
-
-                            rm
                         done # Threads/Cores
                     done #Theta
                 done #Input Hz
@@ -613,7 +612,7 @@ do
                     do
                         for tt in 2 8 16 24 32 38 #
                         do
-                            rm /home/xtra/briskstream/EVENT -r #save space..
+                            rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1

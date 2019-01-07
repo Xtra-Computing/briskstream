@@ -78,7 +78,7 @@ public abstract class CTBolt extends TransactionalBolt {
 
 
     protected void TRANSFER_CORE(TransactionEvent event) throws InterruptedException {
-        // check the preconditions
+        // measure_end the preconditions
 
         DataBox sourceAccountBalance_value = event.src_account_value.record.getValues().get(1);
         final long sourceAccountBalance = sourceAccountBalance_value.getLong();

@@ -51,7 +51,7 @@ class Node implements Comparable {
         this.output_rate = plan.getBound_rate();//bounded function
 
         //enabled in debug mode
-//		if (!check(validationMap, this.getvalidOperators())) {
+//		if (!measure_end(validationMap, this.getvalidOperators())) {
 //			LOG.error("Something wrong here, Type anything to continue");
 //			Scanner scanner = new Scanner(System.in);
 //			scanner.nextLine();

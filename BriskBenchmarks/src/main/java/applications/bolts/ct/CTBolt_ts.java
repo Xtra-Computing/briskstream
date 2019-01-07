@@ -151,7 +151,7 @@ public class CTBolt_ts extends CTBolt {
                 final long sourceAccountBalance = event.src_account_value.record.getValues().get(1).getLong();//already updated in the engine.
                 final long targetAccountBalance = event.dst_account_value.record.getValues().get(1).getLong();//already updated in the engine.
 
-                // check the preconditions
+                // measure_end the preconditions
                 if (event.success[0]) {
                     collector.force_emit(event.getBid(), new TransactionResult(event, true, sourceAccountBalance, targetAccountBalance), event.getTimestamp());
                 } else {

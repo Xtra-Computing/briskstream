@@ -55,7 +55,7 @@ public class CTSink_latency extends MeasureSink_latency {
 	}
 
 	/**
-	 * Only one sink will do the check.
+	 * Only one sink will do the measure_end.
 	 */
 	protected void check() {
 		if (!profile) {

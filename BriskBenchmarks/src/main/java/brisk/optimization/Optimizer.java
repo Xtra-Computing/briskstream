@@ -121,14 +121,14 @@ public class Optimizer {
             new_plan.planToString(false, true);
         }
 
-        LOG.info("check the optimized plan before writing plan to disk");
+        LOG.info("measure_end the optimized plan before writing plan to disk");
         final boolean check = cons.check(new_plan);
         if (!check) {
-            LOG.info("Constraint check failed!!");
+            LOG.info("Constraint measure_end failed!!");
             LOG.info(cons.show(new_plan));
             System.exit(-1);
         } else {
-            LOG.info("Constraint check success.");
+            LOG.info("Constraint measure_end success.");
             LOG.info(cons.show(new_plan));
         }
         double optimize_output_rate = new_plan.getOutput_rate(false);

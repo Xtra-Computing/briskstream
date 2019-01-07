@@ -171,7 +171,7 @@ public class OBBolt_ts extends OBBolt {
             //Perform computation on each event and emit.
             for (BuyingEvent event : buyingEvents) {
 
-                // check the preconditions
+                // measure_end the preconditions
                 if (event.success[0]) {
                     collector.force_emit(event.getBid(), new BidingResult(event, true), event.getTimestamp());
                 } else {

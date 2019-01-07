@@ -433,7 +433,7 @@ public class ExecutionGraph extends RawExecutionGraph {
                 }
                 OutputController sc = new MultiStreamOutputContoller((MultiStreamComponent) operator, PCMaps);
                 sc.setShared();
-                for (ExecutionNode executor : operator.getExecutorList()) {//double check if they are refer to the same executor
+                for (ExecutionNode executor : operator.getExecutorList()) {//double measure_end if they are refer to the same executor
                     executor.setController(sc);
                 }
             }

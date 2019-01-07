@@ -98,7 +98,7 @@ public class VoiceDispatcherBolt extends MapBolt {
         // add pair to learner
         learner.add(key);
 
-        // check if the pair exists
+        // measure_end if the pair exists
         // if not, add to the detector
         if (!detector.membershipTest(key)) {
             detector.add(key);
@@ -131,7 +131,7 @@ public class VoiceDispatcherBolt extends MapBolt {
             // add pair to learner
             learner.add(key);
 
-            // check if the pair exists
+            // measure_end if the pair exists
             // if not, add to the detector
             if (!detector.membershipTest(key)) {
                 detector.add(key);
