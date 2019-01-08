@@ -157,8 +157,8 @@ public class OBBolt_sstore extends OBBolt {
         if (enable_latency_measurement) {
             timestamp = in.getLong(0);
         }
-//        else
-//            timestamp = 0L;//
+        else
+            timestamp = 0L;//
 
         auth(bid, timestamp);//do nothing for now..
 

@@ -10,7 +10,7 @@ public interface CONTROL {
 
     //latency related.
     boolean enable_admission_control = false;//only enable when we want to test latency?
-    boolean enable_latency_measurement = true;//
+    boolean enable_latency_measurement = false;//
 
     //profile related.
     boolean enable_profile = false;//enable this only when we want to test for breakdown.
