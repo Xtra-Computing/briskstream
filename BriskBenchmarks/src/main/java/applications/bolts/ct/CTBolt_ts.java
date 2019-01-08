@@ -131,7 +131,8 @@ public class CTBolt_ts extends CTBolt {
                         event.getAccountTransfer(), event.getBookEntryTransfer()),
                 event.success);          //asynchronously return.
 
-        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries",
+        transactionManager.Asy_ModifyRecord(txn_context,
+                "bookEntries",
                 event.getTargetBookEntryId()
                 , new INC(event.getBookEntryTransfer()), srcTable, srcID,
                 new Condition(event.getMinAccountBalance(),

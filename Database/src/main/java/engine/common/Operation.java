@@ -30,6 +30,7 @@ public class Operation implements Comparable<Operation> {
     public long value;
     public int column_id;
 
+    public final String table_name;
     //required by READ_WRITE.
     public TableRecord s_record;//only if it is different from d_record.
     public TableRecord[] condition_records;
@@ -37,7 +38,8 @@ public class Operation implements Comparable<Operation> {
     public boolean[] success;
 
 
-    public Operation(TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, SchemaRecordRef record_ref, Function function) {
+    public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, SchemaRecordRef record_ref, Function function) {
+        this.table_name = table_name;
         this.d_record = record;
         this.bid = bid;
         this.accessType = accessType;
@@ -50,7 +52,8 @@ public class Operation implements Comparable<Operation> {
         this.record_ref = record_ref;//this holds events' record_ref.
     }
 
-    public Operation(TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, SchemaRecordRef record_ref) {
+    public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, SchemaRecordRef record_ref) {
+        this.table_name = table_name;
         this.d_record = record;
         this.bid = bid;
         this.accessType = accessType;
@@ -63,7 +66,8 @@ public class Operation implements Comparable<Operation> {
         this.record_ref = record_ref;//this holds events' record_ref.
     }
 
-    public Operation(TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, List<DataBox> value_list) {
+    public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, List<DataBox> value_list) {
+        this.table_name = table_name;
         this.d_record = record;
         this.bid = bid;
         this.accessType = accessType;
@@ -77,7 +81,8 @@ public class Operation implements Comparable<Operation> {
         this.record_ref = null;
     }
 
-    public Operation(TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, long value, int column_id) {
+    public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, long value, int column_id) {
+        this.table_name = table_name;
         this.d_record = record;
         this.bid = bid;
         this.accessType = accessType;
@@ -96,6 +101,7 @@ public class Operation implements Comparable<Operation> {
     /**
      * Update dest d_record by applying function of s_record.. It relys on MVCC to guarantee correctness.
      *
+     * @param table_name
      * @param s_record
      * @param d_record
      * @param bid
@@ -104,7 +110,8 @@ public class Operation implements Comparable<Operation> {
      * @param txn_context
      * @param column_id
      */
-    public Operation(TableRecord s_record, TableRecord d_record, long bid, MetaTypes.AccessType accessType, Function function, TxnContext txn_context, int column_id) {
+    public Operation(String table_name, TableRecord s_record, TableRecord d_record, long bid, MetaTypes.AccessType accessType, Function function, TxnContext txn_context, int column_id) {
+        this.table_name = table_name;
         this.d_record = d_record;
         this.bid = bid;
         this.accessType = accessType;
@@ -118,6 +125,7 @@ public class Operation implements Comparable<Operation> {
     }
 
     /**
+     * @param table_name
      * @param s_record
      * @param d_record
      * @param record_ref
@@ -129,7 +137,8 @@ public class Operation implements Comparable<Operation> {
      * @param txn_context
      * @param success
      */
-    public Operation(TableRecord s_record, TableRecord d_record, SchemaRecordRef record_ref, long bid, MetaTypes.AccessType accessType, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+    public Operation(String table_name, TableRecord s_record, TableRecord d_record, SchemaRecordRef record_ref, long bid, MetaTypes.AccessType accessType, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+        this.table_name = table_name;
         this.s_record = s_record;
         this.d_record = d_record;
 
@@ -145,7 +154,8 @@ public class Operation implements Comparable<Operation> {
         this.record_ref = record_ref;
     }
 
-    public Operation(TableRecord d_record, long bid, MetaTypes.AccessType accessType, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+    public Operation(String table_name, TableRecord d_record, long bid, MetaTypes.AccessType accessType, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+        this.table_name = table_name;
         this.d_record = d_record;
 
         this.bid = bid;

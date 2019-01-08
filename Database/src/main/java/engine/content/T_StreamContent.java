@@ -124,6 +124,11 @@ public abstract class T_StreamContent implements Content {
         if (enable_mvcc) {
             spinlock_.Lock();
             SchemaRecord rt = versions.get(ts);//return exact record.
+
+            if (rt == null) {
+                rt = versions.lowerEntry(ts).getValue();
+            }
+
             spinlock_.Unlock();
             return rt;
         } else

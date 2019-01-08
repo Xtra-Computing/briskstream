@@ -43,7 +43,7 @@ public final class TxnProcessingEngine {
     private Integer last_exe;
     private CyclicBarrier barrier;
     private Instance standalone_engine;
-    private Holder_in_range holder_by_stage;//change to HashMap<Integer, Holder_in_range> holder_by_stage = new HashMap<>() for multi-stage support.
+    private ConcurrentHashMap<String, Holder_in_range> holder_by_stage;//multi table support.
     private int app;
 
     private TxnProcessingEngine() {
@@ -66,13 +66,26 @@ public final class TxnProcessingEngine {
     public void initilize(int size, int app) {
         num_op = size;
         this.app = app;
-        holder_by_stage = new Holder_in_range(num_op);
-        metrics = Metrics.getInstance();
+//        holder_by_stage = new Holder_in_range(num_op);
+        holder_by_stage = new ConcurrentHashMap<>();
 
+
+        //make it flexible later.
+        if (app == 1)//CT
+        {
+            holder_by_stage.put("accounts", new Holder_in_range(num_op));
+            holder_by_stage.put("bookEntries", new Holder_in_range(num_op));
+        } else if (app == 2) {//OB
+            holder_by_stage.put("goods", new Holder_in_range(num_op));
+        } else {//MB
+            holder_by_stage.put("MicroTable", new Holder_in_range(num_op));
+        }
+
+        metrics = Metrics.getInstance();
     }
 
-    public Holder_in_range getHolder(int fid) {
-        return holder_by_stage;//change to holder_by_stage.get(fid) for multi-stage support.
+    public Holder_in_range getHolder(String table_name) {
+        return holder_by_stage.get(table_name);
     }
 
     public void engine_init(Integer first_exe, Integer last_exe, Integer stage_size, int tp) {
@@ -111,9 +124,14 @@ public final class TxnProcessingEngine {
     }
 
     private void CT_Transfer_Fun(Operation operation) {
+
         // read
         final long sourceAccountBalance = operation.condition_records[0].content_.readPreValues(operation.bid).getValues().get(1).getLong();
         final long sourceAssetValue = operation.condition_records[1].content_.readPreValues(operation.bid).getValues().get(1).getLong();
+
+        //when d_record is different from condition record
+        //It may generate cross-records dependency problem.
+        //Fix it later.
 
         // check the preconditions
         //TODO: make the condition checking more generic in future.
@@ -139,13 +157,13 @@ public final class TxnProcessingEngine {
             operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
             //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
             operation.success[0] = true;
-            if(operation.bid==5148){
-                System.nanoTime();
-            }
+//            if (operation.table_name.equalsIgnoreCase("accounts") && operation.d_record.record_.GetPrimaryKey().equalsIgnoreCase("11")) {
+//            LOG.info("key: " + operation.d_record.record_.GetPrimaryKey() + " BID: " + operation.bid + " set " + operation.success.hashCode() + " to true." + " sourceAccountBalance:" + sourceAccountBalance);
+//            }
         } else {
 
-            if (operation.success[0] == true)
-                System.nanoTime();
+//            if (operation.success[0] == true)
+//                System.nanoTime();
             operation.success[0] = false;
         }
     }
@@ -181,8 +199,16 @@ public final class TxnProcessingEngine {
 
             if (app == 1) {
                 CT_Depo_Fun(operation);//used in CT
-            } else
-                throw new UnsupportedOperationException();
+            } else {
+                SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+                List<DataBox> values = srcRecord.getValues();
+
+                //apply function to modify..
+                if (operation.function instanceof INC) {
+                    values.get(operation.column_id).setLong(values.get(operation.column_id).getLong() + operation.function.delta);
+                } else
+                    throw new UnsupportedOperationException();
+            }
 
         } else if (operation.accessType == READ_WRITE_COND) {//read, modify (depends on condition), write( depends on condition).
             //TODO: pass function here in future instead of hard-code it. Seems not trivial in Java, consider callable interface?
@@ -216,7 +242,9 @@ public final class TxnProcessingEngine {
                 else
                     operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
 
-                assert operation.record_ref.record.getValues().get(1) != null;
+//                if (operation.record_ref.record == null) {
+//                    System.nanoTime();
+//                }
             } else
                 throw new UnsupportedOperationException();
 
@@ -267,8 +295,13 @@ public final class TxnProcessingEngine {
                 process(operation);
             }//loop.
         } else {
+//            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
+//                System.nanoTime();
+//            }
             for (Operation operation : operation_chain) {
                 process(operation);
+//                if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11"))
+//                    LOG.info("finished process bid:" + operation.bid + " by " + Thread.currentThread().getName());
             }//loop.
         }
     }
@@ -332,10 +365,12 @@ public final class TxnProcessingEngine {
 
         Deque<Task> callables = new ArrayDeque<>();
 
+        int task = 0;
 
-        Holder holder = holder_by_stage.rangeMap.get(thread_Id);
-
-        int task = submit_task(thread_Id, holder, bid, callables);
+        for (Holder_in_range holder_in_range : holder_by_stage.values()) {
+            Holder holder = holder_in_range.rangeMap.get(thread_Id);
+            task += submit_task(thread_Id, holder, bid, callables);
+        }
 
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
 
@@ -505,10 +540,11 @@ public final class TxnProcessingEngine {
                     if (enable_debug)
                         LOG.info("Thread:\t" + Thread.currentThread().getName() + "\t working on task:" + OsUtils.Addresser.addressOf(this) + " with size of:" + operation_chain.size());
                     process((MyList<Operation>) operation_chain);
-//                    operation_chain.clear();
+
 
                     if (enable_debug)
                         LOG.info("Thread:\t" + Thread.currentThread().getName() + "reset task:" + OsUtils.Addresser.addressOf(this));
+                    operation_chain.clear();
                     this.under_process.set(false);//reset
                     return 0;
                 }

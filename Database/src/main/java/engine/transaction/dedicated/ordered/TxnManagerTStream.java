@@ -133,118 +133,118 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      * build the Operation chain.. concurrently..
      *
      * @param record      of interest
-     * @param fid
+     * @param table_name
      * @param accessType  Read or Write @ notice that, in the original Cavalia's design, write is proceed as Read. That is, Read->Modify->Write as one Operation.
      * @param record_ref
      * @param txn_context
      */
-    public void operation_chain_construction_read_only(TableRecord record, int fid, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, TxnContext txn_context) {
+    public void operation_chain_construction_read_only(TableRecord record, String table_name, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, TxnContext txn_context) {
         String primaryKey = record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(txn_context, bid, accessType, record, record_ref));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, record_ref));
 
 
 //        Integer key = Integer.valueOf(record.record_.GetPrimaryKey());
 //        int taskId = getTaskId(key);
 //        int h2ID = getH2ID(key);
 //        LOG.debug("Submit read for record:" + record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-//        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+//        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(record)).holder_v3;
 //        holder.add(new Operation(txn_context, bid, accessType, record, record_ref));
     }
 
     /**
      * @param record
-     * @param fid
+     * @param table_name
      * @param bid
      * @param accessType
      * @param value
      * @param txn_context
      */
-    private void operation_chain_construction_write_only(TableRecord record, int fid, long bid, MetaTypes.AccessType accessType, List<DataBox> value, TxnContext txn_context) {
+    private void operation_chain_construction_write_only(TableRecord record, String table_name, long bid, MetaTypes.AccessType accessType, List<DataBox> value, TxnContext txn_context) {
         String primaryKey = record.record_.GetPrimaryKey();
 
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(txn_context, bid, accessType, record, value));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, value));
 
 //        int taskId = getTaskId(record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-////        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+////        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(record)).holder_v3;
 //        holder.add(new Operation(txn_context, bid, accessType, record, value_list));
     }
 
-    private void operation_chain_construction_write_only(TableRecord record, int fid, long bid, MetaTypes.AccessType accessType, long value, int column_id, TxnContext txn_context) {
+    private void operation_chain_construction_write_only(TableRecord record, String table_name, long bid, MetaTypes.AccessType accessType, long value, int column_id, TxnContext txn_context) {
         String primaryKey = record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(txn_context, bid, accessType, record, value, column_id));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, value, column_id));
 
 //        int taskId = getTaskId(record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-////        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+////        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(record)).holder_v3;
 //        holder.add(new Operation(txn_context, bid, accessType, record, value_list));
     }
 
-    private void operation_chain_construction_modify_read(TableRecord record, int fid, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, Function function, TxnContext txn_context) {
+    private void operation_chain_construction_modify_read(TableRecord record, String table_name, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, Function function, TxnContext txn_context) {
         String primaryKey = record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         //simple sequential build.
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(txn_context, bid, accessType, record, record_ref, function));
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name, txn_context, bid, accessType, record, record_ref, function));
 
 //        int taskId = getTaskId(record);
 //        int h2ID = getH2ID(taskId);
 //        LOG.debug("Submit read for record:" + record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
 
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-////        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+////        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(record)).holder_v3;
 //        holder.add(new Operation(txn_context, bid, accessType, record, record_ref, function));
     }
 
 
-    private void operation_chain_construction_modify_only(TableRecord s_record, int fid, long bid, MetaTypes.AccessType accessType, TableRecord d_record, Function function, TxnContext txn_context, int column_id) {
+    private void operation_chain_construction_modify_only(TableRecord s_record, String table_name, long bid, MetaTypes.AccessType accessType, TableRecord d_record, Function function, TxnContext txn_context, int column_id) {
         String primaryKey = d_record.record_.GetPrimaryKey();
 
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(s_record, d_record, bid, accessType, function, txn_context, column_id));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name, s_record, d_record, bid, accessType, function, txn_context, column_id));
 
 //        int taskId = getTaskId(d_record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + d_record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-////        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(s_record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+////        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(s_record)).holder_v3;
 //        holder.add(new Operation(s_record, d_record, bid, accessType, function, txn_context));
     }
 
 
-    private void operation_chain_construction_modify_only(int fid, long bid, MetaTypes.AccessType accessType, TableRecord s_record, TableRecord d_record, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+    private void operation_chain_construction_modify_only(String table_name, long bid, MetaTypes.AccessType accessType, TableRecord s_record, TableRecord d_record, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
 
         String primaryKey = d_record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(s_record, d_record, null, bid, accessType, function, condition_records, condition, txn_context, success));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name, s_record, d_record, null, bid, accessType, function, condition_records, condition, txn_context, success));
 //
 //        int taskId = getTaskId(d_record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + d_record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
-//        MyList<Operation> holder = instance.getHolder(fid).rangeMap.get(taskId).holder_v2[h2ID];
-////        Set<Operation> holder = instance.getHolder(fid).rangeMap.get(getTaskId(d_record)).holder_v3;
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+////        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(d_record)).holder_v3;
 //        holder.add(new Operation(s_record, d_record, null, bid, accessType, function, condition_records, condition, txn_context, success));
     }
 
-    private void operation_chain_construction_modify_only(int fid, long bid, MetaTypes.AccessType accessType, TableRecord d_record, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
+    private void operation_chain_construction_modify_only(String table_name, long bid, MetaTypes.AccessType accessType, TableRecord d_record, Function function, TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
 
         String primaryKey = d_record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(d_record, bid, accessType, function, condition_records, condition, txn_context, success));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name,d_record, bid, accessType, function, condition_records, condition, txn_context, success));
 //        int taskId = getTaskId(d_record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + d_record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
@@ -254,13 +254,13 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
     }
 
-    private void operation_chain_construction_modify_read(int fid, long bid, MetaTypes.AccessType accessType, TableRecord d_record, SchemaRecordRef record_ref, Function function
+    private void operation_chain_construction_modify_read(String table_name, long bid, MetaTypes.AccessType accessType, TableRecord d_record, SchemaRecordRef record_ref, Function function
             , TableRecord[] condition_records, Condition condition, TxnContext txn_context, boolean[] success) {
 
         String primaryKey = d_record.record_.GetPrimaryKey();
-        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(fid).rangeMap.get(getTaskId(primaryKey)).holder_v1;
-        holder.putIfAbsent(primaryKey, new MyList());
-        holder.get(primaryKey).add(new Operation(d_record, d_record, record_ref, bid, accessType, function, condition_records, condition, txn_context, success));
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        holder.get(primaryKey).add(new Operation(table_name, d_record, d_record, record_ref, bid, accessType, function, condition_records, condition, txn_context, success));
 
 //        int taskId = getTaskId(d_record);
 //        int h2ID = getH2ID(taskId);
@@ -283,20 +283,20 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      */
     @Override
     protected boolean Asy_ReadRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, MetaTypes.AccessType accessType) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
 
-        operation_chain_construction_read_only(t_record, fid, bid, accessType, record_ref, txn_context);
+        operation_chain_construction_read_only(t_record, table_name, bid, accessType, record_ref, txn_context);
 
         return true;//it should be always success.
     }
 
     @Override
     protected boolean Asy_WriteRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, long value, int column_id, MetaTypes.AccessType access_type) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
 
-        operation_chain_construction_write_only(t_record, fid, bid, access_type, value, column_id, txn_context);
+        operation_chain_construction_write_only(t_record, table_name, bid, access_type, value, column_id, txn_context);
 
         return true;//it should be always success.
     }
@@ -304,28 +304,28 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
     @Override
     protected boolean Asy_WriteRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, List<DataBox> value, double[] enqueue_time, MetaTypes.AccessType access_type) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
 
-        operation_chain_construction_write_only(t_record, fid, bid, access_type, value, txn_context);
+        operation_chain_construction_write_only(t_record, table_name, bid, access_type, value, txn_context);
 
         return true;//it should be always success.
     }
 
     @Override
     protected boolean Asy_ModifyRecordCC(TxnContext txn_context, String srcTable, TableRecord t_record, TableRecord d_record, Function function, MetaTypes.AccessType accessType, int column_id) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_only(t_record, fid, bid, accessType, d_record, function, txn_context, column_id);//TODO: this is for sure READ_WRITE... think about how to further optimize.
+        operation_chain_construction_modify_only(t_record, srcTable, bid, accessType, d_record, function, txn_context, column_id);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
     }
 
 
     protected boolean Asy_ModifyRecord_ReadCC(TxnContext txn_context, String srcTable, TableRecord t_record, SchemaRecordRef record_ref, Function function, MetaTypes.AccessType accessType) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_read(t_record, fid, bid, accessType, record_ref, function, txn_context);//TODO: this is for sure READ_WRITE... think about how to further optimize.
+        operation_chain_construction_modify_read(t_record, srcTable, bid, accessType, record_ref, function, txn_context);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
     }
@@ -334,9 +334,9 @@ public class TxnManagerTStream extends TxnManagerDedicated {
     protected boolean Asy_ModifyRecord_ReadCC(TxnContext txn_context, String srcTable, TableRecord s_record, SchemaRecordRef record_ref, Function function,
                                               TableRecord[] condition_source, Condition condition, MetaTypes.AccessType accessType, boolean[] success) {
 
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_read(fid, bid, accessType,
+        operation_chain_construction_modify_read(srcTable, bid, accessType,
                 s_record, record_ref, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
@@ -346,17 +346,17 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
     @Override
     protected boolean Asy_ModifyRecordCC(TxnContext txn_context, String srcTable, TableRecord s_record, TableRecord d_record, Function function, TableRecord[] condition_source, Condition condition, MetaTypes.AccessType accessType, boolean[] success) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_only(fid, bid, accessType, s_record, d_record, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
+        operation_chain_construction_modify_only(srcTable, bid, accessType, s_record, d_record, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
     }
 
     protected boolean Asy_ModifyRecordCC(TxnContext txn_context, String srcTable, TableRecord s_record, Function function, TableRecord[] condition_source, Condition condition, MetaTypes.AccessType accessType, boolean[] success) {
-        int fid = txn_context.getFID();
+
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_only(fid, bid, accessType, s_record, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
+        operation_chain_construction_modify_only(srcTable, bid, accessType, s_record, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
     }
