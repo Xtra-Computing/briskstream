@@ -62,6 +62,8 @@ public interface Content {
     SchemaRecord ReadAccess(long ts, MetaTypes.AccessType accessType);
 
 
+    SchemaRecord readPreValues(long ts);
+
     SchemaRecord readValues(long ts);
 
     void updateValues(long ts, SchemaRecord value);

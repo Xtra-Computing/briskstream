@@ -155,6 +155,11 @@ public class ToContentImpl extends ToContent {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public SchemaRecord readPreValues(long ts) {
+        return null;
+    }
+
 
     // this function is always called after write has been installed or aborted.
     void UpdateBuffer() {

@@ -66,7 +66,7 @@ public final class TxnProcessingEngine {
     public void initilize(int size, int app) {
         num_op = size;
         this.app = app;
-        holder_by_stage = new Holder_in_range(num_op);//change to HashMap<Integer, Holder_in_range> holder_by_stage = new HashMap<>() for multi-stage support.
+        holder_by_stage = new Holder_in_range(num_op);
         metrics = Metrics.getInstance();
 
     }
@@ -112,8 +112,8 @@ public final class TxnProcessingEngine {
 
     private void CT_Transfer_Fun(Operation operation) {
         // read
-        final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-        final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+        final long sourceAccountBalance = operation.condition_records[0].content_.readPreValues(operation.bid).getValues().get(1).getLong();
+        final long sourceAssetValue = operation.condition_records[1].content_.readPreValues(operation.bid).getValues().get(1).getLong();
 
         // check the preconditions
         //TODO: make the condition checking more generic in future.
@@ -122,7 +122,7 @@ public final class TxnProcessingEngine {
                 && sourceAssetValue > operation.condition.arg3) {
 
             //read
-            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+            SchemaRecord srcRecord = operation.s_record.content_.readPreValues(operation.bid);
             List<DataBox> values = srcRecord.getValues();
 
             SchemaRecord tempo_record;
@@ -131,16 +131,17 @@ public final class TxnProcessingEngine {
             //apply function.
             if (operation.function instanceof INC) {
                 tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-                operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
-
             } else if (operation.function instanceof DEC) {
                 tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-                operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
             } else
                 throw new UnsupportedOperationException();
 
+            operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
             //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
             operation.success[0] = true;
+            if(operation.bid==5148){
+                System.nanoTime();
+            }
         } else {
 
             if (operation.success[0] == true)
@@ -150,7 +151,7 @@ public final class TxnProcessingEngine {
     }
 
     private void CT_Depo_Fun(Operation operation) {
-        SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+        SchemaRecord srcRecord = operation.s_record.content_.readPreValues(operation.bid);
         List<DataBox> values = srcRecord.getValues();
         //apply function to modify..
         SchemaRecord tempo_record;
@@ -209,13 +210,18 @@ public final class TxnProcessingEngine {
             assert operation.record_ref != null;
             if (app == 1) {//used in CT
                 CT_Transfer_Fun(operation);
-                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the potentially modified record.
+
+                if (operation.success[0])
+                    operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
+                else
+                    operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
+
+                assert operation.record_ref.record.getValues().get(1) != null;
             } else
                 throw new UnsupportedOperationException();
 
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK.
             assert operation.record_ref != null;
-
 
             //read source.
             List<DataBox> srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();

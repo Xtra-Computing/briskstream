@@ -37,6 +37,11 @@ public class SStoreContentImpl extends SStoreContent {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public SchemaRecord readPreValues(long ts) {
+        return null;
+    }
+
     public boolean TryLockPartitions() {
         return spinlock_.Try_Lock();
     }

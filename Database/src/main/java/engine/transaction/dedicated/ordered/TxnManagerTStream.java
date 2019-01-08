@@ -336,7 +336,8 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
         int fid = txn_context.getFID();
         long bid = txn_context.getBID();
-        operation_chain_construction_modify_read(fid, bid, accessType, s_record, record_ref, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
+        operation_chain_construction_modify_read(fid, bid, accessType,
+                s_record, record_ref, function, condition_source, condition, txn_context, success);//TODO: this is for sure READ_WRITE... think about how to further optimize.
 
         return true;
 

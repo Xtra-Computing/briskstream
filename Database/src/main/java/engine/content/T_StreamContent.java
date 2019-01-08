@@ -1,6 +1,7 @@
 package engine.content;
 
 import engine.common.OrderLock;
+import engine.common.SpinLock;
 import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
 import engine.transaction.impl.TxnContext;
@@ -9,14 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static applications.CONTROL.enable_debug;
 import static applications.CONTROL.enable_mvcc;
 
 public abstract class T_StreamContent implements Content {
     public final static String T_STREAMCONTENT = "T_STREAMCONTENT";
     public TreeMap<Long, SchemaRecord> versions = new TreeMap<>();//TODO: In fact... there can be at most only one write to the d_record concurrently. It is safe to just use sorted hashmap.
     public SchemaRecord record;
-
+    private SpinLock spinlock_ = new SpinLock();
 
     @Override
     public boolean TryReadLock() {
@@ -100,14 +100,11 @@ public abstract class T_StreamContent implements Content {
      * @return
      */
     @Override
-    public SchemaRecord readValues(long ts) {
-        if (enable_mvcc) {
-            if (enable_debug)
-                if (versions.get(ts) == null && versions.lowerEntry(ts) == null) {
-                    System.out.println("Store wrong!");
-                    System.exit(-1);
-                }
+    public SchemaRecord readPreValues(long ts) {
 
+        if (enable_mvcc) {
+
+            spinlock_.Lock();
             SchemaRecord record_at_ts;
             Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
 
@@ -116,7 +113,19 @@ public abstract class T_StreamContent implements Content {
             } else
                 record_at_ts = versions.get(ts);//not modified in last round
 
+            spinlock_.Unlock();
             return record_at_ts;
+        } else
+            return record;
+    }
+
+    public SchemaRecord readValues(long ts) {
+
+        if (enable_mvcc) {
+            spinlock_.Lock();
+            SchemaRecord rt = versions.get(ts);//return exact record.
+            spinlock_.Unlock();
+            return rt;
         } else
             return record;
     }
@@ -124,9 +133,11 @@ public abstract class T_StreamContent implements Content {
     @Override
     public void updateValues(long ts, SchemaRecord record) {
 
-        if (enable_mvcc)
+        if (enable_mvcc) {
+            spinlock_.Lock();
             versions.put(ts, record);
-        else
+            spinlock_.Unlock();
+        } else
             this.record = record;
     }
 

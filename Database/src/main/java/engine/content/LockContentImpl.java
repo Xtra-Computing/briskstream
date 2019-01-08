@@ -53,6 +53,11 @@ public class LockContentImpl extends LockContent {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public SchemaRecord readPreValues(long ts) {
+        return null;
+    }
+
 
     @Override
     public boolean TryReadLock() {

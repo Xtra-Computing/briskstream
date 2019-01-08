@@ -120,6 +120,11 @@ public class LWMContentImpl extends LWMContent {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public SchemaRecord readPreValues(long ts) {
+        return null;
+    }
+
     //However, once T is ready to commit, it must obtain a certify lock on all items that it currently holds write locks on before it can commit.
     @Override
     public boolean AcquireCertifyLock() {
