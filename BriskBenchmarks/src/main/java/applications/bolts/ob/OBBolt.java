@@ -4,6 +4,7 @@ import applications.param.TransactionEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
+import applications.tasks.stateless_task;
 import brisk.components.operators.api.TransactionalBolt;
 import engine.DatabaseException;
 import engine.storage.datatype.DataBox;
@@ -36,7 +37,7 @@ public abstract class OBBolt extends TransactionalBolt {
      */
     protected void auth(long bid, Long timestamp) {
 //        System.out.println(generatedString);
-//        stateless_task.random_compute(100);
+        stateless_task.random_compute(100);
     }
 
 
