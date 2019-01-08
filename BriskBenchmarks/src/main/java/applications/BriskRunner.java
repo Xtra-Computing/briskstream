@@ -516,6 +516,10 @@ public class BriskRunner extends abstractRunner {
                 + OsUtils.OS_wrapper(topology.getPrefix())
                 + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket")));
 
+        File file = new File(directory);
+        if (!file.mkdirs()) {
+        }
+
         FileWriter f = null;
 
         try {

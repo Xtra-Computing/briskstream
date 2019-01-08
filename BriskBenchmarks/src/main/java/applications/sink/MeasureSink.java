@@ -73,10 +73,11 @@ public class MeasureSink extends BaseSink {
 
         directory = STAT_Path + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(configPrefix)
-                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket") + "_" + String.valueOf(ccOption)
-                        + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
-                )
-        );
+                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket"))
+                + OsUtils.OS_wrapper(String.valueOf(ccOption)))
+                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
+                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("theta")))
+        ;
 
         File file = new File(directory);
         if (!file.mkdirs()) {
