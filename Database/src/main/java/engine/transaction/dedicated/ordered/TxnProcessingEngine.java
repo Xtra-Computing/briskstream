@@ -202,8 +202,14 @@ public final class TxnProcessingEngine {
             assert operation.record_ref != null;
 
             // read
-            final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-            final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+            final long sourceAccountBalance = operation.condition_records[0].content_
+                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+            final long sourceAssetValue = operation.condition_records[1].content_
+                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+
+            //read
+            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+            List<DataBox> values = srcRecord.getValues();
 
             // check the preconditions
             //TODO: make the condition checking more generic in future.
@@ -211,9 +217,6 @@ public final class TxnProcessingEngine {
                     && sourceAccountBalance > operation.condition.arg2
                     && sourceAssetValue > operation.condition.arg3) {//event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()
 
-                //read
-                SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-                List<DataBox> values = srcRecord.getValues();
 
                 //apply function.
                 if (operation.function instanceof INC) {
@@ -228,7 +231,6 @@ public final class TxnProcessingEngine {
             } else {
                 operation.success[0] = false;
             }
-
             operation.record_ref.record = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);//Operation.d_record.content_.versions.lastEntry().getValue();//read the tuple.
 
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK.

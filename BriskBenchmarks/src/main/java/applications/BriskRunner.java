@@ -219,6 +219,7 @@ public class BriskRunner extends abstractRunner {
 //                    config.put(DT_THREADS, threads);
 //                    config.put(TT_THREADS, threads);
                     config.put(CT_THREADS, threads);
+                    break;
                 }
                 case "OnlineBiding": {
                     config.put("app", 2);
@@ -228,6 +229,7 @@ public class BriskRunner extends abstractRunner {
 //                    config.put(DT_THREADS, threads);
 //                    config.put(TT_THREADS, threads);
                     config.put(OB_THREADS, threads);
+                    break;
                 }
 
                 case "PositionKeeping": {
@@ -237,6 +239,7 @@ public class BriskRunner extends abstractRunner {
 //                    config.put(DT_THREADS, threads);
 //                    config.put(TT_THREADS, threads);
                     config.put(PK_THREADS, threads);
+                    break;
                 }
 
                 case "MicroBenchmark": {
@@ -248,6 +251,7 @@ public class BriskRunner extends abstractRunner {
 //
 //                    config.put(MicroBenchmarkConstants.Conf.SELECTOR_THREADS, r_threads);
 //                    config.put(MicroBenchmarkConstants.Conf.INSERTOR_THREADS, w_threads);
+                    break;
                 }
                 case "StreamingAnalysis": {
                     int threads = (int) Math.floor(tthread / 5.0);
