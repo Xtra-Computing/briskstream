@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static applications.CONTROL.enable_admission_control;
+import static applications.CONTROL.enable_latency_measurement;
 import static engine.content.Content.CCOption_SStore;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -163,7 +164,11 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
 
                 p = key_to_partition(p_generator.next());//randomly pick a starting point.
 
-                collector.emit_single(p_bid.clone(), p, bid, number_partitions);//combined R/W executor.
+
+                if (enable_latency_measurement)
+                    collector.emit_single(p_bid.clone(), p, bid, number_partitions, System.nanoTime());//combined R/W executor.
+                else
+                    collector.emit_single(p_bid.clone(), p, bid, number_partitions);//combined R/W executor.
 
                 for (int k = 0; k < number_partitions; k++) {
                     p_bid[p]++;
@@ -179,13 +184,15 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
 //                p++;//which partition to work with (or start with in case of multi-partition).
 //                if (p == tthread)
 //                    p = 0;
-                collector.emit_single(p_bid.clone(), p, bid, 1);//combined R/W executor.
+                if (enable_latency_measurement)
+                    collector.emit_single(p_bid.clone(), p, bid, 1, System.nanoTime());//combined R/W executor.
+                else
+                    collector.emit_single(p_bid.clone(), p, bid, 1);//combined R/W executor.
                 p_bid[p]++;
                 p++;
                 if (p == tthread)
                     p = 0;
             }
-
 
         } else {
 
@@ -193,16 +200,25 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
 
                 if (enable_admission_control) {
                     if (control < target_Hz) {
-                        collector.emit_single(bid);//combined R/W executor.
+                        if (enable_latency_measurement)
+                            collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                        else
+                            collector.emit_single(bid);//combined R/W executor.
                         control++;
                     } else
                         empty++;
                 } else {
-                    collector.emit_single(bid);//combined R/W executor.
+                    if (enable_latency_measurement)
+                        collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                    else
+                        collector.emit_single(bid);//combined R/W executor.
                 }
                 forward_checkpoint(-1, bid, null); // This is required by T-Stream.
             } else {
-                collector.emit_single(bid);//combined R/W executor.
+                if (enable_latency_measurement)
+                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                else
+                    collector.emit_single(bid);//combined R/W executor.
             }
         }
         bid++;

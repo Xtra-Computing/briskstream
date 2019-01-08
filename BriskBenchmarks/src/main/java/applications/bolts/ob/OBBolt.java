@@ -10,7 +10,6 @@ import engine.storage.datatype.DataBox;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.SplittableRandom;
 
 import static applications.constants.OnlineBidingSystemConstants.Constant.NUM_ACCESSES_PER_BUY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
@@ -62,7 +61,7 @@ public abstract class OBBolt extends TransactionalBolt {
             long newQty = values.get(2).getLong() + event.getItemTopUp()[i];
             values.get(2).setLong(newQty);
         }
-        collector.force_emit(event.getBid(), event.getTimestamp());//the tuple is immediately finished.
+        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
     }
 
     protected void Alert_REQUEST_LA(AlertEvent event) throws DatabaseException {
@@ -84,7 +83,7 @@ public abstract class OBBolt extends TransactionalBolt {
             long newPrice = event.getAsk_price()[i];
             values.get(1).setLong(newPrice);
         }
-        collector.force_emit(event.getBid(), event.getTimestamp());//the tuple is immediately finished.
+        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
 
     }
 
@@ -139,10 +138,13 @@ public abstract class OBBolt extends TransactionalBolt {
 
     protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
         if (event instanceof BuyingEvent) {
+            ((BuyingEvent) event).setTimestamp(timestamp);
             buy_handle((BuyingEvent) event, timestamp);//buy item at certain price.
         } else if (event instanceof AlertEvent) {
+            ((AlertEvent) event).setTimestamp(timestamp);
             altert_handle((AlertEvent) event, timestamp);//alert price
         } else if (event instanceof ToppingEvent) {
+            ((ToppingEvent) event).setTimestamp(timestamp);
             topping_handle((ToppingEvent) event, timestamp);//topping qty
         }
     }

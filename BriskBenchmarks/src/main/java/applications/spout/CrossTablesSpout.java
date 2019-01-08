@@ -202,7 +202,9 @@ public class CrossTablesSpout extends TransactionalSpout {
             if (ccOption == CCOption_TStream) {
                 if (enable_admission_control) {
                     if (control < target_Hz) {
+
                         collector.emit_single(bid);//combined R/W executor.
+
                         bid++;
                         control++;
                     } else

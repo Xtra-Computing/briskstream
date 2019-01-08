@@ -17,8 +17,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static applications.CONTROL.enable_latency_measurement;
 import static applications.CONTROL.num_events;
-import static applications.Constants.System_Plan_Path;
+import static applications.Constants.STAT_Path;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
@@ -53,6 +54,7 @@ public class MeasureSink extends BaseSink {
     public void initialize(int task_Id_InGroup, int thisTaskId, ExecutionGraph graph) {
         super.initialize(task_Id_InGroup, thisTaskId, graph);
         int size = graph.getSink().operator.getExecutorList().size();
+        ccOption = config.getInt("CCOption", 0);
 
         String path = config.getString("metrics.output");
 
@@ -69,9 +71,13 @@ public class MeasureSink extends BaseSink {
         profile = config.getBoolean("profile");
 
 
-        directory = System_Plan_Path + OsUtils.OS_wrapper("BriskStream")
+        directory = STAT_Path + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(configPrefix)
-                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket")));
+                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket") + "_" + String.valueOf(ccOption)
+                        + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
+                )
+        );
+
         File file = new File(directory);
         if (!file.mkdirs()) {
         }
@@ -88,19 +94,15 @@ public class MeasureSink extends BaseSink {
         }
 //		store = new ArrayDeque<>((int) 1E11);
         LAST = thisTaskId == graph.getSink().getExecutorID();
-        ccOption = config.getInt("CCOption", 0);
+
     }
+
+    int cnt = 0;
 
     @Override
     public void execute(Tuple input) {
-        double results = helper.execute(input.getBID());
-        if (results != 0) {
-            this.setResults(results);
-            LOG.info("Sink finished:" + results);
-            if (LAST) {
-                measure_end();
-            }
-        }
+        check(cnt, input);
+        cnt++;
     }
 
     @Override
@@ -123,7 +125,7 @@ public class MeasureSink extends BaseSink {
 
     }
 
-    protected void check(int cnt) {
+    protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
             helper.StartMeasurement();
         } else if (cnt == num_events - 1) {
@@ -133,8 +135,30 @@ public class MeasureSink extends BaseSink {
             if (thisTaskId == graph.getSink().getExecutorID()) {
                 measure_end();
             }
-
         }
+        if (enable_latency_measurement)
+            if (isSINK) {// && cnt % 1E3 == 0
+                long msgId = input.getBID();
+                if (msgId < max_num_msg) {
+                    final long end = System.nanoTime();
+
+//                    try {
+                    final long start = input.getLong(1);
+
+
+                    final long process_latency = end - start;//ns
+//				final Long stored_process_latency = latency_map.getOrDefault(msgId, 0L);
+//				if (process_latency > stored_process_latency)//pick the worst.
+//				{
+//				LOG.debug("msgID:" + msgId + " is at:\t" + process_latency / 1E6 + "\tms");
+                    latency_map.put(msgId, process_latency);
+//				}
+//                    } catch (Exception e) {
+//                        System.nanoTime();
+//                    }
+//                    num_msg++;
+                }
+            }
     }
 
     /**
@@ -182,6 +206,8 @@ public class MeasureSink extends BaseSink {
                 }
                 w.write("=======Details=======");
                 w.write(latency.toString() + "\n");
+                w.write("===90th===" + "\n");
+                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
                 w.close();
                 f.close();
 
@@ -192,19 +218,7 @@ public class MeasureSink extends BaseSink {
             LOG.info("Stop all threads sequentially");
 //			context.stop_runningALL();
             context.Sequential_stopAll();
-//			try {
-//				//Thread.sleep(10000);
-//				context.wait_for_all();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			context.force_existALL();
-//			context.stop_running();
-//			try {
-//				Thread.sleep(10000);//wait for all sink threads stop.
-//			} catch (InterruptedException e) {
-//				//e.printStackTrace();
-//			}
+
         }
     }
 

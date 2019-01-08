@@ -154,10 +154,11 @@ public class OBBolt_sstore extends OBBolt {
         long bid = in.getBID();
         Long timestamp;//in.getLong(1);
         Object event = db.eventManager.get((int) bid);
-        if (enable_latency_measurement)
+        if (enable_latency_measurement) {
             timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
+        }
+//        else
+//            timestamp = 0L;//
 
         auth(bid, timestamp);//do nothing for now..
 

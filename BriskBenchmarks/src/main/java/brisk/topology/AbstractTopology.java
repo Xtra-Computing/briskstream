@@ -45,11 +45,11 @@ public abstract class AbstractTopology {
             LOG.info("spout class:" + spoutClass);
         }
 
-        if (enable_latency_measurement) {
-            final String[] split = spoutClass.split("\\.");
-            spoutClass = "applications.spout." + split[2] + "_latency";
-            LOG.info("spout class:" + spoutClass);
-        }
+//        if (enable_latency_measurement) {
+//            final String[] split = spoutClass.split("\\.");
+//            spoutClass = "applications.spout." + split[2] + "_latency";
+//            LOG.info("spout class:" + spoutClass);
+//        }
 
         AbstractSpout spout;
 
@@ -76,11 +76,11 @@ public abstract class AbstractTopology {
             LOG.info("sink class:" + sinkClass);
         }
 
-        if (enable_latency_measurement) {
-            final String[] split = sinkClass.split("\\.");
-            sinkClass = "applications.sink." + split[2] + "_latency";
-            LOG.info("sink class:" + sinkClass);
-        }
+//        if (enable_latency_measurement) {
+//            final String[] split = sinkClass.split("\\.");
+//            sinkClass = "applications.sink." + split[2] + "_latency";
+//            LOG.info("sink class:" + sinkClass);
+//        }
 
         if (sinkClass == null)
             sinkClass = config.getString(String.format(configKey, configPrefix));

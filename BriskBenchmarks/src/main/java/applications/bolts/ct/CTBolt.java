@@ -18,7 +18,6 @@ public abstract class CTBolt extends TransactionalBolt {
     }
 
 
-
     protected void deposite_request_lock_ahead(DepositEvent event) throws DatabaseException {
 
         transactionManager.lock_ahead(txn_context, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
@@ -36,7 +35,6 @@ public abstract class CTBolt extends TransactionalBolt {
 
         return true;
     }
-
 
 
     protected void DEPOSITE_CORE(DepositEvent event) throws InterruptedException {
@@ -74,7 +72,6 @@ public abstract class CTBolt extends TransactionalBolt {
         assert event.src_account_value.record != null && event.dst_account_value.record != null && event.src_asset_value.record != null && event.dst_asset_value.record != null;
         return true;
     }
-
 
 
     protected void TRANSFER_CORE(TransactionEvent event) throws InterruptedException {
@@ -132,10 +129,12 @@ public abstract class CTBolt extends TransactionalBolt {
 
     protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
         if (event instanceof DepositEvent) {
+            ((DepositEvent) event).setTimestamp(timestamp);
 //            LOG.info(((DepositEvent) event).getBid() + " " + event.toString());
             deposite_handle((DepositEvent) event, timestamp);//buy item at certain price.
         } else if (event instanceof TransactionEvent) {
 //            LOG.info(((TransactionEvent) event).getBid() + " " + event.toString());
+            ((TransactionEvent) event).setTimestamp(timestamp);
             transfer_handle((TransactionEvent) event, timestamp);//alert price
         } else {
             throw new UnsupportedOperationException();

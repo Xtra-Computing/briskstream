@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.num_events;
+import static applications.CONTROL.*;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
@@ -100,7 +99,12 @@ public class SIMPLETxnSpout extends TransactionalSpout {
 
     private void control_emit() throws InterruptedException {
         if (control < target_Hz) {
-            collector.emit_single(bid);//combined R/W executor.
+
+            if (enable_latency_measurement)
+                collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+            else
+                collector.emit_single(bid);//combined R/W executor.
+
             control++;
         } else
             empty++;
@@ -115,10 +119,14 @@ public class SIMPLETxnSpout extends TransactionalSpout {
             if (enable_admission_control) {
                 control_emit();
             } else {
-                collector.emit_single(bid);//combined R/W executor.
+
+                if (enable_latency_measurement)
+                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                else
+                    collector.emit_single(bid);//combined R/W executor.
             }
 
-
+//            LOG.info("Emit:" + bid);
             bid++;
         }
     }

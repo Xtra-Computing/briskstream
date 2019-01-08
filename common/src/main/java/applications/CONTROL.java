@@ -4,15 +4,13 @@ public interface CONTROL {
 
     //application related.
     int num_events = 1_000_000; //20_000_000;
-    int app = 1;//1 means CT; 2 means OB.
-
 
     //db related.
     boolean enable_shared_state = true;
 
     //latency related.
     boolean enable_admission_control = false;//only enable when we want to test latency?
-    boolean enable_latency_measurement = false;//
+    boolean enable_latency_measurement = true;//
 
     //profile related.
     boolean enable_profile = false;//enable this only when we want to test for breakdown.

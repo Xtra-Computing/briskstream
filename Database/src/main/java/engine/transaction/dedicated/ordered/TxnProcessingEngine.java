@@ -44,6 +44,7 @@ public final class TxnProcessingEngine {
     private CyclicBarrier barrier;
     private Instance standalone_engine;
     private Holder_in_range holder_by_stage;//change to HashMap<Integer, Holder_in_range> holder_by_stage = new HashMap<>() for multi-stage support.
+    private int app;
 
     private TxnProcessingEngine() {
         OsUtils.configLOG(LOG);
@@ -62,8 +63,9 @@ public final class TxnProcessingEngine {
         return instance;
     }
 
-    public void initilize(int size) {
+    public void initilize(int size, int app) {
         num_op = size;
+        this.app = app;
         holder_by_stage = new Holder_in_range(num_op);//change to HashMap<Integer, Holder_in_range> holder_by_stage = new HashMap<>() for multi-stage support.
         metrics = Metrics.getInstance();
 

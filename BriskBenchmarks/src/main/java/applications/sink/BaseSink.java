@@ -49,6 +49,10 @@ public abstract class BaseSink extends unionBolt {
         }
 
         formatter.initialize(Configuration.fromMap(config), getContext());
+
+        if (thisTaskId == graph.getSink().getExecutorID()) {
+            isSINK = true;
+        }
     }
 
     @Override

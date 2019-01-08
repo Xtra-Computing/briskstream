@@ -26,14 +26,9 @@ public class OBSink extends MeasureSink {
             } else
                 failure++;
         }
-        check(cnt);
-
-
-//        long bid = input.getBID();
-//        LOG.info("Finished:" + bid);
+        check(cnt, input);
 
         cnt++;
-
 
     }
 

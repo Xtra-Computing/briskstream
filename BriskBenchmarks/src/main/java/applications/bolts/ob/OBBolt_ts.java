@@ -69,7 +69,7 @@ public class OBBolt_ts extends OBBolt {
         END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 
 
-        collector.force_emit(event.getBid(), event.getTimestamp());//the tuple is immediately finished.
+        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
     }
 
     @Override
@@ -82,7 +82,7 @@ public class OBBolt_ts extends OBBolt {
         }
         END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 
-        collector.force_emit(event.getBid(), event.getTimestamp());//the tuple is immediately finished.
+        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
     }
 
     @Override

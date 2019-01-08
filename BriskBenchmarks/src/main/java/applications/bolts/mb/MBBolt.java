@@ -36,7 +36,7 @@ public abstract class MBBolt extends TransactionalBolt {
             //so nothing is send out.
 
         } else
-            collector.force_emit(event.getBid(), event.getEmit_timestamp(), sum);//the tuple is finished.
+            collector.force_emit(event.getBid(), sum, event.getEmit_timestamp());//the tuple is finished.
     }
 
 
@@ -49,7 +49,7 @@ public abstract class MBBolt extends TransactionalBolt {
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
 
         }
-        collector.force_emit(event.getBid(), event.getEmit_timestamp());//the tuple is finished.
+        collector.force_emit(event.getBid(), true, event.getEmit_timestamp());//the tuple is finished.
 
     }
 

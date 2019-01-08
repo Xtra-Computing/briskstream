@@ -212,6 +212,7 @@ public class BriskRunner extends abstractRunner {
             //set total parallelism, equally parallelism
             switch (application) {
                 case "CrossTables": {
+                    config.put("app", 1);
                     int threads = Math.max(1, (int) Math.floor((tthread)));
 //                    config.put(DEG_THREADS, threads);
 //                    config.put(TEG_THREADS, threads);
@@ -220,6 +221,7 @@ public class BriskRunner extends abstractRunner {
                     config.put(CT_THREADS, threads);
                 }
                 case "OnlineBiding": {
+                    config.put("app", 2);
                     int threads = Math.max(1, (int) Math.floor((tthread)));
 //                    config.put(DEG_THREADS, threads);
 //                    config.put(TEG_THREADS, threads);
