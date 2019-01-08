@@ -18,7 +18,7 @@ public interface CONTROL {
 
 
     //engine related.
-    boolean enable_mvcc = true; // harmful. Maybe needed in future.
+    boolean enable_mvcc = true; // only required in CT.
     boolean enable_numa_placement = true;
     boolean enable_engine = true;//enable TP_engine.
     boolean enable_work_stealing = true;//this is a sub-option, only useful when engine is enabled.
