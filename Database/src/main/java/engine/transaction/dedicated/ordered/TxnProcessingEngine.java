@@ -538,18 +538,21 @@ public final class TxnProcessingEngine {
                 if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
 //                int i = 0;
                     if (enable_debug)
-                        LOG.info("Thread:\t" + Thread.currentThread().getName() + "\t working on task:" + OsUtils.Addresser.addressOf(this) + " with size of:" + operation_chain.size());
+                        LOG.info("Thread:\t" + Thread.currentThread().getName()
+                                + "\t working on task:" + OsUtils.Addresser.addressOf(this)
+                                + " with size of:" + operation_chain.size());
                     process((MyList<Operation>) operation_chain);
-
-
                     if (enable_debug)
-                        LOG.info("Thread:\t" + Thread.currentThread().getName() + "reset task:" + OsUtils.Addresser.addressOf(this));
+                        LOG.info("Thread:\t" + Thread.currentThread().getName()
+                                + "reset task:" + OsUtils.Addresser.addressOf(this));
                     operation_chain.clear();
                     this.under_process.set(false);//reset
                     return 0;
                 }
                 if (enable_debug)
-                    LOG.info("Thread:\t" + Thread.currentThread().getName() + "\t exit on task:" + OsUtils.Addresser.addressOf(this) + " with size of:" + operation_chain.size());
+                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+                            + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+                            + " with size of:" + operation_chain.size());
                 while (!this.under_process.compareAndSet(false, true)) ;
                 return 0;
             }
