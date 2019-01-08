@@ -149,27 +149,7 @@ public final class TxnProcessingEngine {
 
                 // check the preconditions
                 //TODO: make the condition checking more generic in future.
-                if (sourceAccountBalance > operation.condition.arg1
-                        && sourceAccountBalance > operation.condition.arg2
-                        && sourceAssetValue > operation.condition.arg3) {
-
-                    //read
-                    SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-                    List<DataBox> values = srcRecord.getValues();
-
-                    //apply function.
-                    if (operation.function instanceof INC) {
-                        values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-                    } else if (operation.function instanceof DEC) {
-                        values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-                    } else
-                        throw new UnsupportedOperationException();
-
-                    //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
-                    operation.success[0] = true;
-                } else {
-                    operation.success[0] = false;
-                }
+                CT_Transfer_Fun(operation, sourceAccountBalance, sourceAssetValue);
             } else if (app == 2) {//used in OB
                 //check if any item is not able to buy.
 
@@ -201,36 +181,47 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
 
-            // read
-            final long sourceAccountBalance = operation.condition_records[0].content_
-                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-            final long sourceAssetValue = operation.condition_records[1].content_
-                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+//            // read
+//            final long sourceAccountBalance = operation.condition_records[0].content_
+//                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+//            final long sourceAssetValue = operation.condition_records[1].content_
+//                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+//
+//            //read
+//            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+//            List<DataBox> values = srcRecord.getValues();
+//
+//            // check the preconditions
+//            //TODO: make the condition checking more generic in future.
+//            if (sourceAccountBalance > operation.condition.arg1
+//                    && sourceAccountBalance > operation.condition.arg2
+//                    && sourceAssetValue > operation.condition.arg3) {//event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()
+//
+//
+//                //apply function.
+//                if (operation.function instanceof INC) {
+//                    values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
+//                } else if (operation.function instanceof DEC) {
+//                    values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
+//                } else
+//                    throw new UnsupportedOperationException();
+//
+////                        Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
+//                operation.success[0] = true;
+//            } else {
+//                operation.success[0] = false;
+//            }
 
-            //read
-            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-            List<DataBox> values = srcRecord.getValues();
+            // read
+//            final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+//            final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+            final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+            final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
 
             // check the preconditions
             //TODO: make the condition checking more generic in future.
-            if (sourceAccountBalance > operation.condition.arg1
-                    && sourceAccountBalance > operation.condition.arg2
-                    && sourceAssetValue > operation.condition.arg3) {//event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()
+            CT_Transfer_Fun(operation, sourceAccountBalance, sourceAssetValue);
 
-
-                //apply function.
-                if (operation.function instanceof INC) {
-                    values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-                } else if (operation.function instanceof DEC) {
-                    values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-                } else
-                    throw new UnsupportedOperationException();
-
-//                        Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
-                operation.success[0] = true;
-            } else {
-                operation.success[0] = false;
-            }
             operation.record_ref.record = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);//Operation.d_record.content_.versions.lastEntry().getValue();//read the tuple.
 
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK.
@@ -267,6 +258,46 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
 
+        }
+    }
+
+    private void CT_Transfer_Fun(Operation operation, long sourceAccountBalance, long sourceAssetValue) {
+        if (sourceAccountBalance > operation.condition.arg1
+                && sourceAccountBalance > operation.condition.arg2
+                && sourceAssetValue > operation.condition.arg3) {
+
+            //read
+            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+            List<DataBox> values = srcRecord.getValues();
+
+            SchemaRecord tempo_record;
+            if (enable_mvcc)
+                tempo_record = new SchemaRecord(values);//tempo record
+
+            //apply function.
+            if (operation.function instanceof INC) {
+
+                if (enable_mvcc) {
+                    tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
+                    operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+                } else // directly modify.. this may produce error!
+                    values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
+            } else if (operation.function instanceof DEC) {
+                if (enable_mvcc) {
+                    tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
+                    operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+                } else // directly modify.. this may produce error!
+                    values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
+            } else
+                throw new UnsupportedOperationException();
+
+            //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
+            operation.success[0] = true;
+        } else {
+
+//            if (operation.success[0] == true)
+//                System.nanoTime();
+            operation.success[0] = false;
         }
     }
 

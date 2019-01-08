@@ -27,6 +27,7 @@ public class Event {
         this.number_of_partitions = number_of_partitions;
 
         success = new boolean[1];
+        success[0] = false;
     }
 
     public Event(long bid, int partition_id, long[] bid_array, int number_of_partitions) {
@@ -59,6 +60,7 @@ public class Event {
     public long getTimestamp() {
         return timestamp;
     }
+
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }

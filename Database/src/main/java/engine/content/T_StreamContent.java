@@ -6,6 +6,7 @@ import engine.storage.datatype.DataBox;
 import engine.transaction.impl.TxnContext;
 
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 import static applications.CONTROL.enable_debug;
@@ -120,10 +121,14 @@ public abstract class T_StreamContent implements Content {
                     System.exit(-1);
                 }
 
-            SchemaRecord record_at_ts = versions.get(ts);
-            if (record_at_ts == null) {
-                record_at_ts = versions.lowerEntry(ts).getValue();
-            }
+            SchemaRecord record_at_ts;
+            Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
+
+            if (entry != null) {
+                record_at_ts = entry.getValue();
+
+            } else
+                record_at_ts = versions.get(ts);//not modified in last round
 
             return record_at_ts;
         } else

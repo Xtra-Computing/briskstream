@@ -104,29 +104,39 @@ public class CTBolt_ts extends CTBolt {
 
         String[] srcID = new String[]{event.getSourceAccountId(), event.getSourceBookEntryId()};
 
-        transactionManager.Asy_ModifyRecord_Read(txn_context, "accounts", event.getSourceAccountId()
+        transactionManager.Asy_ModifyRecord_Read(txn_context,
+                "accounts",
+                event.getSourceAccountId()
                 , event.src_account_value,
                 new DEC(event.getAccountTransfer()),
-                srcTable, srcID,
-                new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                srcTable, srcID,//condition source, condition id.
+                new Condition(event.getMinAccountBalance(),
+                        event.getAccountTransfer(), event.getBookEntryTransfer()),
                 event.success);          //asynchronously return.
 
-        transactionManager.Asy_ModifyRecord(txn_context, "bookEntries",
-                event.getSourceBookEntryId()
+        transactionManager.Asy_ModifyRecord(txn_context,
+                "bookEntries", event.getSourceBookEntryId()
                 , new DEC(event.getBookEntryTransfer()), srcTable, srcID,
-                new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                new Condition(event.getMinAccountBalance(),
+                        event.getAccountTransfer(), event.getBookEntryTransfer()),
                 event.success);   //asynchronously return.
 
-        transactionManager.Asy_ModifyRecord_Read(txn_context, "accounts", event.getTargetAccountId()
+        transactionManager.Asy_ModifyRecord_Read(txn_context,
+                "accounts",
+                event.getTargetAccountId()
                 , event.dst_account_value,
-                new INC(event.getAccountTransfer()), srcTable, srcID
-                , new Condition(event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()),
+                new INC(event.getAccountTransfer()),
+                srcTable, srcID//condition source, condition id.
+                , new Condition(event.getMinAccountBalance(),
+                        event.getAccountTransfer(), event.getBookEntryTransfer()),
                 event.success);          //asynchronously return.
 
         transactionManager.Asy_ModifyRecord(txn_context, "bookEntries",
                 event.getTargetBookEntryId()
-                , new INC(event.getBookEntryTransfer()), srcTable, srcID, new Condition(event.getMinAccountBalance()
-                        , event.getAccountTransfer(), event.getBookEntryTransfer()), event.success);   //asynchronously return.
+                , new INC(event.getBookEntryTransfer()), srcTable, srcID,
+                new Condition(event.getMinAccountBalance(),
+                        event.getAccountTransfer(), event.getBookEntryTransfer()),
+                event.success);   //asynchronously return.
 
     }
 
