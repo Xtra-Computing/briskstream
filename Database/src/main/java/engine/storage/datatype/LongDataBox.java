@@ -71,6 +71,11 @@ public class LongDataBox extends DataBox {
         this.i = current_value + delta;
     }
 
+    @Override
+    public void incLong(long delta) {
+        this.i = i + delta;
+    }
+
 
     @Override
     public void decLong(SchemaRecord s_record, long delta) {

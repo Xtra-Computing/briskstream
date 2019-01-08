@@ -102,6 +102,10 @@ public abstract class DataBox implements Comparable, Cloneable {
         throw new DataBoxException("not string type");
     }
 
+    public void incLong(long delta) {
+        incLong(getLong(), delta);
+    }
+
     public void decLong(SchemaRecord s_record, long delta) {
         throw new DataBoxException("not string type");
     }

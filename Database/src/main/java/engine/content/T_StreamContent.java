@@ -101,19 +101,6 @@ public abstract class T_StreamContent implements Content {
      */
     @Override
     public SchemaRecord readValues(long ts) {
-//        if (record == null)
-//            System.nanoTime();
-//        if (record.getValues() == null)
-//            System.nanoTime();
-//
-//        return record.getValues() == null ? versions.lastEntry().getValue() : record;
-//        return this.record;
-
-//        SchemaRecord value_list = versions.lastEntry().getValue();
-//        if (value_list == null || value_list.getValues() == null)
-//            System.out.println("version is empty:" + versions.toString());
-//        return value_list;//for a record, it cannot be written out-of-order, it's safe to simply return the newest value_list.
-
         if (enable_mvcc) {
             if (enable_debug)
                 if (versions.get(ts) == null && versions.lowerEntry(ts) == null) {
@@ -126,7 +113,6 @@ public abstract class T_StreamContent implements Content {
 
             if (entry != null) {
                 record_at_ts = entry.getValue();
-
             } else
                 record_at_ts = versions.get(ts);//not modified in last round
 
@@ -139,7 +125,7 @@ public abstract class T_StreamContent implements Content {
     public void updateValues(long ts, SchemaRecord record) {
 
         if (enable_mvcc)
-            versions.putIfAbsent(ts, record);
+            versions.put(ts, record);
         else
             this.record = record;
     }

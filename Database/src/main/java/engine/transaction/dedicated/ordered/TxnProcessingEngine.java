@@ -110,6 +110,55 @@ public final class TxnProcessingEngine {
         }
     }
 
+    private void CT_Transfer_Fun(Operation operation) {
+        // read
+        final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+        final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
+
+        // check the preconditions
+        //TODO: make the condition checking more generic in future.
+        if (sourceAccountBalance > operation.condition.arg1
+                && sourceAccountBalance > operation.condition.arg2
+                && sourceAssetValue > operation.condition.arg3) {
+
+            //read
+            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+            List<DataBox> values = srcRecord.getValues();
+
+            SchemaRecord tempo_record;
+            tempo_record = new SchemaRecord(values);//tempo record
+
+            //apply function.
+            if (operation.function instanceof INC) {
+                tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
+                operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+
+            } else if (operation.function instanceof DEC) {
+                tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
+                operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+            } else
+                throw new UnsupportedOperationException();
+
+            //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
+            operation.success[0] = true;
+        } else {
+
+            if (operation.success[0] == true)
+                System.nanoTime();
+            operation.success[0] = false;
+        }
+    }
+
+    private void CT_Depo_Fun(Operation operation) {
+        SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+        List<DataBox> values = srcRecord.getValues();
+        //apply function to modify..
+        SchemaRecord tempo_record;
+        tempo_record = new SchemaRecord(values);//tempo record
+        tempo_record.getValues().get(operation.column_id).incLong(operation.function.delta);//compute.
+        operation.s_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+    }
+
     private void process(Operation operation) {
         if (operation.accessType == READ_ONLY) {
             if (enable_mvcc)
@@ -117,7 +166,6 @@ public final class TxnProcessingEngine {
             else
                 operation.record_ref.record = operation.d_record.record_;
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
-
 
             if (operation.value_list != null) { //directly replace value_list
                 if (enable_mvcc)
@@ -130,12 +178,8 @@ public final class TxnProcessingEngine {
             }
         } else if (operation.accessType == READ_WRITE) {//read, modify, write.
 
-            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-            List<DataBox> values = srcRecord.getValues();
-
-            //apply function to modify..
-            if (operation.function instanceof INC) {
-                values.get(operation.column_id).setLong(values.get(operation.column_id).getLong() + operation.function.delta);
+            if (app == 1) {
+                CT_Depo_Fun(operation);//used in CT
             } else
                 throw new UnsupportedOperationException();
 
@@ -143,16 +187,9 @@ public final class TxnProcessingEngine {
             //TODO: pass function here in future instead of hard-code it. Seems not trivial in Java, consider callable interface?
 
             if (app == 1) {//used in CT
-                // read
-                final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-                final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-
-                // check the preconditions
-                //TODO: make the condition checking more generic in future.
-                CT_Transfer_Fun(operation, sourceAccountBalance, sourceAssetValue);
+                CT_Transfer_Fun(operation);
             } else if (app == 2) {//used in OB
                 //check if any item is not able to buy.
-
                 List<DataBox> d_record = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues();
                 long askPrice = d_record.get(1).getLong();//price
                 long left_qty = d_record.get(2).getLong();//available qty;
@@ -166,63 +203,15 @@ public final class TxnProcessingEngine {
                     d_record.get(2).setLong(left_qty - operation.function.delta);//new quantity.
                     operation.success[0] = true;
                 }
-
-//                if (ask_price <= operation.condition.arg1//bit hits
-//                        && left_qty >= operation.condition.arg2//sufficient amount
-//                ) {
-////                    d_record.get(2).decLong(left_qty, operation.function.delta);//compute.
-//                    d_record.get(2).setLong(left_qty - operation.function.delta);//new quantity.
-//                    operation.success[0] = true;
-//                } else {
-//                    operation.success[0] = false;
-//                }
             }
 
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
-
-//            // read
-//            final long sourceAccountBalance = operation.condition_records[0].content_
-//                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-//            final long sourceAssetValue = operation.condition_records[1].content_
-//                    .ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-//
-//            //read
-//            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-//            List<DataBox> values = srcRecord.getValues();
-//
-//            // check the preconditions
-//            //TODO: make the condition checking more generic in future.
-//            if (sourceAccountBalance > operation.condition.arg1
-//                    && sourceAccountBalance > operation.condition.arg2
-//                    && sourceAssetValue > operation.condition.arg3) {//event.getMinAccountBalance(), event.getAccountTransfer(), event.getBookEntryTransfer()
-//
-//
-//                //apply function.
-//                if (operation.function instanceof INC) {
-//                    values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-//                } else if (operation.function instanceof DEC) {
-//                    values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-//                } else
-//                    throw new UnsupportedOperationException();
-//
-////                        Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
-//                operation.success[0] = true;
-//            } else {
-//                operation.success[0] = false;
-//            }
-
-            // read
-//            final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-//            final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-            final long sourceAccountBalance = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-            final long sourceAssetValue = operation.condition_records[1].content_.ReadAccess(operation.bid, operation.accessType).getValues().get(1).getLong();
-
-            // check the preconditions
-            //TODO: make the condition checking more generic in future.
-            CT_Transfer_Fun(operation, sourceAccountBalance, sourceAssetValue);
-
-            operation.record_ref.record = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);//Operation.d_record.content_.versions.lastEntry().getValue();//read the tuple.
+            if (app == 1) {//used in CT
+                CT_Transfer_Fun(operation);
+                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the potentially modified record.
+            } else
+                throw new UnsupportedOperationException();
 
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK.
             assert operation.record_ref != null;
@@ -261,45 +250,6 @@ public final class TxnProcessingEngine {
         }
     }
 
-    private void CT_Transfer_Fun(Operation operation, long sourceAccountBalance, long sourceAssetValue) {
-        if (sourceAccountBalance > operation.condition.arg1
-                && sourceAccountBalance > operation.condition.arg2
-                && sourceAssetValue > operation.condition.arg3) {
-
-            //read
-            SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
-            List<DataBox> values = srcRecord.getValues();
-
-            SchemaRecord tempo_record;
-            if (enable_mvcc)
-                tempo_record = new SchemaRecord(values);//tempo record
-
-            //apply function.
-            if (operation.function instanceof INC) {
-
-                if (enable_mvcc) {
-                    tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-                    operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
-                } else // directly modify.. this may produce error!
-                    values.get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
-            } else if (operation.function instanceof DEC) {
-                if (enable_mvcc) {
-                    tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-                    operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
-                } else // directly modify.. this may produce error!
-                    values.get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
-            } else
-                throw new UnsupportedOperationException();
-
-            //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
-            operation.success[0] = true;
-        } else {
-
-//            if (operation.success[0] == true)
-//                System.nanoTime();
-            operation.success[0] = false;
-        }
-    }
 
     //TODO: actual evaluation on the operation_chain.
     private void process(MyList<Operation> operation_chain) {
@@ -347,10 +297,10 @@ public final class TxnProcessingEngine {
                 if (enable_debug)
                     sum += operation_chain.size();
 
-                Task task = new Task(operation_chain, bid);
 //                Instance instance = standalone_engine;//numa_engine.get(key);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
+                        Task task = new Task(operation_chain, bid);
 //                        LOG.debug("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
                         if (enable_multi_engine) {
