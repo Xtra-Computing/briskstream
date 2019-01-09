@@ -186,7 +186,7 @@ public final class TxnProcessingEngine {
     private void process(Operation operation) {
 
         if (operation.accessType == READ_ONLY) {
-            operation.record_ref.inc(Thread.currentThread().getName());
+//            operation.record_ref.inc(Thread.currentThread().getName());
 
             if (enable_mvcc)
                 operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);
