@@ -37,7 +37,10 @@ public abstract class MBBolt extends TransactionalBolt {
                 int read_result = Integer.parseInt(dataBox.getString().trim());
                 sum += read_result;
             } catch (Exception e) {
-                System.out.println("Null Pointer Exception at: " + event.getBid() + " ref cnt:" + ref.cnt);
+                System.out.println("Null Pointer Exception at: " + event.getBid() + "i:" + i + " ref cnt:" + ref.cnt);
+                System.out.println("What causes the exception?" + ref.record);
+                System.out.println("What causes the exception?" + ref.record.getValues());
+                System.out.println("What causes the exception?" + ref.record.getValues().get(1));
             }
         }
 
