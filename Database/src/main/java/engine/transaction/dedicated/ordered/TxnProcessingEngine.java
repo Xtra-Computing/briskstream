@@ -288,22 +288,23 @@ public final class TxnProcessingEngine {
     //TODO: actual evaluation on the operation_chain.
     private void process(MyList<Operation> operation_chain) {
 
-        if (enable_engine && enable_work_stealing) {
-            while (true) {
-                Operation operation = operation_chain.pollFirst();
-                if (operation == null) return;
-                process(operation);
-            }//loop.
-        } else {
+//        if (enable_engine && enable_work_stealing) {
+//            while (true) {
+//                Operation operation = operation_chain.pollFirst();
+//                if (operation == null) return;
+//                process(operation);
+//            }//loop.
+//        }
+//        else {
 //            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
 //                System.nanoTime();
 //            }
-            for (Operation operation : operation_chain) {
-                process(operation);
+        for (Operation operation : operation_chain) {
+            process(operation);
 //                if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11"))
 //                    LOG.info("finished process bid:" + operation.bid + " by " + Thread.currentThread().getName());
-            }//loop.
-        }
+        }//loop.
+//        }
     }
 
 
@@ -452,7 +453,11 @@ public final class TxnProcessingEngine {
         public Instance(int tpInstance, int range_min, int range_max) {
             this.range_min = range_min;
             this.range_max = range_max;
-            executor = Executors.newWorkStealingPool(tpInstance); //.newCachedThreadPool()
+
+            if (enable_work_stealing)
+                executor = Executors.newWorkStealingPool(tpInstance);
+            else
+                executor = Executors.newFixedThreadPool(tpInstance);
         }
 
         /**
@@ -530,32 +535,33 @@ public final class TxnProcessingEngine {
         @Override
         public Integer call() {
 
-            if (enable_work_stealing) {//cannot ensure ordering..
-                process((MyList<Operation>) operation_chain);
-                return 0;
-            } else {
+//            if (enable_work_stealing) {//cannot ensure ordering
+//                process((MyList<Operation>) operation_chain);
+//                return 0;
+//            }
+//            else {
 
-                if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
+            if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
 //                int i = 0;
-                    if (enable_debug)
-                        LOG.info("Thread:\t" + Thread.currentThread().getName()
-                                + "\t working on task:" + OsUtils.Addresser.addressOf(this)
-                                + " with size of:" + operation_chain.size());
-                    process((MyList<Operation>) operation_chain);
-                    if (enable_debug)
-                        LOG.info("Thread:\t" + Thread.currentThread().getName()
-                                + "reset task:" + OsUtils.Addresser.addressOf(this));
-                    operation_chain.clear();
-                    this.under_process.set(false);//reset
-                    return 0;
-                }
                 if (enable_debug)
                     LOG.info("Thread:\t" + Thread.currentThread().getName()
-                            + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
                             + " with size of:" + operation_chain.size());
-                while (!this.under_process.compareAndSet(false, true)) ;
+                process((MyList<Operation>) operation_chain);
+                if (enable_debug)
+                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+                            + "reset task:" + OsUtils.Addresser.addressOf(this));
+                operation_chain.clear();
+                this.under_process.set(false);//reset
                 return 0;
             }
+            if (enable_debug)
+                LOG.info("Thread:\t" + Thread.currentThread().getName()
+                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+                        + " with size of:" + operation_chain.size());
+            while (!this.under_process.compareAndSet(false, true)) ;
+            return 0;
+//            }
         }
 
     }

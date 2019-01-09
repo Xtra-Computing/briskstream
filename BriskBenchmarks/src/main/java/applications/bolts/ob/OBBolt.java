@@ -37,7 +37,7 @@ public abstract class OBBolt extends TransactionalBolt {
      */
     protected void auth(long bid, Long timestamp) {
 //        System.out.println(generatedString);
-        stateless_task.random_compute(5);
+//        stateless_task.random_compute(5);
     }
 
 
