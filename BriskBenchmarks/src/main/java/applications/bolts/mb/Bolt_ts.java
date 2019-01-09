@@ -87,7 +87,7 @@ public class Bolt_ts extends MBBolt {
         for (int i = 0; i < NUM_ACCESSES; i++) {
             //it simply construct the operations and return.
             SchemaRecordRef ref = event.getRecord_refs()[i];
-            assert ref.cnt == 0;
+//            assert ref.cnt == 0;
 //            LOG.info("Insert ref:" + OsUtils.Addresser.addressOf(ref));
             transactionManager.Asy_ReadRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
         }
