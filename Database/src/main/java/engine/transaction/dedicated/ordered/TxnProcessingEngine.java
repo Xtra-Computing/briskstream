@@ -196,7 +196,7 @@ public final class TxnProcessingEngine {
                 if (enable_mvcc)
                     operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
                 else
-                    operation.d_record.record_.getValues().get(operation.column_id).setString(operation.value_list.get(1).getString(), VALUE_LEN);
+                    operation.d_record.record_.updateValues(operation.value_list);
             } else { //update by column_id.
                 operation.d_record.record_.getValues().get(operation.column_id).setLong(operation.value);
 //                LOG.info("Alert price:" + operation.value);
