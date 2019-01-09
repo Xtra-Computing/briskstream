@@ -129,7 +129,7 @@ public class MeasureSink extends BaseSink {
     protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
             helper.StartMeasurement();
-        } else if (cnt == (NUM_EVENTS - 1) * 20) {
+        } else if (cnt == (NUM_EVENTS - 1)) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
             LOG.info("Received:" + cnt + " throughput:" + results);

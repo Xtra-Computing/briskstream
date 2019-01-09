@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.enable_latency_measurement;
+import static applications.CONTROL.*;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
@@ -116,20 +115,19 @@ public class SIMPLETxnSpout extends TransactionalSpout {
         if (ccOption == CCOption_TStream)
             forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
+        if (bid < NUM_EVENTS) {
+            if (enable_admission_control) {
+                control_emit();
+            } else {
 
-        if (enable_admission_control) {
-            control_emit();
-        } else {
-
-            if (enable_latency_measurement)
-                collector.emit_single(bid, System.nanoTime());//combined R/W executor.
-            else
-                collector.emit_single(bid);//combined R/W executor.
-        }
-
+                if (enable_latency_measurement)
+                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                else
+                    collector.emit_single(bid);//combined R/W executor.
+            }
 //            LOG.info("Emit:" + bid);
-        bid++;
-
+            bid++;
+        }
     }
 
 

@@ -1,9 +1,11 @@
 package applications;
 
+import applications.util.OsUtils;
+
 public interface CONTROL {
 
     //application related.
-    int NUM_EVENTS = 5_000_000; //1_000_000 for real use cases;
+    int NUM_EVENTS = OsUtils.isMac() ? 500_000 : 5_000_000; //1_000_000 for real use cases;
 
     //db related.
     boolean enable_shared_state = true;
@@ -13,7 +15,7 @@ public interface CONTROL {
     boolean enable_latency_measurement = false;//
 
     //profile related.
-    boolean enable_profile = true;//enable this only when we want to test for breakdown.
+    boolean enable_profile = false;//enable this only when we want to test for breakdown.
     boolean enable_debug = false;//some critical debug section.
 
 
