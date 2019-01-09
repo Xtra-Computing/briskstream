@@ -243,6 +243,7 @@ public class BriskRunner extends abstractRunner {
                 }
 
                 case "MicroBenchmark": {
+                    config.put("app", 0);
                     int threads = Math.max(1, (int) Math.floor((tthread)));
                     config.put(MicroBenchmarkConstants.Conf.Executor_Threads, threads);
 //                    double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
