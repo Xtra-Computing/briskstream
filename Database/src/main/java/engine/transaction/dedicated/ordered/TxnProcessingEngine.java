@@ -566,21 +566,20 @@ public final class TxnProcessingEngine {
                     if (enable_debug)
                         LOG.info("RE-ENTRY "
                                 + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-                                "by:" + Thread.currentThread().getName());
+                                " by:" + Thread.currentThread().getName());
                     return 0;
                 }
 
 //                int i = 0;
-                if (enable_debug)
-                    LOG.info("Thread:\t" + Thread.currentThread().getName()
-                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
-                            + " with size of:" + operation_chain.size());
-
-                process((MyList<Operation>) operation_chain);
 //                if (enable_debug)
 //                    LOG.info("Thread:\t" + Thread.currentThread().getName()
-//                            + "reset task:" + OsUtils.Addresser.addressOf(this));
-//
+//                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
+//                            + " with size of:" + operation_chain.size());
+
+                process((MyList<Operation>) operation_chain);
+                if (enable_debug)
+                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+                            + "reset task:" + OsUtils.Addresser.addressOf(this));
 
 
                 operation_chain.clear();
