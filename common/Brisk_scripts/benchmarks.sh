@@ -272,27 +272,27 @@ do
                     do
                         for tt in 38 #32 24 16 8 2 # * 6
                         do
-                            for CCOption in 3 # 0 1 2 3 # * (3 + 2)
+                            for CCOption in 0 1 2
                             do
-                                for NUM_ACCESS in 10
+                                for NUM_ACCESS in 20 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75 1
+                                        for checkpoint in 1
                                         do
-                                            let "TP = $tt"
+                                            TP=$tt
                                             read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
                                         done
                                     done
                                 done
                             done
-                            for CCOption in 0 1 2
+                            for CCOption in 3 # 0 1 2 3 # * (3 + 2)
                             do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                for NUM_ACCESS in 20
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 1
+                                        for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75 1
                                         do
                                             TP=$tt
                                             read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
@@ -314,7 +314,7 @@ do
                         do
                             for CCOption in 3 # 0 1 2 3 #2 # * (3 + 2)
                             do
-                                for NUM_ACCESS in 10
+                                for NUM_ACCESS in 20
                                 do
                                     for ratio_of_read in 0
                                     do
@@ -328,7 +328,7 @@ do
                             done
                             for CCOption in 0 1 2
                             do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                for NUM_ACCESS in 20 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0
                                     do
@@ -375,7 +375,7 @@ do
                         do
                             for CCOption in 3 #0 1 2 3
                             do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                for NUM_ACCESS in 20 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0 0.25 0.5 0.75 1
                                     do
@@ -389,7 +389,7 @@ do
                             done
                             for CCOption in 1 2
                             do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                for NUM_ACCESS in 20 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5
                                     do
@@ -556,7 +556,7 @@ do
                         do
                             for CCOption in 4 # * (3 + 2)
                             do
-                                for NUM_ACCESS in 10
+                                for NUM_ACCESS in 20
                                 do
                                     for ratio_of_read in 0 1
                                     do
