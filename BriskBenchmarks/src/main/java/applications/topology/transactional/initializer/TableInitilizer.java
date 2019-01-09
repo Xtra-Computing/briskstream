@@ -18,7 +18,9 @@ import java.util.Set;
 import java.util.SplittableRandom;
 
 import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_states_partition;
 import static applications.topology.transactional.State.partioned_store;
+import static applications.topology.transactional.State.shared_store;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.key_to_partition;
 
@@ -136,10 +138,10 @@ public abstract class TableInitilizer {
         for (int access_id = 0; access_id < numAccessesPerBuy; ++access_id) {
 
             FastZipfGenerator generator;
-//            if (enable_states_partition)
+            if (enable_states_partition)
             generator = partioned_store[pid];
-//            else
-//                generator = shared_store;
+            else
+                generator = shared_store;
 
 
             int res = generator.next();

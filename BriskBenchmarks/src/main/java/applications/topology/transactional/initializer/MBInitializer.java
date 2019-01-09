@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static applications.param.MicroEvent.GenerateValue;
@@ -240,8 +241,7 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-//                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                ;
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
@@ -283,8 +283,7 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-//                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                ;
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
         File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
