@@ -1,7 +1,6 @@
 package engine.content;
 
 import engine.common.OrderLock;
-import engine.common.SpinLock;
 import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
 import engine.transaction.impl.TxnContext;
@@ -112,6 +111,9 @@ public abstract class T_StreamContent implements Content {
                 record_at_ts = versions.get(ts);//not modified in last round
 
 //            spinlock_.Unlock();
+            if (record_at_ts.getValues() == null) {
+                System.out.println("Read a null value??");
+            }
             return record_at_ts;
         } else
             return record;

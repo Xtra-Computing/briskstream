@@ -190,9 +190,9 @@ public final class TxnProcessingEngine {
             else
                 operation.record_ref.record = operation.d_record.record_;
 
-//            if (operation.record_ref.record == null || operation.record_ref.record.getValues() == null) {
-//                System.out.println("Failed to read!");
-//            }
+            if (operation.record_ref.record == null || operation.record_ref.record.getValues() == null) {
+                System.out.println("Failed to read!");
+            }
 
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
 
