@@ -39,7 +39,7 @@ function local_execution {
 function read_only_test {
         path=$outputPath/$hz/$CCOption/$checkpoint
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
-		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
+		arg_application="--number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
 		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
@@ -61,7 +61,7 @@ function read_only_breakdown {
 function write_intensive_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
-		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
+		arg_application="--number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
 		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
@@ -105,7 +105,7 @@ function working_set_size_breakdown {
 function Read_Write_Mixture_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
-		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
+		arg_application="--number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
 		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
