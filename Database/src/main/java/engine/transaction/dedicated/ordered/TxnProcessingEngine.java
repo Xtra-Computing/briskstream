@@ -535,7 +535,7 @@ public final class TxnProcessingEngine {
         @Override
         public Integer call() {
 
-//            if (enable_work_stealing) {//cannot ensure ordering
+//            if (enable_work_stealing) {//cooperatively work on the same chain cannot ensure ordering
 //                process((MyList<Operation>) operation_chain);
 //                return 0;
 //            }
