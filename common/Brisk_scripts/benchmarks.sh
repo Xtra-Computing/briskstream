@@ -272,7 +272,7 @@ do
                 do
                     for theta in 0
                     do
-                        for tt in 16 8 2 # 38 32 24
+                        for tt in 38 2 # 38 32 24 16 8 2
                         do
                             for CCOption in 0 1 2
                             do
