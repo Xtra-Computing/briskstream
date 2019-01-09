@@ -20,8 +20,8 @@ public interface CONTROL {
     //engine related.
     boolean enable_mvcc = false; // always enabled in CT and disabled in others.
     boolean enable_numa_placement = true;//1. numa placement.
-    boolean enable_engine = true;//2. enable TP_engine.
-    boolean enable_work_stealing = true;//3. this is a sub-option, only useful when engine is enabled.
+    boolean enable_engine = false;//2. enable TP_engine.
+    boolean enable_work_stealing = false;//3. this is a sub-option, only useful when engine is enabled.
     boolean enable_speculative = false;//work in future!
 
     //used for fixed-partition engine (no work-stealing).
