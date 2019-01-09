@@ -132,7 +132,7 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
         LOG.info("ratio_of_multi_partition: " + ratio_of_multi_partition + "\tDECISIONS: " + Arrays.toString(multi_partion_decision));
 
 
-        int number_partitions = config.getInt("number_partitions");
+        number_partitions = config.getInt("number_partitions");
 
         for (TopologyComponent children : this.context.getThisComponent().getChildrenOfStream().keySet()) {
             int numTasks = children.getNumTasks();
@@ -163,7 +163,6 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
 //                int number_partitions = Math.min(input_number_partitions, (tthread - p));
 
                 p = key_to_partition(p_generator.next());//randomly pick a starting point.
-
 
                 if (enable_latency_measurement)
                     collector.emit_single(p_bid.clone(), p, bid, number_partitions, System.nanoTime());//combined R/W executor.
