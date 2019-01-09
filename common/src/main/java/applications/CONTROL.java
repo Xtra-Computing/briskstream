@@ -3,7 +3,7 @@ package applications;
 public interface CONTROL {
 
     //application related.
-    int NUM_EVENTS = 1_000_000; //20_000_000;
+    int NUM_EVENTS = 500_000; //1_000_000 for real use cases;
 
     //db related.
     boolean enable_shared_state = true;

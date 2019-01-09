@@ -236,7 +236,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Read_Only" #"Read_Only" "Write_Intensive" "Read_Write_Mixture" "CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "Read_Only" "Write_Intensive" "Read_Write_Mixture" #"Read_Only" "Write_Intensive" "Read_Write_Mixture" "CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -286,6 +286,20 @@ do
                                     done
                                 done
                             done
+                            for CCOption in 0 1 2
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
                         done # Threads/Cores
                     done #Theta
                 done #Input Hz
@@ -304,8 +318,25 @@ do
                                 do
                                     for ratio_of_read in 0
                                     do
-                                        let "TP = $tt"
-                                        write_intensive_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+                                        for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75 1
+                                        do
+                                            let "TP = $tt"
+                                            write_intensive_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+                                        done
+                                    done
+                                done
+                            done
+                            for CCOption in 0 1 2
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            write_intensive_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
                                     done
                                 done
                             done
@@ -348,8 +379,25 @@ do
                                 do
                                     for ratio_of_read in 0.5 #0 0.25 0.5 0.75 1
                                     do
-                                        let "TP = $tt"
-                                        Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+                                        for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75 1
+                                        do
+                                            let "TP = $tt"
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+                                        done
+                                    done
+                                done
+                            done
+                            for CCOption in 1 2
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
                                     done
                                 done
                             done
@@ -584,7 +632,7 @@ do
                                     done
                                 done
                             done
-                             for CCOption in 1 2 4
+                            for CCOption in 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do

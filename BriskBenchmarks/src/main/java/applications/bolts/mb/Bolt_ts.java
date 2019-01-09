@@ -10,6 +10,7 @@ import engine.DatabaseException;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
+import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,8 @@ public class Bolt_ts extends MBBolt {
 
         BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
         long bid = event.getBid();
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
+
         read_requests(event, this.fid, bid);
 
         readEventHolder.add(event);//mark the tuple as ``in-complete"
@@ -56,7 +59,7 @@ public class Bolt_ts extends MBBolt {
 
         BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
         long bid = event.getBid();
-
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
         write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), bid);
 
         if (enable_profile)

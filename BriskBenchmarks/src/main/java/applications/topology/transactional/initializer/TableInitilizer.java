@@ -62,6 +62,7 @@ public abstract class TableInitilizer {
         this.tthread = tthread;
         State.initilize(config);
         double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
+        this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
 
         if (ratio_of_multi_partition == 0) {
             multi_partion_decision = new boolean[]{false, false, false, false, false, false, false, false};// all single.
@@ -90,7 +91,7 @@ public abstract class TableInitilizer {
         }
         floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
         p_generator = new FastZipfGenerator(NUM_ITEMS, theta, 0);
-        this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
+
     }
 
     public void loadData(int maxContestants, String contestants) {

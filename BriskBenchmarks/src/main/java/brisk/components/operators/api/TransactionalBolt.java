@@ -31,9 +31,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 //    private transient FastZipfGenerator shared_store;
 //    private transient FastZipfGenerator[] partioned_store;
 
-    //different R-W ratio.
-    //just enable one of the decision array
-    protected transient boolean[] read_decision;
+
     private int i = 0;
     private int NUM_ITEMS;
 
@@ -62,16 +60,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         }
     }
 
-    protected boolean next_decision() {
 
-        boolean rt = read_decision[i];
-
-        i++;
-        if (i == 8)
-            i = 0;
-        return rt;
-
-    }
 
 
     @Override
@@ -79,33 +68,11 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         OsUtils.configLOG(LOG);
         this.thread_Id = thread_Id;
         tthread = config.getInt("tthread", 0);
-
         NUM_ACCESSES = Metrics.NUM_ACCESSES;
         //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
-
-
-        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
-
-        if (ratio_of_read == 0) {
-            read_decision = new boolean[]{false, false, false, false, false, false, false, false};// all write.
-        } else if (ratio_of_read == 0.25) {
-            read_decision = new boolean[]{false, false, false, false, false, false, true, true};//75% W, 25% R.
-        } else if (ratio_of_read == 0.5) {
-            read_decision = new boolean[]{false, false, false, false, true, true, true, true};//equal r-w ratio.
-        } else if (ratio_of_read == 0.75) {
-            read_decision = new boolean[]{false, false, true, true, true, true, true, true};//25% W, 75% R.
-        } else if (ratio_of_read == 1) {
-            read_decision = new boolean[]{true, true, true, true, true, true, true, true};// all read.
-        } else {
-            throw new UnsupportedOperationException();
-        }
-
-
-        LOG.info("ratio_of_read: " + ratio_of_read + "\tREAD DECISIONS: " + Arrays.toString(read_decision));
     }
 
     protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {
-
         return new PKEvent(bid, deviceID, value);
     }
 

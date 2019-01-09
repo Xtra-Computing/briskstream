@@ -37,13 +37,36 @@ import static xerial.jnuma.Numa.setLocalAlloc;
 
 public class MBInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(MBInitializer.class);
+    private final Configuration config;
 
-    //dual-decision
-    protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 read or write;
+    //different R-W ratio.
+    //just enable one of the decision array
+    protected transient boolean[] read_decision;
 
     public MBInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
+        this.config = config;
         floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
+
+
+        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
+        if (ratio_of_read == 0) {
+            read_decision = new boolean[]{false, false, false, false, false, false, false, false};// all write.
+        } else if (ratio_of_read == 0.25) {
+            read_decision = new boolean[]{false, false, false, false, false, false, true, true};//75% W, 25% R.
+        } else if (ratio_of_read == 0.5) {
+            read_decision = new boolean[]{false, false, false, false, true, true, true, true};//equal r-w ratio.
+        } else if (ratio_of_read == 0.75) {
+            read_decision = new boolean[]{false, false, true, true, true, true, true, true};//25% W, 75% R.
+        } else if (ratio_of_read == 1) {
+            read_decision = new boolean[]{true, true, true, true, true, true, true, true};// all read.
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+
+        LOG.info("ratio_of_read: " + ratio_of_read + "\tREAD DECISIONS: " + Arrays.toString(read_decision));
     }
 
     /**
@@ -207,11 +230,20 @@ public class MBInitializer extends TableInitilizer {
     @Override
     protected boolean load(String file) throws IOException {
 
-        if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
+        double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
+        this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
+        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(ratio_of_multi_partition))
+                + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions))
+                + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read));
+
+        if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
 
         Scanner sc;
-        sc = new Scanner(new File(Event_Path + OsUtils.OS_wrapper(file)));
+        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
 
         Object event = null;
         while (sc.hasNextLine()) {
@@ -235,26 +267,39 @@ public class MBInitializer extends TableInitilizer {
 
     @Override
     protected void dump(String file_name) throws IOException {
-        File file = new File(Event_Path);
+
+
+        double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
+        this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
+        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(ratio_of_multi_partition))
+                + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions))
+                + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read));
+
+        File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
 
         BufferedWriter w;
-        w = new BufferedWriter(new FileWriter(new File(Event_Path + OsUtils.OS_wrapper(file_name))));
+        w = new BufferedWriter(new FileWriter(new File(event_path + OsUtils.OS_wrapper(file_name))));
 
         for (Object event : db.eventManager.input_events) {
             MicroEvent microEvent = (MicroEvent) event;
-            String sb = String.valueOf(microEvent.getBid()) +//0 -- bid
-                    split_exp +
-                    microEvent.getPid() +//1
-                    split_exp +
-                    Arrays.toString(microEvent.getBid_array()) +//2
-                    split_exp +
-                    microEvent.num_p() +//3 num of p
-                    split_exp +
-                    "MicroEvent" +//4 event types.
-                    Arrays.toString(microEvent.getKeys()) +//5 keys
-                    split_exp +
-                    microEvent.READ_EVENT()//6
+            String sb =
+                    String.valueOf(microEvent.getBid()) +//0 -- bid
+                            split_exp +
+                            microEvent.getPid() +//1
+                            split_exp +
+                            Arrays.toString(microEvent.getBid_array()) +//2
+                            split_exp +
+                            microEvent.num_p() +//3 num of p
+                            split_exp +
+                            "MicroEvent" +//4 event types.
+                            split_exp +
+                            Arrays.toString(microEvent.getKeys()) +//5 keys
+                            split_exp +
+                            microEvent.READ_EVENT()//6
                     ;
             w.write(sb
                     + "\n");
@@ -262,17 +307,23 @@ public class MBInitializer extends TableInitilizer {
         w.close();
     }
 
+    int i = 0;
+
+    protected boolean next_read_decision() {
+
+        boolean rt = read_decision[i];
+
+        i++;
+        if (i == 8)
+            i = 0;
+        return rt;
+
+    }
 
     @Override
     protected Object create_new_event(int number_partitions, int bid) {
-        int flag = next_decision2();
-        if (flag == 0) {//write
-            return generateEvent(p, p_bid.clone(), number_partitions, bid, false);
-        } else if (flag == 1) {//true
-            return generateEvent(p, p_bid.clone(), number_partitions, bid, true);
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        boolean flag = next_read_decision();
+        return generateEvent(p, p_bid.clone(), number_partitions, bid, flag);
     }
 
 

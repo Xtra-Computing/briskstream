@@ -56,6 +56,7 @@ public class MicroBenchmark extends TransactionTopology {
         double scale_factor = config.getDouble("scale_factor", 1);
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
+        setPartition_interval((int) (Math.ceil(Metrics.NUM_ITEMS / (double) tthread)), tthread);
 
         TableInitilizer ini = new MBInitializer(db, scale_factor, theta, tthread, config);
 
@@ -63,7 +64,7 @@ public class MicroBenchmark extends TransactionTopology {
 
         int num_partitions;
 
-        setPartition_interval((int) (Math.ceil(Metrics.NUM_ITEMS / (double) tthread)), tthread);
+
 
         if (config.getBoolean("partition", false)) {
 

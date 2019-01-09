@@ -1,6 +1,5 @@
 package applications.param;
 
-import engine.profiler.Metrics;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.IntDataBox;
@@ -19,17 +18,14 @@ import static engine.profiler.Metrics.NUM_ACCESSES;
  */
 public class MicroEvent extends Event {
 
+    private final SchemaRecordRef[] record_refs;//this is essentially the place-holder..
 
     private final int[] keys;
-    private final SchemaRecordRef[] record_refs;//this is essentially the place-holder..
+    private final boolean flag;//true: read, false: write.
+    private final List<DataBox>[] value = new ArrayList[NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
     //    public double[] useful_time = new double[1];
-    public int sum;
-
-
-    boolean flag;//true: read, false: write.
-    private List<DataBox>[] value = new ArrayList[NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
     /**
      * creating a new MicroEvent.
@@ -52,7 +48,8 @@ public class MicroEvent extends Event {
 
     /**
      * Loading a DepositEvent.
-     * @param flag, read_write flag
+     *
+     * @param flag,            read_write flag
      * @param bid
      * @param pid
      * @param bid_array
@@ -66,12 +63,14 @@ public class MicroEvent extends Event {
         for (int i = 0; i < NUM_ACCESSES; i++) {
             record_refs[i] = new SchemaRecordRef();
         }
+        this.flag = flag;
 
         String[] key_arrays = key_array.substring(1, key_array.length() - 1).split(",");
         this.keys = new int[key_arrays.length];
         for (int i = 0; i < key_arrays.length; i++) {
             this.keys[i] = Integer.parseInt(key_arrays[i].trim());
         }
+        setValues(getKeys());
     }
 
     public int[] getKeys() {

@@ -64,19 +64,34 @@ public abstract class MBBolt extends TransactionalBolt {
 
     protected void read_lock_ahead(MicroEvent Event, long bid) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
+            transactionManager.lock_ahead(txn_context, "MicroTable",
+                    String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
-
 
 
     protected void write_lock_ahead(MicroEvent Event, long bid) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
+            transactionManager.lock_ahead(txn_context, "MicroTable",
+                    String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
+    }
+
+    private boolean process_request_noLock(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException {
+        for (int i = 0; i < NUM_ACCESSES; ++i) {
+            boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable",
+                    String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
+            if (rt) {
+                assert event.getRecord_refs()[i].record != null;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean process_request(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
+            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable",
+                    String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
                 assert event.getRecord_refs()[i].record != null;
             } else {
@@ -88,13 +103,25 @@ public abstract class MBBolt extends TransactionalBolt {
 
     protected boolean read_request(MicroEvent event, long bid) throws DatabaseException {
 
+        if (process_request_noLock(event, READ_ONLY)) return false;
+        return true;
+    }
+
+
+    protected boolean write_request(MicroEvent event, long bid) throws DatabaseException {
+
+        if (process_request_noLock(event, READ_WRITE)) return false;
+        return true;
+    }
+
+    protected boolean read_request_lock(MicroEvent event, long bid) throws DatabaseException {
+
         if (process_request(event, READ_ONLY)) return false;
         return true;
     }
 
 
-
-    protected boolean write_request(MicroEvent event, long bid) throws DatabaseException {
+    protected boolean write_request_lock(MicroEvent event, long bid) throws DatabaseException {
 
         if (process_request(event, READ_WRITE)) return false;
         return true;
