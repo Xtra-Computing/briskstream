@@ -19,17 +19,15 @@ public interface CONTROL {
 
     //engine related.
     boolean enable_mvcc = false; // always enabled in CT and disabled in others.
-    boolean enable_numa_placement = true;//1. numa placement.
-    boolean enable_engine = true;//2. enable TP_engine.
-    boolean enable_work_stealing = true;//3. this is a sub-option, only useful when engine is enabled.
+    boolean enable_numa_placement = false;//1. numa placement.
+    boolean enable_engine = false;//2. enable TP_engine.
+    boolean enable_work_stealing = false;//3. this is a sub-option, only useful when engine is enabled.
     boolean enable_speculative = false;//work in future!
 
-    //used for multi-engine.
-    boolean enable_multi_engine = false;//harmful. study in future.
-    int island = 2;//if NUMA-unaware this is set to #sockets by default (that is spread by default).
+    //used for fixed-partition engine (no work-stealing).
+    int island = -1;//-1 stands for one engine per core; if NUMA-unaware this is set to #sockets by default (that is spread by default).
     int CORE_PER_SOCKET = 10;//configure this for NUMA placement please.
     int NUM_OF_SOCKETS = 4;//configure this for NUMA placement please.
-    int TOTAL_CORES = 40;
 
     //global settings.
     int kMaxThreadNum = 40;

@@ -46,12 +46,14 @@ public final class TxnProcessingEngine {
     private ConcurrentHashMap<String, Holder_in_range> holder_by_stage;//multi table support.
     private int app;
 
+    private int TOTAL_CORES;
+
     private TxnProcessingEngine() {
         OsUtils.configLOG(LOG);
     }
 
     //    fast determine the corresponding instance. This design is for NUMA-awareness.
-    private HashMap<Integer, Instance> numa_engine = new HashMap<>();//one island one engine.
+    private HashMap<Integer, Instance> multi_engine = new HashMap<>();//one island one engine.
 //    private int partition = 1;//NUMA-awareness. Hardware Island. If it is one, it is the default shared-everything.
 //    private int range_min = 0;
 //    private int range_max = 1_000_000;//change this for different application.
@@ -97,28 +99,33 @@ public final class TxnProcessingEngine {
 //		process_ready = new ResettableCountDownLatch(num_op);
 //		process_barrier = new CyclicBarrier(num_op);
 
-        if (enable_multi_engine) {
-            for (int i = 0; i < island; i++) {
-                numa_engine.put(i, new Instance(tp / island));
-//                numa_engine.get(i).executor.submit(new dummyTask(i));
+        if (!enable_work_stealing) {
+            if (island != -1)
+                for (int i = 0; i < island; i++) {
+                    multi_engine.put(i, new Instance(tp / island));
+//                multi_engine.get(i).executor.submit(new dummyTask(i));
+                }
+            else {
+                for (int i = 0; i < tp; i++)
+                    multi_engine.put(i, new Instance(1));
             }
         } else {
-            //single box numa_engine.
+            //single box multi_engine.
             standalone_engine = new Instance(tp);
 
         }
-
+        TOTAL_CORES = tp;
         LOG.info("source state initialize");
     }
 
 
     public void engine_shutdown() {
-        if (enable_multi_engine) {
-            for (int i = 0; i < island; i++) {
-                numa_engine.get(i).close();
+        if (!enable_work_stealing) {
+            for (Instance engine : multi_engine.values()) {
+                engine.close();
             }
         } else {
-            //single box numa_engine.
+            //single box multi_engine.
             standalone_engine.close();
         }
     }
@@ -161,7 +168,6 @@ public final class TxnProcessingEngine {
 //            LOG.info("key: " + operation.d_record.record_.GetPrimaryKey() + " BID: " + operation.bid + " set " + operation.success.hashCode() + " to true." + " sourceAccountBalance:" + sourceAccountBalance);
 //            }
         } else {
-
 //            if (operation.success[0] == true)
 //                System.nanoTime();
             operation.success[0] = false;
@@ -314,8 +320,11 @@ public final class TxnProcessingEngine {
     }
 
     private int ThreadToEngine(int thread_Id) {
-
-        int rt = (thread_Id + 2) / (TOTAL_CORES / island);
+        int rt;
+        if (island != -1)
+            rt = (thread_Id) / (TOTAL_CORES / island);
+        else
+            rt = (thread_Id);
         // LOG.debug("submit to engine: "+ rt);
         return rt;
     }
@@ -324,7 +333,7 @@ public final class TxnProcessingEngine {
 
         int sum = 0;
 
-//        Instance instance = standalone_engine;//numa_engine.get(key);
+//        Instance instance = standalone_engine;//multi_engine.get(key);
 //        assert instance != null;
 //        for (Map.Entry<Range<Integer>, Holder> rangeHolderEntry : holder.entrySet()) {
 //            Holder operation_chain = rangeHolderEntry.getValue();
@@ -337,14 +346,14 @@ public final class TxnProcessingEngine {
                 if (enable_debug)
                     sum += operation_chain.size();
 
-//                Instance instance = standalone_engine;//numa_engine.get(key);
+//                Instance instance = standalone_engine;//multi_engine.get(key);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
                         Task task = new Task(operation_chain, bid);
 //                        LOG.debug("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
-                        if (enable_multi_engine) {
-                            numa_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
+                        if (!enable_work_stealing) {
+                            multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
                         } else {
                             standalone_engine.executor.submit(task);
                         }
@@ -376,8 +385,8 @@ public final class TxnProcessingEngine {
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
 
         if (enable_engine) {
-            if (enable_multi_engine) {
-                numa_engine.get(ThreadToEngine(thread_Id)).executor.invokeAll(callables);
+            if (!enable_work_stealing) {
+                multi_engine.get(ThreadToEngine(thread_Id)).executor.invokeAll(callables);
             } else
                 standalone_engine.executor.invokeAll(callables);
         }
@@ -456,8 +465,12 @@ public final class TxnProcessingEngine {
 
             if (enable_work_stealing)
                 executor = Executors.newWorkStealingPool(tpInstance);
-            else
-                executor = Executors.newFixedThreadPool(tpInstance);
+            else {
+                if (island != -1)
+                    executor = Executors.newFixedThreadPool(TOTAL_CORES / island);
+                else
+                    executor = Executors.newSingleThreadExecutor();
+            }
         }
 
         /**
@@ -523,7 +536,7 @@ public final class TxnProcessingEngine {
          * @param operation
          */
         private void wait_for_source(Operation operation) {
-//            ConcurrentSkipListSet<numa_engine.common.Operation> source_operation_chain = holder_v1.get(Operation.s_record.record_.GetPrimaryKey());
+//            ConcurrentSkipListSet<multi_engine.common.Operation> source_operation_chain = holder_v1.get(Operation.s_record.record_.GetPrimaryKey());
 //            //if the source_operation_chain is completely evaluated, we are safe to proceed. This is the most naive approach.
 //            while (!source_operation_chain.isEmpty()) {
 //                //Think about better shortcut.
@@ -551,7 +564,7 @@ public final class TxnProcessingEngine {
                 if (enable_debug)
                     LOG.info("Thread:\t" + Thread.currentThread().getName()
                             + "reset task:" + OsUtils.Addresser.addressOf(this));
-                operation_chain.clear();
+//                operation_chain.clear();
                 this.under_process.set(false);//reset
                 return 0;
             }

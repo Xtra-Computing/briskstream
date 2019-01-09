@@ -14,7 +14,7 @@ public class Clock implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(Clock.class);
     long create_time;
     long gap;
-    private int iteration = 0;//start from 1st iteration
+    private int iteration = -1;//start from 1st iteration
 
     private Timer timer;
 
