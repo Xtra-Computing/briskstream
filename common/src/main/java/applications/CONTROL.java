@@ -10,7 +10,7 @@ public interface CONTROL {
     //db related.
     boolean enable_shared_state = true;
 
-    boolean enable_states_partition = false;
+//    boolean enable_states_partition = false;//only enable for PAT.
 
     //latency related.
     boolean enable_admission_control = false;//only enable when we want to test latency?
