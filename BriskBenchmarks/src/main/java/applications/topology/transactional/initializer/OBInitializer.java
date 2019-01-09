@@ -227,35 +227,14 @@ public class OBInitializer extends TableInitilizer {
 
         int counter = 0;
 
-        for (int access_id = 0; access_id < NUM_ACCESSES_PER_BUY; ++access_id) {
-            FastZipfGenerator generator = partioned_store[pid];
-            int res = generator.next();
-            //should not have duplicate keys.
-            while (keys.contains(res) && !Thread.currentThread().isInterrupted()) {
-//                res++;//speed up the search for non-duplicate key.
-//                if (res == NUM_ITEMS) {
-//                    res = partition_id * interval;
-//                }
-                res = generator.next();
-            }
-
-            keys.add(res);
-            param.set_keys(access_id, res);
-            counter++;
-            if (counter == access_per_partition) {
-//                pointer++;
-                pid++;
-                if (pid == tthread)
-                    pid = 0;
-
-                counter = 0;
-            }
-        }
+        randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES_PER_BUY);
 
         assert verify(keys, partition_id, number_of_partitions);
 
         return new BuyingEvent(param.keys(), rnd, partition_id, bid_array, bid, number_of_partitions);
     }
+
+
 
     protected AlertEvent randomAlertEvents(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
         int pid = partition_id;
@@ -268,30 +247,7 @@ public class OBInitializer extends TableInitilizer {
 
         int counter = 0;
 
-        for (int access_id = 0; access_id < num_access; ++access_id) {
-            FastZipfGenerator generator = partioned_store[pid];
-            int res = generator.next();
-            //should not have duplicate keys.
-            while (keys.contains(res) && !Thread.currentThread().isInterrupted()) {
-//                res++;//speed up the search for non-duplicate key.
-//                if (res == NUM_ITEMS) {
-//                    res = partition_id * interval;
-//                }
-                res = generator.next();
-            }
-
-            keys.add(res);
-            param.set_keys(access_id, res);
-            counter++;
-            if (counter == access_per_partition) {
-//                pointer++;
-                pid++;
-                if (pid == tthread)
-                    pid = 0;
-
-                counter = 0;
-            }
-        }
+        randomkeys(pid, param, keys, access_per_partition, counter, num_access);
 
         assert verify(keys, partition_id, number_of_partitions);
 
@@ -317,30 +273,7 @@ public class OBInitializer extends TableInitilizer {
 
         int counter = 0;
 
-        for (int access_id = 0; access_id < num_access; ++access_id) {
-            FastZipfGenerator generator = partioned_store[pid];
-            int res = generator.next();
-            //should not have duplicate keys.
-            while (keys.contains(res) && !Thread.currentThread().isInterrupted()) {
-//                res++;//speed up the search for non-duplicate key.
-//                if (res == NUM_ITEMS) {
-//                    res = partition_id * interval;
-//                }
-                res = generator.next();
-            }
-
-            keys.add(res);
-            param.set_keys(access_id, res);
-            counter++;
-            if (counter == access_per_partition) {
-//                pointer++;
-                pid++;
-                if (pid == tthread)
-                    pid = 0;
-
-                counter = 0;
-            }
-        }
+        randomkeys(pid, param, keys, access_per_partition, counter, num_access);
 
         assert verify(keys, partition_id, number_of_partitions);
 

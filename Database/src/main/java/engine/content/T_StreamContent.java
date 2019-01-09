@@ -111,9 +111,9 @@ public abstract class T_StreamContent implements Content {
                 record_at_ts = versions.get(ts);//not modified in last round
 
 //            spinlock_.Unlock();
-            if (record_at_ts.getValues() == null) {
-                System.out.println("Read a null value??");
-            }
+//            if (record_at_ts.getValues() == null) {
+//                System.out.println("Read a null value??");
+//            }
             return record_at_ts;
         } else
             return record;

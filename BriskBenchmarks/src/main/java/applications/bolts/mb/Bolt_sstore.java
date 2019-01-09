@@ -5,7 +5,6 @@ import applications.param.MicroEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerSStore;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static applications.CONTROL.enable_latency_measurement;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
@@ -33,18 +31,12 @@ public class Bolt_sstore extends MBBolt {
         state = new ValueState();
     }
 
-
-    private void read_handle(long[] bid, int pid, int number_of_partitions, long msg_id, long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
 
-
-//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = generateEvent(pid, number_of_partitions);//generate event according to given partition..
-        event.setEmit_timestamp(timestamp);
-        event.setBid(msg_id);
-//        END_PREPARE_TIME_MEASURE(thread_Id);
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
+        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
 
         //ensures that locks are added in the event sequence order.
         //ensures all related partitions are locked.
@@ -54,17 +46,17 @@ public class Bolt_sstore extends MBBolt {
 
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = pid;
+        int _pid = event.getPid();
 
-        LA_LOCK(_pid, number_of_partitions, transactionManager, bid, tthread);
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
         // //LOG.DEBUG("TaskID: " + thread_Id + " works on PID:" + pid + " bid:" + bid);
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         read_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
-        _pid = pid;
-        LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
+        _pid = event.getPid();
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
         END_WAIT_TIME_MEASURE(thread_Id);
 
@@ -81,22 +73,21 @@ public class Bolt_sstore extends MBBolt {
 
     }
 
-
-    private void write_handle(long[] bid, int pid, int number_of_partitions, long msg_id, Long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
 
-//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = generateEvent(pid, number_of_partitions);
-//        END_PREPARE_TIME_MEASURE(thread_Id);
-        event.setEmit_timestamp(timestamp);
-        event.setBid(msg_id);
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+        long bid = event.getBid();
+        int pid = event.getPid();
+        int number_of_partitions = event.num_p();
+
         txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //be careful if there is a deadlock.
         int _pid = pid;
-        LA_LOCK(_pid, number_of_partitions, transactionManager, bid, tthread);
+        LA_LOCK(_pid, number_of_partitions, transactionManager, event.getBid_array(), tthread);
 
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
@@ -113,8 +104,6 @@ public class Bolt_sstore extends MBBolt {
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
         write_core(event);
-
-        collector.force_emit(event.getBid(), event.getEmit_timestamp());//the tuple is finished.
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
 
@@ -167,39 +156,4 @@ public class Bolt_sstore extends MBBolt {
         }
     }
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException {
-
-//        int pid = in.getInt(1);//single partition first.
-//        boolean flag = in.getBoolean(0);
-//
-//        if (flag) {
-//            read_handle(bid, pid);
-//        } else {
-//            write_handle(bid, pid);
-//        }
-
-
-        //flag, pid, nump, emit-time.
-
-        long bid = in.getBID();
-        long[] partitionBID = in.getPartitionBID();
-
-        boolean flag = next_decision();
-        int pid = in.getInt(1);//start point.
-        int number_of_partitions = in.getInt(2);
-        long timestamp;
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
-
-        if (flag) {
-            read_handle(partitionBID, pid, number_of_partitions, bid, timestamp);
-        } else {
-            write_handle(partitionBID, pid, number_of_partitions, bid, timestamp);
-        }
-
-//        //LOG.DEBUG("TaskID: " + thread_Id + " finished on PID:" + pid + " bid:" + Arrays.toString(partitionBID));
-    }
 }

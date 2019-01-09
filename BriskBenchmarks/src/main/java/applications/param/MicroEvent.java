@@ -12,26 +12,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
+import static engine.profiler.Metrics.NUM_ACCESSES;
 
 /**
  * Support Multi workset since 1 SEP 2018.
  */
-public class MicroEvent {
+public class MicroEvent extends Event {
 
 
     private final int[] keys;
     private final SchemaRecordRef[] record_refs;//this is essentially the place-holder..
-    public double[] enqueue_time = new double[1];
+
+
     //    public double[] useful_time = new double[1];
-    public double[] index_time = new double[1];
     public int sum;
-    long emit_timestamp = 0;
-    long bid;//event sequence, shall be set by event sequencer.
-    boolean flag;//true: write, false: read.
-    private List<DataBox>[] value = new ArrayList[Metrics.NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
-    public MicroEvent(boolean flag, int[] keys, int numAccess) {
+    boolean flag;//true: read, false: write.
+    private List<DataBox>[] value = new ArrayList[NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
+
+    /**
+     * creating a new MicroEvent.
+     *
+     * @param keys
+     * @param flag
+     * @param numAccess
+     */
+    public MicroEvent(int[] keys, boolean flag, int numAccess, long bid
+            , int partition_id, long[] bid_array, int number_of_partitions) {
+        super(bid, partition_id, bid_array, number_of_partitions);
         this.flag = flag;
         this.keys = keys;
         record_refs = new SchemaRecordRef[numAccess];
@@ -41,13 +50,28 @@ public class MicroEvent {
         setValues(getKeys());
     }
 
-    public void setEmit_timestamp(long emit_timestamp) {
-        this.emit_timestamp = emit_timestamp;
-    }
-//    private final List<DataBox>[] values;
+    /**
+     * Loading a DepositEvent.
+     * @param flag, read_write flag
+     * @param bid
+     * @param pid
+     * @param bid_array
+     * @param num_of_partition
+     * @param key_array
+     */
+    public MicroEvent(int bid, int pid, String bid_array, int num_of_partition,
+                      String key_array, boolean flag) {
+        super(bid, pid, bid_array, num_of_partition);
+        record_refs = new SchemaRecordRef[NUM_ACCESSES];
+        for (int i = 0; i < NUM_ACCESSES; i++) {
+            record_refs[i] = new SchemaRecordRef();
+        }
 
-    public long getEmit_timestamp() {
-        return emit_timestamp;
+        String[] key_arrays = key_array.substring(1, key_array.length() - 1).split(",");
+        this.keys = new int[key_arrays.length];
+        for (int i = 0; i < key_arrays.length; i++) {
+            this.keys[i] = Integer.parseInt(key_arrays[i].trim());
+        }
     }
 
     public int[] getKeys() {
@@ -62,15 +86,8 @@ public class MicroEvent {
         return record_refs;
     }
 
-    public long getBid() {
-        return bid;//act as bid..
-    }
 
-    public void setBid(long bid) {
-        this.bid = bid;
-    }
-
-    public boolean isFlag() {
+    public boolean READ_EVENT() {
         return flag;
     }
 
@@ -92,9 +109,8 @@ public class MicroEvent {
 
 
     public void setValues(int[] keys) {
-        for (int access_id = 0; access_id < Metrics.NUM_ACCESSES; ++access_id) {
+        for (int access_id = 0; access_id < NUM_ACCESSES; ++access_id) {
             set_values(access_id, keys[access_id]);
         }
     }
-
 }

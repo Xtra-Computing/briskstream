@@ -115,7 +115,7 @@ public class SIMPLETxnSpout extends TransactionalSpout {
         if (ccOption == CCOption_TStream)
             forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
-        if (bid < num_events) {
+        if (bid < NUM_EVENTS) {
             if (enable_admission_control) {
                 control_emit();
             } else {

@@ -36,6 +36,7 @@ public class Operation implements Comparable<Operation> {
     public TableRecord[] condition_records;
     public Condition condition;
     public boolean[] success;
+    public String name;
 
 
     public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, SchemaRecordRef record_ref, Function function) {
@@ -185,5 +186,11 @@ public class Operation implements Comparable<Operation> {
             return this.d_record.getID() - operation.d_record.getID();//different records, don't care about its bid.
         } else
             return Long.compare(this.bid, operation.bid);
+    }
+
+    public void set_worker(String name) {
+
+        assert this.name == null;
+        this.name = name;
     }
 }

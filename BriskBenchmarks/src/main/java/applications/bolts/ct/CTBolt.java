@@ -117,11 +117,6 @@ public abstract class CTBolt extends TransactionalBolt {
     }
 
     @Override
-    protected TransactionEvent next_event(long bid, Long timestamp) {
-        return null;
-    }
-
-    @Override
     public void prepareEvents() {
 
     }

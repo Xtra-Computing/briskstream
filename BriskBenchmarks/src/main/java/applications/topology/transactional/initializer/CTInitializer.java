@@ -37,8 +37,6 @@ import static xerial.jnuma.Numa.setLocalAlloc;
 public class CTInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(CTInitializer.class);
 
-    //dual-decision
-    protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 deposite and transfer;
 
     public CTInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
@@ -375,16 +373,9 @@ public class CTInitializer extends TableInitilizer {
         w.close();
     }
 
-    private int i = 0;
 
-    protected int next_decision2() {
 
-        int rt = dual_decision[i];
-        i++;
-        if (i == 8)
-            i = 0;
-        return rt;
-    }
+
 
 
     private Object randomTransactionEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
@@ -440,7 +431,8 @@ public class CTInitializer extends TableInitilizer {
         return null;
     }
 
-    private Object randomDepositEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
+    private Object randomDepositEvent(int partition_id,
+                                      long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
 
 
         int _pid = partition_id;

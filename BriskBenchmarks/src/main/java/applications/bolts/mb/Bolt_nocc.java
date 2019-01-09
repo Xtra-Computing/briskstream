@@ -29,16 +29,15 @@ public class Bolt_nocc extends MBBolt {
         state = new ValueState();
     }
 
-
-    private void read_handle(long bid, Long timestamp) throws InterruptedException, DatabaseException {
+    @Override
+    protected void read_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException {
 
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+        long bid = event.getBid();
+
         txn_context = new TxnContext(thread_Id, this.fid, bid);
 
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = next_event(bid, timestamp);
-        END_PREPARE_TIME_MEASURE(thread_Id);
 
         boolean rt;
 
@@ -66,16 +65,12 @@ public class Bolt_nocc extends MBBolt {
         }
     }
 
-
-    private void write_handle(long bid, Long timestamp) throws DatabaseException, InterruptedException {
+    @Override
+    protected void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+        long bid = event.getBid();
         txn_context = new TxnContext(thread_Id, this.fid, bid);
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = next_event(bid, timestamp);
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
 
         if (write_request(event, bid)) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -107,52 +102,8 @@ public class Bolt_nocc extends MBBolt {
         transactionManager = new TxnManagerLock(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
     }
 
-    private boolean read_request(MicroEvent event, long bid) throws DatabaseException {
-
-        for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], READ_ONLY);
-            if (rt) {
-                assert event.getRecord_refs()[i].record != null;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
 
 
-    private boolean write_request(MicroEvent event, long bid) throws DatabaseException {
-
-        for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], READ_WRITE);
-            if (rt) {
-                assert event.getRecord_refs()[i].record != null;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
 
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException {
-
-        long bid = in.getBID();
-//        boolean flag = in.getBoolean(0);
-        boolean flag = next_decision();
-        long timestamp;
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
-
-        if (flag) {
-            read_handle(bid, timestamp);
-        } else {
-//            long start = System.nanoTime();
-            write_handle(bid, timestamp);
-//            LOG.info("write handle takes:" + (System.nanoTime() - start));
-        }
-    }
 }

@@ -1,5 +1,7 @@
 package applications.topology.transactional.initializer;
 
+import applications.param.MicroEvent;
+import applications.param.MicroParam;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -16,19 +18,28 @@ import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
+import static applications.Constants.Event_Path;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static applications.param.MicroEvent.GenerateValue;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
+import static engine.profiler.Metrics.NUM_ACCESSES;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
 import static xerial.jnuma.Numa.setLocalAlloc;
 
 public class MBInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(MBInitializer.class);
+
+    //dual-decision
+    protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 read or write;
 
     public MBInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
@@ -172,9 +183,6 @@ public class MBInitializer extends TableInitilizer {
         else
             AffinityLock.acquireLock(next_cpu_for_db());//same as lock to 0.
 
-//        if (OsUtils.isMac())
-//            elements_per_socket = elements;
-//        else
         elements_per_socket = elements / 4;
 
         int i = 0;
@@ -198,19 +206,111 @@ public class MBInitializer extends TableInitilizer {
 
     @Override
     protected boolean load(String file) throws IOException {
-        return false;
+
+        if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
+            return false;
+
+        Scanner sc;
+        sc = new Scanner(new File(Event_Path + OsUtils.OS_wrapper(file)));
+
+        Object event = null;
+        while (sc.hasNextLine()) {
+            String read = sc.nextLine();
+            String[] split = read.split(split_exp);
+
+
+            event = new MicroEvent(
+                    Integer.parseInt(split[0]), //bid
+                    Integer.parseInt(split[1]), //pid
+                    split[2], //bid_array
+                    Integer.parseInt(split[3]),//num_of_partition
+                    split[5],//key_array
+                    Boolean.parseBoolean(split[6])//flag
+            );
+
+            db.eventManager.put(event, Integer.parseInt(split[0]));
+        }
+        return true;
     }
 
     @Override
-    protected void dump(String file_path) throws IOException {
+    protected void dump(String file_name) throws IOException {
+        File file = new File(Event_Path);
+        file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
 
+        BufferedWriter w;
+        w = new BufferedWriter(new FileWriter(new File(Event_Path + OsUtils.OS_wrapper(file_name))));
+
+        for (Object event : db.eventManager.input_events) {
+            MicroEvent microEvent = (MicroEvent) event;
+            String sb = String.valueOf(microEvent.getBid()) +//0 -- bid
+                    split_exp +
+                    microEvent.getPid() +//1
+                    split_exp +
+                    Arrays.toString(microEvent.getBid_array()) +//2
+                    split_exp +
+                    microEvent.num_p() +//3 num of p
+                    split_exp +
+                    "MicroEvent" +//4 event types.
+                    Arrays.toString(microEvent.getKeys()) +//5 keys
+                    split_exp +
+                    microEvent.READ_EVENT()//6
+                    ;
+            w.write(sb
+                    + "\n");
+        }
+        w.close();
     }
+
 
     @Override
     protected Object create_new_event(int number_partitions, int bid) {
-        return null;
+        int flag = next_decision2();
+        if (flag == 0) {//write
+            return generateEvent(p, p_bid.clone(), number_partitions, bid, false);
+        } else if (flag == 1) {//true
+            return generateEvent(p, p_bid.clone(), number_partitions, bid, true);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
+
+    /**
+     * Generate events according to the given parition_id.
+     *
+     * @param partition_id
+     * @param bid_array
+     * @param bid
+     * @param flag
+     * @return
+     */
+    protected MicroEvent generateEvent(int partition_id,
+                                       long[] bid_array, int number_of_partitions, long bid, boolean flag) {
+
+        int pid = partition_id;
+        MicroParam param = new MicroParam(NUM_ACCESSES);
+
+        Set keys = new HashSet();
+        int access_per_partition = (int) Math.ceil(NUM_ACCESSES / (double) number_of_partitions);
+
+        int counter = 0;
+
+        randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES);
+
+        assert verify(keys, partition_id, number_of_partitions);
+
+        return new MicroEvent(
+                param.keys(),
+                flag,
+                NUM_ACCESSES,
+                bid,
+                partition_id,
+                bid_array,
+                number_of_partitions
+        );
+
+    }
 
     private RecordSchema MicroTableSchema() {
         List<DataBox> dataBoxes = new ArrayList<>();
@@ -228,5 +328,10 @@ public class MBInitializer extends TableInitilizer {
     public void creates_Table() {
         RecordSchema s = MicroTableSchema();
         db.createTable(s, "MicroTable");
+        try {
+            prepare_input_events("MB_events");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

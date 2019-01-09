@@ -81,7 +81,8 @@ public class PKBolt_ts extends PKBolt {
 
         int i = 0;
         for (Integer key : event.getKey()) {
-            transactionManager.Asy_ModifyRecord_Read(txn_context, "machine", String.valueOf(key), event.getMean_value_ref(i), new Mean(event.getValue(i)));// read and modify the mean value_list, and return.
+            transactionManager.Asy_ModifyRecord_Read(txn_context, "machine", String.valueOf(key),
+                    event.getMean_value_ref(i), new Mean(event.getValue(i)));// read and modify the mean value_list, and return.
             i++;
         }
 

@@ -118,6 +118,7 @@ public abstract class OBBolt_LA extends OBBolt {
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
 
+
         long bid = in.getBID();
 
         Object event = db.eventManager.get((int) bid);

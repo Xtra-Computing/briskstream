@@ -20,8 +20,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.Arrays;
 import java.util.Random;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.enable_latency_measurement;
+import static applications.CONTROL.*;
 import static engine.content.Content.CCOption_SStore;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -149,78 +148,80 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
     @Override
     public void nextTuple() throws InterruptedException {
 
-        if (ccOption == CCOption_SStore) {
+        if (bid < NUM_EVENTS) {
+            if (ccOption == CCOption_SStore) {
 
-            boolean flag2 = multi_partion_decision[j];
-            j++;
-            if (j == 8)
-                j = 0;
+                boolean flag2 = multi_partion_decision[j];
+                j++;
+                if (j == 8)
+                    j = 0;
 
 //            //LOG.DEBUG("Sending out PID: " + p + ", p_bid: " + Arrays.toString(p_bid));
 
-            if (flag2) {//multi-partition
+                if (flag2) {//multi-partition
 
 //                int number_partitions = Math.min(input_number_partitions, (tthread - p));
 
-                p = key_to_partition(p_generator.next());//randomly pick a starting point.
+                    p = key_to_partition(p_generator.next());//randomly pick a starting point.
 
-                if (enable_latency_measurement)
-                    collector.emit_single(p_bid.clone(), p, bid, number_partitions, System.nanoTime());//combined R/W executor.
-                else
-                    collector.emit_single(p_bid.clone(), p, bid, number_partitions);//combined R/W executor.
+                    if (enable_latency_measurement)
+                        collector.emit_single(p_bid.clone(), p, bid, number_partitions, System.nanoTime());//combined R/W executor.
+                    else
+                        collector.emit_single(p_bid.clone(), p, bid, number_partitions);//combined R/W executor.
 
-                for (int k = 0; k < number_partitions; k++) {
+                    for (int k = 0; k < number_partitions; k++) {
+                        p_bid[p]++;
+                        p++;
+                        if (p == tthread)
+                            p = 0;
+                    }
+
+                } else {//single
+                    //use partitioned-bid.
+//                collector.emit_single(p_bid[p], p, flag);//combined R/W executor.
+//                p_bid[p]++;
+//                p++;//which partition to work with (or start with in case of multi-partition).
+//                if (p == tthread)
+//                    p = 0;
+                    if (enable_latency_measurement)
+                        collector.emit_single(p_bid.clone(), p, bid, 1, System.nanoTime());//combined R/W executor.
+                    else
+                        collector.emit_single(p_bid.clone(), p, bid, 1);//combined R/W executor.
                     p_bid[p]++;
                     p++;
                     if (p == tthread)
                         p = 0;
                 }
 
-            } else {//single
-                //use partitioned-bid.
-//                collector.emit_single(p_bid[p], p, flag);//combined R/W executor.
-//                p_bid[p]++;
-//                p++;//which partition to work with (or start with in case of multi-partition).
-//                if (p == tthread)
-//                    p = 0;
-                if (enable_latency_measurement)
-                    collector.emit_single(p_bid.clone(), p, bid, 1, System.nanoTime());//combined R/W executor.
-                else
-                    collector.emit_single(p_bid.clone(), p, bid, 1);//combined R/W executor.
-                p_bid[p]++;
-                p++;
-                if (p == tthread)
-                    p = 0;
-            }
+            } else {
 
-        } else {
+                if (ccOption == CCOption_TStream) {
 
-            if (ccOption == CCOption_TStream) {
-
-                if (enable_admission_control) {
-                    if (control < target_Hz) {
+                    if (enable_admission_control) {
+                        if (control < target_Hz) {
+                            if (enable_latency_measurement)
+                                collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                            else
+                                collector.emit_single(bid);//combined R/W executor.
+                            control++;
+                        } else
+                            empty++;
+                    } else {
                         if (enable_latency_measurement)
                             collector.emit_single(bid, System.nanoTime());//combined R/W executor.
                         else
                             collector.emit_single(bid);//combined R/W executor.
-                        control++;
-                    } else
-                        empty++;
+                    }
+                    forward_checkpoint(-1, bid, null); // This is required by T-Stream.
                 } else {
                     if (enable_latency_measurement)
                         collector.emit_single(bid, System.nanoTime());//combined R/W executor.
                     else
                         collector.emit_single(bid);//combined R/W executor.
                 }
-                forward_checkpoint(-1, bid, null); // This is required by T-Stream.
-            } else {
-                if (enable_latency_measurement)
-                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
-                else
-                    collector.emit_single(bid);//combined R/W executor.
             }
+            bid++;
         }
-        bid++;
     }
 
 

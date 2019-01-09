@@ -14,6 +14,8 @@ public class ToppingEvent extends Event {
     //place-rangeMap.
     public SchemaRecordRef[] record_refs;
 
+    private int[] itemId;
+    private long[] itemTopUp;
     private final int num_access;
 
     /**
@@ -34,8 +36,7 @@ public class ToppingEvent extends Event {
         setValues(num_access, rnd);
     }
 
-    private int[] itemId;
-    private long[] itemTopUp;
+
 
     /**
      * @param bid

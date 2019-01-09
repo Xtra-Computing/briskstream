@@ -137,16 +137,16 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
     }
 
-    public boolean Asy_ReadRecord(TxnContext txn_context, String srcTable, String primary_key, SchemaRecordRef record_, double[] enqueue_time) throws DatabaseException {
+    public boolean Asy_ReadRecord(TxnContext txn_context, String srcTable, String primary_key, SchemaRecordRef record_ref, double[] enqueue_time) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_ONLY;
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
         END_INDEX_TIME_MEASURE(txn_context.thread_Id);
         if (t_record != null) {
-            return Asy_ReadRecordCC(txn_context, srcTable, t_record, record_, enqueue_time, accessType);
+            return Asy_ReadRecordCC(txn_context, srcTable, t_record, record_ref, enqueue_time, accessType);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ref is found, then a "virtual record_ref" should be inserted as the placeholder so that we can Lock it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -464,7 +464,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
     }
 
 
-    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_, double[] enqueue_time, AccessType access_type) {
+    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, AccessType access_type) {
         throw new UnsupportedOperationException();
     }
 

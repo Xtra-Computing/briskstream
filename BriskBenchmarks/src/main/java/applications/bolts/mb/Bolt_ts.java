@@ -7,9 +7,9 @@ import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
+import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
-import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +35,11 @@ public class Bolt_ts extends MBBolt {
         state = new ValueState();
     }
 
-    private void read_handle(long bid, Long timestamp) throws DatabaseException, InterruptedException {
-
+    @Override
+    protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
 
         BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = next_event(bid, timestamp);
-        END_PREPARE_TIME_MEASURE_TS(thread_Id);
-
+        long bid = event.getBid();
         read_requests(event, this.fid, bid);
 
         readEventHolder.add(event);//mark the tuple as ``in-complete"
@@ -51,25 +47,22 @@ public class Bolt_ts extends MBBolt {
 
         if (enable_speculative) {
             //earlier emit
-            collector.force_emit(event.getBid(), event.getEmit_timestamp(), 1);//the tuple is finished.
+            collector.force_emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
         }
     }
 
-    private void write_handle(long bid, Long timestamp) throws InterruptedException, DatabaseException {
+    @Override
+    protected void write_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException {
 
         BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        MicroEvent event = next_event(bid, timestamp);
-        END_PREPARE_TIME_MEASURE_TS(thread_Id);
+        long bid = event.getBid();
 
-
-        write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), event.getBid());
+        write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), bid);
 
         if (enable_profile)
             writeEvents++;//just for record purpose.
 
-        collector.force_emit(event.getBid(), event.getEmit_timestamp());//the tuple is immediately finished.
+        collector.force_emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
 
         END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
     }
@@ -90,7 +83,10 @@ public class Bolt_ts extends MBBolt {
 
         for (int i = 0; i < NUM_ACCESSES; i++) {
             //it simply construct the operations and return.
-            transactionManager.Asy_ReadRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], event.enqueue_time);
+            SchemaRecordRef ref = event.getRecord_refs()[i];
+            assert ref.cnt == 0;
+//            LOG.info("Insert ref:" + OsUtils.Addresser.addressOf(ref));
+            transactionManager.Asy_ReadRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
         }
     }
 
@@ -120,7 +116,6 @@ public class Bolt_ts extends MBBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
-        String componentId = context.getThisComponentId();
 
         if (in.isMarker()) {
 
@@ -153,19 +148,26 @@ public class Bolt_ts extends MBBolt {
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
         } else {
 
+            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
             long bid = in.getBID();
-            String streamId = in.getSourceStreamId();
-            boolean flag = next_decision();
+
+
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
+
             long timestamp;
             if (enable_latency_measurement)
                 timestamp = in.getLong(0);
             else
                 timestamp = 0L;//
 
+            boolean flag = event.READ_EVENT();
+            (event).setTimestamp(timestamp);
+            END_PREPARE_TIME_MEASURE_TS(thread_Id);
+
             if (flag) {
-                read_handle(bid, timestamp);
+                read_handle(event, timestamp);
             } else {
-                write_handle(bid, timestamp);
+                write_handle(event, timestamp);
             }
         }
     }

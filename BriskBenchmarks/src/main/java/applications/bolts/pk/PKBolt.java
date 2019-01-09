@@ -52,10 +52,6 @@ public abstract class PKBolt extends TransactionalBolt {
         }
     }
 
-    @Override
-    protected Object next_event(long bid, Long timestamp) {
-        return null;
-    }
 
     @Override
     public void prepareEvents() {

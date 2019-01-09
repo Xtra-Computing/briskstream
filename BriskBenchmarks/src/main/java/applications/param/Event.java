@@ -10,7 +10,7 @@ public class Event {
     protected long timestamp;//emit timestamp
 
     public double[] index_time = new double[1];
-    public double[] enqueue_time;
+    public double[] enqueue_time = new double[1];
     public boolean[] success;
 
     public Event(long bid, int partition_id, String bid_array, int number_of_partitions) {

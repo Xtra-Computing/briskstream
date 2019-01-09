@@ -21,10 +21,6 @@ public abstract class OBBolt extends TransactionalBolt {
         super(log, fid);
     }
 
-    @Override
-    protected TransactionEvent next_event(long bid, Long timestamp) {
-        return null;
-    }
 
 
     int random_integer;
@@ -139,7 +135,7 @@ public abstract class OBBolt extends TransactionalBolt {
 
     protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
         if (event instanceof BuyingEvent) {
-            ((BuyingEvent) event).setTimestamp(timestamp);
+                ((BuyingEvent) event).setTimestamp(timestamp);
             buy_handle((BuyingEvent) event, timestamp);//buy item at certain price.
         } else if (event instanceof AlertEvent) {
             ((AlertEvent) event).setTimestamp(timestamp);

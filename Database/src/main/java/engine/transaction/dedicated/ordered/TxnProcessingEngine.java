@@ -124,7 +124,7 @@ public final class TxnProcessingEngine {
                 engine.close();
             }
         } else {
-            //single box multi_engine.
+            //single box engine.
             standalone_engine.close();
         }
     }
@@ -184,15 +184,14 @@ public final class TxnProcessingEngine {
     }
 
     private void process(Operation operation) {
+
         if (operation.accessType == READ_ONLY) {
+            operation.record_ref.inc(Thread.currentThread().getName());
+
             if (enable_mvcc)
-                operation.record_ref.record = operation.d_record.content_.readPreValues(operation.bid);
+                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);
             else
                 operation.record_ref.record = operation.d_record.record_;
-
-            if (operation.record_ref.record == null || operation.record_ref.record.getValues() == null) {
-                System.out.println("Failed to read!");
-            }
 
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
 
@@ -201,6 +200,7 @@ public final class TxnProcessingEngine {
                     operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
                 else
                     operation.d_record.record_.updateValues(operation.value_list);
+
             } else { //update by column_id.
                 operation.d_record.record_.getValues().get(operation.column_id).setLong(operation.value);
 //                LOG.info("Alert price:" + operation.value);
@@ -227,7 +227,9 @@ public final class TxnProcessingEngine {
                 CT_Transfer_Fun(operation);
             } else if (app == 2) {//used in OB
                 //check if any item is not able to buy.
-                List<DataBox> d_record = operation.condition_records[0].content_.ReadAccess(operation.bid, operation.accessType).getValues();
+                List<DataBox> d_record = operation.condition_records[0].content_
+                        .ReadAccess(operation.bid, operation.accessType).getValues();
+
                 long askPrice = d_record.get(1).getLong();//price
                 long left_qty = d_record.get(2).getLong();//available qty;
                 long bidPrice = operation.condition.arg1;
@@ -283,7 +285,6 @@ public final class TxnProcessingEngine {
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
             } else
                 throw new UnsupportedOperationException();
-
         }
     }
 
@@ -296,6 +297,7 @@ public final class TxnProcessingEngine {
                 Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
                 if (operation == null) return;
                 process(operation);
+                operation.set_worker(Thread.currentThread().getName());
             }//loop.
         } else {
 //            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
@@ -397,9 +399,6 @@ public final class TxnProcessingEngine {
         return task;
     }
 
-    private void initilize(Holder holder) {
-        holder.holder_v1 = new ConcurrentHashMap<>();
-    }
 
     /**
      * @param thread_Id
@@ -563,7 +562,6 @@ public final class TxnProcessingEngine {
                 process((MyList<Operation>) operation_chain);
                 return 0;
             } else {
-
                 if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
                     if (operation_chain.size() == 0) {
 //                        if (enable_debug)

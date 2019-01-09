@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static applications.CONTROL.enable_latency_measurement;
-import static applications.CONTROL.num_events;
+import static applications.CONTROL.NUM_EVENTS;
 import static applications.Constants.STAT_Path;
 
 public class MeasureSink extends BaseSink {
@@ -129,7 +129,7 @@ public class MeasureSink extends BaseSink {
     protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
             helper.StartMeasurement();
-        } else if (cnt == num_events - 1) {
+        } else if (cnt == NUM_EVENTS - 1) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
             LOG.info("Received:" + cnt + " throughput:" + results);

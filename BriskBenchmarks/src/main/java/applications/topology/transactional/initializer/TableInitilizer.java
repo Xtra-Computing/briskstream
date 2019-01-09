@@ -2,11 +2,13 @@ package applications.topology.transactional.initializer;
 
 import applications.param.DepositEvent;
 import applications.param.TransactionEvent;
+import applications.param.ob.OBParam;
 import applications.tools.FastZipfGenerator;
 import applications.topology.transactional.State;
 import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import engine.Database;
+import engine.benchmark.TxnParam;
 import engine.common.SpinLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,8 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.SplittableRandom;
 
-import static applications.CONTROL.num_events;
+import static applications.CONTROL.NUM_EVENTS;
+import static applications.topology.transactional.State.partioned_store;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.key_to_partition;
 
@@ -38,6 +41,19 @@ public abstract class TableInitilizer {
     int p;
 
     protected final String split_exp = ";";
+
+    //dual-decision
+    protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 deposite and transfer;
+
+    private int i = 0;
+    protected int next_decision2() {
+
+        int rt = dual_decision[i];
+        i++;
+        if (i == 8)
+            i = 0;
+        return rt;
+    }
 
     public TableInitilizer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         this.db = db;
@@ -115,18 +131,44 @@ public abstract class TableInitilizer {
         return true;
     }
 
+    protected void randomkeys(int pid, TxnParam param, Set keys, int access_per_partition, int counter, int numAccessesPerBuy) {
+        for (int access_id = 0; access_id < numAccessesPerBuy; ++access_id) {
+            FastZipfGenerator generator = partioned_store[pid];
+            int res = generator.next();
+            //should not have duplicate keys.
+            while (keys.contains(res) && !Thread.currentThread().isInterrupted()) {
+//                res++;//speed up the search for non-duplicate key.
+//                if (res == NUM_ITEMS) {
+//                    res = partition_id * interval;
+//                }
+                res = generator.next();
+            }
+
+            keys.add(res);
+            param.set_keys(access_id, res);
+            counter++;
+            if (counter == access_per_partition) {
+//                pointer++;
+                pid++;
+                if (pid == tthread)
+                    pid = 0;
+
+                counter = 0;
+            }
+        }
+    }
 
     protected abstract boolean load(String file) throws IOException;
 
     public void prepare_input_events(String file_path) throws IOException {
 
-        db.eventManager.ini(num_events);
+        db.eventManager.ini(NUM_EVENTS);
 
         //try to read from file.
         if (!load(file_path + tthread)) {
             //if failed, create new one.
             Object event;
-            for (int i = 0; i < num_events; i++) {
+            for (int i = 0; i < NUM_EVENTS; i++) {
                 boolean multi_parition_txn_flag = multi_partion_decision[j];
                 j++;
                 if (j == 8)

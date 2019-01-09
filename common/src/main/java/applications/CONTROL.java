@@ -3,7 +3,7 @@ package applications;
 public interface CONTROL {
 
     //application related.
-    int num_events = 1_000_000; //20_000_000;
+    int NUM_EVENTS = 1_000_000; //20_000_000;
 
     //db related.
     boolean enable_shared_state = true;
@@ -32,7 +32,6 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
     int MeasureBound = 100_000;
-    int SIZE_EVENTS = 50_000;
 
 
 }

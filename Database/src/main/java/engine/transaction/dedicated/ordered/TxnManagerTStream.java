@@ -142,7 +142,10 @@ public class TxnManagerTStream extends TxnManagerDedicated {
         String primaryKey = record.record_.GetPrimaryKey();
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
-        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, record_ref));
+        MyList<Operation> myList = holder.get(primaryKey);
+
+//        LOG.info(String.valueOf(OsUtils.Addresser.addressOf(record_ref)));
+        myList.add(new Operation(table_name, txn_context, bid, accessType, record, record_ref));
 
 
 //        Integer key = Integer.valueOf(record.record_.GetPrimaryKey());
@@ -167,7 +170,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
-        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, value));
+        holder.get(primaryKey).add(new Operation(table_name, txn_context, bid, accessType, record, value));
 
 //        int taskId = getTaskId(record);
 //        int h2ID = getH2ID(taskId);
@@ -181,7 +184,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
         String primaryKey = record.record_.GetPrimaryKey();
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
-        holder.get(primaryKey).add(new Operation(table_name,txn_context, bid, accessType, record, value, column_id));
+        holder.get(primaryKey).add(new Operation(table_name, txn_context, bid, accessType, record, value, column_id));
 
 //        int taskId = getTaskId(record);
 //        int h2ID = getH2ID(taskId);
@@ -191,7 +194,8 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 //        holder.add(new Operation(txn_context, bid, accessType, record, value_list));
     }
 
-    private void operation_chain_construction_modify_read(TableRecord record, String table_name, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, Function function, TxnContext txn_context) {
+    private void operation_chain_construction_modify_read(TableRecord record, String table_name, long bid,
+                                                          MetaTypes.AccessType accessType, SchemaRecordRef record_ref, Function function, TxnContext txn_context) {
         String primaryKey = record.record_.GetPrimaryKey();
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         //simple sequential build.
@@ -244,7 +248,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
         String primaryKey = d_record.record_.GetPrimaryKey();
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
-        holder.get(primaryKey).add(new Operation(table_name,d_record, bid, accessType, function, condition_records, condition, txn_context, success));
+        holder.get(primaryKey).add(new Operation(table_name, d_record, bid, accessType, function, condition_records, condition, txn_context, success));
 //        int taskId = getTaskId(d_record);
 //        int h2ID = getH2ID(taskId);
 ////        LOG.debug("Submit read for record:" + d_record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
@@ -322,7 +326,8 @@ public class TxnManagerTStream extends TxnManagerDedicated {
     }
 
 
-    protected boolean Asy_ModifyRecord_ReadCC(TxnContext txn_context, String srcTable, TableRecord t_record, SchemaRecordRef record_ref, Function function, MetaTypes.AccessType accessType) {
+    protected boolean Asy_ModifyRecord_ReadCC(TxnContext txn_context, String srcTable, TableRecord t_record,
+                                              SchemaRecordRef record_ref, Function function, MetaTypes.AccessType accessType) {
 
         long bid = txn_context.getBID();
         operation_chain_construction_modify_read(t_record, srcTable, bid, accessType, record_ref, function, txn_context);//TODO: this is for sure READ_WRITE... think about how to further optimize.

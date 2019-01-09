@@ -255,10 +255,6 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
         }
     }
 
-    @Override
-    protected MicroEvent next_event(long bid, Long timestamp) {
-        return null;
-    }
 
     @Override
     public void prepareEvents() {
