@@ -281,7 +281,7 @@ do
                                         for checkpoint in 1
                                         do
                                             TP=$tt
-                                            read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                            read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
                                         done
                                     done
                                 done

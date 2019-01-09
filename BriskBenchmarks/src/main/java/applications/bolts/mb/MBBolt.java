@@ -31,7 +31,6 @@ public abstract class MBBolt extends TransactionalBolt {
         int sum = 0;
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             SchemaRecordRef ref = event.getRecord_refs()[i];
-
             try {
                 DataBox dataBox = ref.record.getValues().get(1);
                 int read_result = Integer.parseInt(dataBox.getString().trim());
