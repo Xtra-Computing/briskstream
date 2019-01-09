@@ -610,7 +610,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 2 8 16 24 32
+                        for tt in 38 #2 8 16 24 32
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -636,7 +636,7 @@ do
                                         for checkpoint in 1
                                         do
                                              TP=$tt
-                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
