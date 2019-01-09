@@ -509,7 +509,7 @@ do
                                 do
                                     for ratio_of_read in 0 1
                                     do
-                                        for number_partitions in 2 4 6 10
+                                        for number_partitions in 1 #2 4 6 10
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -518,7 +518,7 @@ do
                                     done
                                     for ratio_of_read in 0 1
                                     do
-                                        for ratio_of_multi_partition in 0.25 0.5 0.75 1
+                                        for ratio_of_multi_partition in 0 #0.25 0.5 0.75 1
                                         do
                                             TP=$tt
                                             number_partitions=6
