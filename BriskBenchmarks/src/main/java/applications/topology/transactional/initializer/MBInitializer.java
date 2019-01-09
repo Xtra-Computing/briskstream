@@ -356,8 +356,8 @@ public class MBInitializer extends TableInitilizer {
 
         randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES);
 
-//        if (enable_states_partition)
-        assert verify(keys, partition_id, number_of_partitions);
+        if (enable_states_partition)
+            assert verify(keys, partition_id, number_of_partitions);
 
         return new MicroEvent(
                 param.keys(),

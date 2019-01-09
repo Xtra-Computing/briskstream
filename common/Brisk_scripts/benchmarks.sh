@@ -263,7 +263,7 @@ do
     let "iteration = 1"
     checkpoint=0.25
     ratio_of_multi_partition=1
-    number_partitions=1 #maximum partitions.
+    number_partitions=-1 #no partitions.
     NUM_ITEMS=100000 #smaller means higher contention!
         case "$benchmark" in
             "Read_Only")
