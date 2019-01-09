@@ -189,6 +189,11 @@ public final class TxnProcessingEngine {
                 operation.record_ref.record = operation.d_record.content_.ReadAccess(operation.bid, READ_ONLY);
             else
                 operation.record_ref.record = operation.d_record.record_;
+
+            if (operation.record_ref.record == null) {
+                System.nanoTime();
+            }
+
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
 
             if (operation.value_list != null) { //directly replace value_list
@@ -243,9 +248,6 @@ public final class TxnProcessingEngine {
 
                 CT_Transfer_Fun(operation);
                 operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
-                if (operation.record_ref.record == null) {
-                    System.nanoTime();
-                }
             } else
                 throw new UnsupportedOperationException();
 
