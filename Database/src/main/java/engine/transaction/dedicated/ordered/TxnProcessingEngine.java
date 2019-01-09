@@ -20,7 +20,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static applications.CONTROL.*;
-import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static applications.constants.PositionKeepingConstants.Constant.MOVING_AVERAGE_WINDOW;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
@@ -479,11 +478,19 @@ public final class TxnProcessingEngine {
          * @param tp
          */
         public Instance(int tp) {
-            if (tp == 0) {
-                executor = Executors.newCachedThreadPool();
-            } else
+//            if (tp == 0) {
+//                executor = Executors.newCachedThreadPool();
+//            } else
+//                executor = Executors.newWorkStealingPool(tp);
+
+            if (enable_work_stealing)
                 executor = Executors.newWorkStealingPool(tp);
-//            TP_THREADS = new ExecutorCompletionService(executor);
+            else {
+                if (island != -1)
+                    executor = Executors.newFixedThreadPool(TOTAL_CORES / island);
+                else
+                    executor = Executors.newSingleThreadExecutor();
+            }
         }
 
         @Override
@@ -555,24 +562,37 @@ public final class TxnProcessingEngine {
 //            else {
 
             if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
+                if (operation_chain.size() == 0) {
+                    if (enable_debug)
+                        LOG.info("RE-ENTRY "
+                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+                                "by:" + Thread.currentThread().getName());
+                    return 0;
+                }
+
 //                int i = 0;
                 if (enable_debug)
                     LOG.info("Thread:\t" + Thread.currentThread().getName()
                             + "\t working on task:" + OsUtils.Addresser.addressOf(this)
                             + " with size of:" + operation_chain.size());
+
                 process((MyList<Operation>) operation_chain);
-                if (enable_debug)
-                    LOG.info("Thread:\t" + Thread.currentThread().getName()
-                            + "reset task:" + OsUtils.Addresser.addressOf(this));
-//                operation_chain.clear();
+//                if (enable_debug)
+//                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+//                            + "reset task:" + OsUtils.Addresser.addressOf(this));
+//
+
+
+                operation_chain.clear();
                 this.under_process.set(false);//reset
                 return 0;
             }
-            if (enable_debug)
-                LOG.info("Thread:\t" + Thread.currentThread().getName()
-                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
-                        + " with size of:" + operation_chain.size());
-            while (!this.under_process.compareAndSet(false, true)) ;
+//            if (enable_debug)
+//                LOG.info("Thread:\t" + Thread.currentThread().getName()
+//                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+//                        + " with size of:" + operation_chain.size());
+//            while (!this.under_process.compareAndSet(false, true)) ;
+
             return 0;
 //            }
         }
