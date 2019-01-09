@@ -243,7 +243,6 @@ public class boltThread extends executorThread {
                 if (!this.executor.isLeafNode())//TODO: remove such hard code in future.
                     bolt.loadDB(conf, context, collector);
 
-            System.gc();
             latch.countDown();          //tells others I'm ready.
             try {
                 latch.await();
