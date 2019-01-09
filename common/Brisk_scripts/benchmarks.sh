@@ -24,7 +24,7 @@ function local_execution {
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
 #killall -9 java
 #clean_cache
-        JVM_args_local="-Xms2g -Xmx50g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2 -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
+        JVM_args_local="-Xms2g -Xmx50g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2 "
 
 		if [ $Profile == 1 ] ; then
 			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application >> $path/$tt\_$TP.txt		&
