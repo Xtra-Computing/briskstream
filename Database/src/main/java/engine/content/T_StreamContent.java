@@ -16,7 +16,7 @@ public abstract class T_StreamContent implements Content {
     public final static String T_STREAMCONTENT = "T_STREAMCONTENT";
     public TreeMap<Long, SchemaRecord> versions = new TreeMap<>();//TODO: In fact... there can be at most only one write to the d_record concurrently. It is safe to just use sorted hashmap.
     public SchemaRecord record;
-    private SpinLock spinlock_ = new SpinLock();
+//    private SpinLock spinlock_ = new SpinLock();
 
     @Override
     public boolean TryReadLock() {
@@ -102,7 +102,7 @@ public abstract class T_StreamContent implements Content {
 
         if (enable_mvcc) {
 
-            spinlock_.Lock();
+//            spinlock_.Lock();
             SchemaRecord record_at_ts;
             Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
 
@@ -111,7 +111,7 @@ public abstract class T_StreamContent implements Content {
             } else
                 record_at_ts = versions.get(ts);//not modified in last round
 
-            spinlock_.Unlock();
+//            spinlock_.Unlock();
             return record_at_ts;
         } else
             return record;
@@ -120,14 +120,14 @@ public abstract class T_StreamContent implements Content {
     public SchemaRecord readValues(long ts) {
 
         if (enable_mvcc) {
-            spinlock_.Lock();
+//            spinlock_.Lock();
             SchemaRecord rt = versions.get(ts);//return exact record.
 
             if (rt == null) {
                 rt = versions.lowerEntry(ts).getValue();
             }
 
-            spinlock_.Unlock();
+//            spinlock_.Unlock();
             return rt;
         } else
             return record;
@@ -137,9 +137,9 @@ public abstract class T_StreamContent implements Content {
     public void updateValues(long ts, SchemaRecord record) {
 
         if (enable_mvcc) {
-            spinlock_.Lock();
+//            spinlock_.Lock();
             versions.put(ts, record);
-            spinlock_.Unlock();
+//            spinlock_.Unlock();
         } else
             this.record = record;
     }

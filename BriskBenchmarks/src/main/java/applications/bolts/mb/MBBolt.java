@@ -69,5 +69,4 @@ public abstract class MBBolt extends TransactionalBolt {
             input_events[i] = generateEvent();
         }
     }
-
 }

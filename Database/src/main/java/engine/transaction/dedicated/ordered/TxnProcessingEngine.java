@@ -240,16 +240,12 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
             if (app == 1) {//used in CT
+
                 CT_Transfer_Fun(operation);
-
-                if (operation.success[0])
-                    operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
-                else
-                    operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
-
-//                if (operation.record_ref.record == null) {
-//                    System.nanoTime();
-//                }
+                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
+                if (operation.record_ref.record == null) {
+                    System.nanoTime();
+                }
             } else
                 throw new UnsupportedOperationException();
 
@@ -555,6 +551,13 @@ public final class TxnProcessingEngine {
         public Integer call() {
 
             if (enable_work_stealing) {//cooperatively work on the same chain, use mvcc to ensure correctness.
+                if (operation_chain.size() == 0) {
+                    if (enable_debug)
+                        LOG.info("RE-ENTRY "
+                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+                                " by:" + Thread.currentThread().getName());
+                    return 0;
+                }
                 process((MyList<Operation>) operation_chain);
                 return 0;
             } else {

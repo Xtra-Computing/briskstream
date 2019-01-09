@@ -236,7 +236,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Read_Only" "Write_Intensive" "Read_Write_Mixture" "CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "MultiPartition" #"Read_Only" "Write_Intensive" "Read_Write_Mixture" "CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -453,7 +453,7 @@ do
                     done #Theta
                 done #Input Hz
                 ;;
-            "Partition")  # 1 * 6 * 1 * 1 * 1 * (2 mins) = 12 mins.
+            "Partition")  # not in use.
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0 #0.6 0.8
@@ -496,7 +496,7 @@ do
                     done #Theta
                 done #Input Hz
                 ;;
-            "MultiPartition")  # 1 * 6 * 1 * 1 * 1 * (2 mins) = 12 mins.
+            "MultiPartition")  # in use.
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0.6 #0.6 0.8
