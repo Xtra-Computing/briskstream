@@ -2,7 +2,6 @@ package applications.topology.transactional.initializer;
 
 import applications.param.DepositEvent;
 import applications.param.TransactionEvent;
-import applications.param.ob.OBParam;
 import applications.tools.FastZipfGenerator;
 import applications.topology.transactional.State;
 import applications.util.Configuration;
@@ -19,7 +18,9 @@ import java.util.Set;
 import java.util.SplittableRandom;
 
 import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_states_partition;
 import static applications.topology.transactional.State.partioned_store;
+import static applications.topology.transactional.State.shared_store;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.key_to_partition;
 
@@ -46,6 +47,7 @@ public abstract class TableInitilizer {
     protected transient int[] dual_decision = new int[]{0, 0, 0, 0, 1, 1, 1, 1};//1:1 deposite and transfer;
 
     private int i = 0;
+
     protected int next_decision2() {
 
         int rt = dual_decision[i];
@@ -134,7 +136,14 @@ public abstract class TableInitilizer {
 
     protected void randomkeys(int pid, TxnParam param, Set keys, int access_per_partition, int counter, int numAccessesPerBuy) {
         for (int access_id = 0; access_id < numAccessesPerBuy; ++access_id) {
-            FastZipfGenerator generator = partioned_store[pid];
+
+            FastZipfGenerator generator;
+            if (enable_states_partition)
+                generator = partioned_store[pid];
+            else
+                generator = shared_store;
+
+
             int res = generator.next();
             //should not have duplicate keys.
             while (keys.contains(res) && !Thread.currentThread().isInterrupted()) {
