@@ -293,23 +293,22 @@ public final class TxnProcessingEngine {
     //TODO: actual evaluation on the operation_chain.
     private void process(MyList<Operation> operation_chain) {
 
-//        if (enable_engine && enable_work_stealing) {
-//            while (true) {
-//                Operation operation = operation_chain.pollFirst();
-//                if (operation == null) return;
-//                process(operation);
-//            }//loop.
-//        }
-//        else {
+        if (enable_work_stealing) {
+            while (true) {
+                Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
+                if (operation == null) return;
+                process(operation);
+            }//loop.
+        } else {
 //            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
 //                System.nanoTime();
 //            }
-        for (Operation operation : operation_chain) {
-            process(operation);
+            for (Operation operation : operation_chain) {
+                process(operation);
 //                if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11"))
 //                    LOG.info("finished process bid:" + operation.bid + " by " + Thread.currentThread().getName());
-        }//loop.
-//        }
+            }//loop.
+        }
     }
 
 
@@ -555,20 +554,19 @@ public final class TxnProcessingEngine {
         @Override
         public Integer call() {
 
-//            if (enable_work_stealing) {//cooperatively work on the same chain cannot ensure ordering
-//                process((MyList<Operation>) operation_chain);
-//                return 0;
-//            }
-//            else {
+            if (enable_work_stealing) {//cooperatively work on the same chain, use mvcc to ensure correctness.
+                process((MyList<Operation>) operation_chain);
+                return 0;
+            } else {
 
-            if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
-                if (operation_chain.size() == 0) {
-                    if (enable_debug)
-                        LOG.info("RE-ENTRY "
-                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-                                " by:" + Thread.currentThread().getName());
-                    return 0;
-                }
+                if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
+                    if (operation_chain.size() == 0) {
+                        if (enable_debug)
+                            LOG.info("RE-ENTRY "
+                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+                                    " by:" + Thread.currentThread().getName());
+                        return 0;
+                    }
 
 //                int i = 0;
 //                if (enable_debug)
@@ -576,24 +574,24 @@ public final class TxnProcessingEngine {
 //                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
 //                            + " with size of:" + operation_chain.size());
 
-                process((MyList<Operation>) operation_chain);
-                if (enable_debug)
-                    LOG.info("Thread:\t" + Thread.currentThread().getName()
-                            + "reset task:" + OsUtils.Addresser.addressOf(this));
+                    process((MyList<Operation>) operation_chain);
+                    if (enable_debug)
+                        LOG.info("Thread:\t" + Thread.currentThread().getName()
+                                + "reset task:" + OsUtils.Addresser.addressOf(this));
 
 
-                operation_chain.clear();
-                this.under_process.set(false);//reset
-                return 0;
-            }
+                    operation_chain.clear();
+                    this.under_process.set(false);//reset
+                    return 0;
+                }
 //            if (enable_debug)
 //                LOG.info("Thread:\t" + Thread.currentThread().getName()
 //                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
 //                        + " with size of:" + operation_chain.size());
 //            while (!this.under_process.compareAndSet(false, true)) ;
 
-            return 0;
-//            }
+                return 0;
+            }
         }
 
     }

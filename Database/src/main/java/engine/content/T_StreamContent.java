@@ -94,8 +94,6 @@ public abstract class T_StreamContent implements Content {
     }
 
     /**
-     * For now, it's ok to simply use single-version. As there's no application requires resolving cross-records dependency.
-     *
      * @param ts
      * @return
      */
