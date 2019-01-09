@@ -114,7 +114,7 @@ public final class TxnProcessingEngine {
 
         }
         TOTAL_CORES = tp;
-        LOG.info("source state initialize");
+        LOG.info("Engine initialize:" + " Working Threads:" + tp);
     }
 
 
@@ -191,7 +191,7 @@ public final class TxnProcessingEngine {
                 operation.record_ref.record = operation.d_record.record_;
 
             if (operation.record_ref.record == null || operation.record_ref.record.getValues() == null) {
-                System.nanoTime();
+                System.out.println("Failed to read!");
             }
 
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
@@ -552,12 +552,12 @@ public final class TxnProcessingEngine {
         @Override
         public Integer call() {
 
-            if (enable_work_stealing) {//cooperatively work on the same chain, use mvcc to ensure correctness.
+            if (enable_work_stealing) {//may cooperatively work on the same chain, use mvcc to ensure correctness.
                 if (operation_chain.size() == 0) {
-                    if (enable_debug)
-                        LOG.info("RE-ENTRY "
-                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-                                " by:" + Thread.currentThread().getName());
+//                    if (enable_debug)
+//                        LOG.info("RE-ENTRY "
+//                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+//                                " by:" + Thread.currentThread().getName());
                     return 0;
                 }
                 process((MyList<Operation>) operation_chain);
@@ -566,10 +566,10 @@ public final class TxnProcessingEngine {
 
                 if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
                     if (operation_chain.size() == 0) {
-                        if (enable_debug)
-                            LOG.info("RE-ENTRY "
-                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-                                    " by:" + Thread.currentThread().getName());
+//                        if (enable_debug)
+//                            LOG.info("RE-ENTRY "
+//                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+//                                    " by:" + Thread.currentThread().getName());
                         return 0;
                     }
 

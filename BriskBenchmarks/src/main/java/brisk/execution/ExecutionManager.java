@@ -146,7 +146,8 @@ public class ExecutionManager {
 
             if (integers != null) {
                 tp_engine.initilize(integers.size(), conf.getInt("app"));//TODO: use fixed number of partition?
-                tp_engine.engine_init(integers.get(0), integers.get(integers.size() - 1), integers.size(), conf.getInt("TP", 10));
+                tp_engine.engine_init(integers.get(0),
+                        integers.get(integers.size() - 1), integers.size(), conf.getInt("TP", 10));
             }
         }
 
