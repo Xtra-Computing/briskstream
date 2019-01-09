@@ -26,19 +26,19 @@ public abstract class MBBolt extends TransactionalBolt {
         super(log, fid);
     }
 
-    protected MicroEvent[] input_events;
-
     protected void read_core(MicroEvent event) throws InterruptedException {
 
         int sum = 0;
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             SchemaRecordRef ref = event.getRecord_refs()[i];
 
-            DataBox dataBox = ref.record.getValues().get(1);
-
-            int read_result = Integer.parseInt(dataBox.getString().trim());
-            sum += read_result;
-
+            try {
+                DataBox dataBox = ref.record.getValues().get(1);
+                int read_result = Integer.parseInt(dataBox.getString().trim());
+                sum += read_result;
+            } catch (Exception e) {
+                System.out.println("Null Pointer Exception at: " + event.getBid() + " ref cnt:" + ref.cnt);
+            }
         }
 
         if (enable_speculative) {

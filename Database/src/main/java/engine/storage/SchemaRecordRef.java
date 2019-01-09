@@ -9,7 +9,7 @@ public class SchemaRecordRef {
     private String name;
 
     /**
-     * Write how many times.
+     * Read how many times.
      * @param name
      */
     public void inc(String name) {
