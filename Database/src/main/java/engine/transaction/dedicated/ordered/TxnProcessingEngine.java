@@ -186,11 +186,11 @@ public final class TxnProcessingEngine {
     private void process(Operation operation) {
         if (operation.accessType == READ_ONLY) {
             if (enable_mvcc)
-                operation.record_ref.record = operation.d_record.content_.ReadAccess(operation.bid, READ_ONLY);
+                operation.record_ref.record = operation.d_record.content_.readPreValues(operation.bid);
             else
                 operation.record_ref.record = operation.d_record.record_;
 
-            if (operation.record_ref.record == null) {
+            if (operation.record_ref.record == null || operation.record_ref.record.getValues() == null) {
                 System.nanoTime();
             }
 
