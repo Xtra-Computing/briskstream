@@ -32,8 +32,8 @@ public class Operation implements Comparable<Operation> {
 
     public final String table_name;
     //required by READ_WRITE.
-    public TableRecord s_record;//only if it is different from d_record.
-    public TableRecord[] condition_records;
+    public volatile TableRecord s_record;//only if it is different from d_record.
+    public volatile TableRecord[] condition_records;
     public Condition condition;
     public boolean[] success;
     public String name;
