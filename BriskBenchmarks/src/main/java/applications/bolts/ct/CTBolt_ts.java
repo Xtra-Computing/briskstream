@@ -159,9 +159,14 @@ public class CTBolt_ts extends CTBolt {
 
             //Perform computation on each event and emit.
             for (TransactionEvent event : transactionEvents) {
-                final long sourceAccountBalance = event.src_account_value.record.getValues().get(1).getLong();//already updated in the engine.
-                final long targetAccountBalance = event.dst_account_value.record.getValues().get(1).getLong();//already updated in the engine.
-
+                long sourceAccountBalance = 0;
+                long targetAccountBalance = 0;
+                try {
+                    sourceAccountBalance = event.src_account_value.record.getValues().get(1).getLong();//already updated in the engine.
+                    targetAccountBalance = event.dst_account_value.record.getValues().get(1).getLong();//already updated in the engine.
+                } catch (Exception e) {
+                    LOG.info("NULL Pointer!:" + event.getBid());
+                }
                 // measure_end the preconditions
                 if (event.success[0]) {
                     collector.force_emit(event.getBid(), new TransactionResult(event, true, sourceAccountBalance, targetAccountBalance), event.getTimestamp());

@@ -27,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.CrossTableConstants.Constant.*;
@@ -275,7 +276,8 @@ public class CTInitializer extends TableInitilizer {
     @Override
     protected boolean load(String file) throws IOException {
         String event_path = Event_Path
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
@@ -321,7 +323,8 @@ public class CTInitializer extends TableInitilizer {
     @Override
     protected void dump(String file_name) throws IOException {
         String event_path = Event_Path
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS));
 
 
         File file = new File(event_path);
