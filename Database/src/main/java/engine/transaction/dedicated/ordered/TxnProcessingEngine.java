@@ -247,7 +247,6 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
             if (app == 1) {//used in CT
-
                 CT_Transfer_Fun(operation);
                 operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));//read the resulting tuple.
             } else

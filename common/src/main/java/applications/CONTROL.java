@@ -16,7 +16,7 @@ public interface CONTROL {
 
     //profile related.
     boolean enable_profile = false;//enable this only when we want to test for breakdown.
-    boolean enable_debug = false;//some critical debug section.
+    boolean enable_debug = true;//some critical debug section.
 
 
     //engine related.
