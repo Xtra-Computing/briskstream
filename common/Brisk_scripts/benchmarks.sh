@@ -236,7 +236,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Read_Only" #"Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "Read_Only" "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -310,7 +310,7 @@ do
                 # 4 * 6 * 2 * 1 * (2 mins) = 96 mins.
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.6 #0.8
+                    for theta in 0.6 0.8
                     do
                         for tt in 38 24 8 #32 24 16 8 2 #38
                         do
