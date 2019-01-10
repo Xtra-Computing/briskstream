@@ -252,7 +252,7 @@ public class TxnManagerOcc extends TxnManagerDedicated {
             access.local_record_ = null;
             access.table_id_ = table_name;
             access.timestamp_ = t_record.content_.GetTimestamp();
-            s_record_ref.record = t_record.record_;
+            s_record_ref.setRecord(t_record.record_);
             return true;
         } else if (accessType == READ_WRITE) {
             /**
@@ -292,7 +292,7 @@ public class TxnManagerOcc extends TxnManagerDedicated {
              s_record = local_record;
              return true;
              */
-            s_record_ref.record = local_record;
+            s_record_ref.setRecord(local_record);
             return true;
 
         } else if (accessType == DELETE_ONLY) {
@@ -304,7 +304,7 @@ public class TxnManagerOcc extends TxnManagerDedicated {
             access.local_record_ = null;
             access.table_id_ = table_name;
             access.timestamp_ = t_record.content_.GetTimestamp();
-            s_record_ref.record = t_record.record_;
+            s_record_ref.setRecord(t_record.record_);
             return true;
         } else {
             assert (false);

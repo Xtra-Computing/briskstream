@@ -188,9 +188,9 @@ public final class TxnProcessingEngine {
 //            operation.record_ref.inc(Thread.currentThread().getName());
 
             if (enable_mvcc)
-                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);
+                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));
             else
-                operation.record_ref.record = operation.d_record.record_;
+                operation.record_ref.setRecord(operation.d_record.record_);
 
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down.
 
@@ -249,7 +249,7 @@ public final class TxnProcessingEngine {
             if (app == 1) {//used in CT
 
                 CT_Transfer_Fun(operation);
-                operation.record_ref.record = operation.d_record.content_.readValues(operation.bid);//read the resulting tuple.
+                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));//read the resulting tuple.
             } else
                 throw new UnsupportedOperationException();
 
@@ -278,9 +278,9 @@ public final class TxnProcessingEngine {
 
                 // configure return-record.
                 if (valueList.size() < MOVING_AVERAGE_WINDOW) {//just added
-                    operation.record_ref.record = new SchemaRecord(new DoubleDataBox(nextDouble[SIZE_VALUE - 1]));
+                    operation.record_ref.setRecord(new SchemaRecord(new DoubleDataBox(nextDouble[SIZE_VALUE - 1])));
                 } else {
-                    operation.record_ref.record = new SchemaRecord(new DoubleDataBox(sum / MOVING_AVERAGE_WINDOW));
+                    operation.record_ref.setRecord(new SchemaRecord(new DoubleDataBox(sum / MOVING_AVERAGE_WINDOW)));
                 }
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
             } else

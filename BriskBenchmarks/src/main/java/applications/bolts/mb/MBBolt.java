@@ -32,7 +32,7 @@ public abstract class MBBolt extends TransactionalBolt {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             SchemaRecordRef ref = event.getRecord_refs()[i];
             try {
-                DataBox dataBox = ref.record.getValues().get(1);
+                DataBox dataBox = ref.getRecord().getValues().get(1);
                 int read_result = Integer.parseInt(dataBox.getString().trim());
                 sum += read_result;
             } catch (Exception e) {
@@ -55,7 +55,7 @@ public abstract class MBBolt extends TransactionalBolt {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             List<DataBox> values = event.getValues()[i];
             SchemaRecordRef recordRef = event.getRecord_refs()[i];
-            SchemaRecord record = recordRef.record;
+            SchemaRecord record = recordRef.getRecord();
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
@@ -80,7 +80,7 @@ public abstract class MBBolt extends TransactionalBolt {
             boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable",
                     String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
-                assert event.getRecord_refs()[i].record != null;
+                assert event.getRecord_refs()[i].getRecord() != null;
             } else {
                 return true;
             }
@@ -93,7 +93,7 @@ public abstract class MBBolt extends TransactionalBolt {
             boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable",
                     String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
-                assert event.getRecord_refs()[i].record != null;
+                assert event.getRecord_refs()[i].getRecord() != null;
             } else {
                 return true;
             }

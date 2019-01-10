@@ -160,7 +160,7 @@ public class TxnManagerLock extends TxnManagerDedicated {
     @Override
     protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord
             t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_; //return the table record for modifying in the application layer.
+        record_ref.setRecord(t_record.record_); //return the table record for modifying in the application layer.
 
         if (accessType == READ_ONLY) {
             // if cannot get Lock, then return immediately.

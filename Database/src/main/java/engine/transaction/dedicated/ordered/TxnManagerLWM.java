@@ -109,7 +109,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
             access.access_record_ = t_record;
             access.table_id_ = table_name;
             access.local_record_ = local_record;
-            record_ref.record = local_record;
+            record_ref.setRecord(local_record);
             return true;
 
         } else if (accessType == READ_WRITE) {
@@ -121,7 +121,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
             access.local_record_ = local_record;
             access.table_id_ = table_name;
             access.timestamp_ = t_record.content_.GetTimestamp();
-            record_ref.record = local_record;//the application can only access to a local copy at this point of time.
+            record_ref.setRecord(local_record);//the application can only access to a local copy at this point of time.
             return true;
 
         } else {//does not support deletion..
@@ -146,7 +146,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
             access.access_record_ = t_record;
             access.table_id_ = table_name;
             access.local_record_ = local_record;
-            record_ref.record = local_record;
+            record_ref.setRecord(local_record);
             return true;
 
         } else if (accessType == READ_WRITE) {
@@ -158,7 +158,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
             access.local_record_ = local_record;
             access.table_id_ = table_name;
             access.timestamp_ = t_record.content_.GetTimestamp();
-            record_ref.record = local_record;//the application can only access to a local copy at this point of time.
+            record_ref.setRecord(local_record);//the application can only access to a local copy at this point of time.
             return true;
 
         } else {//does not support deletion..

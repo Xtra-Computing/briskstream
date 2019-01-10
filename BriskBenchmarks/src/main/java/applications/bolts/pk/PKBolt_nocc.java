@@ -104,7 +104,7 @@ public class PKBolt_nocc extends PKBolt {
         for (Integer key : event.getKey()) {
             boolean rt = transactionManager.SelectKeyRecord(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i), READ_WRITE);// read the list value_list, and return.
             if (rt) {
-                assert event.getList_value_ref(i).record != null;
+                assert event.getList_value_ref(i).getRecord() != null;
             } else {
                 return false;
             }

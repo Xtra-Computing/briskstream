@@ -108,7 +108,7 @@ public class PKBolt_ts extends PKBolt {
             //Spike detection.
             for (PKEvent event : PKEvents) {
                 for (int i = 0; i < SIZE_EVENT; i++) {
-                    double movingAverageInstant = event.getMean_value_ref(i).record.getValue().getDouble();//getMean_value_ref null error.
+                    double movingAverageInstant = event.getMean_value_ref(i).getRecord().getValue().getDouble();//getMean_value_ref null error.
                     double[] nextDouble = event.getValue(i);
                     boolean spike = Math.abs(nextDouble[SIZE_VALUE - 1] - movingAverageInstant) > SpikeThreshold * movingAverageInstant;
                     // measure_end the preconditions

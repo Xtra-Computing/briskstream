@@ -119,7 +119,7 @@ public class TxnManagerTo extends TxnManagerDedicated {
         access.local_record_ = local_record;
         access.table_id_ = table_id;
         // reset returned d_record.
-        s_record_ref.record = local_record;
+        s_record_ref.setRecord(local_record);
         return true;
     }
 

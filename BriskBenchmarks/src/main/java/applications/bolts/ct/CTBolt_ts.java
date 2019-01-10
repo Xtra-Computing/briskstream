@@ -162,8 +162,8 @@ public class CTBolt_ts extends CTBolt {
                 long sourceAccountBalance = 0;
                 long targetAccountBalance = 0;
                 try {
-                    sourceAccountBalance = event.src_account_value.record.getValues().get(1).getLong();//already updated in the engine.
-                    targetAccountBalance = event.dst_account_value.record.getValues().get(1).getLong();//already updated in the engine.
+                    sourceAccountBalance = event.src_account_value.getRecord().getValues().get(1).getLong();//already updated in the engine.
+                    targetAccountBalance = event.dst_account_value.getRecord().getValues().get(1).getLong();//already updated in the engine.
                 } catch (Exception e) {
                     LOG.info("NULL Pointer!:" + event.getBid());
                 }

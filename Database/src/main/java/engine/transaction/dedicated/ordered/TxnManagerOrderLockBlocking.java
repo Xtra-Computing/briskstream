@@ -63,7 +63,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
 
     @Override
     protected boolean lock_aheadCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_;//Note that, locking scheme allows directly modifying on original table d_record.
+        record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
             //The following makes sure the lock is added in event sequence as in ACEP.
@@ -98,7 +98,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
 
     @Override
     public boolean SelectKeyRecord_noLockCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_;//Note that, locking scheme allows directly modifying on original table d_record.
+        record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
 
@@ -145,7 +145,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
 
     @Override
     protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_;//Note that, locking scheme allows directly modifying on original table d_record.
+        record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
             //The following makes sure the lock is added in event sequence as in ACEP.

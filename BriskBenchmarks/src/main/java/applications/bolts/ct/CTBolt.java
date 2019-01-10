@@ -31,20 +31,20 @@ public abstract class CTBolt extends TransactionalBolt {
 
         transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
 
-        assert event.account_value.record != null && event.asset_value.record != null;
+        assert event.account_value.getRecord() != null && event.asset_value.getRecord() != null;
 
         return true;
     }
 
 
     protected void DEPOSITE_CORE(DepositEvent event) throws InterruptedException {
-        List<DataBox> values = event.account_value.record.getValues();
+        List<DataBox> values = event.account_value.getRecord().getValues();
 
         long newAccountValue = values.get(1).getLong() + event.getAccountTransfer();
 
         values.get(1).setLong(newAccountValue);
 
-        List<DataBox> asset_values = event.asset_value.record.getValues();
+        List<DataBox> asset_values = event.asset_value.getRecord().getValues();
 
         long newAssetValue = values.get(1).getLong() + event.getBookEntryTransfer();
 
@@ -69,7 +69,7 @@ public abstract class CTBolt extends TransactionalBolt {
         transactionManager.SelectKeyRecord_noLock(txn_context, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
 
 
-        assert event.src_account_value.record != null && event.dst_account_value.record != null && event.src_asset_value.record != null && event.dst_asset_value.record != null;
+        assert event.src_account_value.getRecord() != null && event.dst_account_value.getRecord() != null && event.src_asset_value.getRecord() != null && event.dst_asset_value.getRecord() != null;
         return true;
     }
 
@@ -77,16 +77,16 @@ public abstract class CTBolt extends TransactionalBolt {
     protected void TRANSFER_CORE(TransactionEvent event) throws InterruptedException {
         // measure_end the preconditions
 
-        DataBox sourceAccountBalance_value = event.src_account_value.record.getValues().get(1);
+        DataBox sourceAccountBalance_value = event.src_account_value.getRecord().getValues().get(1);
         final long sourceAccountBalance = sourceAccountBalance_value.getLong();
 
-        DataBox sourceAssetValue_value = event.src_asset_value.record.getValues().get(1);
+        DataBox sourceAssetValue_value = event.src_asset_value.getRecord().getValues().get(1);
         final long sourceAssetValue = sourceAssetValue_value.getLong();
 
-        DataBox targetAccountBalance_value = event.dst_account_value.record.getValues().get(1);
+        DataBox targetAccountBalance_value = event.dst_account_value.getRecord().getValues().get(1);
         final long targetAccountBalance = targetAccountBalance_value.getLong();
 
-        DataBox targetAssetValue_value = event.dst_asset_value.record.getValues().get(1);
+        DataBox targetAssetValue_value = event.dst_asset_value.getRecord().getValues().get(1);
         final long targetAssetValue = targetAssetValue_value.getLong();
 
 

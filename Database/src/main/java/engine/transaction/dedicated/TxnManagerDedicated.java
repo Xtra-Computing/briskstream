@@ -368,7 +368,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 //			BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
             boolean rt = SelectRecordCC(txn_context, table_name, t_record, record_, access_type);
 //			END_PHASE_MEASURE(thread_id_, SELECT_PHASE);
-            assert !rt || record_.record != null;
+            assert !rt || record_.getRecord() != null;
             return rt;
         } else {
             // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
@@ -457,7 +457,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
             if (!SelectRecordCC(txn_context, table_name, t_records.records_[i], record_ref, access_type)) {
                 return false;
             } else {
-                records_.setRecords_(i, record_ref.record);
+                records_.setRecords_(i, record_ref.getRecord());
             }
         }
         return true;

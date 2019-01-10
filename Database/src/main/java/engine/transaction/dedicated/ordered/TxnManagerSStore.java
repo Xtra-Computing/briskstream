@@ -71,7 +71,7 @@ public class TxnManagerSStore extends TxnManagerDedicated {
 
     @Override
     protected boolean lock_aheadCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_;//Note that, locking scheme allows directly modifying on original table d_record.
+//        record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 //        LOG.info("LOCK FOR:" + t_record.record_.getValues().get(0)+" pid:"+txn_context.pid);
         t_record.content_.LockPartitions();//it should always success.
         return true;
@@ -79,7 +79,7 @@ public class TxnManagerSStore extends TxnManagerDedicated {
 
     @Override
     public boolean SelectKeyRecord_noLockCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.record = t_record.record_;//Note that, locking scheme allows directly modifying on original table d_record.
+        record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
 

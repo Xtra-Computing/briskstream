@@ -23,7 +23,7 @@ public abstract class PKBolt extends TransactionalBolt {
 
 
         for (int i = 0; i < SIZE_EVENT; i++) {
-            List<DataBox> srcRecord = event.getList_value_ref(i).record.getValues();
+            List<DataBox> srcRecord = event.getList_value_ref(i).getRecord().getValues();
             //compute.
             ListDoubleDataBox valueList = (ListDoubleDataBox) srcRecord.get(1);
             double sum = srcRecord.get(2).getDouble();

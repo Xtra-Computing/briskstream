@@ -46,7 +46,7 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void Topping_REQUEST(ToppingEvent event) throws DatabaseException {
         for (int i = 0; i < event.getNum_access(); ++i) {
             transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-            assert event.record_refs[i].record != null;
+            assert event.record_refs[i].getRecord() != null;
         }
     }
 
@@ -54,7 +54,7 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void Topping_CORE(ToppingEvent event) throws InterruptedException {
 
         for (int i = 0; i < event.getNum_access(); ++i) {
-            List<DataBox> values = event.record_refs[i].record.getValues();
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
             long newQty = values.get(2).getLong() + event.getItemTopUp()[i];
             values.get(2).setLong(newQty);
         }
@@ -69,14 +69,14 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void Alert_REQUEST(AlertEvent event) throws DatabaseException {
         for (int i = 0; i < event.getNum_access(); ++i) {
             transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-            assert event.record_refs[i].record != null;
+            assert event.record_refs[i].getRecord() != null;
         }
     }
 
 
     protected void Alert_CORE(AlertEvent event) throws InterruptedException {
         for (int i = 0; i < event.getNum_access(); ++i) {
-            List<DataBox> values = event.record_refs[i].record.getValues();
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
             long newPrice = event.getAsk_price()[i];
             values.get(1).setLong(newPrice);
         }
@@ -93,7 +93,7 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void Buying_REQUEST(BuyingEvent event) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; ++i) {
             transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-            assert event.record_refs[i].record != null;
+            assert event.record_refs[i].getRecord() != null;
         }
     }
 
@@ -107,7 +107,7 @@ public abstract class OBBolt extends TransactionalBolt {
             long qty = event.getBidQty(i);
 
 
-            List<DataBox> values = event.record_refs[i].record.getValues();
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
             long askPrice = values.get(1).getLong();
             long left_qty = values.get(2).getLong();
             if (bidPrice < askPrice || qty > left_qty) {
@@ -122,7 +122,7 @@ public abstract class OBBolt extends TransactionalBolt {
             long bidPrice = event.getBidPrice(i);
             long qty = event.getBidQty(i);
 
-            List<DataBox> values = event.record_refs[i].record.getValues();
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
             long askPrice = values.get(1).getLong();
             long left_qty = values.get(2).getLong();
 

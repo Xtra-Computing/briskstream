@@ -176,7 +176,7 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
                 access.local_record_ = null;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-                record_ref.record = s_record;
+                record_ref.setRecord(s_record);
                 return true;
             }
         } else if (accessType == READ_WRITE) {
@@ -212,7 +212,7 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
                 access.local_record_ = local_record;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-                record_ref.record = local_record;
+                record_ref.setRecord(local_record);
                 return true;
             }
         } else if (accessType == DELETE_ONLY) {
@@ -228,7 +228,7 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
                 access.local_record_ = null;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-                record_ref.record = s_record;
+                record_ref.setRecord(s_record);
                 return true;
             }
         } else {
