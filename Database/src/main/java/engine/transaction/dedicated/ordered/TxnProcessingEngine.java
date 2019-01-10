@@ -192,13 +192,19 @@ public final class TxnProcessingEngine {
             else
                 operation.record_ref.setRecord(operation.d_record.record_);
 
+            if (enable_debug)
+                if (operation.record_ref.cnt == 0) {
+                    System.out.println("Not assigning");
+                    System.exit(-1);
+                }
+
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down.
 
             if (operation.value_list != null) { //directly replace value_list --only used for MB.
 //                if (enable_mvcc) {
 //                    operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
 //                }else {
-                    operation.d_record.record_.updateValues(operation.value_list);
+                operation.d_record.record_.updateValues(operation.value_list);
 //                }
 
             } else { //update by column_id.
@@ -252,6 +258,10 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
 
+            if (operation.record_ref.cnt == 0) {
+                System.out.println("Not assigning");
+                System.exit(-1);
+            }
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK.
             assert operation.record_ref != null;
 
@@ -286,10 +296,6 @@ public final class TxnProcessingEngine {
                 throw new UnsupportedOperationException();
         }
 
-        if( operation.record_ref.cnt==0){
-            System.out.println("Not assigning");
-            System.exit(-1);
-        }
     }
 
 
@@ -571,7 +577,13 @@ public final class TxnProcessingEngine {
 //                                " by:" + Thread.currentThread().getName());
                     return 0;
                 }
-                process((MyList<Operation>) operation_chain);
+                try {
+                    process((MyList<Operation>) operation_chain);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(-1);
+                }
                 return 0;
             } else {
                 if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
