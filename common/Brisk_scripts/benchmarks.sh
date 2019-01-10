@@ -310,7 +310,7 @@ do
                 # 4 * 6 * 2 * 1 * (2 mins) = 96 mins.
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.6 #0.8
+                    for theta in 0.6 0.8
                     do
                         for tt in 38 #24 8 #32 24 16 8 2 #38
                         do
