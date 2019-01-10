@@ -8,12 +8,13 @@ import engine.transaction.impl.TxnContext;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import static applications.CONTROL.enable_mvcc;
 
 public abstract class T_StreamContent implements Content {
     public final static String T_STREAMCONTENT = "T_STREAMCONTENT";
-    public TreeMap<Long, SchemaRecord> versions = new TreeMap<>();//TODO: In fact... there can be at most only one write to the d_record concurrently. It is safe to just use sorted hashmap.
+    public ConcurrentSkipListMap<Long, SchemaRecord> versions = new ConcurrentSkipListMap<>();//TODO: In fact... there can be at most only one write to the d_record concurrently. It is safe to just use sorted hashmap.
     public SchemaRecord record;
 //    private SpinLock spinlock_ = new SpinLock();
 
@@ -102,14 +103,16 @@ public abstract class T_StreamContent implements Content {
         if (enable_mvcc) {
 
 //            spinlock_.Lock();
-            SchemaRecord record_at_ts;
-            Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
+            SchemaRecord record_at_ts = null;
+//            while (record_at_ts == null) {//polling for correct entry.
 
-            if (entry != null) {
-                record_at_ts = entry.getValue();
-            } else
-                record_at_ts = versions.get(ts);//not modified in last round
+                Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
 
+                if (entry != null) {
+                    record_at_ts = entry.getValue();
+                } else
+                    record_at_ts = versions.get(ts);//not modified in last round
+//            }
 //            spinlock_.Unlock();
 //            if (record_at_ts.getValues() == null) {
 //                System.out.println("Read a null value??");
