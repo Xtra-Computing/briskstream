@@ -102,7 +102,6 @@ public final class TxnProcessingEngine {
             if (island != -1)
                 for (int i = 0; i < island; i++) {
                     multi_engine.put(i, new Instance(tp / island));
-//                multi_engine.get(i).executor.submit(new dummyTask(i));
                 }
             else {
                 for (int i = 0; i < tp; i++)
@@ -347,7 +346,7 @@ public final class TxnProcessingEngine {
 //                Instance instance = standalone_engine;//multi_engine.get(key);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
-                        Task task = new Task(operation_chain, bid);
+                        Task task = new Task(operation_chain);
 //                        LOG.debug("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
                         if (!enable_work_stealing) {
@@ -391,7 +390,8 @@ public final class TxnProcessingEngine {
 
         //blocking wait for all operation_chain to complete.
         //TODO: For now, we don't know the relationship between operation_chain and transaction, otherwise, we can asynchronously return.
-//        holder.holder_v1.clear();
+//        for (Holder_in_range holder_in_range : holder_by_stage.values())
+//            holder_in_range.rangeMap.clear();
 
         if (enable_debug)
             LOG.info("finished task:" + task);
@@ -433,7 +433,7 @@ public final class TxnProcessingEngine {
     }
 
     public class Holder_in_range {
-        public HashMap<Integer, Holder> rangeMap = new HashMap<>();//each op has a holder.
+        public ConcurrentHashMap<Integer, Holder> rangeMap = new ConcurrentHashMap<>();//each op has a holder.
 
         public Holder_in_range(Integer num_op) {
             int i;
@@ -513,23 +513,30 @@ public final class TxnProcessingEngine {
     //the smallest unit of Task in TP.
     //Every Task will be assigned with one operation chain.
     class Task implements Callable<Integer> {
-        private AtomicBoolean under_process = new AtomicBoolean(false);
+        private AtomicBoolean under_process;
         private final Set<Operation> operation_chain;
-        private int socket;
-        private final long wid = 0;//watermark id.
-        private boolean un_processed = true;
+//        private int socket;
+//        private final long wid = 0;//watermark id.
+//        private boolean un_processed = true;
 
-        public Task(Set<Operation> operation_chain, long bid, int socket) {
+        public Task(Set<Operation> operation_chain, int socket) {
 
             this.operation_chain = operation_chain;
 //            wid = bid;
 
-            this.socket = socket;
+//            this.socket = socket;
+            if (!enable_work_stealing) {
+                under_process = new AtomicBoolean(false);
+            }
         }
 
-        public Task(Set<Operation> operation_chain, long bid) {
+        public Task(Set<Operation> operation_chain) {
 
             this.operation_chain = operation_chain;
+
+            if (!enable_work_stealing) {
+                under_process = new AtomicBoolean(false);
+            }
 
         }
 

@@ -22,7 +22,7 @@ public class MicroEvent extends Event {
 
     private final int[] keys;
     private final boolean flag;//true: read, false: write.
-    private final List<DataBox>[] value = new ArrayList[NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
+    private List<DataBox>[] value;//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
     //    public double[] useful_time = new double[1];
@@ -100,12 +100,13 @@ public class MicroEvent extends Event {
     private void set_values(int access_id, int key) {
         List<DataBox> values = new ArrayList<>();
         values.add(new IntDataBox(key));//key
-        values.add(1, new StringDataBox(GenerateValue(key), VALUE_LEN));//value_list
+        values.add(new StringDataBox(GenerateValue(key), VALUE_LEN));//value_list
         value[access_id] = values;
     }
 
 
     public void setValues(int[] keys) {
+        value = new ArrayList[NUM_ACCESSES];//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
         for (int access_id = 0; access_id < NUM_ACCESSES; ++access_id) {
             set_values(access_id, keys[access_id]);
         }
