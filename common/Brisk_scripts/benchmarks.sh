@@ -236,7 +236,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in  "DB_SIZE" #"CrossTables" "OnlineBiding"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in  "CrossTables" "OnlineBiding"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -615,7 +615,7 @@ do
                 do
                     for theta in 0.6 #0.8
                     do
-                        for tt in 38 #32 24 16 8 2 #38 32 24 16 8 2
+                        for tt in 2 8 16 24 32 38
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -634,7 +634,7 @@ do
                                     done
                                 done
                             done
-                            for CCOption in 1 2 4
+                            for CCOption in 1 2 #4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -645,7 +645,7 @@ do
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
-#                                           CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -663,7 +663,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 38 #2 8 16 24 32
+                        for tt in  2 8 16 24 32 38
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -680,7 +680,7 @@ do
                                     done
                                 done
                             done
-                            for CCOption in 1 2 4
+                            for CCOption in 1 2 #4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -689,7 +689,7 @@ do
                                         for checkpoint in 1
                                         do
                                              TP=$tt
-#                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
