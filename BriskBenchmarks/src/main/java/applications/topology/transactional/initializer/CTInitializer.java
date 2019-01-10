@@ -290,6 +290,11 @@ public class CTInitializer extends TableInitilizer {
             String read = sc.nextLine();
             String[] split = read.split(split_exp);
 
+            if (split.length < 4) {
+                LOG.info("Loading wrong file!" + Arrays.toString(split));
+                System.exit(-1);
+            }
+
             if (split[4].endsWith("DepositEvent")) {//DepositEvent
                 event = new DepositEvent(
                         Integer.parseInt(split[0]), //bid
