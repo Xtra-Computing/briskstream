@@ -103,6 +103,7 @@ public class MeasureSink extends BaseSink {
     @Override
     public void execute(Tuple input) {
         check(cnt, input);
+//        LOG.info("CNT:" + cnt);
         cnt++;
     }
 

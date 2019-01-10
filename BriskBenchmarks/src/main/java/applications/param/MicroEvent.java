@@ -43,7 +43,6 @@ public class MicroEvent extends Event {
         for (int i = 0; i < numAccess; i++) {
             record_refs[i] = new SchemaRecordRef();
         }
-        setValues(getKeys());
     }
 
     /**
@@ -70,7 +69,6 @@ public class MicroEvent extends Event {
         for (int i = 0; i < key_arrays.length; i++) {
             this.keys[i] = Integer.parseInt(key_arrays[i].trim());
         }
-        setValues(getKeys());
     }
 
     public int[] getKeys() {

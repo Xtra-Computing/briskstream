@@ -157,6 +157,8 @@ public class Bolt_ts extends MBBolt {
 
             MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
 
+            event.setValues(event.getKeys());
+
             long timestamp;
             if (enable_latency_measurement)
                 timestamp = in.getLong(0);

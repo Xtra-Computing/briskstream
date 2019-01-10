@@ -135,13 +135,14 @@ public abstract class MBBolt extends TransactionalBolt {
         long bid = in.getBID();
 
         MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
-
+        event.setValues(event.getKeys());
         Long timestamp;//in.getLong(1);
 
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
         else
             timestamp = 0L;//
+
 
         boolean flag = event.READ_EVENT();
         (event).setTimestamp(timestamp);

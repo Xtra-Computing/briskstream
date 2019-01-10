@@ -99,7 +99,4 @@ public class Bolt_nocc extends MBBolt {
     }
 
 
-
-
-
 }
