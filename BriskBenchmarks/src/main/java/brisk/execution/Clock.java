@@ -19,7 +19,7 @@ public class Clock implements Closeable {
     private Timer timer;
 
     public Clock(double checkpoint_interval) {
-        gap = (long) (checkpoint_interval * (long) 1E3);//100ms by default.
+        gap = (long) (checkpoint_interval * (long) 1E3);//checkpoint_interval=0.1 -- 100ms by default.
         LOG.info("Clock advance interval:" + checkpoint_interval);
         create_time = System.nanoTime();
         timer = new Timer();
@@ -43,8 +43,6 @@ public class Clock implements Closeable {
         //			final long call_time = System.nanoTime();
         //			return (call_time - create_time) > gap * iteration;
         return myiteration <= iteration;
-
-
     }
 
     @Override

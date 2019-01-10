@@ -13,7 +13,7 @@ public interface CONTROL {
     boolean enable_states_partition = false;//only enable for PAT.
 
     //latency related.
-    boolean enable_admission_control = false;//only enable when we want to test latency?
+    boolean enable_admission_control = true;//only enable for TStream
     boolean enable_latency_measurement = false;//
 
     //profile related.

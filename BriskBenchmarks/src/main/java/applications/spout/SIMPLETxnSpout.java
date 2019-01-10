@@ -116,15 +116,15 @@ public class SIMPLETxnSpout extends TransactionalSpout {
             forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
         if (bid < NUM_EVENTS) {
-            if (enable_admission_control) {
-                control_emit();
-            } else {
-
-                if (enable_latency_measurement)
-                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
-                else
-                    collector.emit_single(bid);//combined R/W executor.
-            }
+            if (ccOption == CCOption_TStream)
+                if (enable_admission_control) {
+                    control_emit();
+                } else {
+                    if (enable_latency_measurement)
+                        collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                    else
+                        collector.emit_single(bid);//combined R/W executor.
+                }
 //            LOG.info("Emit:" + bid);
             bid++;
         }
