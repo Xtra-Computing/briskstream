@@ -110,7 +110,8 @@ public class CTBolt_ts extends CTBolt {
                 , event.src_account_value,//to be fill up.
                 new DEC(event.getAccountTransfer()),
                 srcTable, srcID,//condition source, condition id.
-                new Condition(event.getMinAccountBalance(),
+                new Condition(
+                        event.getMinAccountBalance(),
                         event.getAccountTransfer(), event.getBookEntryTransfer()),
                 event.success);          //asynchronously return.
 

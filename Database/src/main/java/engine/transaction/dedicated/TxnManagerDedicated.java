@@ -330,6 +330,13 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         for (int i = 0; i < condition_source.length; i++) {
             condition_records[i] = storageManager_.getTable(condition_sourceTable[i]).SelectKeyRecord(condition_source[i]);//TODO: improve this later.
+
+            if (condition_records[i] == null) {
+                LOG.info("No record is found for condition source:" + condition_source[i]);
+                return false;
+            }
+
+
         }
         TableRecord s_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
 
