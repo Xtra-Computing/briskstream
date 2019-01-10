@@ -90,7 +90,7 @@ public class MicroEvent extends Event {
     }
 
     private static String rightpad(@NotNull String text, int length) {
-        return StringUtils.leftPad(text, length); // Returns "****foobar"
+        return StringUtils.rightPad(text, length); // Returns "****foobar"
 //        return String.format("%-" + length + "." + length + "s", text);
     }
 

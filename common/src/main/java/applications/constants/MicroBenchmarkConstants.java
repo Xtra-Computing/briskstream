@@ -25,6 +25,6 @@ public interface MicroBenchmarkConstants extends BaseConstants {
 
     interface Constant {
         int FREQUENCY_MICRO = 100;
-        int VALUE_LEN = 64;// 64 bytes --> one cache line.
+        int VALUE_LEN = 32;// 32 bytes --> one cache line.
     }
 }

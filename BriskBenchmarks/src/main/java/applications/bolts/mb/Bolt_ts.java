@@ -161,15 +161,19 @@ public class Bolt_ts extends MBBolt {
             } else
                 timestamp = 0L;//
 
-            boolean flag = event.READ_EVENT();
+//            try {
+                boolean flag = event.READ_EVENT();
 
-            END_PREPARE_TIME_MEASURE_TS(thread_Id);
+                END_PREPARE_TIME_MEASURE_TS(thread_Id);
 
-            if (flag) {
-                read_handle(event, timestamp);
-            } else {
-                write_handle(event, timestamp);
-            }
+                if (flag) {
+                    read_handle(event, timestamp);
+                } else {
+                    write_handle(event, timestamp);
+                }
+//            } catch (Exception e) {
+//                System.nanoTime();
+//            }
         }
     }
 }
