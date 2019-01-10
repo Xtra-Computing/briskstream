@@ -66,8 +66,8 @@ public class spoutThread extends executorThread {
     }
 
     protected void _execute() throws InterruptedException {
-        emit_withControl();
-//        _execute_noControl();
+//         emit_withControl();
+        _execute_noControl();
         //sp.nextTuple();
     }
 
