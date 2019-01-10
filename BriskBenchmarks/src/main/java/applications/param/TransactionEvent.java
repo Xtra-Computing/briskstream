@@ -10,10 +10,10 @@ import static applications.constants.CrossTableConstants.Constant.MIN_BALANCE;
 public class TransactionEvent extends Event {
 
     //embeded state.
-    public SchemaRecordRef src_account_value = new SchemaRecordRef();
-    public SchemaRecordRef dst_account_value = new SchemaRecordRef();
-    public SchemaRecordRef src_asset_value = new SchemaRecordRef();
-    public SchemaRecordRef dst_asset_value = new SchemaRecordRef();
+    public volatile SchemaRecordRef src_account_value = new SchemaRecordRef();
+    public volatile SchemaRecordRef dst_account_value = new SchemaRecordRef();
+    public volatile SchemaRecordRef src_asset_value = new SchemaRecordRef();
+    public volatile SchemaRecordRef dst_asset_value = new SchemaRecordRef();
     private String sourceAccountId;
     private String targetAccountId;
     private String sourceBookEntryId;
