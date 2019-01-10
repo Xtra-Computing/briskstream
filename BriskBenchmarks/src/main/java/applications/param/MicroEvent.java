@@ -43,6 +43,7 @@ public class MicroEvent extends Event {
         for (int i = 0; i < numAccess; i++) {
             record_refs[i] = new SchemaRecordRef();
         }
+        setValues(keys);
     }
 
     /**
