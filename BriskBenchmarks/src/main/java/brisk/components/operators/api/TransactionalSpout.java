@@ -85,8 +85,8 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
         long elapsed_time = System.nanoTime() - boardcast_time;//the time elapsed for the system to handle the previous epoch.
         double actual_system_throughput = epoch_size * 1E9 / elapsed_time;//events/ s
-        if (epoch_size != 0)
-            LOG.info("finished measurement (k events/s):" + actual_system_throughput / 1E3);
+//        if (epoch_size != 0)
+//            LOG.info("finished measurement (k events/s):" + actual_system_throughput / 1E3);
         if (enable_admission_control) {
 //            target_Hz = actual_system_throughput * checkpoint_interval_sec;//target Hz.
             control = 0;
