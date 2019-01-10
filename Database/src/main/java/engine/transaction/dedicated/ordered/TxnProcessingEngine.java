@@ -118,6 +118,7 @@ public final class TxnProcessingEngine {
 
 
     public void engine_shutdown() {
+        LOG.info("Shutdown Engine!");
         if (!enable_work_stealing) {
             for (Instance engine : multi_engine.values()) {
                 engine.close();
@@ -131,8 +132,12 @@ public final class TxnProcessingEngine {
     private void CT_Transfer_Fun(Operation operation) {
 
         // read
-        final long sourceAccountBalance = operation.condition_records[0].content_.readPreValues(operation.bid).getValues().get(1).getLong();
-        final long sourceAssetValue = operation.condition_records[1].content_.readPreValues(operation.bid).getValues().get(1).getLong();
+
+        SchemaRecord preValues = operation.condition_records[0].content_.readPreValues(operation.bid);
+        SchemaRecord preValues1 = operation.condition_records[1].content_.readPreValues(operation.bid);
+
+        final long sourceAccountBalance = preValues.getValues().get(1).getLong();
+        final long sourceAssetValue = preValues1.getValues().get(1).getLong();
 
         //when d_record is different from condition record
         //It may generate cross-records dependency problem.
