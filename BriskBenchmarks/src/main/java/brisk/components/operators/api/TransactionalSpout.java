@@ -88,7 +88,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
         if (epoch_size != 0)
             LOG.info("finished measurement (k events/s):" + actual_system_throughput / 1E3);
         if (enable_admission_control) {
-            target_Hz = actual_system_throughput * checkpoint_interval_sec;//target Hz.
+//            target_Hz = actual_system_throughput * checkpoint_interval_sec;//target Hz.
             control = 0;
         }
 
