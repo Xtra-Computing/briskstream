@@ -69,6 +69,7 @@ public class MicroEvent extends Event {
         for (int i = 0; i < key_arrays.length; i++) {
             this.keys[i] = Integer.parseInt(key_arrays[i].trim());
         }
+         setValues(keys);
     }
 
     public int[] getKeys() {

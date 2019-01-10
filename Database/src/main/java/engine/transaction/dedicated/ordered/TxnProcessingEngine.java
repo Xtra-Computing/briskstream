@@ -192,13 +192,14 @@ public final class TxnProcessingEngine {
             else
                 operation.record_ref.record = operation.d_record.record_;
 
-        } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. --only used for MB.
+        } else if (operation.accessType == WRITE_ONLY) {//push evaluation down.
 
-            if (operation.value_list != null) { //directly replace value_list
-                if (enable_mvcc)
-                    operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
-                else
+            if (operation.value_list != null) { //directly replace value_list --only used for MB.
+//                if (enable_mvcc) {
+//                    operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
+//                }else {
                     operation.d_record.record_.updateValues(operation.value_list);
+//                }
 
             } else { //update by column_id.
                 operation.d_record.record_.getValues().get(operation.column_id).setLong(operation.value);
@@ -296,7 +297,7 @@ public final class TxnProcessingEngine {
                 Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
                 if (operation == null) return;
                 process(operation);
-                operation.set_worker(Thread.currentThread().getName());
+//                operation.set_worker(Thread.currentThread().getName());
             }//loop.
         } else {
 //            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {

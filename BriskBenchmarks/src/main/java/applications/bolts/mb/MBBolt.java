@@ -47,7 +47,7 @@ public abstract class MBBolt extends TransactionalBolt {
             //so nothing is send out.
 
         } else
-            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished.
+            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
     }
 
 
@@ -135,7 +135,7 @@ public abstract class MBBolt extends TransactionalBolt {
         long bid = in.getBID();
 
         MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
-        event.setValues(event.getKeys());
+
         Long timestamp;//in.getLong(1);
 
         if (enable_latency_measurement)

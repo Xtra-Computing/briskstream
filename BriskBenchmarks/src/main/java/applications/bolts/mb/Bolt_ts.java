@@ -151,23 +151,22 @@ public class Bolt_ts extends MBBolt {
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
         } else {
 
-            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
             long bid = in.getBID();
 
 
             MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
 
-            event.setValues(event.getKeys());
-
             long timestamp;
-            if (enable_latency_measurement)
+            if (enable_latency_measurement) {
                 timestamp = in.getLong(0);
-            else
+                (event).setTimestamp(timestamp);
+            } else
                 timestamp = 0L;//
 
             boolean flag = event.READ_EVENT();
-            (event).setTimestamp(timestamp);
-            END_PREPARE_TIME_MEASURE_TS(thread_Id);
+
+//            END_PREPARE_TIME_MEASURE_TS(thread_Id);
 
             if (flag) {
                 read_handle(event, timestamp);
