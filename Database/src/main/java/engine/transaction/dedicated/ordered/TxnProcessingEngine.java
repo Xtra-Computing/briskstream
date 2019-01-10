@@ -285,6 +285,11 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
         }
+
+        if( operation.record_ref.cnt==0){
+            System.out.println("Not assigning");
+            System.exit(-1);
+        }
     }
 
 

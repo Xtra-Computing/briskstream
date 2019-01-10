@@ -107,7 +107,7 @@ public class CTBolt_ts extends CTBolt {
         transactionManager.Asy_ModifyRecord_Read(txn_context,
                 "accounts",
                 event.getSourceAccountId()
-                , event.src_account_value,
+                , event.src_account_value,//to be fill up.
                 new DEC(event.getAccountTransfer()),
                 srcTable, srcID,//condition source, condition id.
                 new Condition(event.getMinAccountBalance(),
@@ -124,7 +124,7 @@ public class CTBolt_ts extends CTBolt {
         transactionManager.Asy_ModifyRecord_Read(txn_context,
                 "accounts",
                 event.getTargetAccountId()
-                , event.dst_account_value,
+                , event.dst_account_value,//to be fill up.
                 new INC(event.getAccountTransfer()),
                 srcTable, srcID//condition source, condition id.
                 , new Condition(event.getMinAccountBalance(),
