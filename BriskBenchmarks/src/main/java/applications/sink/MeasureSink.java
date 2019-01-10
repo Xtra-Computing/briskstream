@@ -17,8 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.enable_latency_measurement;
+import static applications.CONTROL.*;
 import static applications.Constants.STAT_Path;
 
 public class MeasureSink extends BaseSink {
@@ -133,7 +132,8 @@ public class MeasureSink extends BaseSink {
         } else if (cnt == (NUM_EVENTS - 1)) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
-            LOG.info("Received:" + cnt + " throughput:" + results);
+            if (!enable_engine)//performance measure for TStream is different.
+                LOG.info("Received:" + cnt + " throughput:" + results);
             if (thisTaskId == graph.getSink().getExecutorID()) {
                 measure_end();
             }
