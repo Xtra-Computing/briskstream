@@ -20,35 +20,32 @@ public class State {
         switch (config.getString("application")) {
 
             case "OnlineBiding": {
-                floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
-                partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
-                for (int i = 0; i < tthread; i++) {
-                    partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
-                }
+                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
                 break;
             }
             case "CrossTables": {
-                floor_interval = (int) Math.floor(NUM_ACCOUNTS / (double) tthread);//NUM_ITEMS / tthread;
-                partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
-                for (int i = 0; i < tthread; i++) {
-                    partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
-                }
+                configure_store(scale_factor, theta, tthread, NUM_ACCOUNTS);
                 break;
             }
             case "MicroBenchmark": {
 
-                if (enable_states_partition) {
-                    floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
-                    partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
-                    for (int i = 0; i < tthread; i++) {
-                        partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
-                    }
-                } else {
-                    shared_store = new FastZipfGenerator((int) (NUM_ITEMS * scale_factor), theta, 0);
-                }
+                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
                 break;
             }
 
+        }
+    }
+
+    private static void configure_store(double scale_factor, double theta, int tthread, int numItems) {
+        int floor_interval;
+        if (enable_states_partition) {
+            floor_interval = (int) Math.floor(numItems / (double) tthread);//NUM_ITEMS / tthread;
+            partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
+            for (int i = 0; i < tthread; i++) {
+                partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
+            }
+        } else {
+            shared_store = new FastZipfGenerator((int) (numItems * scale_factor), theta, 0);
         }
     }
 }

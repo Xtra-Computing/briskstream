@@ -241,7 +241,8 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                ;
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;

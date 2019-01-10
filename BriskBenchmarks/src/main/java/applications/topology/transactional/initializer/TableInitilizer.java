@@ -139,7 +139,7 @@ public abstract class TableInitilizer {
 
             FastZipfGenerator generator;
             if (enable_states_partition)
-            generator = partioned_store[pid];
+                generator = partioned_store[pid];
             else
                 generator = shared_store;
 

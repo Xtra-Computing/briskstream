@@ -27,9 +27,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.CrossTableConstants.Constant.*;
 import static applications.topology.transactional.State.partioned_store;
+import static applications.topology.transactional.State.shared_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static utils.PartitionHelper.getPartition_interval;
 import static xerial.jnuma.Numa.setLocalAlloc;
@@ -272,12 +274,14 @@ public class CTInitializer extends TableInitilizer {
 
     @Override
     protected boolean load(String file) throws IOException {
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
-        if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
+        if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
 
         Scanner sc;
-        sc = new Scanner(new File(Event_Path + OsUtils.OS_wrapper(file)));
+        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
 
         Object event = null;
         while (sc.hasNextLine()) {
@@ -316,11 +320,18 @@ public class CTInitializer extends TableInitilizer {
 
     @Override
     protected void dump(String file_name) throws IOException {
-        File file = new File(Event_Path);
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+
+
+        File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
 
         BufferedWriter w;
-        w = new BufferedWriter(new FileWriter(new File(Event_Path + OsUtils.OS_wrapper(file_name))));
+        w = new BufferedWriter(new FileWriter(new File(
+                event_path
+                        + OsUtils.OS_wrapper(file_name)
+        )));
 
         for (Object event : db.eventManager.input_events) {
 
@@ -374,10 +385,6 @@ public class CTInitializer extends TableInitilizer {
     }
 
 
-
-
-
-
     private Object randomTransactionEvent(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
         final long accountsTransfer = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
         final long transfer = rnd.nextLong(MAX_BOOK_TRANSFER);
@@ -385,7 +392,13 @@ public class CTInitializer extends TableInitilizer {
         while (!Thread.currentThread().isInterrupted()) {
             int _pid = partition_id;
 
-            final int sourceAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+
+            final int sourceAcct;
+            if (enable_states_partition)
+                sourceAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+            else
+                sourceAcct = shared_store.next();//rnd.nextInt(account_range) + partition_offset;
+
 
             if (number_of_partitions > 1) {//multi-partition
                 _pid++;
@@ -393,7 +406,13 @@ public class CTInitializer extends TableInitilizer {
                     _pid = 0;
             }
 
-            final int targetAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+            final int targetAcct;
+
+            if (enable_states_partition)
+                targetAcct = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+            else
+                targetAcct = shared_store.next();//rnd.nextInt(account_range) + partition_offset;
+
 
             if (number_of_partitions > 1) {//multi-partition
                 _pid++;
@@ -401,7 +420,11 @@ public class CTInitializer extends TableInitilizer {
                     _pid = 0;
             }
 
-            final int sourceBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+            final int sourceBook;
+            if (enable_states_partition)
+                sourceBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+            else
+                sourceBook = shared_store.next();//rnd.nextInt(account_range) + partition_offset;
 
             if (number_of_partitions > 1) {//multi-partition
                 _pid++;
@@ -409,7 +432,11 @@ public class CTInitializer extends TableInitilizer {
                     _pid = 0;
             }
 
-            final int targetBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+            final int targetBook;
+            if (enable_states_partition)
+                targetBook = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+            else
+                targetBook = shared_store.next();//rnd.nextInt(asset_range) + partition_offset;
 
             if (sourceAcct == targetAcct || sourceBook == targetBook) {
                 continue;
@@ -437,8 +464,11 @@ public class CTInitializer extends TableInitilizer {
 
         int _pid = partition_id;
 
-        //key
-        final int account = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+        final int account; //key
+        if (enable_states_partition)
+            account = partioned_store[_pid].next();//rnd.nextInt(account_range) + partition_offset;
+        else
+            account = shared_store.next();//rnd.nextInt(account_range) + partition_offset;
 
         if (number_of_partitions > 1) {//multi-partition
             _pid++;
@@ -446,8 +476,11 @@ public class CTInitializer extends TableInitilizer {
                 _pid = 0;
         }
 
-        final int book = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
-
+        final int book;
+        if (enable_states_partition)
+            book = partioned_store[_pid].next();//rnd.nextInt(asset_range) + partition_offset;
+        else
+            book = shared_store.next();//rnd.nextInt(account_range) + partition_offset;
 
         //value_list
         final long accountsDeposit = rnd.nextLong(MAX_ACCOUNT_TRANSFER);
