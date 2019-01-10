@@ -98,13 +98,12 @@ public class SIMPLETxnSpout extends TransactionalSpout {
 //    }
 
     private void control_emit() throws InterruptedException {
-        if (control < target_Hz) {
+        if (control < target_Hz && success) {
 
             if (enable_latency_measurement)
-                collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                collector.emit_single(bid++, System.nanoTime());//combined R/W executor.
             else
-                collector.emit_single(bid);//combined R/W executor.
-
+                collector.emit_single(bid++);//combined R/W executor.
             control++;
         } else
             empty++;
@@ -121,12 +120,12 @@ public class SIMPLETxnSpout extends TransactionalSpout {
                 control_emit();
             } else {
                 if (enable_latency_measurement)
-                    collector.emit_single(bid, System.nanoTime());//combined R/W executor.
+                    collector.emit_single(bid++, System.nanoTime());//combined R/W executor.
                 else
-                    collector.emit_single(bid);//combined R/W executor.
+                    collector.emit_single(bid++);//combined R/W executor.
             }
 //            LOG.info("Emit:" + bid);
-            bid++;
+
         }
     }
 
