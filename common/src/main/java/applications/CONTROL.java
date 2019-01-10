@@ -8,7 +8,7 @@ public interface CONTROL {
     //db related.
     boolean enable_shared_state = true;
 
-    boolean enable_states_partition = false;//only enable for PAT.
+    boolean enable_states_partition = true;//only enable for PAT.
 
     //latency related.
     boolean enable_admission_control = true;//only enable for TStream
