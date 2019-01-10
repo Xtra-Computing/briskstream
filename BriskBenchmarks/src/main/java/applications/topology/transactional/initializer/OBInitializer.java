@@ -4,7 +4,6 @@ import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.OBParam;
 import applications.param.ob.ToppingEvent;
-import applications.tools.FastZipfGenerator;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -29,9 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.OnlineBidingSystemConstants.Constant.*;
-import static applications.topology.transactional.State.partioned_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
@@ -229,11 +228,11 @@ public class OBInitializer extends TableInitilizer {
 
         randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES_PER_BUY);
 
-        assert verify(keys, partition_id, number_of_partitions);
+        if (enable_states_partition)
+            assert verify(keys, partition_id, number_of_partitions);
 
         return new BuyingEvent(param.keys(), rnd, partition_id, bid_array, bid, number_of_partitions);
     }
-
 
 
     protected AlertEvent randomAlertEvents(int partition_id, long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
@@ -312,12 +311,14 @@ public class OBInitializer extends TableInitilizer {
 
     @Override
     protected boolean load(String file) throws IOException {
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
-        if (Files.notExists(Paths.get(Event_Path + OsUtils.OS_wrapper(file))))
+        if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
 
         Scanner sc;
-        sc = new Scanner(new File(Event_Path + OsUtils.OS_wrapper(file)));
+        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
 
         Object event;
         while (sc.hasNextLine()) {
@@ -364,12 +365,14 @@ public class OBInitializer extends TableInitilizer {
 
     @Override
     protected void dump(String file_name) throws IOException {
+        String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
-        File file = new File(Event_Path);
+        File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
 
         BufferedWriter w;
-        w = new BufferedWriter(new FileWriter(new File(Event_Path + OsUtils.OS_wrapper(file_name))));
+        w = new BufferedWriter(new FileWriter(new File(event_path + OsUtils.OS_wrapper(file_name))));
 
         for (Object event : db.eventManager.input_events) {
 
