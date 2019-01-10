@@ -143,8 +143,8 @@ public final class TxnProcessingEngine {
         if (preValues1 == null) {
             LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
             LOG.info("Its version size:" + ((T_StreamContent) operation.condition_records[1].content_).versions.size());
-            for (SchemaRecord schemaRecord : ((T_StreamContent) operation.condition_records[1].content_).versions.values()) {
-                LOG.info("Its contents:" + schemaRecord.GetPrimaryKey());
+            for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[1].content_).versions.entrySet()) {
+                LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
             }
 
 
