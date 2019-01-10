@@ -23,9 +23,9 @@ public interface CONTROL {
 
     //engine related.
     boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.
-    boolean enable_work_stealing = true;//2. this is a sub-option, only useful when engine is enabled.
-    boolean enable_mvcc = true; // always enabled in CT and enable if work_stealing is enabled.
-    boolean enable_numa_placement = true;//3. numa placement.
+    boolean enable_work_stealing = false;//2. this is a sub-option, only useful when engine is enabled.
+    boolean enable_mvcc = false; // always enabled in CT and enable if work_stealing is enabled.
+    boolean enable_numa_placement = false;//3. numa placement.
     boolean enable_speculative = false;//work in future!
 
     //used for fixed-partition engine (no work-stealing).
