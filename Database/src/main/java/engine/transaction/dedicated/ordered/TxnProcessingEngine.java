@@ -139,6 +139,11 @@ public final class TxnProcessingEngine {
 
         if (preValues == null) {
             LOG.info("Failed to read condition records[0]" + operation.condition_records[0].record_.GetPrimaryKey());
+            LOG.info("Its version size:" + ((T_StreamContent) operation.condition_records[0].content_).versions.size());
+            for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[0].content_).versions.entrySet()) {
+                LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
+            }
+            LOG.info("TRY reading:"+ ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
         }
         if (preValues1 == null) {
             LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
@@ -146,8 +151,7 @@ public final class TxnProcessingEngine {
             for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[1].content_).versions.entrySet()) {
                 LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
             }
-
-
+            LOG.info("TRY reading:"+ ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
         }
 
         final long sourceAccountBalance = preValues.getValues().get(1).getLong();
