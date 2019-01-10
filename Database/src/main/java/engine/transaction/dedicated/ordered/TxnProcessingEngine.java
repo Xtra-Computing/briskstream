@@ -2,6 +2,7 @@ package engine.transaction.dedicated.ordered;
 
 import applications.util.OsUtils;
 import engine.common.Operation;
+import engine.content.T_StreamContent;
 import engine.index.high_scale_lib.ConcurrentHashMap;
 import engine.profiler.Metrics;
 import engine.storage.SchemaRecord;
@@ -141,6 +142,8 @@ public final class TxnProcessingEngine {
         }
         if (preValues1 == null) {
             LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
+            LOG.info("Its version size:" + ((T_StreamContent) operation.condition_records[1].content_).versions.size());
+
         }
 
         final long sourceAccountBalance = preValues.getValues().get(1).getLong();
