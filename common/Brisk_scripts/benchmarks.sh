@@ -625,7 +625,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 0.05 #0.025 0.05 0.1 0.25 0.5 0.75 1
+                                        for checkpoint in 0.1 #0.025 0.05 0.1 0.25 0.5 0.75 1
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
@@ -645,7 +645,7 @@ do
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
-#                                            CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                           CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -672,7 +672,7 @@ do
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 0.05 #0.05 0.1 0.25 0.5 0.75
+                                        for checkpoint in 0.1 #0.025 0.05 0.1 0.25 0.5 0.75
                                         do
                                             TP=$tt
                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
