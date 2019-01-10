@@ -613,7 +613,7 @@ do
                 app="CrossTables"
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.6 #0.8
+                    for theta in 0.8
                     do
                         for tt in 2 8 16 24 32 38
                         do
@@ -672,7 +672,7 @@ do
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 0.1 #0.025 0.05 0.1 0.25 0.5 0.75
+                                        for checkpoint in 0.025 0.05 0.1 0.25 0.5 0.75
                                         do
                                             TP=$tt
                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
@@ -689,7 +689,7 @@ do
                                         for checkpoint in 1
                                         do
                                              TP=$tt
-                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
