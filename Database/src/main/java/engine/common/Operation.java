@@ -18,7 +18,7 @@ public class Operation implements Comparable<Operation> {
     public final MetaTypes.AccessType accessType;
 
     public final TxnContext txn_context;
-    public final SchemaRecordRef record_ref;//required by read-only: the place holder of the reading d_record.
+    public volatile SchemaRecordRef record_ref;//required by read-only: the place holder of the reading d_record.
     public final long bid;
     //required by READ_WRITE_and Condition.
     public final Function function;
