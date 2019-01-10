@@ -242,7 +242,7 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                ;
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
@@ -284,7 +284,8 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
 
         File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
