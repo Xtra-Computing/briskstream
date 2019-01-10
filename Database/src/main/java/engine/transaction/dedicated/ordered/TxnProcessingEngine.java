@@ -137,10 +137,10 @@ public final class TxnProcessingEngine {
         SchemaRecord preValues1 = operation.condition_records[1].content_.readPreValues(operation.bid);
 
         if (preValues == null) {
-            LOG.info("Failed to read condition records[0]" + operation.d_record.record_.GetPrimaryKey());
+            LOG.info("Failed to read condition records[0]" + operation.condition_records[0].record_.GetPrimaryKey());
         }
         if (preValues1 == null) {
-            LOG.info("Failed to read condition records[1]" + operation.d_record.record_.GetPrimaryKey());
+            LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
         }
 
         final long sourceAccountBalance = preValues.getValues().get(1).getLong();
