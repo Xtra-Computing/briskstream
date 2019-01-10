@@ -1,5 +1,7 @@
 package engine.storage;
 
+import java.util.Arrays;
+
 /**
  * A hack ref to SchemaRecord, simulating C++ pointer.
  */
@@ -15,7 +17,7 @@ public class SchemaRecordRef {
 
     public SchemaRecord getRecord() {
         if (cnt == 0) {
-            System.out.println("The record has not being assigned yet!");
+            System.out.println("The record has not being assigned yet!" + Arrays.toString(Thread.currentThread().getStackTrace()));
             System.exit(-1);
         }
         return record;
