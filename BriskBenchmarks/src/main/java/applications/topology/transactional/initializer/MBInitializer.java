@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
@@ -236,13 +237,15 @@ public class MBInitializer extends TableInitilizer {
         double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
 
         String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
                 + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(ratio_of_multi_partition))
                 + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions))
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS))
+                ;
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
@@ -279,13 +282,15 @@ public class MBInitializer extends TableInitilizer {
         double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
 
         String event_path = Event_Path
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
                 + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(ratio_of_multi_partition))
                 + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions))
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS))
+                ;
 
         File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist
