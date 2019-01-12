@@ -55,5 +55,5 @@ If you use BriskStream in your paper, please cite our work.
 
 ### Other related publications
 
-* **Shuhao Zhang**, Bingsheng He, Daniel Dahlmeier, Amelie Chi Zhou, Thomas Heinze. Revisiting the design of data stream processing systems on multi-core processors, ICDE, 2017
+* **Shuhao Zhang**, Bingsheng He, Daniel Dahlmeier, Amelie Chi Zhou, Thomas Heinze. Revisiting the design of data stream processing systems on multi-core processors, ICDE, 2017 (code: https://github.com/ShuhaoZhangTony/ProfilingStudy)
 
