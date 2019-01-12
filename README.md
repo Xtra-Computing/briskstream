@@ -16,7 +16,7 @@ Each executor owns a partition controller (PC), i.e., Shuffle PC or Fields PC et
 Each executor may need to fetch from multiple different input queues (Multiple stream, multiple operator and multiple executors). The sequence of tuple fetching may affect the final processing latency of a tuple. The system now support two types of scheduling strategy: 1) sequential (default config), which sequentially looks through each stream, each operator and each executor; 2) uniform, which gives equal chance of look up at different input channel.
 ### Stream processing model
 There are two popular stream processing model nowadays: 1) Discretized stream processing model and 2) Continuous stream processing model.
-We select the later one because our target is to minimize process latency, yet we sacrify other things: fault tolerence, scale-out capability and so on.
+We select the later one because our target is to minimize process latency.
 
 ## Install and Dependencies
 ### Overseer
@@ -32,7 +32,7 @@ numactl
 classmexer
 
 ### Project Status
-BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management).
+BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
