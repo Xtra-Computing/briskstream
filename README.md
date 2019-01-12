@@ -1,6 +1,6 @@
 # BriskStream
 ## What?
-This project aims at building scalable data stream processing system on modern multicore architectures, with an API similar to Storm.
+This project aims at building scalable data stream processing system on modern multicore architectures, with an API similar to Storm (Heron).
 
 ## Why?
 One of the trend in computer architecture is putting more and more processors into a single server.
@@ -30,9 +30,9 @@ If you don't have sudo, you have to install all the corresponding dependencies i
 ### Others
 numactl
 
-### Version
-The current version of BriskStream is 1.2
-The original history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/.
+### Project Status
+BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management).
+The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
 ### How to cite BriskStream
 
