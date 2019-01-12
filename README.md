@@ -27,8 +27,9 @@ sudo make install
 After that, you have to copy the overseer.jar into briskstream/common/lib/ and call "mvn validate" to install the library.
 
 If you don't have sudo, you have to install all the corresponding dependencies in your home directory, and modify the reference path accordingly.
-### Others
+### Other dependencies
 numactl
+classmexer
 
 ### Project Status
 BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management).
