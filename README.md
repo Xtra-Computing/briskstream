@@ -31,12 +31,12 @@ If you don't have sudo, you have to install all the corresponding dependencies i
 numactl
 classmexer
 
-### Project Status
+## Project Status
 BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
-### How to cite BriskStream
+## How to cite BriskStream
 
 If you use BriskStream in your paper, please cite our work.
 
