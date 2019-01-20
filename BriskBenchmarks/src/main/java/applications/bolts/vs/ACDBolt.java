@@ -42,6 +42,28 @@ public class ACDBolt extends AbstractScoreBolt {
         return streams;
     }
 
+    private void update(Source src, long bid, CallDetailRecord cdr, String number, long timestamp, double rate, String key) throws InterruptedException {
+        if (map.containsKey(key)) {
+            Entry e = map.get(key);
+            e.set(src, rate);
+
+            if (e.isFull()) {
+                // calculate the score for the ratio
+                double ratio = (e.get(Source.CT24) / e.get(Source.ECR24)) / avg;
+                double score = score(thresholdMin, thresholdMax, ratio);
+
+                LOG.debug(String.format("T1=%f; T2=%f; CT24=%f; ECR24=%f; AvgCallDur=%f; Ratio=%f; Score=%f", thresholdMin, thresholdMax, e.get(Source.CT24), e.get(Source.ECR24), avg, ratio, score));
+//                    cnt1++;
+                collector.emit(ACD_STREAM_ID, bid, new StreamValues(number, timestamp, score, cdr));
+                map.remove(key);
+            }
+        } else {
+            Entry e = new Entry(cdr);
+            e.set(src, rate);
+            map.put(key, e);
+        }
+    }
+
     @Override
     public void execute(Tuple in) throws InterruptedException {
 //        cnt++;
@@ -59,29 +81,13 @@ public class ACDBolt extends AbstractScoreBolt {
 
             String key = String.format("%s:%d", number, timestamp);
 
-            if (map.containsKey(key)) {
-                Entry e = map.get(key);
-                e.set(src, rate);
-
-                if (e.isFull()) {
-                    // calculate the score for the ratio
-                    double ratio = (e.get(Source.CT24) / e.get(Source.ECR24)) / avg;
-                    double score = score(thresholdMin, thresholdMax, ratio);
-
-                    LOG.debug(String.format("T1=%f; T2=%f; CT24=%f; ECR24=%f; AvgCallDur=%f; Ratio=%f; Score=%f", thresholdMin, thresholdMax, e.get(Source.CT24), e.get(Source.ECR24), avg, ratio, score));
-//                    cnt1++;
-                    collector.emit(ACD_STREAM_ID, bid, new StreamValues(number, timestamp, score, cdr));
-                    map.remove(key);
-                }
-            } else {
-                Entry e = new Entry(cdr);
-                e.set(src, rate);
-                map.put(key, e);
-            }
+            update(src, bid, cdr, number, timestamp, rate, key);
         }
 //        if (stat != null) stat.end_measure();
 //        double i = cnt1 / cnt;
     }
+
+
 
     @Override
     public void execute(TransferTuple in) throws InterruptedException {
@@ -103,25 +109,7 @@ public class ACDBolt extends AbstractScoreBolt {
 
                 String key = String.format("%s:%d", number, timestamp);
 
-                if (map.containsKey(key)) {
-                    Entry e = map.get(key);
-                    e.set(src, rate);
-
-                    if (e.isFull()) {
-                        // calculate the score for the ratio
-                        double ratio = (e.get(Source.CT24) / e.get(Source.ECR24)) / avg;
-                        double score = score(thresholdMin, thresholdMax, ratio);
-
-                        LOG.debug(String.format("T1=%f; T2=%f; CT24=%f; ECR24=%f; AvgCallDur=%f; Ratio=%f; Score=%f", thresholdMin, thresholdMax, e.get(Source.CT24), e.get(Source.ECR24), avg, ratio, score));
-//                    cnt1++;
-                        collector.emit(ACD_STREAM_ID, bid, new StreamValues(number, timestamp, score, cdr));
-                        map.remove(key);
-                    }
-                } else {
-                    Entry e = new Entry(cdr);
-                    e.set(src, rate);
-                    map.put(key, e);
-                }
+                update(src, bid, cdr, number, timestamp, rate, key);
             }
 
         }

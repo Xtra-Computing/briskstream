@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoadGridList {
-    private HashMap<String, RoadList> gridList = new HashMap<>();
+    private HashMap<String, RoadList> gridList;//hashmap to store all states.
     private String idKey;
     private String widthKey;
 
@@ -50,6 +50,12 @@ public class RoadGridList {
         return false;
     }
 
+    /**
+     * @param path
+     * @return
+     * @throws IOException
+     * @throws SQLException
+     */
     private HashMap<String, RoadList> read(String path) throws IOException, SQLException {
         File file = new File(System.getProperty("user.home").concat("/Documents/data/app/").concat(path));
 
@@ -95,11 +101,22 @@ public class RoadGridList {
         return gridList;
     }
 
-    public int fetchRoadID(Point p) throws SQLException {
+    /**
+     * Iterate through the hashmap is very costly.
+     * Its computation is highly dependent on input tuple.
+     * Can we turn it into constant and small look up time?
+     * This application is actually simple because only look up no alert.
+     * Map look up. R-index is required.
+     *
+     * @param point
+     * @return
+     * @throws SQLException
+     */
+    public int fetchRoadID(Point point) throws SQLException {
         int lastMiniRoadID = -2;
 
-        Integer mapID_lon = (int) (p.getX() * 10);
-        Integer mapID_lan = (int) (p.getY() * 10);
+        Integer mapID_lon = (int) (point.getX() * 10);
+        Integer mapID_lan = (int) (point.getY() * 10);
         String mapID = mapID_lan.toString() + "_" + mapID_lon.toString();
         double minD = Double.MAX_VALUE;
         int width = 0;
@@ -134,7 +151,7 @@ public class RoadGridList {
 
                     int n = ps.size();
                     for (int i = 0; i < n - 1; i++) {
-                        double distance = Polygon.pointToLine(ps.get(i).getX(), ps.get(i).getY(), ps.get(i + 1).getX(), ps.get(i + 1).getY(), p.getX(), p.getY()) * 111.2 * 1000;
+                        double distance = Polygon.pointToLine(ps.get(i).getX(), ps.get(i).getY(), ps.get(i + 1).getX(), ps.get(i + 1).getY(), point.getX(), point.getY()) * 111.2 * 1000;
 
                         if (distance < width) {
                             //System.out.printf("\ngridCount:%2d  roadCount:%5d  LessWidth,dist=%7.3f ",gridCount,roadCount,distance);
@@ -159,8 +176,8 @@ public class RoadGridList {
     }
 
     public class RoadList extends ArrayList<SimpleFeature> {
-		private static final long serialVersionUID = -8972497496447564645L;
-		SimpleFeature road;
+        private static final long serialVersionUID = -8972497496447564645L;
+        SimpleFeature road;
 
         RoadList() {
         }

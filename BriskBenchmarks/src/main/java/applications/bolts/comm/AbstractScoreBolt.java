@@ -75,7 +75,7 @@ public abstract class AbstractScoreBolt extends filterBolt {
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
-        map = new HashMap<>();
+        map = new HashMap<>();//when this is too large..
 
         // parameters
         if (configPrefix != null) {
