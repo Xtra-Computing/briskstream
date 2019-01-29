@@ -53,6 +53,12 @@ public class URLBolt extends AbstractScoreBolt {
         String key = String.format("%s:%d", number, timestamp);
         Source src = parseComponentId(in.getSourceComponent());
 
+        map_update(bid, cdr, number, timestamp, rate, key, src);
+//        double i = cnt1 / cnt;
+//        if (stat != null) stat.end_measure();
+    }
+
+    private void map_update(long bid, CallDetailRecord cdr, String number, long timestamp, double rate, String key, Source src) throws InterruptedException {
         if (map.containsKey(key)) {
             Entry e = map.get(key);
             e.set(src, rate);
@@ -76,8 +82,6 @@ public class URLBolt extends AbstractScoreBolt {
             e.set(src, rate);
             map.put(key, e);
         }
-//        double i = cnt1 / cnt;
-//        if (stat != null) stat.end_measure();
     }
 
     @Override
@@ -93,29 +97,7 @@ public class URLBolt extends AbstractScoreBolt {
             String key = String.format("%s:%d", number, timestamp);
             Source src = parseComponentId(in.getSourceComponent());
 
-            if (map.containsKey(key)) {
-                Entry e = map.get(key);
-                e.set(src, rate);
-
-                if (e.isFull()) {
-                    // calculate the score for the ratio
-                    double ratio = (e.get(Source.ENCR) / e.get(Source.ECR));
-                    double score = score(thresholdMin, thresholdMax, ratio);
-
-                    ////LOG.DEBUG(String.format("T1=%f; T2=%f; ENCR=%f; ECR=%f; Ratio=%f; Score=%f",
-                    //        thresholdMin, thresholdMax, e.get(Source.ENCR), e.get(Source.ECR), ratio, score));
-//                cnt1++;
-                    collector.emit(URL_STREAM_ID, bid, new StreamValues(number, timestamp, score, cdr));
-                    map.remove(key);
-                } else {
-                    //LOG.warn(String.format("Inconsistent entry: source=%s; %s",
-                    //       in.getSourceComponent(), e.show()));
-                }
-            } else {
-                Entry e = new Entry(cdr);
-                e.set(src, rate);
-                map.put(key, e);
-            }
+            map_update(bid, cdr, number, timestamp, rate, key, src);
         }
     }
 

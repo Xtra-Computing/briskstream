@@ -25,7 +25,7 @@ public class WordCountBolt extends MapBolt {
 //    private static final String splitregex = " ";
 //    private static LinkedList<String> logger = new LinkedList<String>();
 //	private final Map<String, MutableLong> counts = new HashMap<>();
-    private final Map<Integer, Long> counts = new HashMap<>();
+    private final Map<Integer, Long> counts = new HashMap<>();//what if memory is not enough to hold counts?
 
     public WordCountBolt() {
         super(LOG);

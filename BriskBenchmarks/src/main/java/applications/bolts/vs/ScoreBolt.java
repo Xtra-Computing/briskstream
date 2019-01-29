@@ -84,6 +84,19 @@ public class ScoreBolt extends AbstractScoreBolt {
         double score = in.getDouble(2);
         String key = String.format("%s:%d", caller, timestamp);
 
+        update_map(bid, cdr, src, caller, timestamp, score, key);
+
+
+//        double i = cnt1 / cnt;
+//        if (stat != null) stat.end_measure();
+
+//        if (cnt % 10000 == 0)
+//            LOG.info("ScoreBolt received: " + cnt + "(" + ((cnt1 + cnt2 + cnt3) / cnt) + ")" + " tuple"
+//                    + "\tand emit1:" + cnt1 + "(" + (cnt1 / cnt) + ")" + "\temit2:" + cnt2 + "(" + (cnt2 / cnt) + ")" + "\temit3:" + cnt3 + "(" + (cnt3 / cnt) + ")");
+
+    }
+
+    private void update_map(long bid, CallDetailRecord cdr, Source src, String caller, long timestamp, double score, String key) throws InterruptedException {
         if (map.containsKey(key)) {
             Entry e = map.get(key);
 
@@ -107,15 +120,6 @@ public class ScoreBolt extends AbstractScoreBolt {
 //            cnt1++;
             collector.emit(bid, new StreamValues(caller, timestamp, 0, cdr));//3.64%
         }
-
-
-//        double i = cnt1 / cnt;
-//        if (stat != null) stat.end_measure();
-
-//        if (cnt % 10000 == 0)
-//            LOG.info("ScoreBolt received: " + cnt + "(" + ((cnt1 + cnt2 + cnt3) / cnt) + ")" + " tuple"
-//                    + "\tand emit1:" + cnt1 + "(" + (cnt1 / cnt) + ")" + "\temit2:" + cnt2 + "(" + (cnt2 / cnt) + ")" + "\temit3:" + cnt3 + "(" + (cnt3 / cnt) + ")");
-
     }
 
     @Override
@@ -130,29 +134,7 @@ public class ScoreBolt extends AbstractScoreBolt {
             double score = in.getDouble(2, i);
             String key = String.format("%s:%d", caller, timestamp);
 
-            if (map.containsKey(key)) {
-                Entry e = map.get(key);
-
-                if (e.isFull()) {
-                    double mainScore = sum(e.getValues(), weights);
-
-                    ////LOG.DEBUG(String.format("Score=%f; Scores=%s", mainScore, Arrays.show(e.getMsg())));
-//                cnt1++;
-                    collector.emit(bid, new StreamValues(caller, timestamp, mainScore, cdr));//0.56%
-                } else {
-//                cnt3++;
-                    e.set(src, score);
-//                cnt1++;
-                    collector.emit(bid, new StreamValues(caller, timestamp, 0, cdr));
-                }
-            } else {
-                Entry e = new Entry(cdr);
-                e.set(src, score);
-                map.put(key, e);
-//            cnt2++;
-//            cnt1++;
-                collector.emit(bid, new StreamValues(caller, timestamp, 0, cdr));//3.64%
-            }
+            update_map(bid, cdr, src, caller, timestamp, score, key);
         }
 
     }
