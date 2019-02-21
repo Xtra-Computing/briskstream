@@ -16,7 +16,7 @@ Each executor owns a partition controller (PC), i.e., Shuffle PC or Fields PC et
 Each executor may need to fetch from multiple different input queues (Multiple stream, multiple operator and multiple executors). The sequence of tuple fetching may affect the final processing latency of a tuple. The system now support two types of scheduling strategy: 1) sequential (default config), which sequentially looks through each stream, each operator and each executor; 2) uniform, which gives equal chance of look up at different input channel.
 ### Stream Processing Model
 There are two popular stream processing model nowadays: 1) Discretized stream processing model and 2) Continuous stream processing model.
-We select the later one because our target is to minimize process latency.
+We select the later one because we aim at building a stream processing system with a truely streaming engine (like Flink).
 
 ## Install and Dependencies
 ### Overseer
