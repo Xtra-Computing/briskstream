@@ -19,8 +19,8 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.util.TimeStampExtractor;
+import applications.datatype.PositionReport;
+import applications.datatype.util.TimeStampExtractor;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

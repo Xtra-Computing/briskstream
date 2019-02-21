@@ -19,10 +19,10 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.internal.AccidentTuple;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.PositionIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.internal.AccidentTuple;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.PositionIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static applications.bolts.lr.datatype.util.LRTopologyControl.ACCIDENTS_STREAM_ID;
+import static applications.datatype.util.LRTopologyControl.ACCIDENTS_STREAM_ID;
 
 /**
  * {@link AccidentDetectionBolt} registers every stopped vehicle and emits accident information for further processing.

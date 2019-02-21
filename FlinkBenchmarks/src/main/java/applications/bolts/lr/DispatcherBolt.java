@@ -19,8 +19,8 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.*;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.*;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

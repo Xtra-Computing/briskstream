@@ -19,11 +19,11 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.internal.AvgSpeedTuple;
-import applications.bolts.lr.datatype.internal.AvgVehicleSpeedTuple;
-import applications.bolts.lr.datatype.internal.LavTuple;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.internal.AvgSpeedTuple;
+import applications.datatype.internal.AvgVehicleSpeedTuple;
+import applications.datatype.internal.LavTuple;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;

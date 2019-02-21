@@ -19,7 +19,7 @@
 package applications.bolts.lr.model;
 
 
-import applications.bolts.lr.datatype.PositionReport;
+import applications.datatype.PositionReport;
 
 /**
  * Immutable version of the Accident object for serialization.

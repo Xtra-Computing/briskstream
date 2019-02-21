@@ -21,9 +21,9 @@ package applications.bolts.lr;
 
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.AccountBalanceRequest;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.AccountBalanceRequest;
+import applications.data.PositionReport;
+import applications.data.util.TopologyControl;
 import applications.models.lr.AccountBalance;
 import applications.models.lr.VehicleAccount;
 import org.apache.storm.task.OutputCollector;

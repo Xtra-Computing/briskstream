@@ -1,7 +1,7 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.bolts.lr.datatype.util.VSTopologyControl;
+import applications.datatype.util.VSTopologyControl;
 import applications.constants.VoIPSTREAMConstants;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.datatypes.StreamValues;

@@ -21,10 +21,10 @@ package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
 import applications.constants.BaseConstants;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.internal.AccidentTuple;
-import applications.bolts.lr.data.util.PositionIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.PositionReport;
+import applications.data.internal.AccidentTuple;
+import applications.data.util.PositionIdentifier;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.bolts.lr.data.util.TopologyControl.ACCIDENTS_STREAM_ID;
+import static applications.data.util.TopologyControl.ACCIDENTS_STREAM_ID;
 
 /**
  * {@link AccidentDetectionBolt_latency} registers every stopped vehicle and emits accident information for further processing.

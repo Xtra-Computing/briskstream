@@ -1,7 +1,7 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.bolts.lr.datatype.util.VSTopologyControl;
+import applications.datatype.util.VSTopologyControl;
 import applications.constants.VoIPSTREAMConstants;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.datatypes.StreamValues;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.bolts.lr.datatype.util.VSTopologyControl.FoFIR_STREAM_ID;
+import static applications.datatype.util.VSTopologyControl.FoFIR_STREAM_ID;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

@@ -21,11 +21,11 @@ package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
 import applications.constants.BaseConstants;
-import applications.bolts.lr.data.internal.AvgSpeedTuple;
-import applications.bolts.lr.data.internal.AvgVehicleSpeedTuple;
-import applications.bolts.lr.data.internal.LavTuple;
-import applications.bolts.lr.data.util.SegmentIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.internal.AvgSpeedTuple;
+import applications.data.internal.AvgVehicleSpeedTuple;
+import applications.data.internal.LavTuple;
+import applications.data.util.SegmentIdentifier;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

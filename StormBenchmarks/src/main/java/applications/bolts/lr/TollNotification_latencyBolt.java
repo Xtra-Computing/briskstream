@@ -21,15 +21,15 @@ package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
 import applications.constants.BaseConstants;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.TollNotification;
-import applications.bolts.lr.data.internal.AccidentTuple;
-import applications.bolts.lr.data.internal.CountTuple;
-import applications.bolts.lr.data.internal.LavTuple;
-import applications.bolts.lr.data.util.Constants;
-import applications.bolts.lr.data.util.ISegmentIdentifier;
-import applications.bolts.lr.data.util.SegmentIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.PositionReport;
+import applications.data.TollNotification;
+import applications.data.internal.AccidentTuple;
+import applications.data.internal.CountTuple;
+import applications.data.internal.LavTuple;
+import applications.data.util.Constants;
+import applications.data.util.ISegmentIdentifier;
+import applications.data.util.SegmentIdentifier;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
@@ -41,8 +41,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.bolts.lr.data.util.TopologyControl.CAR_COUNTS_STREAM_ID;
-import static applications.bolts.lr.data.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
+import static applications.data.util.TopologyControl.CAR_COUNTS_STREAM_ID;
+import static applications.data.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
 
 /**
  * {@link TollNotification_latencyBolt} calculates the toll for each vehicle and reports it back to the vehicle if a vehicle

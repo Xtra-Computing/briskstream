@@ -19,7 +19,7 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.util.TimeStampExtractor;
+import applications.datatype.util.TimeStampExtractor;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.grouping.Grouping;

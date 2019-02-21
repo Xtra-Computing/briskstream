@@ -19,8 +19,8 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.*;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
+import applications.datatype.*;
+import applications.datatype.util.LRTopologyControl;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-import static applications.bolts.lr.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
+import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
 
 
 /**

@@ -19,15 +19,15 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.TollNotification;
-import applications.bolts.lr.datatype.internal.AccidentTuple;
-import applications.bolts.lr.datatype.internal.CountTuple;
-import applications.bolts.lr.datatype.internal.LavTuple;
-import applications.bolts.lr.datatype.util.Constants;
-import applications.bolts.lr.datatype.util.ISegmentIdentifier;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.TollNotification;
+import applications.datatype.internal.AccidentTuple;
+import applications.datatype.internal.CountTuple;
+import applications.datatype.internal.LavTuple;
+import applications.datatype.util.Constants;
+import applications.datatype.util.ISegmentIdentifier;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
@@ -40,8 +40,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static applications.bolts.lr.datatype.util.LRTopologyControl.CAR_COUNTS_STREAM_ID;
-import static applications.bolts.lr.datatype.util.LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
+import static applications.datatype.util.LRTopologyControl.CAR_COUNTS_STREAM_ID;
+import static applications.datatype.util.LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
 
 /**
  * {@link TollNotificationBolt} calculates the toll for each vehicle and reports it back to the vehicle if a vehicle

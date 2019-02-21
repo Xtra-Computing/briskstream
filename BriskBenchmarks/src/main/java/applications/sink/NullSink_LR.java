@@ -1,6 +1,6 @@
 package applications.sink;
 
-import applications.bolts.lr.datatype.util.LRTopologyControl;
+import applications.datatype.util.LRTopologyControl;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;

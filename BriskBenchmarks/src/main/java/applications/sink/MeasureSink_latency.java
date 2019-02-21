@@ -1,7 +1,7 @@
 package applications.sink;
 
 import applications.Constants;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
+import applications.datatype.util.LRTopologyControl;
 import applications.sink.helper.stable_sink_helper;
 import applications.util.Configuration;
 import applications.util.OsUtils;

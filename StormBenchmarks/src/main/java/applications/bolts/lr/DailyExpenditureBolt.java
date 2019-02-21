@@ -20,12 +20,12 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.AbstractLRBTuple;
-import applications.bolts.lr.data.DailyExpenditureRequest;
-import applications.bolts.lr.data.toll.MemoryTollDataStore;
-import applications.bolts.lr.data.toll.TollDataStore;
-import applications.bolts.lr.data.util.Constants;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.AbstractLRBTuple;
+import applications.data.DailyExpenditureRequest;
+import applications.data.toll.MemoryTollDataStore;
+import applications.data.toll.TollDataStore;
+import applications.data.util.Constants;
+import applications.data.util.TopologyControl;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import applications.util.events.HistoryEvent;

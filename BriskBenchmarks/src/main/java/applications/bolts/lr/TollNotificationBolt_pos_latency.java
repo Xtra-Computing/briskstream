@@ -19,15 +19,15 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.TollNotification;
-import applications.bolts.lr.datatype.internal.AccidentTuple;
-import applications.bolts.lr.datatype.internal.CountTuple;
-import applications.bolts.lr.datatype.internal.LavTuple;
-import applications.bolts.lr.datatype.util.Constants;
-import applications.bolts.lr.datatype.util.ISegmentIdentifier;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.TollNotification;
+import applications.datatype.internal.AccidentTuple;
+import applications.datatype.internal.CountTuple;
+import applications.datatype.internal.LavTuple;
+import applications.datatype.util.Constants;
+import applications.datatype.util.ISegmentIdentifier;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;

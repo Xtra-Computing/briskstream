@@ -20,11 +20,11 @@
 package applications.bolts.lr;
 
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.internal.AvgVehicleSpeedTuple;
-import applications.bolts.lr.datatype.util.AvgValue;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.internal.AvgVehicleSpeedTuple;
+import applications.datatype.util.AvgValue;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import applications.util.Time;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;

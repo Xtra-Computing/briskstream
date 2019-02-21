@@ -20,11 +20,11 @@ package applications.bolts.lr;
 
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.internal.CountTuple;
-import applications.bolts.lr.data.util.CarCount;
-import applications.bolts.lr.data.util.SegmentIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.PositionReport;
+import applications.data.internal.CountTuple;
+import applications.data.util.CarCount;
+import applications.data.util.SegmentIdentifier;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

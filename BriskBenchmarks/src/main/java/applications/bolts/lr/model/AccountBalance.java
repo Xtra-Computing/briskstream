@@ -19,10 +19,10 @@
 package applications.bolts.lr.model;
 
 
-import applications.bolts.lr.datatype.AbstractLRBTuple;
-import applications.bolts.lr.datatype.AbstractOutputTuple;
-import applications.bolts.lr.datatype.AccountBalanceRequest;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
+import applications.datatype.AbstractLRBTuple;
+import applications.datatype.AbstractOutputTuple;
+import applications.datatype.AccountBalanceRequest;
+import applications.datatype.util.LRTopologyControl;
 import brisk.execution.runtime.tuple.impl.Fields;
 
 /**

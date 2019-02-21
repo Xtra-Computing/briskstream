@@ -18,9 +18,9 @@
  */
 package applications.models.lr;
 
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.util.Constants;
-import applications.bolts.lr.data.util.SegmentIdentifier;
+import applications.data.PositionReport;
+import applications.data.util.Constants;
+import applications.data.util.SegmentIdentifier;
 import applications.util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

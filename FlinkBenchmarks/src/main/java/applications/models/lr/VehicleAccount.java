@@ -18,8 +18,8 @@
  */
 package applications.models.lr;
 
-import applications.bolts.lr.data.AccountBalanceRequest;
-import applications.bolts.lr.data.PositionReport;
+import applications.data.AccountBalanceRequest;
+import applications.data.PositionReport;
 
 import java.io.Serializable;
 

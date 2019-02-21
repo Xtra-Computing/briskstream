@@ -20,14 +20,14 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.TollNotification;
-import applications.bolts.lr.data.internal.AccidentTuple;
-import applications.bolts.lr.data.internal.CountTuple;
-import applications.bolts.lr.data.internal.LavTuple;
-import applications.bolts.lr.data.util.ISegmentIdentifier;
-import applications.bolts.lr.data.util.SegmentIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.PositionReport;
+import applications.data.TollNotification;
+import applications.data.internal.AccidentTuple;
+import applications.data.internal.CountTuple;
+import applications.data.internal.LavTuple;
+import applications.data.util.ISegmentIdentifier;
+import applications.data.util.SegmentIdentifier;
+import applications.data.util.TopologyControl;
 import applications.util.datatypes.StreamValues;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;

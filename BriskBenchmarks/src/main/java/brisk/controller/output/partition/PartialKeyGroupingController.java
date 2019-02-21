@@ -1,6 +1,6 @@
 package brisk.controller.output.partition;
 
-import applications.bolts.lr.datatype.AbstractLRBTuple;
+import applications.datatype.AbstractLRBTuple;
 import applications.util.Configuration;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;

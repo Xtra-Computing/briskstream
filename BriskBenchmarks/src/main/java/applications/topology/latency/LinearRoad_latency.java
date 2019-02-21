@@ -3,7 +3,7 @@ package applications.topology.latency;
 
 import applications.bolts.comm.StringParserBolt_latency;
 import applications.bolts.lr.*;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
+import applications.datatype.util.LRTopologyControl;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;

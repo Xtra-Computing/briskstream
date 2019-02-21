@@ -19,13 +19,13 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.bolts.lr.data.AccidentNotification;
-import applications.bolts.lr.data.PositionReport;
-import applications.bolts.lr.data.internal.AccidentTuple;
-import applications.bolts.lr.data.util.Constants;
-import applications.bolts.lr.data.util.ISegmentIdentifier;
-import applications.bolts.lr.data.util.SegmentIdentifier;
-import applications.bolts.lr.data.util.TopologyControl;
+import applications.data.AccidentNotification;
+import applications.data.PositionReport;
+import applications.data.internal.AccidentTuple;
+import applications.data.util.Constants;
+import applications.data.util.ISegmentIdentifier;
+import applications.data.util.SegmentIdentifier;
+import applications.data.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

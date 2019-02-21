@@ -19,8 +19,8 @@
 package applications.bolts.lr.model;
 
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.util.SegmentIdentifier;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

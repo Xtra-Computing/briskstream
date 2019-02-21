@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.bolts.lr.datatype.util.VSTopologyControl.ECR24_STREAM_ID;
-import static applications.bolts.lr.datatype.util.VSTopologyControl.ECR_STREAM_ID;
+import static applications.datatype.util.VSTopologyControl.ECR24_STREAM_ID;
+import static applications.datatype.util.VSTopologyControl.ECR_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Field;
 
 /**

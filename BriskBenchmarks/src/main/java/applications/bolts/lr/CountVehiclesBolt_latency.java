@@ -19,11 +19,11 @@
 
 package applications.bolts.lr;
 
-import applications.bolts.lr.datatype.PositionReport;
-import applications.bolts.lr.datatype.internal.CountTuple;
-import applications.bolts.lr.datatype.util.CarCount;
-import applications.bolts.lr.datatype.util.LRTopologyControl;
-import applications.bolts.lr.datatype.util.SegmentIdentifier;
+import applications.datatype.PositionReport;
+import applications.datatype.internal.CountTuple;
+import applications.datatype.util.CarCount;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
