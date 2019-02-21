@@ -50,6 +50,8 @@ classmexer
 
 If you use BriskStream in your paper, please cite our work.
 
+* **[SIGMOD]** Shuhao Zhang, Jiong He, Chi Zhou (Amelie), Bingsheng He. BriskStream: Scaling Stream Processing on Multicore Architectures, SIGMOD, 2019
+
 ```
 @article{zhangbriskstream19,
  author = {Zhang, Shuhao and He, Jiong and Zhou, Chi (Amelie) and He, Bingsheng},
