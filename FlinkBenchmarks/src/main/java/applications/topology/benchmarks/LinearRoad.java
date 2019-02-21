@@ -5,7 +5,7 @@ import applications.bolts.comm.ParserBolt;
 import applications.bolts.lr.*;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
-import applications.data.util.TopologyControl;
+import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;

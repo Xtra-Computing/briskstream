@@ -19,15 +19,15 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.data.PositionReport;
-import applications.data.TollNotification;
-import applications.data.internal.AccidentTuple;
-import applications.data.internal.CountTuple;
-import applications.data.internal.LavTuple;
-import applications.data.util.Constants;
-import applications.data.util.ISegmentIdentifier;
-import applications.data.util.SegmentIdentifier;
-import applications.data.util.TopologyControl;
+import applications.datatypes.PositionReport;
+import applications.datatypes.TollNotification;
+import applications.datatypes.internal.AccidentTuple;
+import applications.datatypes.internal.CountTuple;
+import applications.datatypes.internal.LavTuple;
+import applications.datatypes.util.Constants;
+import applications.datatypes.util.ISegmentIdentifier;
+import applications.datatypes.util.SegmentIdentifier;
+import applications.datatypes.util.TopologyControl;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
@@ -38,8 +38,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static applications.data.util.TopologyControl.CAR_COUNTS_STREAM_ID;
-import static applications.data.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
+import static applications.datatypes.util.TopologyControl.CAR_COUNTS_STREAM_ID;
+import static applications.datatypes.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
 
 /**
  * {@link TollNotificationBolt} calculates the toll for each vehicle and reports it back to the vehicle if a vehicle

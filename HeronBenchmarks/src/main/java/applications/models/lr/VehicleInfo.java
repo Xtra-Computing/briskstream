@@ -18,8 +18,8 @@
  */
 package applications.models.lr;
 
-import applications.data.PositionReport;
-import applications.data.util.SegmentIdentifier;
+import applications.datatypes.PositionReport;
+import applications.datatypes.util.SegmentIdentifier;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

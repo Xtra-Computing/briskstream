@@ -20,12 +20,12 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.data.AbstractLRBTuple;
-import applications.data.DailyExpenditureRequest;
-import applications.data.toll.MemoryTollDataStore;
-import applications.data.toll.TollDataStore;
-import applications.data.util.Constants;
-import applications.data.util.TopologyControl;
+import applications.datatypes.AbstractLRBTuple;
+import applications.datatypes.DailyExpenditureRequest;
+import applications.datatypes.toll.MemoryTollDataStore;
+import applications.datatypes.toll.TollDataStore;
+import applications.datatypes.util.Constants;
+import applications.datatypes.util.TopologyControl;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import applications.util.events.HistoryEvent;
@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Map;

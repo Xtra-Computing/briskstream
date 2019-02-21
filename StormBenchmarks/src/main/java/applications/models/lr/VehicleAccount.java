@@ -19,8 +19,8 @@
 
 package applications.models.lr;
 
-import applications.data.AccountBalanceRequest;
-import applications.data.PositionReport;
+import applications.datatypes.AccountBalanceRequest;
+import applications.datatypes.PositionReport;
 
 import java.io.Serializable;
 

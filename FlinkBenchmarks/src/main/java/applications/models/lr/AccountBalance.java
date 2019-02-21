@@ -18,10 +18,10 @@
  */
 package applications.models.lr;
 
-import applications.data.AbstractLRBTuple;
-import applications.data.AbstractOutputTuple;
-import applications.data.AccountBalanceRequest;
-import applications.data.util.TopologyControl;
+import applications.datatypes.AbstractLRBTuple;
+import applications.datatypes.AbstractOutputTuple;
+import applications.datatypes.AccountBalanceRequest;
+import applications.datatypes.util.TopologyControl;
 import org.apache.storm.tuple.Fields;
 
 import static applications.constants.BaseConstants.BaseField.MSG_ID;

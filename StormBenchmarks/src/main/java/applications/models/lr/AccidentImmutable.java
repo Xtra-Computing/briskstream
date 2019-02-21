@@ -20,7 +20,7 @@
 package applications.models.lr;
 
 
-import applications.data.PositionReport;
+import applications.datatypes.PositionReport;
 
 /**
  * Immutable version of the Accident object for serialization.

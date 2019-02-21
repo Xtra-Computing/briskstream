@@ -20,11 +20,11 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.data.PositionReport;
-import applications.data.internal.AvgVehicleSpeedTuple;
-import applications.data.util.AvgValue;
-import applications.data.util.SegmentIdentifier;
-import applications.data.util.TopologyControl;
+import applications.datatypes.PositionReport;
+import applications.datatypes.internal.AvgVehicleSpeedTuple;
+import applications.datatypes.util.AvgValue;
+import applications.datatypes.util.SegmentIdentifier;
+import applications.datatypes.util.TopologyControl;
 import applications.util.Time;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
