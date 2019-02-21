@@ -31,6 +31,15 @@ If you don't have sudo, you have to install all the corresponding dependencies i
 numactl
 classmexer
 
+## How to start
+Clone the project.
+Make sure all the dependencies are installed. 
+
+Then, if you are using IDE (e.g., IntelliJ), simply load the project as maven project.
+Otherwise, go to the root directory, issue mvn install -DskipTests.
+
+Note that, if you want to enable more modules (e.g., StormBenchmark), you only need to uncomment them in the root pom.xml. 
+
 ## Project Status
 BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
