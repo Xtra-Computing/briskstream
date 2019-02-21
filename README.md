@@ -1,4 +1,6 @@
-# BriskStream
+BriskStream
+===
+
 ## What?
 This project aims at building scalable data stream processing system on modern multicore architectures, with an API similar to Storm (Heron).
 
