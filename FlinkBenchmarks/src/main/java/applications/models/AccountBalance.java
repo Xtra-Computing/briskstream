@@ -16,7 +16,7 @@
  * limitations under the License.
  * #_
  */
-package applications.models.lr;
+package applications.models;
 
 import applications.datatypes.AbstractLRBTuple;
 import applications.datatypes.AbstractOutputTuple;

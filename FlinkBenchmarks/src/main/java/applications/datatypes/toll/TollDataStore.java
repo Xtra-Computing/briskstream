@@ -19,7 +19,7 @@
 package applications.datatypes.toll;
 
 
-import applications.models.lr.TollEntry;
+import applications.models.TollEntry;
 
 /**
  * An interface for the storage of toll data (encapsulated in {@link TollEntry}) for historical queries. Allows to store

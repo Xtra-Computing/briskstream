@@ -17,7 +17,7 @@
  * #_
  */
 
-package applications.models.lr;
+package applications.models;
 
 import java.io.Serializable;
 

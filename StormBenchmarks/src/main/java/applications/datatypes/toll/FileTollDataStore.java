@@ -19,7 +19,7 @@
 
 package applications.datatypes.toll;
 
-import applications.models.lr.TollEntry;
+import applications.models.TollEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

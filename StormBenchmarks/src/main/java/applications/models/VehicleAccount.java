@@ -17,7 +17,7 @@
  * #_
  */
 
-package applications.models.lr;
+package applications.models;
 
 import applications.datatypes.AccountBalanceRequest;
 import applications.datatypes.PositionReport;
