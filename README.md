@@ -20,19 +20,26 @@ We select the later one because we aim at building a stream processing system wi
 
 ## Install and Dependencies
 ### Overseer
+
+```
 sudo install -y libpfm hwloc freeipmi libpfm-devel hwloc-devel freeipmi-devel
+
 make
+
 sudo make install
+```
 
 After that, you have to copy the overseer.jar into briskstream/common/lib/ and call "mvn validate" to install the library.
 
 If you don't have sudo, you have to install all the corresponding dependencies in your home directory, and modify the reference path accordingly.
+
 ### Other Dependencies
 numactl
 classmexer
 
 ## How to start
 Clone the project.
+
 Make sure all the dependencies are installed. 
 
 Then, if you are using IDE (e.g., IntelliJ), simply load the project as maven project.
