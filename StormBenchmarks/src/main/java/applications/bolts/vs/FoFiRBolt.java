@@ -42,7 +42,7 @@ public class FoFiRBolt extends AbstractScoreBolt {
 				map.remove(key);
 			} else {
 				//LOG.DEBUG(String.format("Inconsistent entry: source=%s; %s",
-						input.getSourceComponent(), e.toString()));
+//						input.getSourceComponent(), e.toString()));
 			}
 		} else {
 			Entry e = new Entry(cdr);

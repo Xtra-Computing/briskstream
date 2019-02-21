@@ -132,7 +132,7 @@ public class StormRunner extends abstractRunner {
 			if (configStr == null) {
 
 				String cfg = String.format(CFG_PATH, application);
-				Properties p = loadProperties(cfg, (configStr == null));
+				Properties p = loadProperties(cfg);
 
 
 				config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);

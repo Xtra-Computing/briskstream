@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Executor extends AbstractBolt {
 	private static final Logger LOG = LoggerFactory.getLogger(Executor.class);
-	protected applications.bolt.helper.Executor executor;
+	protected applications.tasks.Executor executor;
 
 	public Executor() {
 	}
@@ -40,7 +40,7 @@ public class Executor extends AbstractBolt {
 		} else {
 			mytask = null;
 		}
-		executor = new applications.bolt.helper.Executor(mystatelesstask, mytask);
+		executor = new applications.tasks.Executor(mystatelesstask, mytask);
 		LOG.info("I'm running with take type:" + task_type);
 	}
 

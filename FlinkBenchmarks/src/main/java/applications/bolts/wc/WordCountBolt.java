@@ -22,15 +22,16 @@ public class WordCountBolt extends AbstractBolt {
 
 	@Override
 	public Fields getDefaultFields() {
-		return new Fields(Field.WORD, Field.COUNT, MSG_ID, Field.SYSTEMTIMESTAMP);
-	}
+		return new Fields(Field.WORD, Field.COUNT);
+	}//, MSG_ID, Field.SYSTEMTIMESTAMP enable for latency measurements
 
 	@Override
 	public void execute(Tuple input) {
 		String word = input.getStringByField(Field.WORD);
 		MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
 		count.increment();
-		Values objects = new Values(word, count.longValue(), input.getLongByField(MSG_ID), input.getLongByField(Field.SYSTEMTIMESTAMP));
+//		Values objects = new Values(word, count.longValue(), input.getLongByField(MSG_ID), input.getLongByField(Field.SYSTEMTIMESTAMP)); enable for latency measurements
+        Values objects = new Values(word, count.longValue());
 		collector.emit(objects);
 	}
 }

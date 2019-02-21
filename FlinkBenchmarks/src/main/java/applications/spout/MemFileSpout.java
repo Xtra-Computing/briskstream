@@ -69,7 +69,7 @@ public class MemFileSpout extends AbstractSpout {
 			path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_PATH)));
 		}
 
-		String s = System.getProperty("user.home").concat("/Documents/data/app/").concat(path);
+		String s = System.getProperty("user.home").concat("/data/app/").concat(path);
 
 		List<String> str_l = new LinkedList<String>();
 

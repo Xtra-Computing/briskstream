@@ -252,4 +252,8 @@ public abstract class helper {
     }
 
     public abstract double execute(long bid);
+
+    public double execute() {
+        return execute(0);
+    }
 }

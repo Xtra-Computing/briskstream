@@ -19,6 +19,11 @@ public class stable_sink_helper extends helper {
 
     }
 
+    public stable_sink_helper(Logger LOG, int runtime, String metric_path, double predict, int size, int thisTaskId) {
+        super(runtime, predict, size, metric_path, thisTaskId, false);
+        need_warm_up = true;
+    }
+
 
     public double execute(long bid) {
 //        this.size = size;
