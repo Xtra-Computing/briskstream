@@ -169,7 +169,7 @@ public class boltThread extends executorThread {
     protected void _execute_noControl() throws InterruptedException, DatabaseException, BrokenBarrierException {
 
 
-        if (enable_shared_state) {
+        if (enable_shared_state) {//this is for T-Stream.
             Tuple in = fetchResult_single();
             if (in != null) {
                 bolt.execute(in);
