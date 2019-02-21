@@ -12,39 +12,45 @@ However, state-of-the-art data streaming systems (e.g., Storm, Heron, Flink) are
 They underutilize scale-up server seriously as observed by our careful benchmarking.
 
 ## How to start
-Clone the project.
+1. Clone the project.
 
-Make sure all the dependencies are installed. 
+2. Make sure all the dependencies are installed. 
 
-Then, if you are using IDE (e.g., IntelliJ), simply load the project as maven project.
-Otherwise, go to the root directory, issue mvn install -DskipTests.
+- Overseer 
+Please follow the instruction in https://github.com/msteindorfer/overseer to compile overseer.
 
+Copy the compiled overseer.jar (overseer/src/java/overseer.jar) into briskstream/common/lib/ and call "mvn validate" to install the library.
+
+If you don't have sudo, you have to install all the corresponding dependencies in your home directory, and modify the reference path accordingly.
+
+- Other Dependencies
+numactl
+classmexer
+
+3. Install the project
+
+ 3.1 If you are using IDE (e.g., IntelliJ), simply load the project as maven project.
 Note that, if you want to enable more modules (e.g., StormBenchmark), you only need to uncomment them in the root pom.xml. 
+
+ 3.2. Alternatively, install in Linux shell as follows.
+
+```
+mvn install -DskipTests
+```
+
+4. Run application
+
+There are a few options to test and debug the system. 
+
+The simple way is to load the project using Intellij IDEA, and set Runner (BriskRunner, FlinkRunner, etc.) as the main class file.
+
+To test the system on Linux server, you need to install the project (Step 3) and run the compiled jar package.
+You may also use the prepared scripts found in common/scripts to launch the program with predefined configurations. 
 
 ## Project Status
 BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
-
-## Install and Dependencies
-### Overseer
-
-```
-sudo install -y libpfm hwloc freeipmi libpfm-devel hwloc-devel freeipmi-devel
-
-make
-
-sudo make install
-```
-
-After that, you have to copy the overseer.jar into briskstream/common/lib/ and call "mvn validate" to install the library.
-
-If you don't have sudo, you have to install all the corresponding dependencies in your home directory, and modify the reference path accordingly.
-
-### Other Dependencies
-numactl
-classmexer
-
 
 ## How to Cite BriskStream
 
