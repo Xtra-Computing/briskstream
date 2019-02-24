@@ -6,8 +6,7 @@ This project aims at building scalable data stream processing system on modern m
 
 ## Why?
 One of the trend in computer architecture is putting more and more processors into a single server.
-Both computing power and memory sizes are becoming larger and larger that in many cases has its superiority
-than conventional cluster settings.
+Both computing power and memory sizes are becoming larger and larger that in many cases has its superiority than conventional cluster settings.
 However, state-of-the-art data streaming systems (e.g., Storm, Heron, Flink) are designed for scale-out.
 They underutilize scale-up server seriously as observed by our careful benchmarking.
 
@@ -17,15 +16,14 @@ They underutilize scale-up server seriously as observed by our careful benchmark
 2. Make sure all the dependencies are installed. 
 
 - Overseer 
+
 Please follow the instruction in https://github.com/msteindorfer/overseer to compile overseer.
 
 Copy the compiled overseer.jar (overseer/src/java/overseer.jar) into briskstream/common/lib/ and call "mvn validate" to install the library.
 
 If you don't have sudo, you have to install all the corresponding dependencies in your home directory, and modify the reference path accordingly.
 
-- Other Dependencies
-numactl
-classmexer
+- Other Dependencies: numactl, classmexer 
 
 3. Install the project
 
@@ -48,7 +46,7 @@ To test the system on Linux server, you need to install the project (Step 3) and
 You may also use the prepared scripts found in common/scripts to launch the program with predefined configurations. 
 
 ## Project Status
-BriskStream is still under active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
+BriskStream is still under heavily active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
