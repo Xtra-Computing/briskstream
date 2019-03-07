@@ -45,6 +45,11 @@ The simple way is to load the project using Intellij IDEA, and set Runner (Brisk
 To test the system on Linux server, you need to install the project (Step 3) and run the compiled jar package.
 You may also use the prepared scripts found in common/scripts to launch the program with predefined configurations. 
 
+## IMPORTANT NOTE
+
+1. Use ``mvn install -P cluster -DskipTests`` to install Strombenchmark on server. This will prevent the duplicate configuration file issue.
+2. The datasets are missing in the repo. You can use your own datasets. Some of the datasets I used can be found here https://github.com/mayconbordin/storm-applications
+
 ## Project Status
 BriskStream is still under heavily active development, expect more bug-fixing and more advance features (e.g., transactional state management, elasticity, fault-tolerance, etc.).
 
