@@ -31,7 +31,7 @@
     <version>3.1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>OpenHFT/Java-Thread-Affinity Parent</name>
+    <name>OpenHFT/Java-Thread-Affinity</name>
     <description>Java Thread Affinity library</description>
 
     <modules>
