@@ -130,7 +130,7 @@ public interface TxnManager {
 //    boolean Specu_ReadRecord(TxnContext txn_context, String microTable, String key, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) throws DatabaseException;
 
 
-    void start_evaluate(int taskId, int fid, long bid) throws InterruptedException, BrokenBarrierException;
+    void start_evaluate(int taskId, int fid) throws InterruptedException, BrokenBarrierException;
 
     boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) throws DatabaseException;
 

@@ -30,7 +30,7 @@ public abstract class TxnManagerShared implements TxnManager {
     }
 
     @Override
-    public void start_evaluate(int taskId, int fid, long bid) {
+    public void start_evaluate(int taskId, int fid) {
 
         throw new UnsupportedOperationException();
     }

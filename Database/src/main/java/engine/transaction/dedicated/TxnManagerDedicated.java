@@ -350,7 +350,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
     }
 
 
-    public void start_evaluate(int taskId, int fid, long bid) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluate(int taskId, int fid) throws InterruptedException, BrokenBarrierException {
         throw new UnsupportedOperationException();
     }
 

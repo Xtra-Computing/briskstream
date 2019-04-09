@@ -371,12 +371,11 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      *
      * @param thread_Id
      * @param fid
-     * @param bid
      * @return time spend in tp evaluation.
      */
     @Override
-    public void start_evaluate(int thread_Id, int fid, long bid) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluate(int thread_Id, int fid) throws InterruptedException, BrokenBarrierException {
 
-        instance.start_evaluation(thread_Id, bid);
+        instance.start_evaluation(thread_Id);
     }
 }

@@ -360,7 +360,7 @@ public final class TxnProcessingEngine {
         return rt;
     }
 
-    private int submit_task(int thread_Id, Holder holder, long bid, Deque<Task> callables) {
+    private int submit_task(int thread_Id, Holder holder, Deque<Task> callables) {
 
         int sum = 0;
 
@@ -398,7 +398,7 @@ public final class TxnProcessingEngine {
         return sum;
     }
 
-    private int evaluation(int thread_Id, long bid) throws InterruptedException {
+    private int evaluation(int thread_Id) throws InterruptedException {
 
         BEGIN_TP_SUBMIT_TIME_MEASURE(thread_Id);
 
@@ -410,7 +410,7 @@ public final class TxnProcessingEngine {
 
         for (Holder_in_range holder_in_range : holder_by_stage.values()) {
             Holder holder = holder_in_range.rangeMap.get(thread_Id);
-            task += submit_task(thread_Id, holder, bid, callables);
+            task += submit_task(thread_Id, holder, callables);
         }
 
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
@@ -436,19 +436,18 @@ public final class TxnProcessingEngine {
 
     /**
      * @param thread_Id
-     * @param bid
      * @return time spend in tp evaluation.
      * @throws InterruptedException
      * @throws BrokenBarrierException
      */
-    public void start_evaluation(int thread_Id, long bid) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluation(int thread_Id) throws InterruptedException, BrokenBarrierException {
 
         //It first needs to make sure checkpoints from all producers are received.
         barrier.await();
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
-        int size = evaluation(thread_Id, bid);
+        int size = evaluation(thread_Id);
 
         END_TP_CORE_TIME_MEASURE(thread_Id, size);//exclude task submission time.
 

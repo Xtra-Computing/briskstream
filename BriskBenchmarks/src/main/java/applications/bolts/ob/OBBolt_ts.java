@@ -161,7 +161,7 @@ public class OBBolt_ts extends OBBolt {
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
-            transactionManager.start_evaluate(thread_Id, this.fid, bid);//start lazy evaluation in transaction manager.
+            transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
             END_TP_TIME_MEASURE(thread_Id);
 
             this.collector.ack(in, null);//tell spout, please emit earlier!
