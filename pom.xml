@@ -14,9 +14,8 @@
         <module>Java-Thread-Affinity</module>
         <module>BriskBenchmarks</module>
         <!--<module>SparkBenchmarks</module>-->
-        <module>StormBenchmarks</module>
-        <module>FlinkBenchmarks</module>
-        <!--<module>briskstream_MQ</module>-->
+        <!--<module>StormBenchmarks</module>-->
+        <!--<module>FlinkBenchmarks</module>-->
         <!--<module>HeronBenchmarks</module>-->
         <!--<module>kafka-spout-develop</module>-->
     </modules>

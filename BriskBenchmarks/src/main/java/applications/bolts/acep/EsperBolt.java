@@ -16,7 +16,6 @@ package applications.bolts.acep;
  *
  */
 
-import applications.param.MicroEvent;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.collector.OutputCollector;
