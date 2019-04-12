@@ -1,0 +1,8 @@
+PATTERN SEQ(stock+ a[], stock b)
+WHERE partition-contiguity
+AND [symbol]
+AND a[1].price % 500 = 0
+AND b.volume < 150
+WITHIN 500
+
+

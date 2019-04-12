@@ -1,0 +1,5 @@
+PATTERN SEQ(stock1 a, stock2 b, stock3 c)
+WHERE skip-till-any-match
+AND [price]
+AND [volume]
+WITHIN 10000

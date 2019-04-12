@@ -1,0 +1,5 @@
+selectionStrategy = skip-till-any-match | timeWindow = 10000  | partitionAttribute = price
+State=1 & type = normal & eventtype = stock1 | edgetype = begin 
+State=2 & type = normal & eventtype = stock2 | edgetype = begin & volume = $1.volume 
+State=3 & type = normal & eventtype = stock3 | edgetype = begin & volume = $1.volume 
+end

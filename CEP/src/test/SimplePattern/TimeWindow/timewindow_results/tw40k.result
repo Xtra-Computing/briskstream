@@ -1,0 +1,1660 @@
+
+Repeat No.1 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.1 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 90422000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 442370 events/second
+
+Repeat No.2 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.2 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 46337000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 863241 events/second
+
+Repeat No.3 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.3 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 37719000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1060473 events/second
+
+Repeat No.4 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.4 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34527000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1158513 events/second
+
+Repeat No.5 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.5 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34691000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1153036 events/second
+
+Repeat No.6 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.6 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34738000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1151476 events/second
+
+Repeat No.7 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.7 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34216000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1169043 events/second
+
+Repeat No.8 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.8 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34552000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1157675 events/second
+
+Repeat No.9 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.9 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34395000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1162959 events/second
+
+Repeat No.10 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.10 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34726000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1151874 events/second
+
+Repeat No.11 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.11 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34480000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1160092 events/second
+
+Repeat No.12 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.12 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34479000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1160126 events/second
+
+Repeat No.13 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.13 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34065000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1174225 events/second
+
+Repeat No.14 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.14 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34183000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1170172 events/second
+
+Repeat No.15 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.15 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34345000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1164652 events/second
+
+Repeat No.16 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.16 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34163000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1170857 events/second
+
+Repeat No.17 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.17 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34565000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1157239 events/second
+
+Repeat No.18 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.18 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34542000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1158010 events/second
+
+Repeat No.19 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.19 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34451000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1161069 events/second
+
+Repeat No.20 is started...
+----------Here is the No.1 match----------
+
+This match has selected the following events: 
+
+ID = 3388	Timestamp = 3388	Symbol = 1	Price = 9961	Volume = 329
+ID = 4979	Timestamp = 4979	Symbol = 2	Price = 9961	Volume = 531
+ID = 14055	Timestamp = 14055	Symbol = 3	Price = 9961	Volume = 620
+
+----------Here is the No.2 match----------
+
+This match has selected the following events: 
+
+ID = 4477	Timestamp = 4477	Symbol = 1	Price = 3436	Volume = 334
+ID = 9307	Timestamp = 9307	Symbol = 2	Price = 3436	Volume = 132
+ID = 24168	Timestamp = 24168	Symbol = 3	Price = 3436	Volume = 320
+
+----------Here is the No.3 match----------
+
+This match has selected the following events: 
+
+ID = 21904	Timestamp = 21904	Symbol = 1	Price = 3581	Volume = 469
+ID = 23377	Timestamp = 23377	Symbol = 2	Price = 3581	Volume = 213
+ID = 24418	Timestamp = 24418	Symbol = 3	Price = 3581	Volume = 486
+
+----------Here is the No.4 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 28441	Timestamp = 28441	Symbol = 3	Price = 7164	Volume = 950
+
+----------Here is the No.5 match----------
+
+This match has selected the following events: 
+
+ID = 12242	Timestamp = 12242	Symbol = 1	Price = 4984	Volume = 25
+ID = 23470	Timestamp = 23470	Symbol = 2	Price = 4984	Volume = 706
+ID = 30246	Timestamp = 30246	Symbol = 3	Price = 4984	Volume = 917
+
+----------Here is the No.6 match----------
+
+This match has selected the following events: 
+
+ID = 176	Timestamp = 176	Symbol = 1	Price = 7164	Volume = 478
+ID = 3095	Timestamp = 3095	Symbol = 2	Price = 7164	Volume = 288
+ID = 30255	Timestamp = 30255	Symbol = 3	Price = 7164	Volume = 457
+
+----------Here is the No.7 match----------
+
+This match has selected the following events: 
+
+ID = 587	Timestamp = 587	Symbol = 1	Price = 6664	Volume = 579
+ID = 20908	Timestamp = 20908	Symbol = 2	Price = 6664	Volume = 923
+ID = 32721	Timestamp = 32721	Symbol = 3	Price = 6664	Volume = 29
+
+----------Here is the No.8 match----------
+
+This match has selected the following events: 
+
+ID = 4159	Timestamp = 4159	Symbol = 1	Price = 2988	Volume = 682
+ID = 16310	Timestamp = 16310	Symbol = 2	Price = 2988	Volume = 881
+ID = 34010	Timestamp = 34010	Symbol = 3	Price = 2988	Volume = 123
+
+----------Here is the No.9 match----------
+
+This match has selected the following events: 
+
+ID = 12389	Timestamp = 12389	Symbol = 1	Price = 6955	Volume = 870
+ID = 13545	Timestamp = 13545	Symbol = 2	Price = 6955	Volume = 72
+ID = 34038	Timestamp = 34038	Symbol = 3	Price = 6955	Volume = 693
+
+
+Profiling results for repeat No.20 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 34181000 nanoseconds
+Number Of Events Processed: 40000
+Number Of Runs Created: 2249
+Number Of Matches Found: 9
+Throughput: 1170240 events/second

@@ -1,0 +1,10 @@
+PATTERN SEQ(stock+ a[], stock b)
+WHERE skip-till-next-match
+AND [symbol]
+AND a[1].price % 500 = 0
+AND a[i].price > min(a[..i-1].price)
+AND b.volume < 150
+WITHIN 500
+
+
+

@@ -1,0 +1,220 @@
+
+Repeat No.1 is started...
+
+Profiling results for repeat No.1 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 60080000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 166444 events/second
+
+Repeat No.2 is started...
+
+Profiling results for repeat No.2 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 45604000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 219279 events/second
+
+Repeat No.3 is started...
+
+Profiling results for repeat No.3 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 21661000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 461659 events/second
+
+Repeat No.4 is started...
+
+Profiling results for repeat No.4 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 19393000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 515649 events/second
+
+Repeat No.5 is started...
+
+Profiling results for repeat No.5 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 18730000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 533902 events/second
+
+Repeat No.6 is started...
+
+Profiling results for repeat No.6 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 18738000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 533674 events/second
+
+Repeat No.7 is started...
+
+Profiling results for repeat No.7 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 17307000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 577800 events/second
+
+Repeat No.8 is started...
+
+Profiling results for repeat No.8 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 17201000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 581361 events/second
+
+Repeat No.9 is started...
+
+Profiling results for repeat No.9 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 17285000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 578536 events/second
+
+Repeat No.10 is started...
+
+Profiling results for repeat No.10 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 15230000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 656598 events/second
+
+Repeat No.11 is started...
+
+Profiling results for repeat No.11 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 17620000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 567536 events/second
+
+Repeat No.12 is started...
+
+Profiling results for repeat No.12 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 13366000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 748166 events/second
+
+Repeat No.13 is started...
+
+Profiling results for repeat No.13 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 13833000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 722908 events/second
+
+Repeat No.14 is started...
+
+Profiling results for repeat No.14 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 23849000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 419304 events/second
+
+Repeat No.15 is started...
+
+Profiling results for repeat No.15 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 12526000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 798339 events/second
+
+Repeat No.16 is started...
+
+Profiling results for repeat No.16 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 11790000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 848176 events/second
+
+Repeat No.17 is started...
+
+Profiling results for repeat No.17 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 11695000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 855066 events/second
+
+Repeat No.18 is started...
+
+Profiling results for repeat No.18 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 11687000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 855651 events/second
+
+Repeat No.19 is started...
+
+Profiling results for repeat No.19 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 11766000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 849906 events/second
+
+Repeat No.20 is started...
+
+Profiling results for repeat No.20 are as follows:
+
+**************Profiling Numbers*****************
+Total Running Time: 11970000 nanoseconds
+Number Of Events Processed: 10000
+Number Of Runs Created: 503
+Number Of Matches Found: 0
+Throughput: 835421 events/second
