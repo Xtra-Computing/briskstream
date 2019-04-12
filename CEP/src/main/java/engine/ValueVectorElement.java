@@ -24,12 +24,13 @@
 */
 package engine;
 
-import edu.umass.cs.sase.stream.Event;
+
+import stream.Event;
 
 /**
  * This is an interface for the value vector of the computation state.
  * If you add any new class implementing this interface, please also add the reference point in the following places:
- * -edu.umass.cs.sase.engine.Run.initializeValueVector(Event e)
+ * -engine.Run.initializeValueVector(Event e)
  * @author haopeng
  *
  */

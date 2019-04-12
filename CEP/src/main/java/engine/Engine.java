@@ -30,11 +30,11 @@ import java.util.HashMap;
 import net.sourceforge.jeval.EvaluationException;
 
 
-import edu.umass.cs.sase.query.Edge;
-import edu.umass.cs.sase.query.NFA;
-import edu.umass.cs.sase.query.State;
-import edu.umass.cs.sase.stream.Event;
-import edu.umass.cs.sase.stream.Stream;
+import query.Edge;
+import query.NFA;
+import query.State;
+import stream.Event;
+import stream.Stream;
 
 
 /**

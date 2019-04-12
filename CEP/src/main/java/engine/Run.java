@@ -26,9 +26,10 @@ package engine;
 
 import java.util.ArrayList;
 
-import edu.umass.cs.sase.query.NFA;
-import edu.umass.cs.sase.query.ValueVectorTemplate;
-import edu.umass.cs.sase.stream.Event;
+import query.NFA;
+import query.ValueVectorTemplate;
+import stream.Event;
+
 
 /**
  * This class represents a run.

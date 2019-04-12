@@ -26,8 +26,9 @@ package engine;
 
 import java.util.ArrayList;
 
-import edu.umass.cs.sase.query.NFA;
-import edu.umass.cs.sase.stream.Event;
+import query.NFA;
+import stream.Event;
+
 
 /**
  * This class represents a match.

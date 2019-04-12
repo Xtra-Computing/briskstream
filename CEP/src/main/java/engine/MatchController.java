@@ -27,7 +27,7 @@ package engine;
 import java.util.ArrayList;
 
 import java.util.HashMap;
-import edu.umass.cs.sase.stream.Event;
+
 
 /**
  * This class is used to buffer matches

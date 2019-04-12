@@ -24,7 +24,8 @@
 */
 package engine;
 
-import edu.umass.cs.sase.stream.Event;
+
+import stream.Event;
 
 /**
  * This class represents the MIN aggregation.
@@ -38,14 +39,14 @@ public class ValueVectorElementMin implements ValueVectorElement{
 	
 	int neededByState;
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getValue()
+	 * @see engine.ValueVectorElement#getValue()
 	 */
 	public int getValue() {
 		// TODO Auto-generated method stub
 		return this.currentValue;
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#updateValue(edu.umass.cs.sase.stream.Event)
+	 * @see engine.ValueVectorElement#updateValue(stream.Event)
 	 */
 	public void updateValue(Event e) {
 		// TODO Auto-generated method stub
@@ -56,28 +57,28 @@ public class ValueVectorElementMin implements ValueVectorElement{
 		
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getStateNumber()
+	 * @see engine.ValueVectorElement#getStateNumber()
 	 */
 	public int getStateNumber() {
 		// TODO Auto-generated method stub
 		return this.stateNumber;
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getType()
+	 * @see engine.ValueVectorElement#getType()
 	 */
 	public String getType() {
 		// TODO Auto-generated method stub
 		return "min";
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getAttribute()
+	 * @see engine.ValueVectorElement#getAttribute()
 	 */
 	public String getAttribute() {
 		// TODO Auto-generated method stub
 		return this.attribute;
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#initializeValue(edu.umass.cs.sase.stream.Event)
+	 * @see engine.ValueVectorElement#initializeValue(stream.Event)
 	 */
 	public void initializeValue(Event e) {
 		// TODO Auto-generated method stub
@@ -85,7 +86,7 @@ public class ValueVectorElementMin implements ValueVectorElement{
 		
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#setAttribute(java.lang.String)
+	 * @see engine.ValueVectorElement#setAttribute(java.lang.String)
 	 */
 	public void setAttribute(String a) {
 		// TODO Auto-generated method stub
@@ -93,7 +94,7 @@ public class ValueVectorElementMin implements ValueVectorElement{
 		
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getNeededByState()
+	 * @see engine.ValueVectorElement#getNeededByState()
 	 */
 	public int getNeededByState() {
 		// TODO Auto-generated method stub

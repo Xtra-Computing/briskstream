@@ -24,9 +24,11 @@
 */
 package engine;
 
+import stream.Event;
+
 import java.util.HashMap;
 
-import edu.umass.cs.sase.stream.Event;
+
 
 /**
  * This class is used to buffer the selected events.

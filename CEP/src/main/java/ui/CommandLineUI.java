@@ -27,12 +27,12 @@ package ui;
 import java.io.IOException;
 
 import net.sourceforge.jeval.EvaluationException;
-import edu.umass.cs.sase.engine.ConfigFlags;
-import edu.umass.cs.sase.engine.EngineController;
-import edu.umass.cs.sase.engine.Profiling;
-import edu.umass.cs.sase.stream.ParseStockStreamConfig;
-import edu.umass.cs.sase.stream.StockStreamConfig;
-import edu.umass.cs.sase.stream.StreamController;
+import engine.ConfigFlags;
+import engine.EngineController;
+import engine.Profiling;
+import stream.ParseStockStreamConfig;
+import stream.StockStreamConfig;
+import stream.StreamController;
 
 
 

@@ -138,7 +138,7 @@ public class ABCEvent implements Event{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.mvc.model.Event#getAttributeByName(java.lang.String)
+	 * @see mvc.model.Event#getAttributeByName(java.lang.String)
 	 */
 	public int getAttributeByName(String attributeName) {
 		
@@ -153,14 +153,14 @@ public class ABCEvent implements Event{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.mvc.model.Event#getAttributeByNameString(java.lang.String)
+	 * @see mvc.model.Event#getAttributeByNameString(java.lang.String)
 	 */
 	public String getAttributeByNameString(String attributeName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.mvc.model.Event#getAttributeValueType(java.lang.String)
+	 * @see mvc.model.Event#getAttributeValueType(java.lang.String)
 	 */
 	public int getAttributeValueType(String attributeName) {
 		// TODO Auto-generated method stub
@@ -168,7 +168,7 @@ public class ABCEvent implements Event{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.mvc.model.Event#getAttributeByNameDouble(java.lang.String)
+	 * @see mvc.model.Event#getAttributeByNameDouble(java.lang.String)
 	 */
 	public double getAttributeByNameDouble(String attributeName) {
 		// TODO Auto-generated method stub

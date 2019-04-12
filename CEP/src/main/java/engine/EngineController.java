@@ -26,8 +26,8 @@
 package engine;
 
 import net.sourceforge.jeval.EvaluationException;
-import edu.umass.cs.sase.query.NFA;
-import edu.umass.cs.sase.stream.Stream;
+import query.NFA;
+import stream.Stream;
 
 /**
  * This class is used to wrap the Engine class, 

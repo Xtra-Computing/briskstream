@@ -28,11 +28,11 @@ package query;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import edu.umass.cs.sase.engine.EventBuffer;
-import edu.umass.cs.sase.engine.Run;
-import edu.umass.cs.sase.stream.Event;
 
+import engine.EventBuffer;
+import engine.Run;
 import net.sourceforge.jeval.*;
+import stream.Event;
 
 /**
  * This class represents a predicate of an edge.

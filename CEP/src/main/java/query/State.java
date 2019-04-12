@@ -26,9 +26,10 @@ package query;
 
 import java.util.StringTokenizer;
 
-import edu.umass.cs.sase.stream.Event;
+
 
 import net.sourceforge.jeval.EvaluationException;
+import stream.Event;
 
 /**
  * This class represents a state from NFA.

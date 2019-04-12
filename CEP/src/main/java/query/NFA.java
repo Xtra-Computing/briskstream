@@ -31,8 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import edu.umass.cs.sase.engine.ConfigFlags;
-import edu.umass.cs.sase.engine.Run;
+import engine.ConfigFlags;
+import engine.Run;
 
 
 /**

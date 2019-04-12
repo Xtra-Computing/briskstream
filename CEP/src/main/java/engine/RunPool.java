@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 
-import edu.umass.cs.sase.query.NFA;
+import query.NFA;
 /**
  * This class is used to reuse runs in memory
  * @author haopeng

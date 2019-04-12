@@ -27,11 +27,10 @@ package query;
 
 import java.util.StringTokenizer;
 
-import edu.umass.cs.sase.engine.EventBuffer;
-import edu.umass.cs.sase.engine.Run;
-import edu.umass.cs.sase.stream.Event;
-
+import engine.EventBuffer;
+import engine.Run;
 import net.sourceforge.jeval.EvaluationException;
+import stream.Event;
 
 /**
  * This class represents an edge of an NFA.

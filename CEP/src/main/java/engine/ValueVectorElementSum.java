@@ -25,7 +25,8 @@
 */
 package engine;
 
-import edu.umass.cs.sase.stream.Event;
+
+import stream.Event;
 
 /**
  * This class represents the SUM aggregation.
@@ -40,7 +41,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	int neededByState;
 	
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getValue()
+	 * @see engine.ValueVectorElement#getValue()
 	 */
 	
 	public int getValue() {
@@ -49,7 +50,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#updateValue(edu.umass.cs.sase.stream.Event)
+	 * @see engine.ValueVectorElement#updateValue(stream.Event)
 	 */
 	
 	public void updateValue(Event e) {
@@ -59,7 +60,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getStateNumber()
+	 * @see engine.ValueVectorElement#getStateNumber()
 	 */
 	
 	public int getStateNumber() {
@@ -68,7 +69,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getType()
+	 * @see engine.ValueVectorElement#getType()
 	 */
 	
 	public String getType() {
@@ -77,7 +78,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getAttribute()
+	 * @see engine.ValueVectorElement#getAttribute()
 	 */
 	
 	public String getAttribute() {
@@ -86,7 +87,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#setAttribute(java.lang.String)
+	 * @see engine.ValueVectorElement#setAttribute(java.lang.String)
 	 */
 	
 	public void setAttribute(String a) {
@@ -96,7 +97,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#initializeValue(edu.umass.cs.sase.stream.Event)
+	 * @see engine.ValueVectorElement#initializeValue(stream.Event)
 	 */
 	
 	public void initializeValue(Event e) {
@@ -106,7 +107,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#getNeededByState()
+	 * @see engine.ValueVectorElement#getNeededByState()
 	 */
 	
 	public int getNeededByState() {
@@ -115,7 +116,7 @@ public class ValueVectorElementSum implements ValueVectorElement{
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umass.cs.sase.engine.ValueVectorElement#setNeededByState(int)
+	 * @see engine.ValueVectorElement#setNeededByState(int)
 	 */
 	
 	public void setNeededByState(int n) {
