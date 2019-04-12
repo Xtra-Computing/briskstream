@@ -7,12 +7,13 @@
     <groupId>org.tony</groupId>
     <artifactId>briskstream</artifactId>
     <packaging>pom</packaging>
-    <version>2.0</version>
+    <version>3.0</version>
     <modules>
         <module>common</module>
         <module>Database</module>
         <module>Java-Thread-Affinity</module>
         <module>BriskBenchmarks</module>
+        <module>CEP</module>
         <!--<module>SparkBenchmarks</module>-->
         <!--<module>StormBenchmarks</module>-->
         <!--<module>FlinkBenchmarks</module>-->
