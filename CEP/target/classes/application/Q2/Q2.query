@@ -1,0 +1,6 @@
+PATTERN SEQ(stock1 a, stock2 b, stock3 c)
+WHERE skip-till-next-match
+AND [price]
+WITHIN 10000
+
+
