@@ -554,9 +554,9 @@ do
                 do
                     for theta in 0.6 #0.6 0.8
                     do
-                        for tt in 32 24 16 8 2 #38
+                        for tt in 38 32 24 16 8 2 #38
                         do
-                            for CCOption in 1 2 3 #4 # * (3 + 2)
+                            for CCOption in 1 2 3 4 # * (3 + 2)
                             do
                                 for NUM_ACCESS in 10
                                 do
