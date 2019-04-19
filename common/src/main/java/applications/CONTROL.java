@@ -6,9 +6,9 @@ public interface CONTROL {
     int NUM_EVENTS = 1_000_000; //500_000 : 1_000_000; //1_000_000 for real use cases;
 
     //db related.
-    boolean enable_shared_state = false;
+    boolean enable_shared_state = true;//this is for T-Stream.
 
-    boolean enable_states_partition = false;//only enable for PAT.
+    boolean enable_states_partition = true;//only enable for PAT.
 
     //latency related.
     boolean enable_admission_control = true;//only enable for TStream
