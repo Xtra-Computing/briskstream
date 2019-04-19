@@ -21,7 +21,7 @@ import static applications.util.OsUtils.isUnix;
 /**
  * Created by parallels on 11/22/16.
  * This is used to d_record profiling results of each operator during the profiling phase.
- * It shall be dump to a file so that we can later retrieve the information for further usage (i.e., in model phase).
+ * It shall be store to a file so that we can later retrieve the information for further usage (i.e., in model phase).
  * Each executor owns <number of producers> of profiling instances.
  * Each profiling structure owns the corresponding profiling results.
  */
@@ -414,7 +414,7 @@ public class STAT implements Serializable {
     }
 
     private void store(int percentile) {
-        LOG.info(this.executionNode.getOP() + " " + this.executionNode.getExecutorID() + " dump profiling statistics");
+        LOG.info(this.executionNode.getOP() + " " + this.executionNode.getExecutorID() + " store profiling statistics");
         try {
             String dir = STAT_Path + OsUtils.OS_wrapper(conf.getConfigPrefix())
                     + OsUtils.OS_wrapper(String.valueOf(percentile))
@@ -451,7 +451,7 @@ public class STAT implements Serializable {
                 writer.close();
             }
         } catch (IOException e) {
-            LOG.error("Not able to dump the statistics");
+            LOG.error("Not able to store the statistics");
             System.exit(-1);
         }
     }

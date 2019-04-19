@@ -274,7 +274,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected void dump(String file_name) throws IOException {
+    protected void store(String file_name) throws IOException {
 
 
         double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);

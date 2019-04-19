@@ -286,7 +286,7 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
             writer.close();
 
         } catch (IOException e) {
-            LOG.error("Not able to dump the statistics");
+            LOG.error("Not able to store the statistics");
         }
     }
 

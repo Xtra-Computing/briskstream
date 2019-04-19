@@ -359,7 +359,7 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected void dump(String file_path) throws IOException {
+    protected void store(String file_path) throws IOException {
 
     }
 

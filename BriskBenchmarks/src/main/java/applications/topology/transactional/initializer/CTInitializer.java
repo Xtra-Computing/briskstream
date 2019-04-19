@@ -326,7 +326,7 @@ public class CTInitializer extends TableInitilizer {
     }
 
     @Override
-    protected void dump(String file_name) throws IOException {
+    protected void store(String file_name) throws IOException {
         String event_path = Event_Path
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
                 + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS));

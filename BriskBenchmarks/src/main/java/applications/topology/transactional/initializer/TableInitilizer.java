@@ -170,7 +170,7 @@ public abstract class TableInitilizer {
 
     protected abstract boolean load(String file) throws IOException;
 
-    public void prepare_input_events(String file_path) throws IOException {
+    void prepare_input_events(String file_path) throws IOException {
 
         db.eventManager.ini(NUM_EVENTS);
 
@@ -209,11 +209,11 @@ public abstract class TableInitilizer {
                 }
                 db.eventManager.put(event, i);
             }
-            dump(file_path + tthread);
+            store(file_path + tthread);
         }
     }
 
-    protected abstract void dump(String file_path) throws IOException;
+    protected abstract void store(String file_path) throws IOException;
 
     protected abstract Object create_new_event(int number_partitions, int bid);
 }
