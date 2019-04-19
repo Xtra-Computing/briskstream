@@ -236,13 +236,13 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "CrossTables"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "MultiPartition"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
-	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.2.0-jar-with-dependencies.jar"
+	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-3.0-jar-with-dependencies.jar"
 
     outputPath=$HOME/briskstream/Tests/test-$timestamp/$benchmark
 	mkdir -p $outputPath
@@ -554,15 +554,15 @@ do
                 do
                     for theta in 0.6 #0.6 0.8
                     do
-                        for tt in 38
+                        for tt in 38 32 24 16 8 2
                         do
                             for CCOption in 4 # * (3 + 2)
                             do
                                 for NUM_ACCESS in 10
                                 do
-                                    for ratio_of_read in 0 1
+                                    for ratio_of_read in 0.5 #0 1
                                     do
-                                        for number_partitions in 1 2 4 6 10
+                                        for number_partitions in 6
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -575,7 +575,7 @@ do
                                         do
                                             TP=$tt
                                             number_partitions=6
-                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+#                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done

@@ -6,4 +6,4 @@ mkdir $dirname
 
 
 echo "Q2"
-sase $SASE_HOME/examples/Q2/Q2.query $SASE_HOME/examples/Q2/Q2.stream 1  >>$dirname/Q2.result
+sase application/Q2/Q2.query application/Q2/Q2.stream 1  >>$dirname/Q2.result

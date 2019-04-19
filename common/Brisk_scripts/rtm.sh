@@ -607,7 +607,7 @@ timestamp=$(date +%Y%m%d-%H%M)
 # Create a temporary directory
 app_cnt=0
 cnt=0
-for app in "OnlineBiding" #"MicroBenchmark" "FraudDetection" "SpikeDetection" "LinearRoad" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
+for app in "MicroBenchmark" #"MicroBenchmark" "FraudDetection" "SpikeDetection" "LinearRoad" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
 do
     machine=0
     Profile=0 #vtune profile: 0 disable, 1 enable.

@@ -24,7 +24,10 @@
 */
 package ui;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Paths;
 
 import net.sourceforge.jeval.EvaluationException;
 import engine.ConfigFlags;
@@ -52,8 +55,10 @@ public class CommandLineUI {
 	 * 3: use sharing techniques or not, ("sharingengine" for use, nothing for not use)
 	 */
 	public static void main(String args[]) throws CloneNotSupportedException, EvaluationException, IOException{
-		String nfaFileLocation = "test.query";
-		String streamConfigFile = "test.stream";
+
+
+		String nfaFileLocation = "/Users/shuhaozhang/briskstream/CEP/src/main/resources/application/Q2/Q2.query";
+		String streamConfigFile = "/Users/shuhaozhang/briskstream/CEP/src/main/resources/application/Q2/Q2.stream";
 		
 	
 		
@@ -101,11 +106,7 @@ public class CommandLineUI {
 			//myStreamController.printStream();
 			myEngineController.runEngine();
 			System.out.println("\nProfiling results for repeat No." + (i+1) +" are as follows:");
-			
 			Profiling.printProfiling();
-			
-			
-			
 		}
 }
 }

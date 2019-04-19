@@ -164,8 +164,7 @@ public class Engine {
 					this.cleanRuns();
 				}
 				this.createNewRun(e);// create new run starting with this event if possible
-				
-				
+
 				Profiling.totalRunTime += (System.nanoTime() - currentTime);
 				Profiling.numberOfEvents += 1;
 				
@@ -184,7 +183,6 @@ public class Engine {
 					this.cleanRunsByPartition();
 				}
 				this.createNewRunByPartition(e);// create new run starting with this event if possible
-				
 				
 				Profiling.totalRunTime += (System.nanoTime() - currentTime);
 				Profiling.numberOfEvents += 1;
