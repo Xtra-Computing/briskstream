@@ -242,7 +242,7 @@ do
     machine=3 #RTM.
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
-	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-3.0-jar-with-dependencies.jar"
+	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.2.0-jar-with-dependencies.jar"
 
     outputPath=$HOME/briskstream/Tests/test-$timestamp/$benchmark
 	mkdir -p $outputPath
