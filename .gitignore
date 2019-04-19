@@ -229,6 +229,7 @@ common/target/*
 BriskBenchamrks/target/*
 StormBenchmarks/target/*
 FlinkBenchmarks/target/*
+CEP/target/*
 common/common-scripts/zookeeper/*
 metric_output/*
 STAT/*
@@ -246,4 +247,4 @@ BriskBenchamrks/nbactions-manual.xml
 MAP/wc/tmp
 StormBenchmarks/logs/
 PROFILE/
-HeronBenchmarks/target/
+
