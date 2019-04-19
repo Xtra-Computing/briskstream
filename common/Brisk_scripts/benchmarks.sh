@@ -554,7 +554,7 @@ do
                 do
                     for theta in 0.6 #0.6 0.8
                     do
-                        for tt in 38 32 24 16 8 2
+                        for tt in 32 24 16 8 2 #38
                         do
                             for CCOption in 4 # * (3 + 2)
                             do
@@ -566,16 +566,16 @@ do
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
-                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+#                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
-                                    for ratio_of_read in 0 1
+                                    for ratio_of_read in 1 2 3
                                     do
-                                        for ratio_of_multi_partition in 0 0.25 0.5 0.75 1
+                                        for ratio_of_multi_partition in 0.5 #0 0.25 0.5 0.75 1
                                         do
                                             TP=$tt
                                             number_partitions=6
-#                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done
