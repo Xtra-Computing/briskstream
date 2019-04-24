@@ -4,7 +4,7 @@ package streaming.affinity;
 import applications.util.Configuration;
 import brisk.controller.affinity.AffinityController;
 import brisk.execution.runtime.executorThread;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.queue.impl.P1C1Queue;
 import ch.usi.overseer.OverHpc;
@@ -37,8 +37,8 @@ public class AffinityTests {
     private Consumer c1;
     private Consumer c2;
     private Consumer c3;
-    private Queue<TransferTuple> q;
-    private Queue<TransferTuple> q2;
+    private Queue<JumboTuple> q;
+    private Queue<JumboTuple> q2;
     private volatile boolean profile_producer = false;
 
     public AffinityTests(Configuration conf) {
@@ -267,7 +267,7 @@ public class AffinityTests {
                 ini(str_l);
 
 
-                TransferTuple t = new TransferTuple(0, 0, 10, null);
+                JumboTuple t = new JumboTuple(0, 0, 10, null);
 
                 int p = 0;
 
@@ -284,7 +284,7 @@ public class AffinityTests {
                         }
 
                         q.offer(t);
-                        t = new TransferTuple(0, 0, 10, null);
+                        t = new JumboTuple(0, 0, 10, null);
                         p = 0;
 //						//LOG.DEBUG(String.valueOf(OsUtils.Addresser.addressOf(q)));
 
@@ -339,7 +339,7 @@ public class AffinityTests {
         private long Exe_time;
         private long start;
         private long end;
-        private Queue<TransferTuple> privateq;
+        private Queue<JumboTuple> privateq;
 
         Consumer(long[] cpu, int node, CountDownLatch latch, int which_consumer) {
             super(null, null, null, cpu, node, latch, HPCMonotor, null);
@@ -372,7 +372,7 @@ public class AffinityTests {
 //				LinkedList<String> obtained = new LinkedList<>();
 
                 array = new String[(int) size];
-//				LinkedList<TransferTuple> obtained = new LinkedList<>();
+//				LinkedList<JumboTuple> obtained = new LinkedList<>();
 
                 int count = 0;
 
@@ -386,7 +386,7 @@ public class AffinityTests {
                     } else {
                         start = System.nanoTime();
                     }
-                    TransferTuple tuple = privateq.poll();
+                    JumboTuple tuple = privateq.poll();
                     for (int j = 0; j < 10; j++) {
 
 //						try {
@@ -405,18 +405,18 @@ public class AffinityTests {
                     }
                 }
 
-//				for (TransferTuple tuple : obtained) {
+//				for (JumboTuple tuple : obtained) {
 //					for (int i = 0; i < 10; i++) {
 //						System.out.println("I got the array with element:" + tuple.getString(0, i));
 //					}
 //				}
 
-                TransferTuple t = new TransferTuple(0, 0, 10, null);
+                JumboTuple t = new JumboTuple(0, 0, 10, null);
                 int p = 0;
                 for (int i = 0; i < size; i++) {
                     if (i != 0 && i % 10 == 0) {
                         q2.offer(t);
-                        t = new TransferTuple(0, 0, 10, null);
+                        t = new JumboTuple(0, 0, 10, null);
                         p = 0;
                     }
 

@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by shuhaozhang on 10/7/16.
  * TODO:Make it generic!!
- * UPDATE: now use generic value_list list in TransferTuple. -- shuhao.
+ * UPDATE: now use generic value_list list in JumboTuple. -- shuhao.
  *
  * @Idea: Intelligent Brisk.execution.runtime.tuple: By accessing context, every Brisk.execution.runtime.tuple knows the global Brisk.execution condition (in a much cheap way compare to cluster)!
  * It's possible to make each Brisk.execution.runtime.tuple intelligent!!
  */
-public class TransferTuple implements Comparable<TransferTuple> {
-    private static Logger LOG = LoggerFactory.getLogger(TransferTuple.class);
+public class JumboTuple implements Comparable<JumboTuple> {
+    private static Logger LOG = LoggerFactory.getLogger(JumboTuple.class);
     public final Message[] msg;
     protected final int sourceId;
     private final TopologyContext context;//context given by producer
@@ -27,7 +27,7 @@ public class TransferTuple implements Comparable<TransferTuple> {
     //context is not going to be serialized.
 
 
-    public TransferTuple(TransferTuple clone) {
+    public JumboTuple(JumboTuple clone) {
         this.bid = clone.bid;
         this.sourceId = clone.sourceId;
         this.length = clone.length;
@@ -37,7 +37,7 @@ public class TransferTuple implements Comparable<TransferTuple> {
     }
 
 
-    public TransferTuple(int sourceId, long bid, int length, TopologyContext context) {
+    public JumboTuple(int sourceId, long bid, int length, TopologyContext context) {
         this.sourceId = sourceId;
 //		this.targetTasks = targetTasks;
         this.length = length;
@@ -47,7 +47,7 @@ public class TransferTuple implements Comparable<TransferTuple> {
 
     }
 
-    public TransferTuple(int sourceId, long bid, int msg_size, TopologyContext context, Message... msg) {
+    public JumboTuple(int sourceId, long bid, int msg_size, TopologyContext context, Message... msg) {
         this.sourceId = sourceId;
 //		this.targetTasks = targetTasks;
         this.context = context;
@@ -64,7 +64,7 @@ public class TransferTuple implements Comparable<TransferTuple> {
      * @param context
      * @param message
      */
-    public TransferTuple(long bid, int sourceId, TopologyContext context, Message message) {
+    public JumboTuple(long bid, int sourceId, TopologyContext context, Message message) {
         this.bid = bid;
         this.sourceId = sourceId;
         this.context = context;
@@ -178,7 +178,7 @@ public class TransferTuple implements Comparable<TransferTuple> {
     }
 
     @Override
-    public int compareTo(TransferTuple o) {
+    public int compareTo(JumboTuple o) {
         return Long.compare(this.bid, o.bid);
     }
 

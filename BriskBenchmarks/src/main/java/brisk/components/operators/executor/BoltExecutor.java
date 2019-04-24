@@ -7,7 +7,7 @@ import brisk.components.operators.api.Operator;
 import brisk.execution.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.Writer;
@@ -27,11 +27,11 @@ public abstract class BoltExecutor implements IExecutor {
         this.op = op;
     }
 
-    public abstract void execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
+    public abstract void execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
 
     public abstract void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
 
-    public abstract void profile_execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
+    public abstract void profile_execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {

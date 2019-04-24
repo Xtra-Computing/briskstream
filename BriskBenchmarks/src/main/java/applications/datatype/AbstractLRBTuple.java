@@ -108,7 +108,7 @@ public abstract class AbstractLRBTuple extends StreamValues {
     AbstractLRBTuple() {
     }
 
-    AbstractLRBTuple(Short type, Integer time) {
+    AbstractLRBTuple(Short type, Short time) {
         assert (type != null);
         assert (time != null);
         assert (type == position_report || type == account_balance_request
@@ -137,10 +137,9 @@ public abstract class AbstractLRBTuple extends StreamValues {
      *
      * @return the timestamp of this tuple
      */
-    public final Integer getTime() {
-        return (Integer) super.get(TIME_IDX);
+    public final Short getTime() {
+        return (Short)super.get(TIME_IDX);
     }
-
     /**
      * TODO remove class Time ???
      *

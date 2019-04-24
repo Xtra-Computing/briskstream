@@ -554,7 +554,7 @@ do
                 do
                     for theta in 0.6 #0.6 0.8
                     do
-                        for tt in 24 #38
+                        for tt in 38
                         do
                             for CCOption in 1 2 3 4 # * (3 + 2)
                             do
@@ -573,9 +573,12 @@ do
                                     do
                                         for ratio_of_multi_partition in 0.5 #0 0.25 0.5 0.75 1
                                         do
-                                            TP=$tt
-                                            number_partitions=6
-                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            for checkpoint in 0.005 #0.015 0.025 0.05 0.1 0.25 0.5
+                                            do
+                                                TP=$tt
+                                                number_partitions=6
+                                                multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            done
                                         done
                                     done
                                 done

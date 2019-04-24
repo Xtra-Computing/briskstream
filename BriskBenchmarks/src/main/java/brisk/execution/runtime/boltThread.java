@@ -8,7 +8,7 @@ import brisk.controller.input.InputStreamController;
 import brisk.execution.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.optimization.OptimizationManager;
 import brisk.optimization.model.STAT;
@@ -87,10 +87,10 @@ public class boltThread extends executorThread {
             cnt = 0;
             long start = System.currentTimeMillis();
             for (int i = 0; i < loop && running; i++) {
-//				TransferTuple in = fetchResult(src, stat, batch);//special fetch, only fetch targeted source for profiling purpose.
+//				JumboTuple in = fetchResult(src, stat, batch);//special fetch, only fetch targeted source for profiling purpose.
 //                    LOG.info(this.executor.getOP() + "\t" + this.executor.getExecutorID() + " Processed:" + processed);
 
-                TransferTuple in = fetchResult(stat, batch);
+                JumboTuple in = fetchResult(stat, batch);
                 if (in != null) {
                     if (in.getSourceTask() == srcExecutorID && i > 30000) {//skip the non-compiled optimized part.
 
@@ -178,7 +178,7 @@ public class boltThread extends executorThread {
                 miss++;
             }
         } else {
-            TransferTuple in = fetchResult();
+            JumboTuple in = fetchResult();
             if (in != null) {
                 bolt.execute(in);
                 cnt += batch;
@@ -302,7 +302,7 @@ public class boltThread extends executorThread {
      *
      * @since 0.0.7 we add a tuple txn module so that we can support customized txn rules in Brisk.execution.runtime.tuple fetching.
      */
-    private TransferTuple fetchResult() {
+    private JumboTuple fetchResult() {
 
         return scheduler.fetchResults();
 //		return scheduler.fetchResults_inorder();
@@ -319,12 +319,12 @@ public class boltThread extends executorThread {
     }
 
 
-    private TransferTuple fetchResult(STAT stat, int batch) {
+    private JumboTuple fetchResult(STAT stat, int batch) {
         return scheduler.fetchResults(stat, batch);
     }
 
 
-    private TransferTuple fetchResult(ExecutionNode src, STAT stat, int batch) {
+    private JumboTuple fetchResult(ExecutionNode src, STAT stat, int batch) {
         return scheduler.fetchResults(src, stat, batch);
     }
 

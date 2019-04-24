@@ -70,6 +70,7 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
      * The index of the AVGS attribute.
      */
     private final static int AVGS_IDX = 5;
+
     private static final long serialVersionUID = 9178312919140032032L;
 
 
@@ -86,7 +87,7 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
      * @param diretion the vehicle's driving direction
      * @param avgSpeed the average speed of the vehicle
      */
-    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Integer avgSpeed) {
+    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Double avgSpeed) {
         assert (vid != null);
         assert (minute != null);
         assert (xway != null);
@@ -103,7 +104,7 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
     }
 
 
-    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Integer avgSpeed, Long msgId, Long sysStamp) {
+    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Double avgSpeed, Long msgId, Long sysStamp) {
         assert (vid != null);
         assert (minute != null);
         assert (xway != null);
@@ -191,8 +192,8 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
      *
      * @return the average speed of this tuple
      */
-    public final Integer getAvgSpeed() {
-        return (Integer) super.get(AVGS_IDX);
+    public final Double getAvgSpeed() {
+        return (Double) super.get(AVGS_IDX);
     }
 
 

@@ -1,7 +1,7 @@
 package brisk.controller.input.scheduler;
 
 import brisk.controller.input.InputStreamController;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.optimization.model.STAT;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class SequentialScheduler extends InputStreamController {
 
 
     @Override
-    public TransferTuple fetchResults_inorder() {
+    public JumboTuple fetchResults_inorder() {
         if (current == size) {
             current = 0;
         }
@@ -53,8 +53,8 @@ public class SequentialScheduler extends InputStreamController {
     }
 //
 //	@Override
-//	public TransferTuple fetchResults() {
-//		TransferTuple tuple = null;
+//	public JumboTuple fetchResults() {
+//		JumboTuple tuple = null;
 //		int cnt = 0;
 //		do {
 //			if (current == size) {
@@ -68,7 +68,7 @@ public class SequentialScheduler extends InputStreamController {
 //	}
 
     @Override
-    public TransferTuple fetchResults() {
+    public JumboTuple fetchResults() {
         if (current == size) {
             current = 0;
         }
@@ -87,7 +87,7 @@ public class SequentialScheduler extends InputStreamController {
     }
 
     @Override
-    public TransferTuple fetchResults(STAT stat, int batch) {
+    public JumboTuple fetchResults(STAT stat, int batch) {
         if (current == size) {
             current = 0;
         }

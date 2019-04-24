@@ -25,15 +25,13 @@ import applications.datatype.internal.LavTuple;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,34 +46,28 @@ import java.util.Map;
  * @author msoyka
  * @author richter
  * @author mjsax
+ *
+ * TODO: For simplicity, we only keep 1 elements.. that is window length=1, slide=1. The original LR benchmark requires to keep "last five minutes" @author Tony
  */
 public class LatestAverageVelocityBolt extends filterBolt {
     private static final long serialVersionUID = 5537727428628598519L;
     private static final Logger LOGGER = LoggerFactory.getLogger(LatestAverageVelocityBolt.class);
 
-    /**
-     * Holds the (at max) last five average speed value_list for each segment.
-     */
-    private final Map<SegmentIdentifier, List<Integer>> averageSpeedsPerSegment = new HashMap<>();
+//    /**
+//     * Internally (re)used object to access individual attributes.
+//     */
+//    private final AvgVehicleSpeedTuple inputTuple = new AvgVehicleSpeedTuple();
 
-    /**
-     * Holds the (at max) last five minute numbers for each segment.
-     */
-    private final Map<SegmentIdentifier, List<Short>> minuteNumbersPerSegment = new HashMap<>();
     /**
      * Internally (re)used object.
      */
-    private final SegmentIdentifier segmentIdentifier = new SegmentIdentifier();
-    /**
-     * Internally (re)used object to access individual attributes.
-     */
-    private AvgVehicleSpeedTuple inputTuple = new AvgVehicleSpeedTuple();
-    /**
-     * The currently processed 'minute number'.
-     */
-    private short currentMinute = 1;
+    private final SegmentIdentifier segment = new SegmentIdentifier();
 
-    private double cnt = 0, cnt1 = 0, cnt2 = 0;
+    /**
+     * Holds the average speed value for each segment.
+     */
+    private final Map<SegmentIdentifier, Double> averageSpeedsPerSegment = new HashMap<>();
+
 
     public LatestAverageVelocityBolt() {
         super(LOGGER, new HashMap<>(), new HashMap<>());
@@ -85,161 +77,39 @@ public class LatestAverageVelocityBolt extends filterBolt {
     }
 
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException {
-        this.inputTuple = (AvgVehicleSpeedTuple) in.getValue(0);
-        LOGGER.trace(this.inputTuple.toString());
+    private void update_avgs(double speed) throws InterruptedException {
 
-        Short minuteNumber = this.inputTuple.getMinute();
-        short m = minuteNumber;
-
-        this.segmentIdentifier.set(this.inputTuple);
-        List<Integer> latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segmentIdentifier);
-        List<Short> latestMinuteNumber = this.minuteNumbersPerSegment.get(this.segmentIdentifier);
+        Double latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segment);
 
         if (latestAvgSpeeds == null) {
-            latestAvgSpeeds = new LinkedList<>();
-            this.averageSpeedsPerSegment.put(this.segmentIdentifier.copy(), latestAvgSpeeds);
-            latestMinuteNumber = new LinkedList<>();
-            this.minuteNumbersPerSegment.put(this.segmentIdentifier.copy(), latestMinuteNumber);
-        }
-        latestAvgSpeeds.add(this.inputTuple.getAvgSpeed());
-        latestMinuteNumber.add(minuteNumber);
-
-        while (latestAvgSpeeds.size() > 1) {
-            if (latestMinuteNumber.get(0) < m - 4) {
-                latestAvgSpeeds.remove(0);
-                latestMinuteNumber.remove(0);
-            } else {
-                break;
-            }
+            this.averageSpeedsPerSegment.put(this.segment.copy(), speed);//initialize speed
+            latestAvgSpeeds = speed;
         }
 
 
-        Integer lav = this.computeLavValue(latestAvgSpeeds);
-        this.collector.force_emit(
-                LRTopologyControl.LAVS_STREAM_ID,
-                -1, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                        .getSegment(), this.segmentIdentifier.getDirection(), lav));
+        //compute lav
+        double lav = (latestAvgSpeeds + speed) / 2;//compute the average.
 
+        this.collector.emit(LRTopologyControl.LAVS_STREAM_ID,
+                new LavTuple((short) (-1),//remove minutes
+                        this.segment.getXWay(), this.segment.getSegment(),
+                        this.segment.getDirection(), lav));
     }
+
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
-        int bound = in.length;
-        final long bid = in.getBID();
-        cnt += bound;
-        for (int i = 0; i < bound; i++) {
-//			this.inputTuple.clear();
-//			Collections.addAll(this.inputTuple, in.getMsg(i));
-            this.inputTuple = (AvgVehicleSpeedTuple) in.getMsg(i).getValue(0);
-            LOGGER.trace(this.inputTuple.toString());
-
-            Short minuteNumber = this.inputTuple.getMinute();
-            short m = minuteNumber;
-
-//			assert (m >= this.currentMinute);
-
-//			if (m > this.currentMinute) {
-//				// each time we step from one minute to another, we need to measure_end the previous time range for "unfinished"
-//				// open windows; this can happen, if there is not AvgSpeedTuple for a segment in the minute before the
-//				// current one; we need to truncate all open windows and compute LAV values for each open segment
-//
-//				short nextMinute = this.currentMinute;
-//				// a segment can have multiple consecutive missing AvgSpeedTuple
-//				// (for example, if no more cars drive on a segment)
-//				while (nextMinute++ < m) {
-//					Iterator<Entry<SegmentIdentifier, List<Short>>> it = this.minuteNumbersPerSegment.entrySet().iterator();
-//					while (it.hasNext()) {
-//						Entry<SegmentIdentifier, List<Short>> e = it.next();
-//						SegmentIdentifier sid = e.getKey();
-//						List<Short> latestMinuteNumber = e.getValue();
-//
-//						if (latestMinuteNumber.get(latestMinuteNumber.size() - 1) < nextMinute - 1) {
-//							List<Integer> latestAvgSpeeds = this.averageSpeedsPerSegment.get(sid);
-//
-//							// truncate window if entry is more than 5 minutes older than nextMinute
-//							// (can be at max one entry)
-//							if (latestMinuteNumber.get(0) < nextMinute - 5) {
-//								latestAvgSpeeds.remove(0);
-//								latestMinuteNumber.remove(0);
-//							}
-//
-//							if (latestAvgSpeeds.size() > 0) {
-//								cnt1++;
-//								Integer lav = this.computeLavValue(latestAvgSpeeds);
-//								this.collector.emit(LRTopologyControl.LAVS_STREAM_ID,
-//										bid, new LavTuple(nextMinute, sid.getXWay(), sid.getSegment(),
-//												sid.getDirection(), lav));
-//							} else {
-//								// remove empty window completely
-//								it.remove();
-//								this.averageSpeedsPerSegment.remove(sid);
-//							}
-//						}
-//					}
-//				}
-//				this.currentMinute = m;
-//			}
-            this.segmentIdentifier.set(this.inputTuple);
-            List<Integer> latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segmentIdentifier);
-            List<Short> latestMinuteNumber = this.minuteNumbersPerSegment.get(this.segmentIdentifier);
-
-            if (latestAvgSpeeds == null) {
-                latestAvgSpeeds = new LinkedList<>();
-                this.averageSpeedsPerSegment.put(this.segmentIdentifier.copy(), latestAvgSpeeds);
-                latestMinuteNumber = new LinkedList<>();
-                this.minuteNumbersPerSegment.put(this.segmentIdentifier.copy(), latestMinuteNumber);
-            }
-            latestAvgSpeeds.add(this.inputTuple.getAvgSpeed());
-            latestMinuteNumber.add(minuteNumber);
-
-            // discard all values that are more than 5 minutes older than current minute
-            while (latestAvgSpeeds.size() > 1) {
-                if (latestMinuteNumber.get(0) < m - 4) {
-                    latestAvgSpeeds.remove(0);
-                    latestMinuteNumber.remove(0);
-                } else {
-                    break;
-                }
-            }
-//		assert (latestAvgSpeeds.fieldSize() <= 5);
-//		assert (latestMinuteNumber.fieldSize() <= 5);
-
-            cnt1++;
-            Integer lav = this.computeLavValue(latestAvgSpeeds);
-            this.collector.emit(
-                    LRTopologyControl.LAVS_STREAM_ID,
-                    bid, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                            .getSegment(), this.segmentIdentifier.getDirection(), lav));
-//        double i=cnt1/cnt;
-//        if (stat != null) stat.end_measure();
-        }
+    public void execute(Tuple input) throws InterruptedException {
+        AvgVehicleSpeedTuple inputTuple = (AvgVehicleSpeedTuple) input.getValues();
+        this.segment.set(inputTuple);
+        Double avgSpeed = inputTuple.getAvgSpeed();
+        update_avgs(avgSpeed);
     }
 
-
-    private Integer computeLavValue(List<Integer> latestAvgSpeeds) {
-        int speedSum = 0;
-        int valueCount = 0;
-        for (Integer speed : latestAvgSpeeds) {
-            speedSum += speed;
-            ++valueCount;
-            if (valueCount > 10) {//workaround to ensure constant workload.
-                break;
-            }
-        }
-
-        return speedSum / valueCount;
-    }
-
-    public void display() {
-
-        LOGGER.info("cnt:" + cnt + "\tcnt1:" + cnt1 + "\toutput selectivity:" + ((cnt1) / cnt));
-    }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declareStream(LRTopologyControl.LAVS_STREAM_ID, LavTuple.getSchema());
+        declarer.declareStream(TimestampMerger.FLUSH_STREAM_ID, new Fields("ts"));
     }
 
 }

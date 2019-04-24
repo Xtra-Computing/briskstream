@@ -22,10 +22,8 @@ package applications.datatype.internal;
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
 import applications.util.Time;
+import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.tuple.impl.Fields;
-
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 
 /**
@@ -43,77 +41,115 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  *
  * @author mjsax
  */
-public final class LavTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
-    /**
-     * The index of the MINUTE attribute.
-     */
-    private final static int MINUTE_IDX = 0;
-
+public final class LavTuple extends StreamValues implements ISegmentIdentifier {
     // attribute indexes
-    /**
-     * The index of the XWAY attribute.
-     */
-    private final static int XWAY_IDX = 1;
-    /**
-     * The index of the SEGMENT attribute.
-     */
-    private final static int SEG_IDX = 2;
-    /**
-     * The index of the DIR attribute.
-     */
-    private final static int DIR_IDX = 3;
-    /**
-     * The index of the LAV attribute.
-     */
-    private final static int LAV_IDX = 4;
-    private static final long serialVersionUID = 1726682629621494657L;
+    /** The index of the TIME attribute. */
+    public final static int TIME_IDX = 0;
+
+    /** The index of the XWAY attribute. */
+    public final static int XWAY_IDX = 1;
+
+    /** The index of the SEGMENT attribute. */
+    public final static int SEG_IDX = 2;
+
+    /** The index of the DIR attribute. */
+    public final static int DIR_IDX = 3;
+
+    /** The index of the LAV attribute. */
+    public final static int LAV_IDX = 4;
 
 
-    public LavTuple() {
-    }
+
+    public LavTuple() {}
 
     /**
      * Instantiates a new {@link LavTuple} for the given attributes.
-     *
-     * @param minute    the 'minute number' of the speed average
-     * @param xway      the expressway the vehicle is on
-     * @param segment   the segment number the vehicle is in
-     * @param direction the vehicle's driving direction
-     * @param lav       the latest average velocity of a segment
+     *  @param time
+     *            the 'minute number' (in LRB seconds) of the speed average
+     * @param xway
+     *            the expressway the vehicle is on
+     * @param segment
+ *            the segment number the vehicle is in
+     * @param direction
+*            the vehicle's driving direction
+     * @param lav
      */
-    public LavTuple(Short minute, Integer xway, Short segment, Short direction, Integer lav) {
-        assert (minute != null);
+    public LavTuple(Short time, Integer xway, Short segment, Short direction, double lav) {
+        assert (time != null);
         assert (xway != null);
         assert (segment != null);
         assert (direction != null);
         assert (lav != null);
 
-        super.add(MINUTE_IDX, minute);
+        super.add(TIME_IDX, time);
         super.add(XWAY_IDX, xway);
         super.add(SEG_IDX, segment);
         super.add(DIR_IDX, direction);
         super.add(LAV_IDX, lav);
+
+        assert (super.size() == 5);
     }
 
-    public LavTuple(Short minute, Integer xway, Short segment, Short direction, Integer lav, long msgID, long timeStamp) {
-
-        assert (minute != null);
-        assert (xway != null);
-        assert (segment != null);
-        assert (direction != null);
-        assert (lav != null);
-
-        super.add(MINUTE_IDX, minute);
-        super.add(XWAY_IDX, xway);
-        super.add(SEG_IDX, segment);
-        super.add(DIR_IDX, direction);
-        super.add(LAV_IDX, lav);
+    public static Fields getLatencySchema() {
+        return null;
+    }
 
 
-        super.add(msgID);//5
-        super.add(timeStamp);//6
+    /**
+     * Returns the timestamp of this {@link LavTuple}.
+     *
+     * @return the timestamp of this tuple
+     */
+    public final Short getTime() {
+        return (Short)super.get(TIME_IDX);
+    }
 
+    /**
+     * Returns the 'minute number' of this {@link LavTuple}.
+     *
+     * @return the 'minute number' of this tuple
+     */
+    public final short getMinuteNumber() {
+        return Time.getMinute(this.getTime().shortValue());
+    }
 
+    /**
+     * Returns the expressway ID of this {@link LavTuple}.
+     *
+     * @return the expressway of this tuple
+     */
+    @Override
+    public final Integer getXWay() {
+        return (Integer)super.get(XWAY_IDX);
+    }
+
+    /**
+     * Returns the segment of this {@link LavTuple}.
+     *
+     * @return the segment of this tuple
+     */
+    @Override
+    public final Short getSegment() {
+        return (Short)super.get(SEG_IDX);
+    }
+
+    /**
+     * Returns the vehicle's direction of this {@link LavTuple}.
+     *
+     * @return the direction of this tuple
+     */
+    @Override
+    public final Short getDirection() {
+        return (Short)super.get(DIR_IDX);
+    }
+
+    /**
+     * Returns the latest average velocity (LAV) of this {@link LavTuple}.
+     *
+     * @return the latest average velocity (LAV) of this tuple
+     */
+    public final Integer getLav() {
+        return (Integer)super.get(LAV_IDX);
     }
 
     /**
@@ -127,65 +163,5 @@ public final class LavTuple extends applications.util.datatypes.StreamValues imp
                 LRTopologyControl.LAST_AVERAGE_SPEED_FIELD_NAME);
     }
 
-    public static Fields getLatencySchema() {
-        return new Fields(
-                LRTopologyControl.LAST_AVERAGE_SPEED_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
-    }
-
-    /**
-     * Returns the 'minute number' of this {@link LavTuple}.
-     *
-     * @return the 'minute number' of this tuple
-     */
-    public final Short getMinuteNumber() {
-        return (Short) super.get(MINUTE_IDX);
-    }
-
-    /**
-     * Returns the expressway ID of this {@link LavTuple}.
-     *
-     * @return the VID of this tuple
-     */
-    @Override
-    public final Integer getXWay() {
-        return (Integer) super.get(XWAY_IDX);
-    }
-
-    /**
-     * Returns the segment of this {@link LavTuple}.
-     *
-     * @return the VID of this tuple
-     */
-    @Override
-    public final Short getSegment() {
-        return (Short) super.get(SEG_IDX);
-    }
-
-    /**
-     * Returns the vehicle's direction of this {@link LavTuple}.
-     *
-     * @return the VID of this tuple
-     */
-    @Override
-    public final Short getDirection() {
-        return (Short) super.get(DIR_IDX);
-    }
-
-    /**
-     * Returns the latest average velocity (LAV) of this {@link LavTuple}.
-     *
-     * @return the latest average velocity (LAV) of this tuple
-     */
-    public final Integer getLav() {
-        return (Integer) super.get(LAV_IDX);
-    }
-
-    public long getMsgID() {
-        return (long) super.get(5);
-    }
-
-    public long getTimeStamp() {
-        return (long) super.get(6);
-    }
 
 }

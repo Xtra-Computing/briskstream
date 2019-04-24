@@ -3,7 +3,7 @@ package applications.bolts.pk;
 import applications.constants.SpikeDetectionConstants;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class MovingAverageBolt extends MapBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
 //		final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {
@@ -59,7 +59,7 @@ public class MovingAverageBolt extends MapBolt {
     }
 
     @Override
-    public void profile_execute(TransferTuple in) {
+    public void profile_execute(JumboTuple in) {
         int bound = in.length;
 //		final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {

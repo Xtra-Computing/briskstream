@@ -6,7 +6,7 @@ import applications.sink.helper.stable_sink_helper;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
@@ -107,7 +107,7 @@ public class MeasureSink extends BaseSink {
     }
 
     @Override
-    public void execute(TransferTuple input) {
+    public void execute(JumboTuple input) {
         //	store.add(input);
         int bound = input.length;
         for (int i = 0; i < bound; i++) {

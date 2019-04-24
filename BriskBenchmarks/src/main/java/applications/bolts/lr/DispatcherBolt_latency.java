@@ -22,7 +22,7 @@ package applications.bolts.lr;
 import applications.datatype.*;
 import applications.datatype.util.LRTopologyControl;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -77,7 +77,7 @@ public class DispatcherBolt_latency extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
 //		long pre_pr = pr;
@@ -91,7 +91,7 @@ public class DispatcherBolt_latency extends filterBolt {
             String[] token = raw.split(" ");
             // common attributes of all in tuples
             short type = Short.parseShort(token[0]);
-            Integer time = Integer.parseInt(token[1]);
+            Short time = Short.parseShort(token[1]);
             Integer vid = Integer.parseInt(token[2]);
             assert (time.shortValue() == Short.parseShort(token[1]));
 

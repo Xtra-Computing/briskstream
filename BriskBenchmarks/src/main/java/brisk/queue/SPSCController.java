@@ -63,9 +63,9 @@ public class SPSCController extends QueueController {
                 outputQueue.put(executor, new SpscArrayQueue(1024));
             } else {
                 if (linked) {
-                    outputQueue.put(executor, new SpscLinkedQueue()/*new P1C1Queue<TransferTuple>()*/);
+                    outputQueue.put(executor, new SpscLinkedQueue()/*new P1C1Queue<JumboTuple>()*/);
                 } else {
-                    outputQueue.put(executor, new SpscArrayQueue(desired_elements_epoch_per_core / 2)/*new P1C1Queue<TransferTuple>()*/);
+                    outputQueue.put(executor, new SpscArrayQueue(desired_elements_epoch_per_core / 2)/*new P1C1Queue<JumboTuple>()*/);
                 }
             }
 

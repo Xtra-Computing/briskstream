@@ -29,7 +29,7 @@ import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -155,7 +155,7 @@ public class TollNotificationBolt_pos_latency extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
         cnt += bound;

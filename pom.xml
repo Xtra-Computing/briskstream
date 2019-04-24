@@ -12,8 +12,8 @@
         <module>common</module>
         <module>Database</module>
         <module>Java-Thread-Affinity</module>
-        <module>BriskBenchmarks</module>
         <module>CEP</module>
+        <module>BriskBenchmarks</module>
         <!--<module>SparkBenchmarks</module>-->
         <!--<module>StormBenchmarks</module>-->
         <!--<module>FlinkBenchmarks</module>-->

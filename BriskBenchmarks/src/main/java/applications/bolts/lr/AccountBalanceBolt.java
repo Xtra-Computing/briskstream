@@ -29,7 +29,7 @@ import applications.bolts.lr.model.VehicleAccount;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -80,7 +80,7 @@ public class AccountBalanceBolt extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
 //		cnt += bound;
         for (int i = 0; i < bound; i++) {
@@ -123,7 +123,7 @@ public class AccountBalanceBolt extends filterBolt {
     }
 
 
-    private void updateBalance(TransferTuple tuple, int i) {
+    private void updateBalance(JumboTuple tuple, int i) {
 
         TollNotification notification = (TollNotification) tuple.getMsg(i).getValue(0);
         Integer vid = notification.getVid();
@@ -140,7 +140,7 @@ public class AccountBalanceBolt extends filterBolt {
         }
     }
 
-    private void getBalanceAndSend(TransferTuple in, int i) throws InterruptedException {
+    private void getBalanceAndSend(JumboTuple in, int i) throws InterruptedException {
         final long bid = in.getBID();
         AccountBalanceRequest bal = (AccountBalanceRequest) in.getMsg(i).getValue(0);
 

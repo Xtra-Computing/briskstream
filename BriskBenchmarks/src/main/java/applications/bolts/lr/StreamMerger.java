@@ -196,10 +196,10 @@ public class StreamMerger<T> {
 
     private long getTsValue(T tuple) {
         if (this.tsIndex != -1) {
-//            if (tuple instanceof TransferTuple) {
+//            if (tuple instanceof JumboTuple) {
 //                return ((Number) ((Tuple) tuple).getValue(this.tsIndex)).longValue();
 //            }
-//            assert (tuple instanceof TransferTuple);
+//            assert (tuple instanceof JumboTuple);
             return ((PositionReport) (((Tuple) tuple).getValue(0))).getTime();
 
         }

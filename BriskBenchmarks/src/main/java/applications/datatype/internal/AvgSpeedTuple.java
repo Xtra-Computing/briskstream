@@ -21,8 +21,9 @@ package applications.datatype.internal;
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
 import applications.util.Time;
-import org.apache.storm.tuple.Fields;
-import org.apache.storm.tuple.Values;
+import applications.util.datatypes.StreamValues;
+import brisk.execution.runtime.tuple.impl.Fields;
+
 
 /**
  * {@link AvgSpeedTuple} represents an intermediate result tuple; the average speed of all vehicle in a segment within a
@@ -39,7 +40,7 @@ import org.apache.storm.tuple.Values;
  *
  * @author mjsax
  */
-public final class AvgSpeedTuple extends Values implements ISegmentIdentifier {
+public final class AvgSpeedTuple extends StreamValues implements ISegmentIdentifier {
     /**
      * The index of the MINUTE attribute.
      */
@@ -77,7 +78,7 @@ public final class AvgSpeedTuple extends Values implements ISegmentIdentifier {
      * @param diretion the vehicle's driving direction
      * @param avgSpeed the average speed of the vehicle
      */
-    public AvgSpeedTuple(Short minute, Integer xway, Short segment, Short diretion, Integer avgSpeed) {
+    public AvgSpeedTuple(Short minute, Integer xway, Short segment, Short diretion, Double avgSpeed) {
         assert (minute != null);
         assert (xway != null);
         assert (segment != null);
@@ -146,8 +147,8 @@ public final class AvgSpeedTuple extends Values implements ISegmentIdentifier {
      *
      * @return the average speed of this tuple
      */
-    public final Integer getAvgSpeed() {
-        return (Integer) super.get(AVGS_IDX);
+    public final Double getAvgSpeed() {
+        return (Double) super.get(AVGS_IDX);
     }
 
 }

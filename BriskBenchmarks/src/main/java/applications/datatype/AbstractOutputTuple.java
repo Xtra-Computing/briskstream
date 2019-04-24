@@ -44,7 +44,7 @@ public abstract class AbstractOutputTuple extends AbstractLRBTuple {
         super();
     }
 
-    protected AbstractOutputTuple(Short type, Integer time, Integer emit) {
+    protected AbstractOutputTuple(Short type, Short time, Short emit) {
         super(type, time);
 
         assert (emit != null);

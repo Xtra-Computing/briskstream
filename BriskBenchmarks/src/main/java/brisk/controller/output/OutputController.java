@@ -172,6 +172,6 @@ public abstract class OutputController implements Serializable {
 
 //	public abstract void addGap(String streamId, long bid);
 
-//    public abstract void emitOnStream(String streamId, TransferTuple data, TransferTuple input);
-//    public abstract void emitOnStream_nowait(String streamId, TransferTuple data, TransferTuple input);
+//    public abstract void emitOnStream(String streamId, JumboTuple data, JumboTuple input);
+//    public abstract void emitOnStream_nowait(String streamId, JumboTuple data, JumboTuple input);
 }

@@ -33,7 +33,7 @@ public class DataSource extends AbstractSpout {
         int skew = 0;
         int cnt = 0;
         int tuple_size = config.getInt("size_tuple");
-        LOG.info("TransferTuple fieldSize to emit:" + tuple_size);
+        LOG.info("JumboTuple fieldSize to emit:" + tuple_size);
         String Wrapper = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_Wrapper));//config.getString("spout_parser");
         dataSource = new applications.spout.helper.DataSource(Wrapper, skew, false, tuple_size, false);
 //        this.parser = new ReceiveParser();

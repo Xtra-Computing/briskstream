@@ -24,18 +24,15 @@
 */
 package ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Paths;
-
-import net.sourceforge.jeval.EvaluationException;
 import engine.ConfigFlags;
 import engine.EngineController;
 import engine.Profiling;
+import net.sourceforge.jeval.EvaluationException;
 import stream.ParseStockStreamConfig;
 import stream.StockStreamConfig;
 import stream.StreamController;
+
+import java.io.IOException;
 
 
 
@@ -60,8 +57,6 @@ public class CommandLineUI {
 		String nfaFileLocation = "/Users/shuhaozhang/briskstream/CEP/src/main/resources/application/Q2/Q2.query";
 		String streamConfigFile = "/Users/shuhaozhang/briskstream/CEP/src/main/resources/application/Q2/Q2.stream";
 		
-	
-		
 		String engineType = null;
 		if(args.length > 0){
 			nfaFileLocation = args[0];
@@ -83,8 +78,7 @@ public class CommandLineUI {
 			engineType = args[3];
 		}
 		ParseStockStreamConfig.parseStockEventConfig(streamConfigFile);
-		
-				
+
 		StreamController myStreamController = null; 
 		
 		EngineController myEngineController = new EngineController();
@@ -93,7 +87,6 @@ public class CommandLineUI {
 			myEngineController = new EngineController(engineType);
 		}
 		myEngineController.setNfa(nfaFileLocation);
-		
 				
 		for(int i = 0; i < 20; i ++){
 			//repreat multiple times for a constant performance

@@ -1,6 +1,6 @@
 package applications.bolts.mb;
 
-import applications.param.MicroEvent;
+import applications.param.mb.MicroEvent;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;

@@ -28,7 +28,8 @@ import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
+import brisk.execution.runtime.tuple.impl.Message;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -108,60 +109,64 @@ public class AccidentNotificationBolt extends filterBolt {
     }
 
 
+    private void execute_core() throws InterruptedException {
+
+        this.checkMinute(this.inputPositionReport.getMinuteNumber());
+
+        if (this.inputPositionReport.isOnExitLane()) {
+            LOG.trace("ACCNotification,this.inputPositionReport is on ExistLane:" + this.inputPositionReport.toString());
+            return;
+        }
+
+        final Short currentSegment = this.inputPositionReport.getSegment();
+        final Integer vid = this.inputPositionReport.getVid();
+        final Short previousSegment = this.allCars.put(vid, currentSegment);
+        if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
+            return;
+        }
+
+        // upstream is either larger or smaller of current segment
+        final Short direction = this.inputPositionReport.getDirection();
+        final short dir = direction;
+        // EASTBOUND == 0 => diff := 1
+        // WESTBOUNT == 1 => diff := -1
+        final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
+//				assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
+        if (diff != 1 && diff != -1) {
+            return;//the position report contains error message.
+        }
+
+        final Integer xway = this.inputPositionReport.getXWay();
+        final short curSeg = currentSegment;
+
+        this.segmentToCheck.setXWay(xway);
+        this.segmentToCheck.setDirection(direction);
+
+        for (int _i = 0; _i <= 4; ++_i) {
+            final short nextSegment = (short) (curSeg + (diff * _i));
+            assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
+
+            this.segmentToCheck.setSegment(nextSegment);
+
+            if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
+                // TODO get accurate emit time...
+
+                this.collector.emit(LRTopologyControl.ACCIDENTS_NOIT_STREAM_ID
+                        , -1, new AccidentNotification(this.inputPositionReport.getTime(),
+                                this.inputPositionReport.getTime(), this.segmentToCheck.getSegment(), vid));
+                cnt1++;
+                break; // send a notification for the closest accident only
+            }
+        }
+    }
+
     @Override
     public void execute(Tuple in) throws InterruptedException {
         if (in.getSourceStreamId().equals(LRTopologyControl.POSITION_REPORTS_STREAM_ID)) {
             //this.inputPositionReport.clear();
             //Collections.addAll(this.inputPositionReport, in.getMsg(i).getValue(0));
             this.inputPositionReport = (PositionReport) in.getValue(0);
-
-            this.checkMinute(this.inputPositionReport.getMinuteNumber());
-
-            if (this.inputPositionReport.isOnExitLane()) {
-                LOG.trace("ACCNotification,this.inputPositionReport is on ExistLane:" + this.inputPositionReport.toString());
-                return;
-            }
-
-            final Short currentSegment = this.inputPositionReport.getSegment();
-            final Integer vid = this.inputPositionReport.getVid();
-            final Short previousSegment = this.allCars.put(vid, currentSegment);
-            if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
-                return;
-            }
-
-            // upstream is either larger or smaller of current segment
-            final Short direction = this.inputPositionReport.getDirection();
-            final short dir = direction;
-            // EASTBOUND == 0 => diff := 1
-            // WESTBOUNT == 1 => diff := -1
-            final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-//				assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
-            if (diff != 1 && diff != -1) {
-                return;//the position report contains error message.
-            }
-
-            final Integer xway = this.inputPositionReport.getXWay();
-            final short curSeg = currentSegment;
-
-            this.segmentToCheck.setXWay(xway);
-            this.segmentToCheck.setDirection(direction);
-
-            for (int _i = 0; _i <= 4; ++_i) {
-                final short nextSegment = (short) (curSeg + (diff * _i));
-                assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
-
-                this.segmentToCheck.setSegment(nextSegment);
-
-                if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
-                    // TODO get accurate emit time...
-
-                    this.collector.force_emit(LRTopologyControl.ACCIDENTS_NOIT_STREAM_ID
-                            , -1, new AccidentNotification(this.inputPositionReport.getTime(),
-                                    this.inputPositionReport.getTime(), this.segmentToCheck.getSegment(), vid));
-                    cnt1++;
-                    break; // send a notification for the closest accident only
-                }
-            }
+            execute_core();
         } else {//from AccidentDetection Bolt.
 //				this.inputAccidentTuple.clear();
 //				Collections.addAll(this.inputAccidentTuple, in.getMsg(i).getValue(0));
@@ -174,66 +179,21 @@ public class AccidentNotificationBolt extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {
+            Message msg = in.getMsg(i);
+
             if (in.getSourceStreamId(i).equals(LRTopologyControl.POSITION_REPORTS_STREAM_ID)) {
                 //this.inputPositionReport.clear();
                 //Collections.addAll(this.inputPositionReport, in.getMsg(i).getValue(0));
-                this.inputPositionReport = (PositionReport) in.getMsg(i).getValue(0);
-
-                this.checkMinute(this.inputPositionReport.getMinuteNumber());
-
-                if (this.inputPositionReport.isOnExitLane()) {
-                    LOG.trace("ACCNotification,this.inputPositionReport is on ExistLane:" + this.inputPositionReport.toString());
-                    return;
-                }
-
-                final Short currentSegment = this.inputPositionReport.getSegment();
-                final Integer vid = this.inputPositionReport.getVid();
-                final Short previousSegment = this.allCars.put(vid, currentSegment);
-                if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
-                    return;
-                }
-
-                // upstream is either larger or smaller of current segment
-                final Short direction = this.inputPositionReport.getDirection();
-                final short dir = direction;
-                // EASTBOUND == 0 => diff := 1
-                // WESTBOUNT == 1 => diff := -1
-                final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-//				assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
-                if (diff != 1 && diff != -1) {
-                    return;//the position report contains error message.
-                }
-
-                final Integer xway = this.inputPositionReport.getXWay();
-                final short curSeg = currentSegment;
-
-                this.segmentToCheck.setXWay(xway);
-                this.segmentToCheck.setDirection(direction);
-
-                for (int _i = 0; _i <= 4; ++_i) {
-                    final short nextSegment = (short) (curSeg + (diff * _i));
-                    assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
-
-                    this.segmentToCheck.setSegment(nextSegment);
-
-                    if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
-                        // TODO get accurate emit time...
-
-                        this.collector.emit(LRTopologyControl.ACCIDENTS_NOIT_STREAM_ID, bid
-                                , new AccidentNotification(this.inputPositionReport.getTime(),
-                                        this.inputPositionReport.getTime(), this.segmentToCheck.getSegment(), vid));
-                        cnt1++;
-                        break; // send a notification for the closest accident only
-                    }
-                }
+                this.inputPositionReport = (PositionReport) msg.getValue(0);
+                execute_core();
             } else {//from AccidentDetection Bolt.
 //				this.inputAccidentTuple.clear();
 //				Collections.addAll(this.inputAccidentTuple, in.getMsg(i).getValue(0));
-                this.inputAccidentTuple = (AccidentTuple) in.getMsg(i).getValue(0);
+                this.inputAccidentTuple = (AccidentTuple) msg.getValue(0);
                 this.checkMinute(this.inputAccidentTuple.getMinuteNumber());
 //				assert (this.inputAccidentTuple.getMinuteNumber() == this.currentMinute);
                 this.currentMinuteAccidents.add(new SegmentIdentifier(this.inputAccidentTuple));

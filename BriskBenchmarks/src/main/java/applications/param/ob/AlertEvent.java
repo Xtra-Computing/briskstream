@@ -1,6 +1,6 @@
 package applications.param.ob;
 
-import applications.param.Event;
+import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.SplittableRandom;
 
 import static applications.constants.OnlineBidingSystemConstants.Constant.MAX_Price;
 
-public class AlertEvent extends Event {
+public class AlertEvent extends TxnEvent {
 
 
     private final int num_access;

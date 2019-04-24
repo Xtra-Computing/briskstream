@@ -23,7 +23,7 @@ import applications.datatype.*;
 import applications.datatype.util.LRTopologyControl;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -81,12 +81,12 @@ public class DispatcherBolt extends filterBolt {
         String[] token = raw.split(" ");
 
         short type = Short.parseShort(token[0]);
-        Integer time = Integer.parseInt(token[1]);
+        Short time = Short.parseShort(token[1]);
         Integer vid = Integer.parseInt(token[2]);
         assert (time.shortValue() == Short.parseShort(token[1]));
 
         if (type == AbstractLRBTuple.position_report) {
-            this.collector.force_emit(POSITION_REPORTS_STREAM_ID,
+            this.collector.emit(POSITION_REPORTS_STREAM_ID,
                     -1, new PositionReport(//
                             time,//
                             vid,//
@@ -117,7 +117,7 @@ public class DispatcherBolt extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
 //		long pre_pr = pr;
@@ -130,16 +130,12 @@ public class DispatcherBolt extends filterBolt {
             String[] token = raw.split(" ");
             // common attributes of all in tuples
             short type = Short.parseShort(token[0]);
-            Integer time = Integer.parseInt(token[1]);
+            short time = Short.parseShort(token[1]);
             Integer vid = Integer.parseInt(token[2]);
-            assert (time.shortValue() == Short.parseShort(token[1]));
 
             if (type == AbstractLRBTuple.position_report) {
-
-//					long _bid = BIDGenerator2.getHolder().getAndIncrement();
                 this.collector.emit(POSITION_REPORTS_STREAM_ID,
                         bid,
-//							gap,
                         new PositionReport(//
                                 time,//
                                 vid,//
@@ -150,68 +146,15 @@ public class DispatcherBolt extends filterBolt {
                                 Short.parseShort(token[7]), // segment
                                 Integer.parseInt(token[8]))); // position
 
-//				pr++;
             } else {
-                // common attribute of all requests
-                Integer qid = Integer.parseInt(token[9]);
-                switch (type) {
-                    case AbstractLRBTuple.account_balance_request:
-
-
-//						this.collector.emit(LRTopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID,
-//								bid, new AccountBalanceRequest(time, vid, qid));
-//						ab++;
-                        break;
-                    case AbstractLRBTuple.daily_expenditure_request:
-
-//						this.collector.emit(LRTopologyControl.DAILY_EXPEDITURE_REQUESTS_STREAM_ID,
-//								bid, new DailyExpenditureRequest(time, vid,//
-//										Integer.parseInt(token[4]), // xway
-//										qid,//
-//										Short.parseShort(token[14]))); // day
-//						de++;
-                        break;
-                    case AbstractLRBTuple.travel_time_request://not in use in this experiment.
-//							this.collector.emit(LRTopologyControl.TRAVEL_TIME_REQUEST_STREAM_ID, bid,
-//									new TravelTimeRequest(time, vid,//
-//											new Integer(Integer.parseInt(token[4])), // xway
-//											qid,//
-//											new Short(Short.parseShort(token[10])), // S_init
-//											new Short(Short.parseShort(token[11])), // S_end
-//											new Short(Short.parseShort(token[12])), // DOW
-//											new Short(Short.parseShort(token[13])))); // TOD
-                        break;
-                    default:
-                        LOG.error("Unkown tuple type: {}", type);
-
-                }
+                //not in use in this experiment.
             }
-//            double i=cnt1/cnt;
-//			} catch (Exception e) {
-//				LOG.error("Error in line: {}", raw);
-//				e.printStackTrace();
-//			}
         }
 
-//		//LOG.DEBUG("Dispatcher (" + this.getContext().getThisTaskId() + ") emit:" + bid + " @ "+ DateTime.now());
-//		if( this.collector.getBID(POSITION_REPORTS_STREAM_ID) != (bid + 1)){
-//			System.out.println(" ");
-//		}
-//		clean_gap(gap);
-//
-//		if ((pr-pre_pr) != bound) {
-//			this.collector.emit_inorder_push(POSITION_REPORTS_STREAM_ID, bid, gap); // position
-//
-//		}
     }
 
 
     public void display() {
-//		LOG.info("cnt:" + cnt
-//				+ "\tde:" + de + "\t DE output selectivity:" + ((de) / (double) cnt)
-//						+ "\tpr:" + pr + "\t PR output selectivity:" + ((pr) / (double) cnt)
-//				+ "\tab:" + ab + "\t AB output selectivity:" + ((ab) / (double) cnt)
-//		);
     }
 
 

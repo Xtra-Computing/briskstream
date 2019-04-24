@@ -25,7 +25,7 @@ import applications.datatype.internal.LavTuple;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
     /**
      * Holds the (at max) last five average speed value_list for each segment.
      */
-    private final Map<SegmentIdentifier, List<Integer>> averageSpeedsPerSegment = new HashMap<>();
+    private final Map<SegmentIdentifier, List<Double>> averageSpeedsPerSegment = new HashMap<>();
 
     /**
      * Holds the (at max) last five minute numbers for each segment.
@@ -91,7 +91,7 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
         cnt += bound;
@@ -117,7 +117,7 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
 
 
             this.segmentIdentifier.set(this.inputTuple);
-            List<Integer> latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segmentIdentifier);
+            List<Double> latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segmentIdentifier);
             List<Short> latestMinuteNumber = this.minuteNumbersPerSegment.get(this.segmentIdentifier);
 
             if (latestAvgSpeeds == null) {
@@ -149,13 +149,15 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
                 this.collector.emit(
                         LRTopologyControl.LAVS_STREAM_ID,
                         bid, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                                .getSegment(), this.segmentIdentifier.getDirection(), lav), msgID, in.getLong(2, i)
+                                .getSegment(), this.segmentIdentifier.getDirection(), lav),
+                        msgID, in.getLong(2, i)
                 );
             else
                 this.collector.emit(
                         LRTopologyControl.LAVS_STREAM_ID,
                         bid, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                                .getSegment(), this.segmentIdentifier.getDirection(), lav), msgID, 0
+                                .getSegment(), this.segmentIdentifier.getDirection(), lav),
+                        msgID, 0
                 );
 //        double i=cnt1/cnt;
 //        if (stat != null) stat.end_measure();
@@ -163,18 +165,15 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
     }
 
 
-    private Integer computeLavValue(List<Integer> latestAvgSpeeds) {
-        int speedSum = 0;
+    private Integer computeLavValue(List<Double> latestAvgSpeeds) {
+        double speedSum = 0;
         int valueCount = 0;
-        for (Integer speed : latestAvgSpeeds) {
-            speedSum += speed;
+        for(Double speed : latestAvgSpeeds) {
+            speedSum += speed.doubleValue();
             ++valueCount;
-            if (valueCount > 10) {//workaround to ensure constant workload.
-                break;
-            }
         }
 
-        return speedSum / valueCount;
+        return new Integer((int)(speedSum / valueCount));
     }
 
     public void display() {

@@ -8,7 +8,7 @@ import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.impl.BIDGenerator;
 import brisk.execution.runtime.collector.impl.Meta;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Message;
 import brisk.execution.runtime.tuple.impl.Tuple;
@@ -134,7 +134,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 //        if (enable_latency_measurement) {
 //            queue_size_per_core = 2;
 //        } else {
-            queue_size_per_core = (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint") / conf.getInt("tthread"));
+            queue_size_per_core = (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint"));
 //        }
         threashold = queue_size_per_core - 1;//leave one space for watermark filling!
 
@@ -236,7 +236,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     public Double getPartition_ratio(int executorID) {
         return partition_ratio.get(executorID);
     }
-//    int emit(TransferTuple output, TransferTuple input);
+//    int emit(JumboTuple output, JumboTuple input);
 
     public HashMap<Integer, ExecutionNode> getDownExecutor_list() {
         return downExecutor_list;
@@ -320,7 +320,7 @@ public abstract class PartitionController implements IPartitionController, Seria
      * @return
      */
     protected boolean try_offer(int srcId, int targetId, String streamId, Object... output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], output);//does not care order. set bid to 0.
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], output);//does not care order. set bid to 0.
         if (tuple != null) {
             Queue queue = get_queue(targetId);
             return nonbounded_offer(queue, tuple);
@@ -330,7 +330,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
 
     protected boolean try_offer(int srcId, int targetId, String streamId, char[] key, long value) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value);//does not care order. set bid to 0.
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value);//does not care order. set bid to 0.
         if (tuple != null) {
             _try_offer(tuple, targetId);
         }
@@ -338,7 +338,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean try_offer(int srcId, int targetId, String streamId, char[] output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], output);//does not care order. set bid to 0.
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], output);//does not care order. set bid to 0.
         if (tuple != null) {
 //			Queue queue = get_queue(targetId);
 //			return nonbounded_offer(queue, tuple);
@@ -355,7 +355,7 @@ public abstract class PartitionController implements IPartitionController, Seria
      * @param output   @return
      */
     protected boolean offer_bid(int srcId, int targetId, String streamId, Object... output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -367,7 +367,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer_bid(int srcId, int targetId, String streamId, StreamValues output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -379,7 +379,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer_bid(int srcId, int targetId, String streamId, char[] output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -401,7 +401,7 @@ public abstract class PartitionController implements IPartitionController, Seria
      * @return
      */
     protected boolean offer(int srcId, int targetId, String streamId, long bid, Object... output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -413,7 +413,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, long bid, Object output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -425,7 +425,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean force_offer(int srcId, int targetId, String streamId, long bid, Object... output) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         return _offer(new Tuple(bid, srcId, context[srcId - firt_executor_Id], package_message(streamId, output)), targetId);
 
@@ -433,28 +433,28 @@ public abstract class PartitionController implements IPartitionController, Seria
 
 
     protected boolean force_offer(int srcId, int targetId, String streamId, long msg_id, long[] bid, Object... output) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         return _offer(new Tuple(msg_id, bid, srcId, context[srcId - firt_executor_Id], package_message(streamId, output)), targetId);
 
     }
 
     protected boolean force_offer(int srcId, int targetId, String streamId, long bid, char[] output) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         return _offer(new Tuple(bid, srcId, context[srcId - firt_executor_Id], package_message(streamId, output)), targetId);
 
     }
 
     protected boolean force_offer(int srcId, int targetId, String streamId, long bid, StreamValues output) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         return _offer(new Tuple(bid, srcId, context[srcId - firt_executor_Id], package_message(streamId, output)), targetId);
 
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, long bid, StreamValues output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -466,7 +466,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, long bid, int deviceID, double nextDouble, double movingAvergeInstant) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], deviceID, nextDouble, movingAvergeInstant);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], deviceID, nextDouble, movingAvergeInstant);
 
         if (tuple != null) {
             //if in-order
@@ -478,7 +478,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, long bid, char[] output) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -490,7 +490,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, char[] key, long value) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value);//does not care order. set bid to 0.
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value);//does not care order. set bid to 0.
         if (tuple != null) {
             return _offer(tuple, targetId);
         }
@@ -498,7 +498,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected boolean offer(int srcId, int targetId, String streamId, char[] key, long value, long bid, long TimeStamp) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value, bid, TimeStamp);//does not care order. set bid to 0.
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, 0, context[srcId - firt_executor_Id], key, value, bid, TimeStamp);//does not care order. set bid to 0.
         if (tuple != null) {
             return _offer(tuple, targetId);
         }
@@ -507,7 +507,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
 
     protected boolean offer(int srcId, int targetId, String streamId, long bid, char[] key, long value) {
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], key, value);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add(targetId, streamId, bid, context[srcId - firt_executor_Id], key, value);
 
         if (tuple != null) {
             //if in-order
@@ -520,7 +520,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
     protected boolean offer_inorder(int srcId, int targetId, String streamId, long bid, LinkedList<Long> gap, Object... output) {
 
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -542,7 +542,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
     protected boolean offer_inorder(int srcId, int targetId, String streamId, long bid, LinkedList<Long> gap, char[] output) {
 
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -556,7 +556,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
     protected boolean offer_inorder(int srcId, int targetId, String streamId, long bid, LinkedList<Long> gap, StreamValues output) {
 
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_inorder(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {
             //if in-order
@@ -568,7 +568,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
     protected boolean offer_inorder_single(int srcId, int targetId, String streamId, long bid, LinkedList<Long> gap, StreamValues output) {
 
-        TransferTuple tuple = collections[srcId - firt_executor_Id].add_inorder_single(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].add_inorder_single(targetId, streamId, bid, gap, context[srcId - firt_executor_Id], output);
 
         //if in-order
         _inorder_offer(tuple, tuple.getBID(), gap, targetId);
@@ -579,7 +579,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
     protected boolean offer_inorder_push(int srcId, int targetId, String streamId, long bid, LinkedList<Long> gap) {
 
-        TransferTuple tuple = collections[srcId - firt_executor_Id].get_inorder(targetId, streamId, bid);
+        JumboTuple tuple = collections[srcId - firt_executor_Id].get_inorder(targetId, streamId, bid);
         if (tuple != null) {
             //if in-order
             return _inorder_offer(tuple, tuple.getBID(), gap, targetId);
@@ -642,7 +642,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
 
     protected boolean offer_marker(int srcId, int targetId, String streamId, long bid, Marker marker) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].add_marker(targetId, streamId, bid, marker, context[srcId - firt_executor_Id]);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].add_marker(targetId, streamId, bid, marker, context[srcId - firt_executor_Id]);
 //		if (tuple != null) {
 //			Queue queue = get_queue(targetId);
 //			return bounded_offer(queue, tuple);
@@ -653,7 +653,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
     protected Tuple create_marker(int srcId, String streamId, long timestamp, long bid, Marker marker) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].spout_add_marker(targetId, streamId, timestamp, bid, myiteration, context[srcId - firt_executor_Id]);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].spout_add_marker(targetId, streamId, timestamp, bid, myiteration, context[srcId - firt_executor_Id]);
 //		if (tuple != null) {
 //			Queue queue = get_queue(targetId);
 //			return bounded_offer(queue, tuple);
@@ -665,7 +665,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 
 
     protected boolean offer_create_marker(Tuple marker_tuple, int targetId) {
-//		TransferTuple tuple = collections[srcId - firt_executor_Id].spout_add_marker(targetId, streamId, timestamp, bid, myiteration, context[srcId - firt_executor_Id]);
+//		JumboTuple tuple = collections[srcId - firt_executor_Id].spout_add_marker(targetId, streamId, timestamp, bid, myiteration, context[srcId - firt_executor_Id]);
 //		if (tuple != null) {
 //			Queue queue = get_queue(targetId);
 //			return bounded_offer(queue, tuple);
@@ -697,14 +697,14 @@ public abstract class PartitionController implements IPartitionController, Seria
         final int batch_size;
         final int src_Id;
         final int[] pointer;
-        private volatile TransferTuple[] buffers;//maintains a list of TransferTuple for each consumer
+        private volatile JumboTuple[] buffers;//maintains a list of JumboTuple for each consumer
         private int base = Integer.MAX_VALUE;
 
         Collections(int src_Id, HashMap<Integer, ExecutionNode> DownExecutor_list, int batch_size) {
 
             this.batch_size = batch_size;
             pointer = new int[DownExecutor_list.size()];
-            buffers = new TransferTuple[DownExecutor_list.size()];
+            buffers = new JumboTuple[DownExecutor_list.size()];
 
             for (int e : DownExecutor_list.keySet()) {
                 if (e < base) {
@@ -719,7 +719,7 @@ public abstract class PartitionController implements IPartitionController, Seria
         }
 
 
-        private TransferTuple getTuple(final int p, final int index) {
+        private JumboTuple getTuple(final int p, final int index) {
             if (p + 1 == batch_size) {//batch is full
                 pointer[index] = 0;
                 return buffers[index];
@@ -729,14 +729,14 @@ public abstract class PartitionController implements IPartitionController, Seria
             }
         }
 
-        private TransferTuple getTuple_single(final int index) {
+        private JumboTuple getTuple_single(final int index) {
 
 
             return buffers[index];
 
         }
 
-        private TransferTuple getTuple_Inorder(final int p, final int index) {
+        private JumboTuple getTuple_Inorder(final int p, final int index) {
 
             if (p != 0) {
                 return buffers[index];
@@ -754,7 +754,7 @@ public abstract class PartitionController implements IPartitionController, Seria
          * @param value
          * @return
          */
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, Object... value) {
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, Object... value) {
 
             if (value.length == 1) {
                 if (value[0] instanceof char[]) {
@@ -768,7 +768,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             }
 
@@ -777,43 +777,27 @@ public abstract class PartitionController implements IPartitionController, Seria
             return getTuple(p, index);
         }
 
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, char[] value) {
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, char[] value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             }
             buffers[index].add(p, package_message(streamId, value));
             return getTuple(p, index);
         }
 
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, Object value) {
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, Object value) {
 
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
-//				buffers[index] = tuple;
-            }
-
-            buffers[index].add(p, package_message(streamId, value));
-
-            return getTuple(p, index);
-        }
-
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, StreamValues value) {
-
-            final int index = targetId - base;
-            final int p = pointer[index];
-//			Tuple tuple = buffers[index];
-
-            if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             }
 
@@ -822,13 +806,29 @@ public abstract class PartitionController implements IPartitionController, Seria
             return getTuple(p, index);
         }
 
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, int deviceID, double nextDouble, double movingAvergeInstant) {
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, StreamValues value) {
+
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
+//				buffers[index] = tuple;
+            }
+
+            buffers[index].add(p, package_message(streamId, value));
+
+            return getTuple(p, index);
+        }
+
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, int deviceID, double nextDouble, double movingAvergeInstant) {
+            final int index = targetId - base;
+            final int p = pointer[index];
+//			Tuple tuple = buffers[index];
+
+            if (p == 0) {//first tuple comes.
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             }
             buffers[index].add(p, package_message(streamId, deviceID, nextDouble, movingAvergeInstant));
@@ -836,13 +836,13 @@ public abstract class PartitionController implements IPartitionController, Seria
         }
 
 
-        TransferTuple add(int targetId, String streamId, long bid, TopologyContext context, char[] key, long value) {
+        JumboTuple add(int targetId, String streamId, long bid, TopologyContext context, char[] key, long value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             }
 
@@ -850,21 +850,21 @@ public abstract class PartitionController implements IPartitionController, Seria
             return getTuple(p, index);
         }
 
-        TransferTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, Object... value) {
+        JumboTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, Object... value) {
             final int index = targetId - base;
 
 //			Tuple tuple = buffers[index];
 
             if (pointer[index] == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             } else {
                 long cbid = buffers[index].getBID();
                 if (bid != cbid) {//different bid comes.
                     buffers[index].length = pointer[index];
-//				TransferTuple transferTuple = new TransferTuple(buffers[index]);
+//				JumboTuple transferTuple = new JumboTuple(buffers[index]);
                     _inorder_offer(buffers[index], cbid, gap, targetId);//enforce emit a partial-complete tuple. It is guaranteed that this tuple will have smaller batch id
-                    buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                    buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
                     pointer[index] = 0;
 
                 }
@@ -882,11 +882,11 @@ public abstract class PartitionController implements IPartitionController, Seria
 
         }
 
-        TransferTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, char[] value) {
+        JumboTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, char[] value) {
             final int index = targetId - base;
 
             if (pointer[index] == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 
             } else {
                 long cbid = buffers[index].getBID();
@@ -894,7 +894,7 @@ public abstract class PartitionController implements IPartitionController, Seria
                     buffers[index].length = pointer[index];
 
                     _inorder_offer(buffers[index], cbid, gap, targetId);//enforce emit a partial-complete tuple. It is guaranteed that this tuple will have smaller batch id
-                    buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                    buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
                     pointer[index] = 0;
 
                 }
@@ -912,20 +912,20 @@ public abstract class PartitionController implements IPartitionController, Seria
 
         }
 
-        TransferTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, StreamValues value) {
+        JumboTuple add_inorder(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, StreamValues value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
 
             if (p == 0) {//first tuple comes.
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             } else {
                 long cbid = buffers[index].getBID();
                 if (bid != cbid) {//different bid comes.
                     buffers[index].length = pointer[index];
                     _inorder_offer(buffers[index], cbid, gap, targetId);//enforce emit a partial-complete tuple. It is guaranteed that this tuple will have smaller batch id
-                    buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                    buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
                     pointer[index] = 0;
                 }
             }
@@ -936,11 +936,11 @@ public abstract class PartitionController implements IPartitionController, Seria
         }
 
 
-        TransferTuple add_inorder_single(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, StreamValues value) {
+        JumboTuple add_inorder_single(int targetId, String streamId, long bid, LinkedList<Long> gap, TopologyContext context, StreamValues value) {
             final int index = targetId - base;
 
 //			Tuple tuple = buffers[index];
-            buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+            buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				buffers[index] = tuple;
             buffers[index].length = 1;
             buffers[index].add(0, package_message(streamId, value));
@@ -949,20 +949,20 @@ public abstract class PartitionController implements IPartitionController, Seria
 
         }
 
-        TransferTuple get_inorder(int targetId, String streamId, long bid) {
+        JumboTuple get_inorder(int targetId, String streamId, long bid) {
             final int index = targetId - base;
             final int p = pointer[index];
             return getTuple_Inorder(p, index);
 
         }
 
-        TransferTuple add_bid(int targetId, String streamId, TopologyContext context, Object... value) {
+        JumboTuple add_bid(int targetId, String streamId, TopologyContext context, Object... value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
             if (p == 0) {
                 long bid = BIDGenerator.getInstance().getAndIncrement();
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
                 LOG.info("A tuple with bid: " + bid + " created @ " + DateTime.now());
             }
             buffers[index].add(p, package_message(streamId, value));
@@ -975,12 +975,12 @@ public abstract class PartitionController implements IPartitionController, Seria
             }
         }
 
-        TransferTuple add_bid(int targetId, String streamId, TopologyContext context, StreamValues value) {
+        JumboTuple add_bid(int targetId, String streamId, TopologyContext context, StreamValues value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
             if (p == 0) {
-                buffers[index] = new TransferTuple(src_Id, BIDGenerator.getInstance().getAndIncrement(), batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, BIDGenerator.getInstance().getAndIncrement(), batch_size, context);
             }
             buffers[index].add(p, package_message(streamId, value));
             if (p + 1 == batch_size) {
@@ -992,13 +992,13 @@ public abstract class PartitionController implements IPartitionController, Seria
             }
         }
 
-        TransferTuple add_bid(int targetId, String streamId, TopologyContext context, char[] value) {
+        JumboTuple add_bid(int targetId, String streamId, TopologyContext context, char[] value) {
             final int index = targetId - base;
             final int p = pointer[index];
 //			Tuple tuple = buffers[index];
             if (p == 0) {
                 long bid = BIDGenerator.getInstance().getAndIncrement();
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
 //				LOG.info("A tuple with bid: " + bid + " created @ " + DateTime.now());
             }
             buffers[index].add(p, package_message(streamId, value));
@@ -1012,11 +1012,11 @@ public abstract class PartitionController implements IPartitionController, Seria
         }
 
 
-        TransferTuple spout_add_marker(int targetId, String streamId, long timestamp, long bid, int myiteration, TopologyContext context) {
+        JumboTuple spout_add_marker(int targetId, String streamId, long timestamp, long bid, int myiteration, TopologyContext context) {
             final int index = targetId - base;
             final int p = pointer[index];
             if (p == 0) {
-                buffers[index] = new TransferTuple(src_Id, BIDGenerator.getInstance().getAndIncrement(), batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, BIDGenerator.getInstance().getAndIncrement(), batch_size, context);
             }
             buffers[index].add(p, package_marker(streamId, timestamp, bid, myiteration));
             buffers[index].length = p + 1;
@@ -1024,11 +1024,11 @@ public abstract class PartitionController implements IPartitionController, Seria
             return buffers[index];
         }
 
-        TransferTuple add_marker(int targetId, String streamId, long bid, Marker marker, TopologyContext context) {
+        JumboTuple add_marker(int targetId, String streamId, long bid, Marker marker, TopologyContext context) {
             final int index = targetId - base;
             final int p = pointer[index];
             if (p == 0) {
-                buffers[index] = new TransferTuple(src_Id, bid, batch_size, context);
+                buffers[index] = new JumboTuple(src_Id, bid, batch_size, context);
             }
             buffers[index].add(p, package_marker(streamId, marker));
             buffers[index].length = p + 1;

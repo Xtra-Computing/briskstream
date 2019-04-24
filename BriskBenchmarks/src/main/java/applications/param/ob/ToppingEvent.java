@@ -1,7 +1,7 @@
 package applications.param.ob;
 
 
-import applications.param.Event;
+import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.SplittableRandom;
 
 import static applications.constants.OnlineBidingSystemConstants.Constant.MAX_TOP_UP;
 
-public class ToppingEvent extends Event {
+public class ToppingEvent extends TxnEvent {
 
     //place-rangeMap.
     public SchemaRecordRef[] record_refs;

@@ -74,6 +74,13 @@ public class BriskRunner extends abstractRunner {
         driver.addApp("MicroBenchmark", MicroBenchmark.class);
         driver.addApp("CrossTables", CrossTables.class);
         driver.addApp("PositionKeeping", PositionKeeping.class);
+
+
+        //Special Application
+
+        driver.addApp("TP", TP.class);//
+        driver.addApp("TP_Txn", TP_Txn.class);//
+
     }
 
     public static void main(String[] args) {

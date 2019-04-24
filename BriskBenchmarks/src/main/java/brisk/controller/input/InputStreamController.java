@@ -1,7 +1,7 @@
 package brisk.controller.input;
 
 import brisk.execution.ExecutionNode;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.optimization.model.STAT;
 
@@ -26,19 +26,19 @@ public abstract class InputStreamController implements IISC {
     private final HashMap<String, HashMap<Integer, Queue>> RQ = new HashMap<>();
     protected Set<String> keySet;
 //    Deserializer _kryo;
-TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieved tuples.
+TreeSet<JumboTuple> tuples = new TreeSet<>();//temporarily holds all retrieved tuples.
 
     protected InputStreamController() {
 //        _kryo = new Deserializer();
     }
 
-    public abstract TransferTuple fetchResults_inorder();
+    public abstract JumboTuple fetchResults_inorder();
 
-    public abstract TransferTuple fetchResults();
+    public abstract JumboTuple fetchResults();
 
     public abstract Tuple fetchResults_single();
 
-    public abstract TransferTuple fetchResults(STAT stat, int batch);
+    public abstract JumboTuple fetchResults(STAT stat, int batch);
 
     /**
      * It needs to fetch from specific queue, which is costly, but not necessarily in production.
@@ -48,9 +48,9 @@ TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieve
      * @param batch
      * @return
      */
-    public TransferTuple fetchResults(ExecutionNode src, STAT stat, int batch) {
+    public JumboTuple fetchResults(ExecutionNode src, STAT stat, int batch) {
         //scanning through each receiving queue for data. one source may contain multiple streams.
-//        TransferTuple[] t = new TransferTuple[batch];
+//        JumboTuple[] t = new JumboTuple[batch];
         for (String streamId : keySet) {
 //            int repeate = 1000;
             Queue queue = null;
@@ -83,9 +83,9 @@ TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieve
         return null;
     }
 
-    protected TransferTuple fetchFromqueue(Queue queue) {
-        TransferTuple tuple;
-        tuple = (TransferTuple) queue.poll();
+    protected JumboTuple fetchFromqueue(Queue queue) {
+        JumboTuple tuple;
+        tuple = (JumboTuple) queue.poll();
         if (tuple != null) {
             synchronized (queue) {
                 queue.notify();
@@ -96,11 +96,11 @@ TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieve
         return null;
     }
 
-    protected TransferTuple fetchFromqueue(Queue queue, STAT stat, int batch) {
+    protected JumboTuple fetchFromqueue(Queue queue, STAT stat, int batch) {
         if (stat != null) {
             stat.start_measure();
         }
-        TransferTuple tuple = fetchFromqueue(queue);
+        JumboTuple tuple = fetchFromqueue(queue);
         if (tuple != null) {
             if (stat != null) {
                 stat.end_measure_inFetch(batch);
@@ -110,7 +110,7 @@ TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieve
         return null;
     }
 
-    protected TransferTuple fetchFromqueue_inorder(Queue queue) {
+    protected JumboTuple fetchFromqueue_inorder(Queue queue) {
 
         if (!tuples.isEmpty()) {
             return tuples.pollFirst();
@@ -131,8 +131,8 @@ TreeSet<TransferTuple> tuples = new TreeSet<>();//temporarily holds all retrieve
 //	 * @param batch
 //	 * @return
 //	 */
-//	protected TransferTuple fetchFromqueue(Queue queue) {
-//		final TransferTuple tuple = fetch(queue);
+//	protected JumboTuple fetchFromqueue(Queue queue) {
+//		final JumboTuple tuple = fetch(queue);
 //		if (tuple != null) {
 //			if (queue instanceof SpmcArrayQueue || queue instanceof MpmcArrayQueue) {
 //				final int targetTasks = tuple.getTargetId();

@@ -88,7 +88,7 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
      * @return
      */
     public EsperBolt addEventTypes(Map<String, Object> types) {
-        String error = "Event types cannot be null";
+        String error = "TxnEvent types cannot be null";
         this.eventTypes = Collections.unmodifiableMap(exceptionIfNull(error, types));
         exceptionIfAnyNull(error, types.values());
         exceptionIfAnyNull(error, types.keySet());
@@ -164,12 +164,12 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
         this.collector = oc;
         Configuration cepConfig = new Configuration();
         if (this.eventTypes == null || (this.objectStatements == null && this.statements == null)) {
-            throw new UnsupportedOperationException("Event types cannot be null and at least one type of statement has to be not null");
+            throw new UnsupportedOperationException("TxnEvent types cannot be null and at least one type of statement has to be not null");
         }
         for (Map.Entry a : tc.getThisSources().entrySet()) {
 //            Fields f = tc.getComponentOutputFields(a.getKey());
 //            if (!this.eventTypes.keySet().containsAll(f.toList())) {
-//                throw new UnsupportedOperationException("Event types and fields from source streams do not match: Event Types="
+//                throw new UnsupportedOperationException("TxnEvent types and fields from source streams do not match: TxnEvent Types="
 //                        + Arrays.toString(this.eventTypes.keySet().toArray())
 //                        + " Stream Fields=" + Arrays.toString(f.toList().toArray()));
 //            }

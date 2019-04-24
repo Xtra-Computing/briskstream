@@ -1,0 +1,59 @@
+/*
+ * #!
+ * %
+ * Copyright (C) 2014 - 2016 Humboldt-Universität zu Berlin
+ * %
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #_
+ */
+package applications.bolts.lr.util;
+
+import applications.bolts.lr.TollNotificationBolt;
+import applications.datatype.PositionReport;
+import applications.datatype.internal.AccidentTuple;
+import applications.datatype.internal.CountTuple;
+import applications.datatype.internal.LavTuple;
+import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.TimeStampExtractor;
+import brisk.execution.runtime.tuple.impl.Tuple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * {@link TollInputStreamsTsExtractor} helps to merge the four incoming streams of {@link TollNotificationBolt}.
+ *
+ * @author mjsax
+ */
+public class TollInputStreamsTsExtractor implements TimeStampExtractor<Tuple> {
+    private static final long serialVersionUID = -234551807946550L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TollInputStreamsTsExtractor.class);
+
+    @Override
+    public long getTs(Tuple tuple) {
+        final String inputStreamId = tuple.getSourceStreamId();
+        if (inputStreamId.equals(LRTopologyControl.POSITION_REPORTS_STREAM_ID)) {
+            return tuple.getShort(PositionReport.TIME_IDX).longValue();
+        } else if (inputStreamId.equals(LRTopologyControl.ACCIDENTS_STREAM_ID)) {
+            return tuple.getShort(AccidentTuple.TIME_IDX).longValue();
+        } else if (inputStreamId.equals(LRTopologyControl.CAR_COUNTS_STREAM_ID)) {
+            return tuple.getShort(CountTuple.TIME_IDX).longValue();
+        } else if (inputStreamId.equals(LRTopologyControl.LAVS_STREAM_ID)) {
+            return tuple.getShort(LavTuple.TIME_IDX).longValue() - 60;
+        } else {
+            LOGGER.error("Unknown input stream: '" + inputStreamId + "' for tuple " + tuple);
+            throw new RuntimeException("Unknown input stream: '" + inputStreamId + "' for tuple " + tuple);
+        }
+    }
+
+}

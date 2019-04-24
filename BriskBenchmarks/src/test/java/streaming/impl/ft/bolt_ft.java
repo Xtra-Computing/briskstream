@@ -4,7 +4,7 @@ package streaming.impl.ft;
 import applications.util.datatypes.StreamValues;
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.base.MapBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
@@ -58,7 +58,7 @@ public class bolt_ft extends MapBolt implements Checkpointable {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         final long bid = in.getBID();
         final int bound = in.length;
         for (int i = 0; i < bound; i++) {

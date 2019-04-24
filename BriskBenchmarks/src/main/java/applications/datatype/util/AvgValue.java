@@ -28,7 +28,7 @@ public final class AvgValue {
     /**
      * The current sum over all values.
      */
-    private int sum;
+    private double sum;
 
     /**
      * The current number of comm values.
@@ -41,7 +41,7 @@ public final class AvgValue {
      *
      * @param initalValue the first value_list of the average
      */
-    public AvgValue(int initalValue) {
+    public AvgValue(double initalValue) {
         this.sum = initalValue;
         this.count = 1;
     }
@@ -52,7 +52,7 @@ public final class AvgValue {
      *
      * @param value the value_list to be added to the average
      */
-    public void updateAverage(int value) {
+    public void updateAverage(double value) {
         this.sum += value;
         ++this.count;
     }
@@ -62,8 +62,8 @@ public final class AvgValue {
      *
      * @return the current average
      */
-    public Integer getAverage() {
-        return this.sum / this.count;
+    public double getAverage() {
+        return new Double(this.sum / this.count);
     }
 
 }

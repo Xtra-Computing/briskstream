@@ -69,7 +69,7 @@ public class AccidentNotification extends AbstractOutputTuple {
      * @param segment the accident segment
      * @param vid     the vehicle ID this notification has to be delivered to
      */
-    public AccidentNotification(Integer time, Integer emit, Short segment, Integer vid) {
+    public AccidentNotification(Short time, Short emit, Short segment, Integer vid) {
         super(ACCIDENT_NOTIFICATION, time, emit);
 
         assert (segment != null);

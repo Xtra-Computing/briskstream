@@ -1,6 +1,6 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.MicroEvent;
+import applications.param.mb.MicroEvent;
 import applications.param.MicroParam;
 import applications.util.Configuration;
 import applications.util.OsUtils;
@@ -30,7 +30,7 @@ import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
-import static applications.param.MicroEvent.GenerateValue;
+import static applications.param.mb.MicroEvent.GenerateValue;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 import static engine.profiler.Metrics.NUM_ITEMS;

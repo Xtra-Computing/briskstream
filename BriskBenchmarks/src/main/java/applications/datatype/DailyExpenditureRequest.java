@@ -70,7 +70,7 @@ public class DailyExpenditureRequest extends AbstractInputTuple {
      * @param qid  the query identifier
      * @param day  the day of the request
      */
-    public DailyExpenditureRequest(Integer time, Integer vid, Integer xway, Integer qid, Short day) {
+    public DailyExpenditureRequest(Short time, Integer vid, Integer xway, Integer qid, Short day) {
         super(DAILY_EXPENDITURE_REQUEST, time, vid);
 
         assert (xway != null);

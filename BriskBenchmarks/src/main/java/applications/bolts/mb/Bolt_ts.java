@@ -1,7 +1,7 @@
 package applications.bolts.mb;
 
 
-import applications.param.MicroEvent;
+import applications.param.mb.MicroEvent;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
@@ -162,18 +162,22 @@ public class Bolt_ts extends MBBolt {
                 timestamp = 0L;//
 
 //            try {
-                boolean flag = event.READ_EVENT();
+            boolean flag = event.READ_EVENT();
 
-                END_PREPARE_TIME_MEASURE_TS(thread_Id);
+            END_PREPARE_TIME_MEASURE_TS(thread_Id);
 
-                if (flag) {
-                    read_handle(event, timestamp);
-                } else {
-                    write_handle(event, timestamp);
-                }
+            if (flag) {
+                read_handle(event, timestamp);
+            } else {
+                write_handle(event, timestamp);
+            }
 //            } catch (Exception e) {
 //                System.nanoTime();
 //            }
+
+            if (enable_debug)
+                LOG.info("Commit event:" + flag + " " + bid);
+
         }
     }
 }

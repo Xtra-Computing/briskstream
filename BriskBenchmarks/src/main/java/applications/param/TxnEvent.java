@@ -1,6 +1,6 @@
 package applications.param;
 
-public class Event {
+public class TxnEvent {
 
     protected final long bid;//as msg id.
     protected final int pid;
@@ -13,7 +13,7 @@ public class Event {
     public double[] enqueue_time = new double[1];
     public boolean[] success;
 
-    public Event(long bid, int partition_id, String bid_array, int number_of_partitions) {
+    public TxnEvent(long bid, int partition_id, String bid_array, int number_of_partitions) {
         this.bid = bid;
         this.pid = partition_id;
 
@@ -30,7 +30,7 @@ public class Event {
         success[0] = false;
     }
 
-    public Event(long bid, int partition_id, long[] bid_array, int number_of_partitions) {
+    public TxnEvent(long bid, int partition_id, long[] bid_array, int number_of_partitions) {
         this.bid = bid;
         this.pid = partition_id;
 

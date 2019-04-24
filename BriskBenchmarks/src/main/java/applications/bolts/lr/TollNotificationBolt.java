@@ -24,12 +24,14 @@ import applications.datatype.TollNotification;
 import applications.datatype.internal.AccidentTuple;
 import applications.datatype.internal.CountTuple;
 import applications.datatype.internal.LavTuple;
-import applications.datatype.util.Constants;
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
+import applications.param.lr.Constants;
+import applications.util.Time;
+import applications.util.datatypes.StreamValues;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -41,7 +43,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static applications.datatype.util.LRTopologyControl.CAR_COUNTS_STREAM_ID;
-import static applications.datatype.util.LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
 
 /**
  * {@link TollNotificationBolt} calculates the toll for each vehicle and reports it back to the vehicle if a vehicle
@@ -79,66 +80,67 @@ import static applications.datatype.util.LRTopologyControl.TOLL_ASSESSMENTS_STRE
  */
 public class TollNotificationBolt extends filterBolt {
     private final static long serialVersionUID = 5537727428628598519L;
-    private static final Logger LOG = LoggerFactory.getLogger(TollNotificationBolt.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TollNotificationBolt.class);
+
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<ISegmentIdentifier>();
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<ISegmentIdentifier>();
+    /**
+     * Buffer for car counts.
+     */
+    private Map<ISegmentIdentifier, Integer> currentMinuteCounts = new HashMap<ISegmentIdentifier, Integer>();
+    /**
+     * Buffer for car counts.
+     */
+    private Map<ISegmentIdentifier, Integer> previousMinuteCounts = new HashMap<ISegmentIdentifier, Integer>();
+    /**
+     * Buffer for LAV values.
+     */
+    private Map<ISegmentIdentifier, Integer> currentMinuteLavs = new HashMap<ISegmentIdentifier, Integer>();
+    /**
+     * Buffer for LAV values.
+     */
+    private Map<ISegmentIdentifier, Integer> previousMinuteLavs = new HashMap<ISegmentIdentifier, Integer>();
     /**
      * Contains all vehicle IDs and segment of the last {@link PositionReport} to allow skipping already sent
      * notifications (there's only one notification per segment per vehicle).
      */
-    private final Map<Integer, Short> allCars = new HashMap<>();
+    private final Map<Integer, Short> allCars = new HashMap<Integer, Short>();
     /**
      * Contains the last toll notification for each vehicle to assess the toll when the vehicle leaves a segment.
      */
-    private final Map<Integer, TollNotification> lastTollNotification = new HashMap<>();
+    private final Map<Integer, TollNotification> lastTollNotification = new HashMap<Integer, TollNotification>();
+
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final PositionReport inputPositionReport = new PositionReport();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final AccidentTuple inputAccidentTuple = new AccidentTuple();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final CountTuple inputCountTuple = new CountTuple();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final LavTuple inputLavTuple = new LavTuple();
     /**
      * Internally (re)used object.
      */
     private final SegmentIdentifier segmentToCheck = new SegmentIdentifier();
-    /**
-     * Internally (re)used object to access individual attributes.
-     */
-    private PositionReport inputPositionReport = new PositionReport();
-    /**
-     * Internally (re)used object to access individual attributes.
-     */
-    private AccidentTuple inputAccidentTuple = new AccidentTuple();
-    /**
-     * Internally (re)used object to access individual attributes.
-     */
-    private CountTuple inputCountTuple = new CountTuple();
-    /**
-     * Internally (re)used object to access individual attributes.
-     */
-    private LavTuple inputLavTuple = new LavTuple();
-    /**
-     * Buffer for accidents.
-     */
-    private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<>();
-    /**
-     * Buffer for accidents.
-     */
-    private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<>();
-    /**
-     * Buffer for car counts.
-     */
-    private Map<ISegmentIdentifier, Integer> currentMinuteCounts = new HashMap<>();
-    /**
-     * Buffer for car counts.
-     */
-    private Map<ISegmentIdentifier, Integer> previousMinuteCounts = new HashMap<>();
-    /**
-     * Buffer for LAV values.
-     */
-    private Map<ISegmentIdentifier, Integer> currentMinuteLavs = new HashMap<>();
-    /**
-     * Buffer for LAV values.
-     */
-    private Map<ISegmentIdentifier, Integer> previousMinuteLavs = new HashMap<>();
+
     /**
      * The currently processed 'minute number'.
      */
     private int currentMinute = -1;
-
-    private double cnt = 0, cnt1 = 0, cnt2 = 0, cnt3 = 0;
 
 
     /**
@@ -149,7 +151,7 @@ public class TollNotificationBolt extends filterBolt {
      * //ta: 0.24149251117472822 -> 0.2375600149674265
      */
     public TollNotificationBolt() {
-        super(LOG, new HashMap<>(), new HashMap<>());//let input selectivity to control.
+        super(LOGGER, new HashMap<>(), new HashMap<>());//let input selectivity to control.
         this.input_selectivity.put(CAR_COUNTS_STREAM_ID, 1.0);//produce no output..
         this.input_selectivity.put(LRTopologyControl.LAVS_STREAM_ID, 1.0); //
         this.input_selectivity.put(LRTopologyControl.ACCIDENTS_STREAM_ID, 1.0);
@@ -161,212 +163,175 @@ public class TollNotificationBolt extends filterBolt {
     }
 
     @Override
-    public void execute(Tuple in) throws InterruptedException {
-//       not in use
-    }
+    public void execute(Tuple input) throws InterruptedException {
+        final String inputStreamId = input.getSourceStreamId();
 
-    @Override
-    public void execute(TransferTuple in) throws InterruptedException {
-        int bound = in.length;
-        final long bid = in.getBID();
-        cnt += bound;
-        for (int index = 0; index < bound; index++) {
-            final String inputStreamId = in.getSourceStreamId(index);
-            cnt1++;
-            this.collector.emit(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, bid);//as an indication.
-
-            switch (inputStreamId) {
-                case LRTopologyControl.POSITION_REPORTS_STREAM_ID:
-//					this.inputPositionReport.clear();
-//					Collections.addAll(this.inputPositionReport, in.getMsg(index).getValue(0));
-                    this.inputPositionReport = (PositionReport) in.getMsg(index).getValue(0);
-//					//LOG.DEBUG("this.inputPositionReport:" + this.inputPositionReport.toString());
-
-                    this.checkMinute(this.inputPositionReport.getMinuteNumber());
-
-                    if (this.inputPositionReport.isOnExitLane()) {
-                        final TollNotification lastNotification = this.lastTollNotification.remove(this.inputPositionReport
-                                .getVid());
-
-                        if (lastNotification != null) {
-                            assert (lastNotification.getPos().getXWay() != null);
-                            cnt2++;
-//							this.collector.emit(TOLL_ASSESSMENTS_STREAM_ID, bid, lastNotification);
-                        }
-                        continue;
-                    }
-
-                    final Short currentSegment = this.inputPositionReport.getSegment();
-                    final Integer vid = this.inputPositionReport.getVid();
-                    final Short previousSegment = this.allCars.put(vid, currentSegment);
-                    if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
-                        continue;
-                    }
-
-                    int toll = 0;
-                    Integer lav = this.previousMinuteLavs.get(new SegmentIdentifier(this.inputPositionReport));
-
-                    final int lavValue;
-                    if (lav != null) {
-                        lavValue = lav;
-                    } else {
-                        lav = 0;
-                        lavValue = 0;
-                    }
-
-                    if (lavValue < 50) {
-                        final Integer count = this.previousMinuteCounts.get(new SegmentIdentifier(this.inputPositionReport));
-                        int carCount = 0;
-                        if (count != null) {
-                            carCount = count;
-                        }
-
-                        if (carCount > 50) {
-                            // downstream is either larger or smaller of current segment
-                            final Short direction = this.inputPositionReport.getDirection();
-                            final short dir = direction;
-                            // EASTBOUND == 0 => diff := 1
-                            // WESTBOUNT == 1 => diff := -1
-                            final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-//							assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
-
-                            if (diff != 1 && diff != -1) {
-                                continue;//position report is errored.
-                            }
-
-                            final Integer xway = this.inputPositionReport.getXWay();
-                            final short curSeg = currentSegment;
-
-                            this.segmentToCheck.setXWay(xway);
-                            this.segmentToCheck.setDirection(direction);
-
-                            int i;
-                            for (i = 0; i <= 4; ++i) {
-                                final short nextSegment = (short) (curSeg + (diff * i));
-                                assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
-
-                                this.segmentToCheck.setSegment(nextSegment);
-
-                                if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
-                                    break;
-                                }
-                            }
-
-                            if (i == 5) { // only true if no accident was found and "break" was not executed
-                                final int var = carCount - 50;
-                                toll = 2 * var * var;
-                            }
-                        }
-                    }
-                    // TODO get accurate emit time...
-                    final TollNotification tollNotification = new TollNotification
-                            (this.inputPositionReport.getTime(),
-                                    this.inputPositionReport.getTime(),
-                                    vid,
-                                    lav,
-                                    toll
-                                    ,
-                                    this.inputPositionReport.copy()
-                            );
-
-                    final TollNotification lastNotification;
-                    if (toll != 0) {
-                        lastNotification = this.lastTollNotification.put(vid, tollNotification);
-                    } else {
-                        lastNotification = this.lastTollNotification.remove(vid);
-                    }
-                    assert lastNotification == null || (lastNotification.getPos().getXWay() != null);
-                    assert (tollNotification.getPos().getXWay() != null);
-//					cnt1++;
-//					this.collector.emit(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, bid, tollNotification);
-                    break;
-
-                case LRTopologyControl.ACCIDENTS_STREAM_ID:
-//				case LRTopologyControl.ACCIDENTS_STREAM_ID2:
-//					cnt3++;
-//					this.inputAccidentTuple.clear();
-//					Collections.addAll(this.inputAccidentTuple, in.getMsg(index).getValue(0));
-//			LOG.trace(this.inputAccidentTuple.show());
-                    inputAccidentTuple = (AccidentTuple) in.getMsg(index).getValue(0);
-                    this.checkMinute(this.inputAccidentTuple.getMinuteNumber());
-//            assert (this.inputAccidentTuple.getMinuteNumber().shortValue() == this.currentMinute);
-
-                    if (this.inputAccidentTuple.isProgressTuple()) {
-                        continue;
-                    }
-
-                    this.currentMinuteAccidents.add(new SegmentIdentifier(this.inputAccidentTuple));
-
-                    break;
-                case CAR_COUNTS_STREAM_ID:
-//					this.inputCountTuple.clear();
-//					Collections.addAll(this.inputCountTuple, in.getMsg(index).getValue(0));
-                    this.inputCountTuple = (CountTuple) in.getMsg(index).getValue(0);
-//            LOG.trace(this.inputCountTuple.show());
-
-                    this.checkMinute(this.inputCountTuple.getMinuteNumber());
-//            assert (this.inputCountTuple.getMinuteNumber().shortValue() - 1 == this.currentMinute);
-
-                    if (this.inputCountTuple.isProgressTuple()) {
-                        continue;
-                    }
-
-                    this.currentMinuteCounts.put(new SegmentIdentifier(this.inputCountTuple), this.inputCountTuple.getCount());
-
-                    break;
-                case LRTopologyControl.LAVS_STREAM_ID:
-//					cnt3++;
-//					this.inputLavTuple.clear();
-//					Collections.addAll(this.inputLavTuple, in.getMsg(index).getValue(0));
-                    inputLavTuple = (LavTuple) in.getMsg(index).getValue(0);
-                    LOG.trace("this.inputLavTuple" + this.inputLavTuple.toString());
-
-                    this.checkMinute(this.inputLavTuple.getMinuteNumber());
-//            assert (this.inputLavTuple.getMinuteNumber().shortValue() - 1 == this.currentMinute);
-
-                    this.currentMinuteLavs.put(new SegmentIdentifier(this.inputLavTuple), this.inputLavTuple.getLav());
-                    break;
-                default:
-                    LOG.error("Unknown input stream: '" + inputStreamId + "' for tuple " + in);
-                    throw new RuntimeException("Unknown input stream: '" + inputStreamId + "' for tuple " + in);
+        if (inputStreamId.equals(TimestampMerger.FLUSH_STREAM_ID)) {
+            Object ts = input.getValue(0);
+            if (ts == null) {
+                this.collector.emit_force(TimestampMerger.FLUSH_STREAM_ID, new StreamValues((Object) null));
+            } else {
+                this.checkMinute(Time.getMinute(((Number) ts).shortValue()));
             }
+//            this.collector.ack(input);
+            return;
         }
+
+        if (inputStreamId.equals(LRTopologyControl.POSITION_REPORTS_STREAM_ID)) {
+            this.inputPositionReport.clear();
+            this.inputPositionReport.addAll(input.getValues());
+            LOGGER.trace(this.inputPositionReport.toString());
+
+            this.checkMinute(this.inputPositionReport.getMinuteNumber());
+
+            if (this.inputPositionReport.isOnExitLane()) {
+                final TollNotification lastNotification = this.lastTollNotification.remove(this.inputPositionReport.getVid());
+
+                if (lastNotification != null) {
+                    this.collector.force_emit(LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID, lastNotification);
+                }
+
+//                this.collector.ack(input);
+                return;
+            }
+
+            final Short currentSegment = this.inputPositionReport.getSegment();
+            final Integer vid = this.inputPositionReport.getVid();
+            final Short previousSegment = this.allCars.put(vid, currentSegment);
+            if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
+//                this.collector.ack(input);
+                return;
+            }
+
+            int toll = 0;
+            Integer lav = this.previousMinuteLavs.get(new SegmentIdentifier(this.inputPositionReport));
+
+            final int lavValue;
+            if (lav != null) {
+                lavValue = lav.intValue();
+            } else {
+                lav = new Integer(-1);
+                lavValue = -1;
+            }
+
+            if (lavValue < 40) {
+                final Integer count = this.previousMinuteCounts.get(new SegmentIdentifier(this.inputPositionReport));
+                int carCount = 0;
+                if (count != null) {
+                    carCount = count.intValue();
+                }
+
+                if (carCount > 50) {
+                    // downstream is either larger or smaller of current segment
+                    final Short direction = this.inputPositionReport.getDirection();
+                    final short dir = direction.shortValue();
+                    // EASTBOUND == 0 => diff := 1
+                    // WESTBOUNT == 1 => diff := -1
+                    final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
+                    assert (dir == Constants.EASTBOUND.shortValue() ? diff == 1 : diff == -1);
+
+                    final Integer xway = this.inputPositionReport.getXWay();
+                    final short curSeg = currentSegment.shortValue();
+
+                    this.segmentToCheck.setXWay(xway);
+                    this.segmentToCheck.setDirection(direction);
+
+                    int i;
+                    for (i = 0; i <= 4; ++i) {
+                        final short nextSegment = (short) (curSeg + (diff * i));
+                        assert (dir == Constants.EASTBOUND.shortValue() ? nextSegment >= curSeg : nextSegment <= curSeg);
+
+                        this.segmentToCheck.setSegment(new Short(nextSegment));
+
+                        if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
+                            break;
+                        }
+                    }
+
+                    if (i == 5) { // only true if no accident was found and "break" was not executed
+                        final int var = carCount - 50;
+                        toll = 2 * var * var;
+                    }
+                }
+            }
+
+            // TODO get accurate emit time...
+            final TollNotification tollNotification = new TollNotification(this.inputPositionReport.getTime(),
+                    this.inputPositionReport.getTime(), vid, lav, new Integer(toll));
+
+            final TollNotification lastNotification;
+            if (toll != 0) {
+                lastNotification = this.lastTollNotification.put(vid,
+                        new TollNotification(
+                                tollNotification.getTime(),
+                                tollNotification.getEmit(), tollNotification.getVid(), tollNotification.getSpeed(),
+                                tollNotification.getToll()));
+            } else {
+                lastNotification = this.lastTollNotification.remove(vid);
+            }
+            if (lastNotification != null) {
+                this.collector.force_emit(LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID, lastNotification);
+            }
+
+            this.collector.force_emit(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, tollNotification);
+
+        } else if (inputStreamId.equals(LRTopologyControl.ACCIDENTS_STREAM_ID)) {
+            this.inputAccidentTuple.clear();
+            this.inputAccidentTuple.addAll(input.getValues());
+            LOGGER.trace(this.inputAccidentTuple.toString());
+
+            this.checkMinute(this.inputAccidentTuple.getMinuteNumber());
+            assert (this.inputAccidentTuple.getMinuteNumber() == this.currentMinute);
+
+            this.currentMinuteAccidents.add(new SegmentIdentifier(this.inputAccidentTuple));
+
+        } else if (inputStreamId.equals(LRTopologyControl.CAR_COUNTS_STREAM_ID)) {
+            this.inputCountTuple.clear();
+            this.inputCountTuple.addAll(input.getValues());
+            LOGGER.trace(this.inputCountTuple.toString());
+
+            this.checkMinute(this.inputCountTuple.getMinuteNumber());
+            assert (this.inputCountTuple.getMinuteNumber() == this.currentMinute);
+
+            this.currentMinuteCounts.put(new SegmentIdentifier(this.inputCountTuple), this.inputCountTuple.getCount());
+
+        } else if (inputStreamId.equals(LRTopologyControl.LAVS_STREAM_ID)) {
+            this.inputLavTuple.clear();
+            this.inputLavTuple.addAll(input.getValues());
+            LOGGER.trace(this.inputLavTuple.toString());
+
+            this.checkMinute((short) (this.inputLavTuple.getMinuteNumber() - 1));
+            assert (this.inputLavTuple.getMinuteNumber() - 1 == this.currentMinute);
+            this.currentMinuteLavs.put(new SegmentIdentifier(this.inputLavTuple), this.inputLavTuple.getLav());
+
+        } else {
+            LOGGER.error("Unknown input stream: '" + inputStreamId + "' for tuple " + input);
+            throw new RuntimeException("Unknown input stream: '" + inputStreamId + "' for tuple " + input);
+        }
+//        this.collector.ack(input);
     }
 
-
-    public void display() {
-        LOG.info("cnt:" + cnt + "\tcnt1:" + LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID
-                + ":" + cnt1 + "(" + (cnt1 / cnt) + ")"
-                + "\tcnt2:" + TOLL_ASSESSMENTS_STREAM_ID + ":" + cnt2 + "(" + (cnt2 / cnt) + ")"
-                + "\tcnt3:" + cnt3 + "(" + (cnt3 / cnt) + ")"
-        );
-    }
 
     private void checkMinute(short minute) {
-        //due to the tuple may be send in reverse-order, it may happen that some tuples are processed too late.
-//        assert (minute >= this.currentMinute);
-        if (minute < this.currentMinute) {
-            //restart..
-            currentMinute = minute;
-        }
+        assert (minute >= this.currentMinute);//must be monotonically increasing
 
         if (minute > this.currentMinute) {
-            LOG.trace("New minute: {}", minute);
+            LOGGER.trace("New minute: {}", new Short(minute));
             this.currentMinute = minute;
             this.previousMinuteAccidents = this.currentMinuteAccidents;
-            this.currentMinuteAccidents = new HashSet<>();
+            this.currentMinuteAccidents = new HashSet<ISegmentIdentifier>();
             this.previousMinuteCounts = this.currentMinuteCounts;
-            this.currentMinuteCounts = new HashMap<>();
+            this.currentMinuteCounts = new HashMap<ISegmentIdentifier, Integer>();
             this.previousMinuteLavs = this.currentMinuteLavs;
-            this.currentMinuteLavs = new HashMap<>();
+            this.currentMinuteLavs = new HashMap<ISegmentIdentifier, Integer>();
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declareStream(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, TollNotification.getSchema());
-//		declarer.declareStream(TOLL_ASSESSMENTS_STREAM_ID, TollNotification.getSchema());
-
+        declarer.declareStream(LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID, TollNotification.getSchema());
+        declarer.declareStream(TimestampMerger.FLUSH_STREAM_ID, new Fields("ts"));
     }
 
 }

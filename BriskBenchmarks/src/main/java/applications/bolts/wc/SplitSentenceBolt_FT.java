@@ -9,7 +9,7 @@ import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.base.splitBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
@@ -59,7 +59,7 @@ public class SplitSentenceBolt_FT extends splitBolt implements Checkpointable {
         }
     }
 
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         //up remote: 14161.599999999988, 13, 14; all local: 13271.8, 0, 15; down remote:11786.49, 0, 14.
         int bound = in.length;
         final long bid = in.getBID();

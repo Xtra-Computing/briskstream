@@ -84,7 +84,9 @@ public class SegmentIdentifier implements ISegmentIdentifier {
      * @return the schema of a {@link SegmentIdentifier}
      */
     public static Fields getSchema() {
-        return new Fields(LRTopologyControl.XWAY_FIELD_NAME, LRTopologyControl.SEGMENT_FIELD_NAME,
+        return new Fields(
+                LRTopologyControl.XWAY_FIELD_NAME,
+                LRTopologyControl.SEGMENT_FIELD_NAME,
                 LRTopologyControl.DIRECTION_FIELD_NAME);
     }
 

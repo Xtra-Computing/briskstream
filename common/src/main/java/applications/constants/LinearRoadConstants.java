@@ -51,13 +51,16 @@ public interface LinearRoadConstants extends BaseConstants {
 		String LatestAverageVelocityThreads = "lrf.latest.threads";
 		String AccidentNotificationBoltThreads = "lrf.accidentnoti.threads";
 		String AccountBalanceBoltThreads = "lrf.accno.threads";
+        String AverageVehicleSpeedThreads = "lrf.average.vehicle.threads";
 		String AverageSpeedThreads = "lrf.average.threads";
 		String COUNT_VEHICLES_Threads = "lrf.count.threads";
-	}
+
+    }
 
 	interface Component extends BaseComponent {
 
-	}
+        String EXECUTOR = "executor";
+    }
 
 
 	interface TunedConfiguration {

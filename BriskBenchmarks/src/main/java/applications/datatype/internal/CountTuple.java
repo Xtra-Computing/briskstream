@@ -43,6 +43,7 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mjsax
  */
 public final class CountTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
+    public static final int TIME_IDX = 0;
     /**
      * The index of the MINUTE attribute.
      */

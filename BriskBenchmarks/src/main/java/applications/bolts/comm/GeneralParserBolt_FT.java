@@ -2,11 +2,10 @@ package applications.bolts.comm;
 
 import applications.spout.helper.parser.Parser;
 import brisk.components.operators.api.Checkpointable;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.impl.ValueState;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +23,7 @@ public class GeneralParserBolt_FT<T> extends GeneralParserBolt implements Checkp
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {

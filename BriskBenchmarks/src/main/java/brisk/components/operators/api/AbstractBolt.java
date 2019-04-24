@@ -1,10 +1,9 @@
 package brisk.components.operators.api;
 
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
-import engine.common.PartitionedOrderLock;
 import org.slf4j.Logger;
 
 import java.util.LinkedList;
@@ -35,7 +34,7 @@ public abstract class AbstractBolt extends Operator {
 
     public abstract void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
 
-    public void execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
             execute(new Tuple(in.getBID(), in.getSourceTask(), in.getContext(), in.msg[i]));
@@ -74,7 +73,7 @@ public abstract class AbstractBolt extends Operator {
      * @param in
      * @throws InterruptedException
      */
-    public void _execute(TransferTuple in) throws InterruptedException {
+    public void _execute(JumboTuple in) throws InterruptedException {
 
     }
 
@@ -94,7 +93,7 @@ public abstract class AbstractBolt extends Operator {
 //		}
     }
 
-    public void profile_execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void profile_execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
         execute(in);
     }
 }

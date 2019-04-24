@@ -1,5 +1,6 @@
-package applications.param;
+package applications.param.mb;
 
+import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.IntDataBox;
@@ -16,7 +17,7 @@ import static engine.profiler.Metrics.NUM_ACCESSES;
 /**
  * Support Multi workset since 1 SEP 2018.
  */
-public class MicroEvent extends Event {
+public class MicroEvent extends TxnEvent {
 
     private final SchemaRecordRef[] record_refs;//this is essentially the place-holder..
 

@@ -3,16 +3,15 @@ package applications;
 public interface CONTROL {
 
     //application related.
-    int NUM_EVENTS = 1_000_000; //500_000 : 1_000_000; //1_000_000 for real use cases;
+    int NUM_EVENTS = 1_000_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
 
     //db related.
-    boolean enable_shared_state = true;//this is for T-Stream.
-
+    boolean enable_shared_state = false;//this is for T-Stream.
     boolean enable_states_partition = true;
 
     //latency related.
-    boolean enable_admission_control = false;//only enable for TStream
-    boolean enable_latency_measurement = false;//
+    boolean enable_admission_control = true;//only enable for TStream
+    boolean enable_latency_measurement = true;//
 
     //profile related.
     boolean enable_profile = false;//enable this only when we want to test for breakdown.
@@ -34,6 +33,4 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
     int MeasureBound = 100_000;
-
-
 }

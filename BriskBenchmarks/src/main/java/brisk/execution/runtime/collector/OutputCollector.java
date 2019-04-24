@@ -8,7 +8,7 @@ import brisk.controller.output.OutputController;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.impl.Meta;
 import brisk.execution.runtime.collector.impl.MetaGroup;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.log4j.Level;
@@ -177,9 +177,19 @@ public class OutputCollector<T> {
         sc.emitOnStream(meta, streamId, bid, data);
     }
 
+    public void emit_force(String streamId, StreamValues data) throws InterruptedException {
+        assert data != null && sc != null;
+        sc.force_emitOnStream(meta, streamId, -1, data);
+    }
+
     public void emit_force(StreamValues data) throws InterruptedException {
         assert data != null && sc != null;
         sc.force_emitOnStream(meta, DEFAULT_STREAM_ID, -1, data);
+    }
+
+    public void emit(String streamId, StreamValues data) throws InterruptedException {
+        assert data != null && sc != null;
+        sc.emitOnStream(meta, streamId, -1, data);
     }
 
     public void emit(StreamValues data) throws InterruptedException {
@@ -206,6 +216,11 @@ public class OutputCollector<T> {
     public void emit(String streamId, long bid, char[] data) throws InterruptedException {
         assert data != null && sc != null;
         sc.emitOnStream(meta, streamId, bid, data);
+    }
+
+    public void force_emit(String streamId, Object... data) throws InterruptedException {
+        assert data != null && sc != null;
+        sc.force_emitOnStream(meta, streamId, -1, data);
     }
 
     public void force_emit(long bid, Object... data) throws InterruptedException {
@@ -279,10 +294,6 @@ public class OutputCollector<T> {
 
     public void emit(long bid, char[] key, long value) throws InterruptedException {
         emit(DEFAULT_STREAM_ID, bid, key, value);
-    }
-
-    public void force_emit(long bid, Object values) throws InterruptedException {
-        force_emit(DEFAULT_STREAM_ID, bid, values);
     }
 
     public void force_emit(char[] values) throws InterruptedException {
@@ -490,7 +501,7 @@ public class OutputCollector<T> {
      * @param input
      * @param marker
      */
-    public void ack(TransferTuple input, Marker marker) {
+    public void ack(JumboTuple input, Marker marker) {
         assert this.executor.isLeafNode();
 
 //		final int executorID = executor.getExecutorID();

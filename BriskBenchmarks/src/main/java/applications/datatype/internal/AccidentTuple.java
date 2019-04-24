@@ -19,7 +19,6 @@
 
 package applications.datatype.internal;
 
-import applications.datatype.PositionReport;
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
 import applications.util.Time;
@@ -40,100 +39,77 @@ import brisk.execution.runtime.tuple.impl.Fields;
  * @author mjsax
  */
 public final class AccidentTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
-    /**
-     * The index of the positionReport attribute.
-     */
-    private final static int POS_IDX = 0;
 
     // attribute indexes
     /**
-     * The index of the MINUTE attribute.
+     * The index of the TIME attribute.
      */
-    private final static int MINUTE_IDX = 1;
+    public final static int TIME_IDX = 0;
+
     /**
      * The index of the XWAY attribute.
      */
-    private final static int XWAY_IDX = 2;
+    public final static int XWAY_IDX = 1;
+
     /**
      * The index of the SEGMENT attribute.
      */
-    private final static int SEG_IDX = 3;
+    public final static int SEG_IDX = 2;
+
     /**
      * The index of the DIR attribute.
      */
-    private final static int DIR_IDX = 4;
-    private static final long serialVersionUID = -7848916337473569028L;
+    public final static int DIR_IDX = 3;
 
 
     public AccidentTuple() {
     }
 
     /**
-     * Instantiates a new <em>dummy</em> {@link AccidentTuple} for the given minute. This dummy tuple does not report an
-     * accident but is used as a "time progress tuple" to unblock downstream operators.
-     *
-     * @param minute the 'minute number' of the new minute that starts
-     */
-
-    public AccidentTuple(PositionReport PR, Short minute) {
-        super(PR, minute, null, null, null);
-//        assert (minute != null);
-//        super.add(POS_IDX, PR);
-//        super.add(MINUTE_IDX, minute);
-//        super.add(XWAY_IDX, null);
-//        super.add(SEG_IDX, null);
-//        super.add(DIR_IDX, null);
-    }
-
-    /**
      * Instantiates a new {@link AccidentTuple} for the given attributes.
      *
-     * @param minute    the 'minute number' of the speed average
+     * @param time      the timestamp of the accident
      * @param xway      the expressway the vehicle is on
      * @param segment   the segment number the vehicle is in
      * @param direction the vehicle's driving direction
      */
-    public AccidentTuple(PositionReport PR, Short minute, Integer xway, Short segment, Short direction) {
-        super(PR, minute, xway, segment, direction);
-//		assert (minute != null);
-//		assert (xway != null);
-//		assert (segment != null);
-//		assert (direction != null);
-//		super.add(POS_IDX, PR);
-//		super.add(MINUTE_IDX, minute);
-//		super.add(XWAY_IDX, xway);
-//		super.add(SEG_IDX, segment);
-//		super.add(DIR_IDX, direction);
+    public AccidentTuple(Short time, Integer xway, Short segment, Short direction) {
+        assert (time != null);
+        assert (xway != null);
+        assert (segment != null);
+        assert (direction != null);
+
+        super.add(TIME_IDX, time);
+        super.add(XWAY_IDX, xway);
+        super.add(SEG_IDX, segment);
+        super.add(DIR_IDX, direction);
+
+        assert (super.size() == 4);
     }
+
 
     /**
-     * Returns the schema of a {@link AccidentTuple}.
+     * Returns the timestamp (in LRB seconds) of this {@link AccidentTuple}.
      *
-     * @return the schema of a {@link AccidentTuple}
+     * @return the timestamp of this tuple
      */
-    public static Fields getSchema() {
-        return new Fields(
-                LRTopologyControl.POS_REPORT_FIELD_NAME,
-                LRTopologyControl.MINUTE_FIELD_NAME,
-                LRTopologyControl.XWAY_FIELD_NAME,
-                LRTopologyControl.SEGMENT_FIELD_NAME,
-                LRTopologyControl.DIRECTION_FIELD_NAME);
+    public final Short getTime() {
+        return (Short) super.get(TIME_IDX);
     }
-
 
     /**
      * Returns the 'minute number' of this {@link AccidentTuple}.
      *
      * @return the 'minute number' of this tuple
      */
-    public final Short getMinuteNumber() {
-        return (Short) super.get(MINUTE_IDX);
+    public final short getMinuteNumber() {
+        return Time.getMinute(this.getTime().shortValue());
     }
 
     /**
      * Returns the expressway ID of this {@link AccidentTuple}.
      *
-     * @return the VID of this tuple
+     * @return the expressway of this tuple
      */
     @Override
     public final Integer getXWay() {
@@ -143,7 +119,7 @@ public final class AccidentTuple extends applications.util.datatypes.StreamValue
     /**
      * Returns the segment of this {@link AccidentTuple}.
      *
-     * @return the VID of this tuple
+     * @return the segment of this tuple
      */
     @Override
     public final Short getSegment() {
@@ -153,7 +129,7 @@ public final class AccidentTuple extends applications.util.datatypes.StreamValue
     /**
      * Returns the vehicle's direction of this {@link AccidentTuple}.
      *
-     * @return the VID of this tuple
+     * @return the direction of this tuple
      */
     @Override
     public final Short getDirection() {
@@ -161,13 +137,15 @@ public final class AccidentTuple extends applications.util.datatypes.StreamValue
     }
 
     /**
-     * Returns {@code true} if this tuple does not report an accident but only carries the next 'minute number'.
+     * Returns the schema of a {@link AccidentTuple}.
      *
-     * @return {@code true} if this tuple does not report an accident but only carries the next 'minute number' --
-     * {@code false} otherwise
+     * @return the schema of a {@link AccidentTuple}
      */
-    public final boolean isProgressTuple() {
-        return super.get(XWAY_IDX) == null;
+    public static Fields getSchema() {
+        return new Fields(
+                LRTopologyControl.TIMESTAMP_FIELD_NAME,
+                LRTopologyControl.XWAY_FIELD_NAME,
+                LRTopologyControl.SEGMENT_FIELD_NAME,
+                LRTopologyControl.DIRECTION_FIELD_NAME);
     }
-
 }

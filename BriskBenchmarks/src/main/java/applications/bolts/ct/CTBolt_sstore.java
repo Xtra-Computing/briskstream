@@ -1,8 +1,8 @@
 package applications.bolts.ct;
 
 
-import applications.param.DepositEvent;
-import applications.param.TransactionEvent;
+import applications.param.ct.DepositEvent;
+import applications.param.ct.TransactionEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;

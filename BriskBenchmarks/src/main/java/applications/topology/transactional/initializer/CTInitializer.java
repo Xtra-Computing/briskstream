@@ -1,7 +1,7 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.DepositEvent;
-import applications.param.TransactionEvent;
+import applications.param.ct.DepositEvent;
+import applications.param.ct.TransactionEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

@@ -2,7 +2,7 @@ package brisk.controller.input.scheduler;
 
 import applications.util.CompactHashMap.QuickHashMap;
 import brisk.controller.input.InputStreamController;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.optimization.model.STAT;
 import org.slf4j.Logger;
@@ -32,12 +32,12 @@ public class UniformedScheduler extends InputStreamController {
 
 
     @Override
-    public TransferTuple fetchResults_inorder() {
-        //        TransferTuple[] t = new TransferTuple[batch];
+    public JumboTuple fetchResults_inorder() {
+        //        JumboTuple[] t = new JumboTuple[batch];
         for (int i = stream_index++; i < streams.length + stream_index; i++) {
             String streamId = streams[i % streams.length];
             //assert RQ != null;
-            //final HashMap<Integer, P1C1Queue<TransferTuple>> integerP1C1QueueHashMap = RQ.get(streamId);
+            //final HashMap<Integer, P1C1Queue<JumboTuple>> integerP1C1QueueHashMap = RQ.get(streamId);
             Integer[] qids = queues.get(streamId);
             int queueIdLength = qids.length;
             for (int j = queue_index++; j < queueIdLength + queue_index; ) {
@@ -56,12 +56,12 @@ public class UniformedScheduler extends InputStreamController {
     }
 
     @Override
-    public TransferTuple fetchResults() {
-//        TransferTuple[] t = new TransferTuple[batch];
+    public JumboTuple fetchResults() {
+//        JumboTuple[] t = new JumboTuple[batch];
         for (int i = stream_index++; i < streams.length + stream_index; i++) {
             String streamId = streams[i % streams.length];
             //assert RQ != null;
-            //final HashMap<Integer, P1C1Queue<TransferTuple>> integerP1C1QueueHashMap = RQ.get(streamId);
+            //final HashMap<Integer, P1C1Queue<JumboTuple>> integerP1C1QueueHashMap = RQ.get(streamId);
             Integer[] qids = queues.get(streamId);
             int queueIdLength = qids.length;
             for (int j = queue_index++; j < queueIdLength + queue_index; ) {
@@ -86,7 +86,7 @@ public class UniformedScheduler extends InputStreamController {
     }
 
     @Override
-    public TransferTuple fetchResults(STAT stat, int batch) {
+    public JumboTuple fetchResults(STAT stat, int batch) {
         return null;
     }
 }

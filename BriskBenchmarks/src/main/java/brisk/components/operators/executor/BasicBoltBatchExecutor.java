@@ -3,7 +3,7 @@ package brisk.components.operators.executor;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.AbstractBolt;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
@@ -34,7 +34,7 @@ public class BasicBoltBatchExecutor extends BoltExecutor {
     }
 
 
-    public void execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
         _op.execute(in);
     }
 
@@ -43,7 +43,7 @@ public class BasicBoltBatchExecutor extends BoltExecutor {
         _op.execute(in);
     }
 
-    public void profile_execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void profile_execute(JumboTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
         _op.profile_execute(in);
     }
 

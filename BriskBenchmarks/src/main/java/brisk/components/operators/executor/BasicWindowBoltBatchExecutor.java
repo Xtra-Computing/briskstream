@@ -6,7 +6,7 @@ import brisk.components.operators.api.AbstractWindowedBolt;
 import brisk.components.operators.api.BaseWindowedBolt;
 import brisk.components.windowing.*;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 
@@ -162,7 +162,7 @@ public class BasicWindowBoltBatchExecutor extends BoltExecutor {
         _op.execute(new TupleWindowImpl(tuples, newTuples, expiredTuples, getWindowStartTs(timestamp), timestamp));
     }
 
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         for (int i = 0; i < in.length; i++) {
             final Tuple input = in.getTuple(i);
             windowManager.add(input);
@@ -175,7 +175,7 @@ public class BasicWindowBoltBatchExecutor extends BoltExecutor {
     }
 
     @Override
-    public void profile_execute(TransferTuple in) {
+    public void profile_execute(JumboTuple in) {
         //not suppported yet.
     }
 

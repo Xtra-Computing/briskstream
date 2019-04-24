@@ -8,7 +8,7 @@ import applications.model.predictor.Prediction;
 import applications.util.Configuration;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public class FraudPredictorBolt extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         final int bound = in.length;
 //		final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {
@@ -84,7 +84,7 @@ public class FraudPredictorBolt extends filterBolt {
     }
 
     @Override
-    public void profile_execute(TransferTuple in) {
+    public void profile_execute(JumboTuple in) {
         final int bound = in.length;
 //		final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {

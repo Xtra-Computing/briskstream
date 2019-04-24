@@ -4,6 +4,8 @@ import applications.spout.PhoneCallGenerator;
 import brisk.components.context.TopologyContext;
 import engine.storage.datatype.TimestampType;
 
+import java.util.Collection;
+
 /**
  * Created by shuhaozhang on 10/7/16.
  * TODO:Make it generic!!
@@ -181,4 +183,12 @@ public class Tuple {
     }
 
 
+    public Collection getValues() {
+        return (Collection) this.getValue(0);
+    }
+
+    public Short getShort(int timeIdx) {
+
+        return (short) getValue(timeIdx);
+    }
 }

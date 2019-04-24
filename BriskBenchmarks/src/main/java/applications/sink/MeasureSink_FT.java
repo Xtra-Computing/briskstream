@@ -1,6 +1,6 @@
 package applications.sink;
 
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +11,7 @@ public class MeasureSink_FT extends MeasureSink {
 
 
     @Override
-    public void execute(TransferTuple input) {
+    public void execute(JumboTuple input) {
         double results;
         int bound = input.length;
         for (int i = 0; i < bound; i++) {

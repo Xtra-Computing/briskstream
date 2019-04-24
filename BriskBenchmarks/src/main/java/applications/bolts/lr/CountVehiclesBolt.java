@@ -26,7 +26,7 @@ import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -63,13 +63,6 @@ public class CountVehiclesBolt extends filterBolt {
      * Internally (re)used object to access individual attributes.
      */
     private PositionReport inputPositionReport = new PositionReport();
-    /**
-     * The currently processed 'minute number'.
-     */
-    private short currentMinute = -1;
-
-    private double cnt = 0, cnt1 = 0;
-//	TimestampMerger merger;
 
     public CountVehiclesBolt() {
         super(LOG, new HashMap<>(), new HashMap<>());
@@ -81,99 +74,15 @@ public class CountVehiclesBolt extends filterBolt {
     @Override
     public void execute(Tuple in) throws InterruptedException {
         this.inputPositionReport = (PositionReport) in.getValue(0);
-        LOG.trace(this.inputPositionReport.toString());
-
-        short minute = this.inputPositionReport.getMinuteNumber();
         this.segment.set(this.inputPositionReport);
-
-        boolean emitted = false;
-        // emit all values for last minute
-        // (because in tuples are ordered by ts (ie, minute number), we can relax_reset the last minute safely)
-        for (Entry<SegmentIdentifier, CarCount> entry : this.countsMap.entrySet()) {
-            SegmentIdentifier segId = entry.getKey();
-
-            // Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            int count = entry.getValue().count;
-            if (count > 50) {//?
-//						cnt1++;
-                emitted = true;
-                this.collector.force_emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, -1, new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count));
-            }
-        }
-        if (!emitted) {
-//					cnt1++;
-            this.collector.force_emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, -1, new CountTuple(minute));
-        }
-        this.countsMap.clear();
-        this.currentMinute = minute;
-//			}
 
         CarCount segCnt = this.countsMap.get(this.segment);
         if (segCnt == null) {
             segCnt = new CarCount();
             this.countsMap.put(this.segment.copy(), segCnt);
         } else {
-            ++segCnt.count;
+            ++segCnt.count;//update count.
         }
-    }
-
-
-    @Override
-    public void execute(TransferTuple in) throws InterruptedException {
-        int bound = in.length;
-        final long bid = in.getBID();
-        for (int i = 0; i < bound; i++) {
-//			cnt++;
-//			this.inputPositionReport.clear();
-            this.inputPositionReport = (PositionReport) in.getMsg(i).getValue(0);
-            LOG.trace(this.inputPositionReport.toString());
-
-            short minute = this.inputPositionReport.getMinuteNumber();
-            this.segment.set(this.inputPositionReport);
-
-            //assert (minute >= this.currentMinute);
-
-//			if (minute < this.currentMinute) {
-//				//restart..
-//				currentMinute = minute;
-//			}
-
-//			if (minute > this.currentMinute) {
-            boolean emitted = false;
-            // emit all values for last minute
-            // (because in tuples are ordered by ts (ie, minute number), we can relax_reset the last minute safely)
-            for (Entry<SegmentIdentifier, CarCount> entry : this.countsMap.entrySet()) {
-                SegmentIdentifier segId = entry.getKey();
-
-                // Minute-Number, X-Way, Segment, Direction, Avg(speed)
-                int count = entry.getValue().count;
-                if (count > 50) {//?
-//						cnt1++;
-                    emitted = true;
-                    this.collector.emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, bid, new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count));
-                }
-            }
-            if (!emitted) {
-//					cnt1++;
-                this.collector.emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, bid, new CountTuple(minute));
-            }
-            this.countsMap.clear();
-            this.currentMinute = minute;
-//			}
-
-            CarCount segCnt = this.countsMap.get(this.segment);
-            if (segCnt == null) {
-                segCnt = new CarCount();
-                this.countsMap.put(this.segment.copy(), segCnt);
-            } else {
-                ++segCnt.count;
-            }
-        }
-    }
-
-    public void display() {
-
-        LOG.info("cnt:" + cnt + "\tcnt1:" + cnt1 + "\toutput selectivity:" + ((cnt1) / cnt));
     }
 
     @Override

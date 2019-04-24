@@ -86,7 +86,7 @@ public class TravelTimeRequest extends AbstractInputTuple {
      * @param dow   the day of the week when the journey would take place
      * @param tod   the minute number of the day when the journey would take place
      */
-    public TravelTimeRequest(Integer time, Integer vid, Integer xway, Integer qid, Short sInit, Short sEnd, Short dow,
+    public TravelTimeRequest(Short time, Integer vid, Integer xway, Integer qid, Short sInit, Short sEnd, Short dow,
                              Short tod) {
         super(TRAVEL_TIME_REQUEST, time, vid);
 

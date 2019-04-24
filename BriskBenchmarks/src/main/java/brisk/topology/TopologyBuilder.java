@@ -190,7 +190,7 @@ public class TopologyBuilder {
     public Topology createTopology() {
 
         if (topology.getScheduler() == null) {
-            LOG.info("TransferTuple scheduler is not set, use default Brisk.execution.runtime.tuple scheduler instead!");
+            LOG.info("JumboTuple scheduler is not set, use default Brisk.execution.runtime.tuple scheduler instead!");
             topology.setScheduler(new SequentialScheduler());
         }
         return topology;

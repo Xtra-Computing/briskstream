@@ -1,7 +1,7 @@
 package applications.bolts.mb;
 
 
-import applications.param.MicroEvent;
+import applications.param.mb.MicroEvent;
 import brisk.execution.ExecutionGraph;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;

@@ -36,7 +36,7 @@ public class AccountBalance extends AbstractOutputTuple {
     private int balance;
     private long tollTime;
 
-    public AccountBalance(Integer time, int queryIdentifier, int balance, long tollTime, Integer created) {
+    public AccountBalance(Short time, int queryIdentifier, int balance, long tollTime, Short created) {
         super(AbstractLRBTuple.ACCOUNT_BALANCE_REQUEST, time, created);
         this.queryIdentifier = queryIdentifier;
         this.balance = balance;

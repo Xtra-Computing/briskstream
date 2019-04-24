@@ -1,7 +1,7 @@
 package applications.bolts.ct;
 
-import applications.param.DepositEvent;
-import applications.param.TransactionEvent;
+import applications.param.ct.DepositEvent;
+import applications.param.ct.TransactionEvent;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;

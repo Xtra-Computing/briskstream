@@ -36,42 +36,40 @@ import java.util.LinkedList;
 import java.util.Map;
 
 
+
 /**
  * {@link TimestampMerger} merges all incoming streams (all physical substreams from all tasks) over all logical
  * producers in ascending timestamp order. Input tuples must be in ascending timestamp order within each incoming
  * substream. The timestamp attribute is expected to be of type {@link Number}.
+ * <p>
+ * The internal buffer can be flushed by sending an <strong>ID less</strong> zero-attribute tuple via stream
+ * {@link #FLUSH_STREAM_ID}.
  *
- * @author Matthias J. Sax
+ * @author mjsax
  */
+
 public class TimestampMerger extends MapBolt {
     private final static long serialVersionUID = -6930627449574381467L;
     private final static Logger LOG = LoggerFactory.getLogger(TimestampMerger.class);
 
-    /**
-     * The original bolt that consumers a stream of input tuples that are ordered by their timestamp attribute.
-     */
+
+    /** The name of the flush stream. */
+    public final static String FLUSH_STREAM_ID = "flush";
+
+    /** The original bolt that consumers a stream of input tuples that are ordered by their timestamp attribute. */
     private final AbstractBolt wrappedBolt;
 
-    /**
-     * The index of the timestamp attribute ({@code -1} if attribute name or timestamp extractor is used).
-     */
+    /** The index of the timestamp attribute ({@code -1} if attribute name or timestamp extractor is used). */
     private final int tsIndex;
 
-    /**
-     * The name of the timestamp attribute ({@code null} if attribute index or timestamp extractor is used).
-     */
+    /** The name of the timestamp attribute ({@code null} if attribute index or timestamp extractor is used). */
     private final String tsAttributeName;
 
-    /**
-     * The extractor for the timestamp ({@code null} if attribute index or name is used).
-     */
+    /** The extractor for the timestamp ({@code null} if attribute index or name is used). */
     private final TimeStampExtractor<Tuple> tsExtractor;
 
-    /**
-     * Input tuple buffer for merging.
-     */
+    /** Input tuple buffer for merging. */
     private StreamMerger<Tuple> merger;
-
 
     /**
      * Instantiates a new {@link TimestampMerger} that wrapped the given bolt.
@@ -103,7 +101,7 @@ public class TimestampMerger extends MapBolt {
         assert (wrappedBolt != null);
         assert (tsAttributeName != null);
 
-        //LOG.DEBUG("Initialize with timestamp attribute {}", tsAttributeName);
+        LOG.debug("Initialize with timestamp attribute {}", tsAttributeName);
 
         this.wrappedBolt = wrappedBolt;
         this.tsIndex = -1;
@@ -134,10 +132,6 @@ public class TimestampMerger extends MapBolt {
     public void prepare(Map conf, TopologyContext context, OutputCollector outputCollector) {
         // for each logical input stream (ie, each producer bolt), we get an input partition for each of its tasks
         LinkedList<Integer> taskIds = new LinkedList<Integer>();
-//		for (Entry<GlobalStreamId, Grouping> inputStream : arg1.getThisSources().entrySet()) {
-//			GlobalStreamId key = inputStream.getKey();
-//			taskIds.addAll(arg1.getComponentTasks(key.get_componentId()));
-//		}
         HashMap<String, Map<TopologyComponent, Grouping>> parents = context.getThisComponent().getParents();
 
         for (Map<TopologyComponent, Grouping> map : parents.values()) {
@@ -162,26 +156,18 @@ public class TimestampMerger extends MapBolt {
             this.merger = new StreamMerger<>(taskIds, this.tsExtractor);
         }
 
-//		this.wrappedBolt.prepare(conf, context, outputCollector);
+		this.wrappedBolt.prepare(conf, context, outputCollector);
     }
 
     @Override
     public void execute(Tuple tuple) throws InterruptedException {
-//		LOG.trace("Adding tuple to internal buffer tuple: {}", tuple);
-//		this.merger.addTuple(new Integer(tuple.getSourceTask()), tuple);
-//
-//		Tuple t;
-//		while ((t = this.merger.getNextTuple()) != null) {
-//			LOG.trace("Extrated tuple from internal buffer for processing: {}", tuple);
-//			this.wrappedBolt._execute(t);
-//		}
 
-        LOG.trace("Adding tuple to internal buffer tuple: {}", tuple);
+        LOG.info("Adding tuple to internal buffer tuple: {}", tuple);
         this.merger.addTuple(tuple.getSourceTask(), tuple);
 
         Tuple t;
         while ((t = this.merger.getNextTuple()) != null) {
-            LOG.trace("Extrated tuple from internal buffer for processing: {}", tuple);
+            LOG.info("Extrated tuple from internal buffer for processing: {}", tuple);
             this.wrappedBolt._execute(t);
         }
     }

@@ -6,7 +6,7 @@ import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.commons.lang.mutable.MutableLong;
@@ -49,7 +49,7 @@ public class DeleteBolt extends MapBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         final long bid = in.getBID();
         int bound = in.length;
         for (int i = 0; i < bound; i++) {

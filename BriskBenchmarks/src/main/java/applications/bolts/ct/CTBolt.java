@@ -1,7 +1,7 @@
 package applications.bolts.ct;
 
-import applications.param.DepositEvent;
-import applications.param.TransactionEvent;
+import applications.param.ct.DepositEvent;
+import applications.param.ct.TransactionEvent;
 import brisk.components.operators.api.TransactionalBolt;
 import engine.DatabaseException;
 import engine.storage.datatype.DataBox;

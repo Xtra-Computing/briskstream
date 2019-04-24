@@ -1,10 +1,8 @@
 package applications.bolts.ob;
 
-import applications.param.TransactionEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
-import applications.tasks.stateless_task;
 import brisk.components.operators.api.TransactionalBolt;
 import engine.DatabaseException;
 import engine.storage.datatype.DataBox;

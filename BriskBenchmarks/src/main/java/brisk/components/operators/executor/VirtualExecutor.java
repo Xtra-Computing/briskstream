@@ -4,7 +4,7 @@ import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;
 import brisk.topology.TopologyBuilder;
@@ -130,7 +130,7 @@ public class VirtualExecutor implements IExecutor {
 
     }
 
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         LOG.info("Should not being called.");
     }
 

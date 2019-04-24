@@ -5,7 +5,7 @@ import applications.parser.SensorParser;
 import applications.spout.helper.parser.Parser;
 import applications.util.Configuration;
 import brisk.components.operators.base.MapBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class SensorParserBolt extends MapBolt {
 
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
 //		final long bid = in.getBID();
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
@@ -62,7 +62,7 @@ public class SensorParserBolt extends MapBolt {
     }
 
     @Override
-    public void profile_execute(TransferTuple in) {
+    public void profile_execute(JumboTuple in) {
 //		final long bid = in.getBID();
         int bound = in.length;
         for (int i = 0; i < bound; i++) {

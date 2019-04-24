@@ -75,7 +75,7 @@ public class TollNotification extends AbstractOutputTuple {
      * @param speed the 5-minute average speed in the segment
      * @param toll  the calculated toll
      */
-    public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll) {
+    public TollNotification(Short time, Short emit, Integer vid, Integer speed, Integer toll) {
         super(TOLL_NOTIFICATION, time, emit);
 
         assert (vid != null);
@@ -98,7 +98,7 @@ public class TollNotification extends AbstractOutputTuple {
      * @param speed the 5-minute average speed in the segment
      * @param toll  the calculated toll
      */
-    public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll, PositionReport pos) {
+    public TollNotification(Short time, Short emit, Integer vid, Integer speed, Integer toll, PositionReport pos) {
         super(TOLL_NOTIFICATION, time, emit);
 
         assert (vid != null);
@@ -141,7 +141,7 @@ public class TollNotification extends AbstractOutputTuple {
      *
      * @return the speed of this tuple
      */
-    private Integer getSpeed() {
+    public Integer getSpeed() {
         return (Integer) super.get(SPEED_IDX);
     }
 

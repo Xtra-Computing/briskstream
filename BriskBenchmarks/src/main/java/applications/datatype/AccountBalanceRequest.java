@@ -45,7 +45,7 @@ public class AccountBalanceRequest extends AbstractInputTuple {
     private static final long serialVersionUID = -7472179619183838842L;
 
 
-    public AccountBalanceRequest(Integer time, Integer vid, Integer qid, PositionReport objects) {
+    public AccountBalanceRequest(Short time, Integer vid, Integer qid, PositionReport objects) {
         super(ACCOUNT_BALANCE_REQUEST, time, vid);
 
         assert (qid != null);
@@ -62,7 +62,7 @@ public class AccountBalanceRequest extends AbstractInputTuple {
      * @param vid  the vehicle identifier
      * @param qid  the query identifier
      */
-    public AccountBalanceRequest(Integer time, Integer vid, Integer qid) {
+    public AccountBalanceRequest(Short time, Integer vid, Integer qid) {
         super(ACCOUNT_BALANCE_REQUEST, time, vid);
 
         assert (qid != null);

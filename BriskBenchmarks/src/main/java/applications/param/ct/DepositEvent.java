@@ -1,11 +1,12 @@
-package applications.param;
+package applications.param.ct;
 
+import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 
 import java.util.List;
 
-public class DepositEvent extends Event {
+public class DepositEvent extends TxnEvent {
 
 
     //updated state...to be written.

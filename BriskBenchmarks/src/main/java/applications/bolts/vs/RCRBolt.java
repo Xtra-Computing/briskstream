@@ -4,7 +4,7 @@ import applications.bolts.comm.AbstractFilterBolt;
 import applications.constants.VoIPSTREAMConstants;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.datatypes.StreamValues;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -72,7 +72,7 @@ public class RCRBolt extends AbstractFilterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
         int bound = in.length;
         final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {

@@ -59,7 +59,7 @@ public abstract class BaseWindowedBolt extends AbstractWindowedBolt {
     }
 
     /**
-     * TransferTuple count based sliding window configuration.
+     * JumboTuple count based sliding window configuration.
      *
      * @param windowLength    the number of tuples in the window
      * @param slidingInterval the number of tuples after which the window slides
@@ -69,7 +69,7 @@ public abstract class BaseWindowedBolt extends AbstractWindowedBolt {
     }
 
     /**
-     * TransferTuple count and time duration based sliding window configuration.
+     * JumboTuple count and time duration based sliding window configuration.
      *
      * @param windowLength    the number of tuples in the window
      * @param slidingInterval the time duration after which the window slides

@@ -7,7 +7,7 @@ import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -87,7 +87,7 @@ public class WordCountBolt extends MapBolt {
      * @throws InterruptedException
      */
     @Override
-    public void execute(TransferTuple input) throws InterruptedException {
+    public void execute(JumboTuple input) throws InterruptedException {
 //		long start = System.nanoTime();
         int bound = input.length;
 //		final long bid = in.getBID();
@@ -122,7 +122,7 @@ public class WordCountBolt extends MapBolt {
     }
 
     @Override
-    public void profile_execute(TransferTuple in) {
+    public void profile_execute(JumboTuple in) {
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
             char[] word = in.getCharArray(0, i);

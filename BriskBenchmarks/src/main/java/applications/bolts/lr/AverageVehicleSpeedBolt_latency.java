@@ -27,7 +27,7 @@ import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import applications.util.Time;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -89,7 +89,7 @@ public class AverageVehicleSpeedBolt_latency extends filterBolt {
     }
 
     @Override
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
 
 
         int bound = in.length;

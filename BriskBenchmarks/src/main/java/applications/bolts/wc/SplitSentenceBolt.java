@@ -7,7 +7,7 @@ import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.splitBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.TransferTuple;
+import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -78,7 +78,7 @@ public class SplitSentenceBolt extends splitBolt {
         }
     }
 
-    public void execute(TransferTuple in) throws InterruptedException {
+    public void execute(JumboTuple in) throws InterruptedException {
 //		final long bid = in.getBID();
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
@@ -105,7 +105,7 @@ public class SplitSentenceBolt extends splitBolt {
     }
 
 
-    public void profile_execute(TransferTuple in) throws InterruptedException {
+    public void profile_execute(JumboTuple in) throws InterruptedException {
 //		final long bid = in.getBID();
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
