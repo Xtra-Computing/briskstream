@@ -68,14 +68,13 @@ public class TollNotification extends AbstractOutputTuple {
 
     /**
      * Instantiates a new accident notification for the given attributes.
-     *
-     * @param time  the time or the position d_record triggering this notification
+     *  @param time  the time or the position d_record triggering this notification
      * @param emit  the emit time of the notification
      * @param vid   the ID of the vehicle that is notified of the toll
      * @param speed the 5-minute average speed in the segment
      * @param toll  the calculated toll
      */
-    public TollNotification(Short time, Short emit, Integer vid, Integer speed, Integer toll) {
+    public TollNotification(Short time, Short emit, Integer vid, Double speed, Integer toll) {
         super(TOLL_NOTIFICATION, time, emit);
 
         assert (vid != null);
@@ -141,8 +140,8 @@ public class TollNotification extends AbstractOutputTuple {
      *
      * @return the speed of this tuple
      */
-    public Integer getSpeed() {
-        return (Integer) super.get(SPEED_IDX);
+    public Double getSpeed() {
+        return (Double) super.get(SPEED_IDX);
     }
 
     /**

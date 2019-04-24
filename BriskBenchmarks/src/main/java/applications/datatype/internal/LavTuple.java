@@ -64,17 +64,17 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
 
     /**
      * Instantiates a new {@link LavTuple} for the given attributes.
-     *  @param time
+     * @param time
      *            the 'minute number' (in LRB seconds) of the speed average
      * @param xway
      *            the expressway the vehicle is on
      * @param segment
- *            the segment number the vehicle is in
+*            the segment number the vehicle is in
      * @param direction
 *            the vehicle's driving direction
      * @param lav
      */
-    public LavTuple(Short time, Integer xway, Short segment, Short direction, double lav) {
+    public LavTuple(Short time, Integer xway, Short segment, Short direction, Double lav) {
         assert (time != null);
         assert (xway != null);
         assert (segment != null);
@@ -148,8 +148,8 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      *
      * @return the latest average velocity (LAV) of this tuple
      */
-    public final Integer getLav() {
-        return (Integer)super.get(LAV_IDX);
+    public final Double getLav() {
+        return (Double)super.get(LAV_IDX);
     }
 
     /**

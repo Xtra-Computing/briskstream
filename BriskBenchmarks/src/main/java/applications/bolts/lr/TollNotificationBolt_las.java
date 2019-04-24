@@ -126,11 +126,11 @@ public class TollNotificationBolt_las extends filterBolt {
     /**
      * Buffer for LAV values.
      */
-    private Map<ISegmentIdentifier, Integer> currentMinuteLavs = new HashMap<>();
+    private Map<SegmentIdentifier, Double> currentMinuteLavs = new HashMap<SegmentIdentifier, Double>();
     /**
      * Buffer for LAV values.
      */
-    private Map<ISegmentIdentifier, Integer> previousMinuteLavs = new HashMap<>();
+    private Map<SegmentIdentifier, Double> previousMinuteLavs = new HashMap<SegmentIdentifier, Double>();
     /**
      * The currently processed 'minute number'.
      */
@@ -205,7 +205,7 @@ public class TollNotificationBolt_las extends filterBolt {
             this.previousMinuteCounts = this.currentMinuteCounts;
             this.currentMinuteCounts = new HashMap<>();
             this.previousMinuteLavs = this.currentMinuteLavs;
-            this.currentMinuteLavs = new HashMap<>();
+            this.currentMinuteLavs = new HashMap<SegmentIdentifier, Double>();
         }
     }
 

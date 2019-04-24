@@ -90,6 +90,7 @@ public class LatestAverageVelocityBolt extends filterBolt {
         //compute lav
         double lav = (latestAvgSpeeds + speed) / 2;//compute the average.
 
+        //broadcast the updated average road speed to TN.
         this.collector.emit(LRTopologyControl.LAVS_STREAM_ID,
                 new LavTuple((short) (-1),//remove minutes
                         this.segment.getXWay(), this.segment.getSegment(),

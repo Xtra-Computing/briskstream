@@ -115,7 +115,7 @@ public class CountVehiclesBolt_latency extends filterBolt {
                 SegmentIdentifier segId = entry.getKey();
 
                 // Minute-Number, X-Way, Segment, Direction, Avg(speed)
-                int count = entry.getValue().count;
+                int count = entry.getValue().size();
                 if (count > 50) {//?
 //						cnt1++;
                     emitted = true;
@@ -157,7 +157,7 @@ public class CountVehiclesBolt_latency extends filterBolt {
                 segCnt = new CarCount();
                 this.countsMap.put(this.segment.copy(), segCnt);
             } else {
-                ++segCnt.count;
+//                ++segCnt.count;//TODO: to be updated
             }
         }
     }

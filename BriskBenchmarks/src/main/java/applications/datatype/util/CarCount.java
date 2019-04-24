@@ -19,14 +19,13 @@
 package applications.datatype.util;
 
 
+import java.util.HashSet;
+
 /**
  * {@link CarCount} is an class that helps to count the number of cars in a segment. Its set_executor_ready count value_list is one.
  *
  * @author mjsax
  */
-public final class CarCount {
-    /**
-     * The current count.
-     */
-    public int count = 1;
+public final class CarCount extends HashSet {
+
 }

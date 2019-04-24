@@ -2,10 +2,7 @@ package applications.topology.transactional;
 
 
 import applications.bolts.comm.StringParserBolt;
-import applications.bolts.lr.AverageVehicleSpeedBolt;
-import applications.bolts.lr.CountVehiclesBolt;
-import applications.bolts.lr.DispatcherBolt;
-import applications.bolts.lr.LatestAverageVelocityBolt;
+import applications.bolts.lr.*;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;
@@ -14,6 +11,7 @@ import applications.datatype.util.SegmentIdentifier;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
+import brisk.components.grouping.AllGrouping;
 import brisk.components.grouping.FieldsGrouping;
 import brisk.components.grouping.ShuffleGrouping;
 import brisk.execution.runtime.tuple.impl.Fields;
@@ -78,8 +76,6 @@ public class TP extends BasicTopology {
 
             //accident query -- not in use. There's no accident.
 
-            //
-
             //speed query
 
             builder.setBolt(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME,//calculate average vehicle speed -- Avgsv, window = 1 min, slide = 1 report.
@@ -101,7 +97,7 @@ public class TP extends BasicTopology {
 
             //count query
 
-            builder.setBolt(COUNT_VEHICLES_BOLT, //calculate number of vehicles on a road.
+            builder.setBolt(COUNT_VEHICLES_BOLT, //calculate number of distinct vehicles on a road.
                     new CountVehiclesBolt(), COUNT_VEHICLES_Threads,
                     new FieldsGrouping(
                             LRTopologyControl.DISPATCHER,
@@ -110,10 +106,11 @@ public class TP extends BasicTopology {
                     )
             );
 
-/*
+
             builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME,
-//                    new TollNotificationBolt()
-                    new TimestampMerger(new TollNotificationBolt(), new TollInputStreamsTsExtractor()), toll_BoltThreads
+                    new TollNotificationBolt()
+//                    new TimestampMerger(new TollNotificationBolt(), new TollInputStreamsTsExtractor())
+                    , toll_BoltThreads
 
                     , new FieldsGrouping(LRTopologyControl.DISPATCHER,//position report..
                             LRTopologyControl.POSITION_REPORTS_STREAM_ID,
@@ -123,7 +120,7 @@ public class TP extends BasicTopology {
 
                     , new AllGrouping(COUNT_VEHICLES_BOLT)//broadcast vehicle count information to TN.
             );
-*/
+
             builder.setSink(LRTopologyControl.SINK, sink, 1 // single sink.
                     , new ShuffleGrouping(LRTopologyControl.LAST_AVERAGE_SPEED_BOLT_NAME)
             );

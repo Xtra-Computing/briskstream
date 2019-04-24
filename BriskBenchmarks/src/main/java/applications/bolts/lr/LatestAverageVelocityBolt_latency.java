@@ -49,7 +49,7 @@ import java.util.Map;
  * @author richter
  * @author mjsax
  */
-public class LatestAverageVelocityBolt_latency extends filterBolt {
+public class LatestAverageVelocityBolt_latency extends LatestAverageVelocityBolt {
     private static final long serialVersionUID = 5537727428628598519L;
     private static final Logger LOGGER = LoggerFactory.getLogger(LatestAverageVelocityBolt_latency.class);
 
@@ -78,7 +78,7 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
     private double cnt = 0, cnt1 = 0, cnt2 = 0;
 
     public LatestAverageVelocityBolt_latency() {
-        super(LOGGER, new HashMap<>(), new HashMap<>());
+        super();
         this.input_selectivity.put(LRTopologyControl.LAST_AVERAGE_SPEED_STREAM_ID, 1.0);
         this.output_selectivity.put(LRTopologyControl.LAVS_STREAM_ID, 1.0);
         this.setStateful();
@@ -90,91 +90,8 @@ public class LatestAverageVelocityBolt_latency extends filterBolt {
 //        not in use.
     }
 
-    @Override
-    public void execute(JumboTuple in) throws InterruptedException {
-        int bound = in.length;
-        final long bid = in.getBID();
-        cnt += bound;
-        for (int i = 0; i < bound; i++) {
-//			this.inputTuple.clear();
-//			Collections.addAll(this.inputTuple, in.getMsg(i));
-
-//			Long msgId;
-//			Long SYSStamp;
-//			msgId = in.getLong(1, i);
-////			if (msgId != -1) {
-//			SYSStamp = in.getLong(2, i);
-//			} else {
-//				SYSStamp = null;
-//			}
 
 
-            this.inputTuple = (AvgVehicleSpeedTuple) in.getMsg(i).getValue(0);
-            LOGGER.trace(this.inputTuple.toString());
-
-            Short minuteNumber = this.inputTuple.getMinute();
-            short m = minuteNumber;
-
-
-            this.segmentIdentifier.set(this.inputTuple);
-            List<Double> latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segmentIdentifier);
-            List<Short> latestMinuteNumber = this.minuteNumbersPerSegment.get(this.segmentIdentifier);
-
-            if (latestAvgSpeeds == null) {
-                latestAvgSpeeds = new LinkedList<>();
-                this.averageSpeedsPerSegment.put(this.segmentIdentifier.copy(), latestAvgSpeeds);
-                latestMinuteNumber = new LinkedList<>();
-                this.minuteNumbersPerSegment.put(this.segmentIdentifier.copy(), latestMinuteNumber);
-            }
-            latestAvgSpeeds.add(this.inputTuple.getAvgSpeed());
-            latestMinuteNumber.add(minuteNumber);
-
-            // discard all values that are more than 5 minutes older than current minute
-            while (latestAvgSpeeds.size() > 1) {
-                if (latestMinuteNumber.get(0) < m - 4) {
-                    latestAvgSpeeds.remove(0);
-                    latestMinuteNumber.remove(0);
-                } else {
-                    break;
-                }
-            }
-//		assert (latestAvgSpeeds.fieldSize() <= 5);
-//		assert (latestMinuteNumber.fieldSize() <= 5);
-
-//			cnt1++;
-            Integer lav = this.computeLavValue(latestAvgSpeeds);
-
-            long msgID = in.getLong(1, i);
-            if (msgID != -1)
-                this.collector.emit(
-                        LRTopologyControl.LAVS_STREAM_ID,
-                        bid, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                                .getSegment(), this.segmentIdentifier.getDirection(), lav),
-                        msgID, in.getLong(2, i)
-                );
-            else
-                this.collector.emit(
-                        LRTopologyControl.LAVS_STREAM_ID,
-                        bid, new LavTuple((short) (m + 1), this.segmentIdentifier.getXWay(), this.segmentIdentifier
-                                .getSegment(), this.segmentIdentifier.getDirection(), lav),
-                        msgID, 0
-                );
-//        double i=cnt1/cnt;
-//        if (stat != null) stat.end_measure();
-        }
-    }
-
-
-    private Integer computeLavValue(List<Double> latestAvgSpeeds) {
-        double speedSum = 0;
-        int valueCount = 0;
-        for(Double speed : latestAvgSpeeds) {
-            speedSum += speed.doubleValue();
-            ++valueCount;
-        }
-
-        return new Integer((int)(speedSum / valueCount));
-    }
 
     public void display() {
 
