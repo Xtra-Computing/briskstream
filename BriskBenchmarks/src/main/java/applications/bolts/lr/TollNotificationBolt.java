@@ -210,7 +210,7 @@ public class TollNotificationBolt extends filterBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declareStream(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, TollNotification.getSchema());
-        declarer.declareStream(LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID, TollNotification.getSchema());
+//        declarer.declareStream(LRTopologyControl.TOLL_ASSESSMENTS_STREAM_ID, TollNotification.getSchema());
     }
 
 }

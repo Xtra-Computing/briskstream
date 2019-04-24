@@ -20,8 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static applications.constants.TPConstants.PREFIX;
-import static applications.datatype.util.LRTopologyControl.COUNT_VEHICLES_BOLT;
-import static applications.datatype.util.LRTopologyControl.LAST_AVERAGE_SPEED_BOLT_NAME;
+import static applications.datatype.util.LRTopologyControl.*;
 
 public class TP extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(TP.class);
@@ -116,13 +115,13 @@ public class TP extends BasicTopology {
                             LRTopologyControl.POSITION_REPORTS_STREAM_ID,
                             new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME))
 
-                    , new AllGrouping(LAST_AVERAGE_SPEED_BOLT_NAME)//broadcast road speed information to TN.
+                    , new AllGrouping(LAST_AVERAGE_SPEED_BOLT_NAME, LAVS_STREAM_ID)//broadcast road speed information to TN.
 
-                    , new AllGrouping(COUNT_VEHICLES_BOLT)//broadcast vehicle count information to TN.
+                    , new AllGrouping(COUNT_VEHICLES_BOLT, CAR_COUNTS_STREAM_ID)//broadcast vehicle count information to TN.
             );
 
             builder.setSink(LRTopologyControl.SINK, sink, 1 // single sink.
-                    , new ShuffleGrouping(LRTopologyControl.LAST_AVERAGE_SPEED_BOLT_NAME)
+                    , new ShuffleGrouping(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME, TOLL_NOTIFICATIONS_STREAM_ID)
             );
 
         } catch (InvalidIDException e) {

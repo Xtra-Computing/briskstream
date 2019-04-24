@@ -110,7 +110,7 @@ public class LatestAverageVelocityBolt extends filterBolt {
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declareStream(LRTopologyControl.LAVS_STREAM_ID, LavTuple.getSchema());
-        declarer.declareStream(TimestampMerger.FLUSH_STREAM_ID, new Fields("ts"));
+//        declarer.declareStream(TimestampMerger.FLUSH_STREAM_ID, new Fields("ts"));
     }
 
 }
