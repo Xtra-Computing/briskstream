@@ -382,7 +382,8 @@ public class OutputCollector<T> {
         return emit_single(DEFAULT_STREAM_ID, -1, values);
     }
 
-    public Marker emit_single(String streamId, long bid, Object data) throws InterruptedException {
+
+    public Marker emit_single(String streamId, long bid, Object... data) throws InterruptedException {
         assert data != null && sc != null;
         sc.force_emitOnStream(meta, streamId, bid, data);
         return null;//marker
@@ -423,6 +424,15 @@ public class OutputCollector<T> {
         assert data != null && sc != null;
         sc.force_emitOnStream(meta, streamId, bid, msg_id, data, p_id, number_partitions, emit_timestamp);//flag, pid, nump, emit-time.
         return null;//marker
+    }
+
+    public Marker emit_single(long bid, char[] value) throws InterruptedException {
+        return emit_single(DEFAULT_STREAM_ID, bid, value);
+
+    }
+
+    public Marker emit_single(long bid,  char[] value, long emit_time) throws InterruptedException {
+        return emit_single(DEFAULT_STREAM_ID, bid, emit_time, value);
     }
 
     public Marker emit_single(long bid, Set<Integer> keys) throws InterruptedException {
@@ -570,6 +580,7 @@ public class OutputCollector<T> {
     public void create_marker_boardcast(long boardcast_time, String streamId, long bid, int myiteration) throws InterruptedException {
         sc.create_marker_boardcast(meta, boardcast_time, streamId, bid, myiteration);
     }
+
 
 //	public void increaseGap(String streamId) {
 //		sc.increaseGap(streamId);

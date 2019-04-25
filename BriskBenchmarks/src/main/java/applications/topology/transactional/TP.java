@@ -64,14 +64,14 @@ public class TP extends BasicTopology {
             builder.setSpout(LRTopologyControl.SPOUT, spout, 1);// single spout.
 
             //common part
-
-            builder.setBolt(LinearRoadConstants.Component.PARSER
-                    , new StringParserBolt(parser, new Fields(Field.TEXT)), config.getInt(Conf.PARSER_THREADS, 1)
-                    , new ShuffleGrouping(LRTopologyControl.SPOUT));
+//
+//            builder.setBolt(LinearRoadConstants.Component.PARSER
+//                    , new StringParserBolt(parser, new Fields(Field.TEXT)), config.getInt(Conf.PARSER_THREADS, 1)
+//                    , new ShuffleGrouping(LRTopologyControl.SPOUT));
 
             builder.setBolt(LRTopologyControl.DISPATCHER,
                     new DispatcherBolt(), DispatcherBoltThreads,
-                    new ShuffleGrouping(LinearRoadConstants.Component.PARSER));
+                    new ShuffleGrouping(LRTopologyControl.SPOUT));
 
             //accident query -- not in use. There's no accident.
 

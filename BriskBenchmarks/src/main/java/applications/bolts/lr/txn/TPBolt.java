@@ -1,6 +1,10 @@
 package applications.bolts.lr.txn;
 
+import applications.datatype.AbstractLRBTuple;
+import applications.datatype.PositionReport;
 import applications.param.lr.LREvent;
+import applications.parser.CommonLogParser;
+import applications.parser.StringParser;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
@@ -10,12 +14,15 @@ import org.slf4j.Logger;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_latency_measurement;
+import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
 import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
 
 public abstract class TPBolt extends TransactionalBolt {
+    private StringParser parser;
+
     public TPBolt(Logger log, int fid) {
         super(log, fid);
     }
@@ -127,25 +134,29 @@ public abstract class TPBolt extends TransactionalBolt {
 
         long bid = in.getBID();
 
-        LREvent event = (LREvent) db.eventManager.get((int) bid);
+        String raw = in.getString(0);
 
-        Long timestamp;//in.getLong(1);
+        String[] token = raw.split(" ");
 
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
+        short type = Short.parseShort(token[0]);
+        Short time = Short.parseShort(token[1]);
+        Integer vid = Integer.parseInt(token[2]);
+        assert (time.shortValue() == Short.parseShort(token[1]));
 
-        boolean flag = event.READ_EVENT();
-
-        (event).setTimestamp(timestamp);
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
-        if (flag) {
-            read_handle(event, timestamp);
-        } else {
-            write_handle(event, timestamp);
+        if (type == AbstractLRBTuple.position_report) {
+            this.collector.emit(POSITION_REPORTS_STREAM_ID,
+                    -1, new PositionReport(//
+                            time,//
+                            vid,//
+                            Integer.parseInt(token[3]), // speed
+                            Integer.parseInt(token[4]), // xway
+                            Short.parseShort(token[5]), // lane
+                            Short.parseShort(token[6]), // direction
+                            Short.parseShort(token[7]), // segment
+                            Integer.parseInt(token[8]))); // position
+        } else {//not in use in this experiment.
         }
+
     }
 
     protected abstract void write_handle(LREvent event, Long timestamp) throws DatabaseException, InterruptedException;

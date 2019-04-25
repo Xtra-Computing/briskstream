@@ -22,8 +22,6 @@ package applications.bolts.lr;
 import applications.datatype.*;
 import applications.datatype.util.LRTopologyControl;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -67,8 +65,6 @@ public class DispatcherBolt extends filterBolt {
     public DispatcherBolt() {
         super(LOG, new HashMap<>());
         this.output_selectivity.put(POSITION_REPORTS_STREAM_ID, 0.9885696197046802);
-//		this.output_selectivity.put(LRTopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID, 0.0057618584512478315);
-//		this.output_selectivity.put(LRTopologyControl.DAILY_EXPEDITURE_REQUESTS_STREAM_ID, 0.0011689623684645518);
 
     }
 
@@ -87,7 +83,7 @@ public class DispatcherBolt extends filterBolt {
 
         if (type == AbstractLRBTuple.position_report) {
             this.collector.emit(POSITION_REPORTS_STREAM_ID,
-                    -1, new PositionReport(//
+                    in.getBID(), new PositionReport(//
                             time,//
                             vid,//
                             Integer.parseInt(token[3]), // speed
@@ -96,84 +92,13 @@ public class DispatcherBolt extends filterBolt {
                             Short.parseShort(token[6]), // direction
                             Short.parseShort(token[7]), // segment
                             Integer.parseInt(token[8]))); // position
-        } else {
-            Integer qid = Integer.parseInt(token[9]);
-            switch (type) {
-                case AbstractLRBTuple.account_balance_request:
-
-                    break;
-                case AbstractLRBTuple.daily_expenditure_request:
-
-                    break;
-                case AbstractLRBTuple.travel_time_request://not in use in this experiment.
-
-                    break;
-                default:
-                    LOG.error("Unkown tuple type: {}", type);
-
-            }
+        } else {//not in use in this experiment.
         }
-
     }
-
-    @Override
-    public void execute(JumboTuple in) throws InterruptedException {
-        int bound = in.length;
-        final long bid = in.getBID();
-//		long pre_pr = pr;
-//		cnt += bound;
-        for (int i = 0; i < bound; i++) {
-            String raw = null;
-//			try {
-            raw = in.getString(0, i);
-            //raw = raw.substring(3, raw.length() - 2);
-            String[] token = raw.split(" ");
-            // common attributes of all in tuples
-            short type = Short.parseShort(token[0]);
-            short time = Short.parseShort(token[1]);
-            Integer vid = Integer.parseInt(token[2]);
-
-            if (type == AbstractLRBTuple.position_report) {
-                this.collector.emit(POSITION_REPORTS_STREAM_ID,
-                        bid,
-                        new PositionReport(//
-                                time,//
-                                vid,//
-                                Integer.parseInt(token[3]), // speed
-                                Integer.parseInt(token[4]), // xway
-                                Short.parseShort(token[5]), // lane
-                                Short.parseShort(token[6]), // direction
-                                Short.parseShort(token[7]), // segment
-                                Integer.parseInt(token[8]))); // position
-
-            } else {
-                //not in use in this experiment.
-            }
-        }
-
-    }
-
-
-    public void display() {
-    }
-
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
         outputFieldsDeclarer.declareStream(POSITION_REPORTS_STREAM_ID, PositionReport.getSchema());
-//		outputFieldsDeclarer.declareStream(LRTopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID,
-//				AccountBalanceRequest.getSchema());
-//		outputFieldsDeclarer.declareStream(LRTopologyControl.DAILY_EXPEDITURE_REQUESTS_STREAM_ID,
-//				DailyExpenditureRequest.getSchema());
-//        outputFieldsDeclarer
-//                .declareStream(LRTopologyControl.TRAVEL_TIME_REQUEST_STREAM_ID, TravelTimeRequest.getSchema());
-    }
-
-//	public LinkedList<Long> gap;
-
-    @Override
-    public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-//		gap = new LinkedList<>();
     }
 
 }

@@ -26,7 +26,6 @@ import applications.datatype.util.AvgValue;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import applications.util.Time;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
@@ -70,7 +69,9 @@ public class AverageVehicleSpeedBolt extends filterBolt {
      */
     private final Map<Integer, Pair<AvgValue, SegmentIdentifier>> avgSpeedsMap = new HashMap<Integer, Pair<AvgValue, SegmentIdentifier>>();
 
-    /** The currently processed 'minute number'. */
+    /**
+     * The currently processed 'minute number'.
+     */
     private short currentMinute = 1;
 
     public AverageVehicleSpeedBolt() {
@@ -84,6 +85,7 @@ public class AverageVehicleSpeedBolt extends filterBolt {
         Pair<AvgValue, SegmentIdentifier> vehicleEntry = this.avgSpeedsMap.get(vid);
 
         if (vehicleEntry != null && !vehicleEntry.getRight().equals(this.segment)) {// vehicle changes segment.
+
             SegmentIdentifier segId = vehicleEntry.getRight();
 
             //read and emit.
@@ -92,7 +94,6 @@ public class AverageVehicleSpeedBolt extends filterBolt {
             this.collector.emit(new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage()));
             // set to null to get new vehicle entry below
             vehicleEntry = null;
-
         }
 
         if (vehicleEntry == null) {//no record for this vehicle
@@ -107,16 +108,12 @@ public class AverageVehicleSpeedBolt extends filterBolt {
 
     @Override
     public void execute(Tuple input) throws InterruptedException {
-
         this.inputPositionReport.clear();
         this.inputPositionReport.addAll(input.getValues());
         LOGGER.trace(this.inputPositionReport.toString());
         int vid = this.inputPositionReport.getVid();
         int speed = this.inputPositionReport.getSpeed().intValue();
         this.segment.set(this.inputPositionReport);
-
-        this.currentMinute = this.inputPositionReport.getMinuteNumber();//should monotonically increasing as inputs are buffered and sorted.
-
         update_avgsv(vid, speed);
     }
 
