@@ -2,32 +2,38 @@ package applications.bolts.lr.txn;
 
 import applications.datatype.AbstractLRBTuple;
 import applications.datatype.PositionReport;
+import applications.datatype.internal.AvgVehicleSpeedTuple;
+import applications.datatype.util.AvgValue;
+import applications.datatype.util.SegmentIdentifier;
 import applications.param.lr.LREvent;
-import applications.parser.CommonLogParser;
-import applications.parser.StringParser;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
-import engine.Meta.MetaTypes;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_latency_measurement;
-import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
-import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
-import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
 
 public abstract class TPBolt extends TransactionalBolt {
-    private StringParser parser;
+	/**
+	 * Maps each vehicle to its average speed value that corresponds to the current 'minute number' and specified segment.
+	 */
+	private final Map<Integer, Pair<AvgValue, SegmentIdentifier>> avgSpeedsMap = new HashMap<>();
+	/**
+	 * The currently processed 'minute number'.
+	 */
+	private short currentMinute = 1;
 
-    public TPBolt(Logger log, int fid) {
-        super(log, fid);
-    }
+	public TPBolt(Logger log, int fid) {
+		super(log, fid);
+	}
 
-    protected void read_core(LREvent event) throws InterruptedException {
+	protected void read_core(LREvent event) throws InterruptedException {
 //
 //        int sum = 0;
 //        for (int i = 0; i < NUM_ACCESSES; ++i) {
@@ -48,10 +54,10 @@ public abstract class TPBolt extends TransactionalBolt {
 //            //so nothing is send out.
 //        } else
 //            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
-    }
+	}
 
 
-    protected void write_core(LREvent event) throws InterruptedException {
+	protected void write_core(LREvent event) throws InterruptedException {
 //        for (int i = 0; i < NUM_ACCESSES; ++i) {
 //            List<DataBox> values = event.getValues()[i];
 //            SchemaRecordRef recordRef = event.getRecord_refs()[i];
@@ -60,106 +66,123 @@ public abstract class TPBolt extends TransactionalBolt {
 //            recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
 //        }
 //        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
-    }
+	}
 
-    protected void read_lock_ahead(LREvent Event, long bid) throws DatabaseException {
-//        for (int i = 0; i < NUM_ACCESSES; ++i)
-//            transactionManager.lock_ahead(txn_context, "MicroTable",
-//                    String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
-    }
+	/**
+	 * @param event
+	 * @param bid
+	 * @throws DatabaseException
+	 */
+	private void txn_request(LREvent event, long bid) throws DatabaseException {
+//		txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
+//		it simply construct the operations and return.
+//		transactionManager.Asy_ModifyRecord(txn_context, "accounts", event.getAccountId(), new INC(event.getAccountTransfer()));// read and modify the account itself.
+//		transactionManager.Asy_ModifyRecord(txn_context, "bookEntries", event.getBookEntryId(), new INC(event.getBookEntryTransfer()));// read and modify the asset itself.
+	}
 
+	/**
+	 * Merge function of parser.
+	 *
+	 * @return
+	 */
+	private String[] parser(Tuple in) {
+		String raw = in.getString(0);
 
-    protected void write_lock_ahead(LREvent Event, long bid) throws DatabaseException {
-//        for (int i = 0; i < NUM_ACCESSES; ++i)
-//            transactionManager.lock_ahead(txn_context, "MicroTable",
-//                    String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
-    }
+		String[] token = raw.split(" ");
+		return token;
+	}
 
-    private boolean process_request_noLock(LREvent event, MetaTypes.AccessType accessType) throws DatabaseException {
-//        for (int i = 0; i < NUM_ACCESSES; ++i) {
-//            boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable",
-//                    String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
-//            if (rt) {
-//                assert event.getRecord_refs()[i].getRecord() != null;
-//            } else {
-//                return true;
-//            }
-//        }
-        return false;
-    }
+	/**
+	 * Merge function of dispatcher.
+	 *
+	 * @param token
+	 * @return
+	 */
+	private PositionReport dispatcher(String[] token) {
+		short type = Short.parseShort(token[0]);
+		Short time = Short.parseShort(token[1]);
+		Integer vid = Integer.parseInt(token[2]);
+		assert (time == Short.parseShort(token[1]));
 
-    private boolean process_request(LREvent event, MetaTypes.AccessType accessType) throws DatabaseException {
-//        for (int i = 0; i < NUM_ACCESSES; ++i) {
-//            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable",
-//                    String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
-//            if (rt) {
-//                assert event.getRecord_refs()[i].getRecord() != null;
-//            } else {
-//                return true;
-//            }
-//        }
-        return false;
-    }
+		if (type == AbstractLRBTuple.position_report) {
+			return new PositionReport(//
+					time,//
+					vid,//
+					Integer.parseInt(token[3]), // speed
+					Integer.parseInt(token[4]), // xway
+					Short.parseShort(token[5]), // lane
+					Short.parseShort(token[6]), // direction
+					Short.parseShort(token[7]), // segment
+					Integer.parseInt(token[8])); // position
+		}
+		return null;//not in use in this experiment.
+	}
 
-    protected boolean read_request(LREvent event) throws DatabaseException {
-
-        if (process_request_noLock(event, READ_ONLY)) return false;
-        return true;
-    }
-
-
-    protected boolean write_request(LREvent event) throws DatabaseException {
-
-        if (process_request_noLock(event, READ_WRITE)) return false;
-        return true;
-    }
-
-    protected boolean read_request_lock(LREvent event) throws DatabaseException {
-
-        if (process_request(event, READ_ONLY)) return false;
-        return true;
-    }
+	private final SegmentIdentifier segment = new SegmentIdentifier();
 
 
-    protected boolean write_request_lock(LREvent event) throws DatabaseException {
+	private AvgVehicleSpeedTuple update_avgsv(Integer vid, int speed) throws InterruptedException {
+		Pair<AvgValue, SegmentIdentifier> vehicleEntry = this.avgSpeedsMap.get(vid);
 
-        if (process_request(event, READ_WRITE)) return false;
-        return true;
-    }
+		AvgVehicleSpeedTuple tuple = null;
+		if (vehicleEntry != null && !vehicleEntry.getRight().equals(this.segment)) {// vehicle changes segment.
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+			SegmentIdentifier segId = vehicleEntry.getRight();
 
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+			//read and emit.
 
-        long bid = in.getBID();
+			// VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
+			tuple = new AvgVehicleSpeedTuple(vid,
+					this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage());
+			// set to null to get new vehicle entry below
+			vehicleEntry = null;
+		}
 
-        String raw = in.getString(0);
+		if (vehicleEntry == null) {//no record for this vehicle
+			//write (insert).
+			vehicleEntry = new MutablePair<>(new AvgValue(speed), this.segment.copy());
+			this.avgSpeedsMap.put(vid, vehicleEntry);
+		} else {// vehicle does not change segment but only update its speed.
+			//write.
+			vehicleEntry.getLeft().updateAverage(speed);
+		}
+		return tuple;
+	}
 
-        String[] token = raw.split(" ");
+	@Override
+	public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
 
-        short type = Short.parseShort(token[0]);
-        Short time = Short.parseShort(token[1]);
-        Integer vid = Integer.parseInt(token[2]);
-        assert (time.shortValue() == Short.parseShort(token[1]));
+		BEGIN_PREPARE_TIME_MEASURE(thread_Id);
 
-        if (type == AbstractLRBTuple.position_report) {
-            this.collector.emit(POSITION_REPORTS_STREAM_ID,
-                    -1, new PositionReport(//
-                            time,//
-                            vid,//
-                            Integer.parseInt(token[3]), // speed
-                            Integer.parseInt(token[4]), // xway
-                            Short.parseShort(token[5]), // lane
-                            Short.parseShort(token[6]), // direction
-                            Short.parseShort(token[7]), // segment
-                            Integer.parseInt(token[8]))); // position
-        } else {//not in use in this experiment.
-        }
+		long bid = in.getBID();
 
-    }
 
-    protected abstract void write_handle(LREvent event, Long timestamp) throws DatabaseException, InterruptedException;
+		//pre process.
+		String[] token = parser(in);
+		PositionReport report = dispatcher(token);
+		int vid = report.getVid();
+		int speed = report.getSpeed().intValue();
+		this.segment.set(report);
+		AvgVehicleSpeedTuple vehicleSpeedTuple = update_avgsv(vid, speed);
 
-    protected abstract void read_handle(LREvent event, Long timestamp) throws InterruptedException, DatabaseException;
+		LREvent event = new LREvent(vehicleSpeedTuple);
+		//txn process.
+		if (vehicleSpeedTuple != null) {
+			//update segment statistics. Write and Read Requests.
+
+
+		} else {
+			//Simply Read statistics.
+
+		}
+
+
+		//post process.
+
+
+	}
+
+	protected abstract void write_handle(LREvent event, Long timestamp) throws DatabaseException, InterruptedException;
+
+	protected abstract void read_handle(LREvent event, Long timestamp) throws InterruptedException, DatabaseException;
 }

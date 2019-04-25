@@ -3,7 +3,7 @@ package engine.profiler;
 import applications.CONTROL;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
-import static applications.CONTROL.kMaxThreadNum;
+import static engine.Meta.MetaTypes.kMaxThreadNum;
 
 public class Metrics {
 

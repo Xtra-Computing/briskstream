@@ -1,14 +1,16 @@
 package applications.topology.transactional;
 
 
-import applications.bolts.lr.txn.TP_nocc;
+import applications.bolts.lr.txn.TP_TStream;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;
+import applications.datatype.util.SegmentIdentifier;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
+import brisk.components.grouping.FieldsGrouping;
 import brisk.components.grouping.ShuffleGrouping;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
@@ -17,61 +19,63 @@ import org.slf4j.LoggerFactory;
 
 import static applications.constants.LinearRoadConstants.PREFIX;
 import static applications.constants.MicroBenchmarkConstants.Conf.Executor_Threads;
-import static engine.content.Content.CCOption_LOCK;
+import static engine.content.Content.CCOption_TStream;
 
 public class TP_Txn extends BasicTopology {
-    private static final Logger LOG = LoggerFactory.getLogger(TP_Txn.class);
-    private final int accidentBoltThreads;
-    private final int dailyExpBoltThreads;
-    private final int toll_cv_BoltThreads, toll_las_BoltThreads, toll_pos_BoltThreads;
+	private static final Logger LOG = LoggerFactory.getLogger(TP_Txn.class);
+	private final int accidentBoltThreads;
+	private final int dailyExpBoltThreads;
+	private final int toll_cv_BoltThreads, toll_las_BoltThreads, toll_pos_BoltThreads;
 
 
-    private final int DispatcherBoltThreads;
-    private final int COUNT_VEHICLES_Threads;
-    private final int AccidentNotificationBoltThreads;
-    private final int AccountBalanceBoltThreads;
-    private final int averageSpeedThreads;
-    private final int latestAverageVelocityThreads;
+	private final int DispatcherBoltThreads;
+	private final int COUNT_VEHICLES_Threads;
+	private final int AccidentNotificationBoltThreads;
+	private final int AccountBalanceBoltThreads;
+	private final int averageSpeedThreads;
+	private final int latestAverageVelocityThreads;
+	private final int averageVehicleSpeedThreads;
 
-    public TP_Txn(String topologyName, Configuration config) {
-        super(topologyName, config);
+	public TP_Txn(String topologyName, Configuration config) {
+		super(topologyName, config);
 //        initilize_parser();
-        DispatcherBoltThreads = config.getInt(Conf.DispatcherBoltThreads, 1);
-        COUNT_VEHICLES_Threads = config.getInt(Conf.COUNT_VEHICLES_Threads, 1);
-        averageSpeedThreads = config.getInt(Conf.AverageSpeedThreads, 1);
-        latestAverageVelocityThreads = config.getInt(Conf.LatestAverageVelocityThreads, 1);
-        toll_cv_BoltThreads = config.getInt(Conf.toll_cv_BoltThreads, 1);
-        toll_las_BoltThreads = config.getInt(Conf.toll_las_BoltThreads, 1);
-        toll_pos_BoltThreads = config.getInt(Conf.toll_pos_BoltThreads, 1);
-        accidentBoltThreads = config.getInt(Conf.AccidentDetectionBoltThreads, 1);
-        AccidentNotificationBoltThreads = config.getInt(Conf.AccidentNotificationBoltThreads, 1);
-        AccountBalanceBoltThreads = config.getInt(Conf.AccountBalanceBoltThreads, 1);
-        dailyExpBoltThreads = config.getInt(Conf.dailyExpBoltThreads, 1);
-    }
+		DispatcherBoltThreads = config.getInt(Conf.DispatcherBoltThreads, 1);
+		COUNT_VEHICLES_Threads = config.getInt(Conf.COUNT_VEHICLES_Threads, 1);
+		averageSpeedThreads = config.getInt(Conf.AverageSpeedThreads, 1);
+		averageVehicleSpeedThreads = config.getInt(Conf.AverageVehicleSpeedThreads, 1);
+		latestAverageVelocityThreads = config.getInt(Conf.LatestAverageVelocityThreads, 1);
+		toll_cv_BoltThreads = config.getInt(Conf.toll_cv_BoltThreads, 1);
+		toll_las_BoltThreads = config.getInt(Conf.toll_las_BoltThreads, 1);
+		toll_pos_BoltThreads = config.getInt(Conf.toll_pos_BoltThreads, 1);
+		accidentBoltThreads = config.getInt(Conf.AccidentDetectionBoltThreads, 1);
+		AccidentNotificationBoltThreads = config.getInt(Conf.AccidentNotificationBoltThreads, 1);
+		AccountBalanceBoltThreads = config.getInt(Conf.AccountBalanceBoltThreads, 1);
+		dailyExpBoltThreads = config.getInt(Conf.dailyExpBoltThreads, 1);
+	}
 
-    public static String getPrefix() {
-        return PREFIX;
-    }
+	public static String getPrefix() {
+		return PREFIX;
+	}
 
-    public void initialize() {
-        super.initialize();
-        sink = loadSink();
-    }
+	public void initialize() {
+		super.initialize();
+		sink = loadSink();
+	}
 
-    @Override
-    public Topology buildTopology() {
+	@Override
+	public Topology buildTopology() {
 
-        try {
-            spout.setFields(new Fields(Field.TEXT));//output of a spouts
-            builder.setSpout(LRTopologyControl.SPOUT, spout, spoutThreads);
+		try {
+			spout.setFields(new Fields(Field.TEXT));//output of a spouts
+			builder.setSpout(LRTopologyControl.SPOUT, spout, spoutThreads);
 
-            switch (config.getInt("CCOption", 0)) {
-                case CCOption_LOCK: {//no-order
-                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_nocc(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(LinearRoadConstants.Component.SPOUT));
-                    break;
-                }
+			switch (config.getInt("CCOption", 0)) {
+//                case CCOption_LOCK: {//no-order
+//                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_nocc(0)//not available
+//                            , config.getInt(Executor_Threads, 2)
+//                            , new ShuffleGrouping(LinearRoadConstants.Component.SPOUT));
+//                    break;
+//                }
 //
 //                case CCOption_OrderLOCK: {//LOB
 //
@@ -87,13 +91,16 @@ public class TP_Txn extends BasicTopology {
 //                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
 //                    break;
 //                }
-//                case CCOption_TStream: {//T-Stream
-//
-//                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_ts(0)//
-//                            , config.getInt(Executor_Threads, 2)
-//                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
-//                    break;
-//                }
+				case CCOption_TStream: {//T-Stream
+					builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_TStream(0)//
+							, config.getInt(Executor_Threads, 2),
+							new FieldsGrouping(
+									LRTopologyControl.DISPATCHER,
+									LRTopologyControl.POSITION_REPORTS_STREAM_ID
+									, SegmentIdentifier.getSchema())
+					);
+					break;
+				}
 //                case CCOption_SStore: {//SStore
 //
 //                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_sstore(0)//
@@ -102,7 +109,7 @@ public class TP_Txn extends BasicTopology {
 //                    break;
 //                }
 
-            }
+			}
 
 
 //            builder.setBolt(LinearRoadConstants.Component.PARSER, new StringParserBolt(parser,
@@ -171,23 +178,23 @@ public class TP_Txn extends BasicTopology {
 //                            LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID)
 //            );
 
-            builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
-                    , new ShuffleGrouping(LinearRoadConstants.Component.EXECUTOR)
-            );
+			builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
+					, new ShuffleGrouping(LinearRoadConstants.Component.EXECUTOR)
+			);
 
-        } catch (InvalidIDException e) {
-            e.printStackTrace();
-        }
-        return builder.createTopology();
-    }
+		} catch (InvalidIDException e) {
+			e.printStackTrace();
+		}
+		return builder.createTopology();
+	}
 
-    @Override
-    public Logger getLogger() {
-        return LOG;
-    }
+	@Override
+	public Logger getLogger() {
+		return LOG;
+	}
 
-    @Override
-    public String getConfigPrefix() {
-        return PREFIX;
-    }
+	@Override
+	public String getConfigPrefix() {
+		return PREFIX;
+	}
 }
