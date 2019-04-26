@@ -1,5 +1,6 @@
 package brisk.execution.runtime.collector;
 
+import applications.datatype.TollNotification;
 import applications.util.OsUtils;
 import applications.util.datatypes.StreamValues;
 import brisk.components.TopologyComponent;
@@ -493,7 +494,11 @@ public class OutputCollector<T> {
         sc.force_emitOnStream(meta, streamId, bid, bid);
         return null;//marker
     }
-
+    public Marker emit_single(  long bid, TollNotification tollNotification) throws InterruptedException {
+        assert sc != null;
+        sc.force_emitOnStream(meta, DEFAULT_STREAM_ID, bid, tollNotification);
+        return null;//marker
+    }
 
     public void broadcast_marker(long bid, Marker marker) throws InterruptedException {
         if (executor.isLeafNode()) {
@@ -589,6 +594,8 @@ public class OutputCollector<T> {
     public void create_marker_single(long boardcast_time, String streamId, long bid, int myiteration) throws InterruptedException {
         sc.create_marker_single(meta, boardcast_time, streamId, bid, myiteration);
     }
+
+
 
 
 //	public void increaseGap(String streamId) {

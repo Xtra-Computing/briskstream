@@ -33,7 +33,7 @@ import static engine.profiler.Metrics.MeasureTools.*;
 public class TP_TStream extends TPBolt {
     private static final Logger LOG = LoggerFactory.getLogger(TP_TStream.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private ArrayDeque<LREvent> LREvents;
+    private ArrayDeque<LREvent> LREvents = new ArrayDeque<>();
 
     public TP_TStream(int fid) {
         super(LOG, fid);
@@ -42,7 +42,8 @@ public class TP_TStream extends TPBolt {
 
     public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
-        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
+        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
+                , context.getThisTaskId(), context.getGraph());
     }
 
     @Override
@@ -128,7 +129,7 @@ public class TP_TStream extends TPBolt {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             for (LREvent event : LREvents) {
-                read_core(event);
+                post_process(event);
             }
 
             END_COMPUTE_TIME_MEASURE(thread_Id);

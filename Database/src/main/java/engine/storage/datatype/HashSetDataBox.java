@@ -25,6 +25,14 @@ public class HashSetDataBox extends DataBox {
         return new HashSetDataBox(set);
     }
 
+    @Override
+    public Types type() {
+        return Types.OTHERS;
+    }
+
+    public HashSet getHashSet() {
+        return set;
+    }
 
     @Override
     public boolean equals(Object obj) {

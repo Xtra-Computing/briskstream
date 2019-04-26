@@ -8,6 +8,7 @@ import engine.profiler.Metrics;
 import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.DoubleDataBox;
+import engine.storage.datatype.HashSetDataBox;
 import engine.storage.datatype.ListDoubleDataBox;
 import engine.transaction.function.*;
 import org.slf4j.Logger;
@@ -317,11 +318,23 @@ public final class TxnProcessingEngine {
                 }
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
             } else if (operation.function instanceof AVG) {//used by TP
-                srcRecord.get(1);
+                //                double lav = (latestAvgSpeeds + speed) / 2;//compute the average.
+
+                double latestAvgSpeeds = srcRecord.get(1).getDouble();
+                double lav;
+                if (latestAvgSpeeds == 0) {//not initialized
+                    lav = operation.function.delta_double;
+                } else
+                    lav = (latestAvgSpeeds + operation.function.delta_double) / 2;
+
+                srcRecord.get(1).setDouble(lav);//write to state.
+                operation.record_ref.setRecord(new SchemaRecord(new DoubleDataBox(lav)));//return updated record.
+
 
             } else if (operation.function instanceof CNT) {//used by TP
-
-
+                HashSet cnt_segment = srcRecord.get(1).getHashSet();
+                cnt_segment.add(operation.function.delta_int);//update hashset; updated state also. TODO: be careful of this.
+                operation.record_ref.setRecord(new SchemaRecord(new HashSetDataBox(cnt_segment)));//return updated record.
             } else
                 throw new UnsupportedOperationException();
         }

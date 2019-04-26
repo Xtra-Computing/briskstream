@@ -21,9 +21,12 @@ package applications.bolts.lr;
 
 import applications.datatype.*;
 import applications.datatype.util.LRTopologyControl;
+import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.base.filterBolt;
+import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import brisk.faulttolerance.impl.ValueState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +51,10 @@ import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STRE
  *
  * @author mjsax
  **/
-public class DispatcherBolt extends filterBolt {
+public class DispatcherBolt extends filterBolt implements Checkpointable {
     private static final long serialVersionUID = 6908631355830501961L;
     private static final Logger LOG = LoggerFactory.getLogger(DispatcherBolt.class);
+
 
     long cnt = 0, de = 0, pr = 0, ab = 0;
     //     10215332
@@ -66,7 +70,7 @@ public class DispatcherBolt extends filterBolt {
     public DispatcherBolt() {
         super(LOG, new HashMap<>());
         this.output_selectivity.put(POSITION_REPORTS_STREAM_ID, 0.9885696197046802);
-
+        state = new ValueState();
     }
 
     @Override
@@ -75,8 +79,7 @@ public class DispatcherBolt extends filterBolt {
 
         if (in.isMarker()) {//only one instance of dispatcher can broadcast
 
-            this.collector.broadcast_marker(bid, in.getMarker());
-
+            forward_checkpoint(in.getSourceTask(), bid, in.getMarker());
         } else {
 
             String raw = null;
@@ -129,4 +132,38 @@ public class DispatcherBolt extends filterBolt {
         outputFieldsDeclarer.declareStream(POSITION_REPORTS_STREAM_ID, PositionReport.getSchema());
     }
 
+    @Override
+    public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
+        this.collector.broadcast_marker(bid, marker);
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
+
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
+
+    @Override
+    public void forward_checkpoint(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
+
+    @Override
+    public void ack_checkpoint(Marker marker) {
+//		//LOG.DEBUG(this.getContext().getThisTaskId() + " received ack from all consumers.");
+
+        //Do something to clear past state. (optional)
+
+//		//LOG.DEBUG(this.getContext().getThisTaskId() + " broadcast ack to all producers.");
+        this.collector.broadcast_ack(marker);//bolt needs to broadcast_ack
+    }
+
+    @Override
+    public void earlier_ack_checkpoint(Marker marker) {
+
+    }
 }

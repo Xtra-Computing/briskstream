@@ -5,7 +5,6 @@ import applications.datatype.PositionReport;
 import applications.datatype.TollNotification;
 import applications.datatype.internal.AvgVehicleSpeedTuple;
 import applications.datatype.util.AvgValue;
-import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import applications.param.lr.LREvent;
 import brisk.components.operators.api.TransactionalBolt;
@@ -33,7 +32,7 @@ public abstract class TPBolt extends TransactionalBolt {
         super(log, fid);
     }
 
-    private void toll_process(Integer vid, Integer count, Double lav, short time) throws InterruptedException {
+    private void toll_process(long bid, Integer vid, Integer count, Double lav, short time) throws InterruptedException {
         int toll = 0;
 
         if (lav < 40) {
@@ -59,16 +58,16 @@ public abstract class TPBolt extends TransactionalBolt {
                 = new TollNotification(
                 time, time, vid, lav, toll);
 
-        this.collector.emit(LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, tollNotification);
+        this.collector.emit_single(bid, tollNotification);
     }
 
-    protected void read_core(LREvent event) throws InterruptedException {
+    protected void post_process(LREvent event) throws InterruptedException {
         Integer vid = event.getVSreport().getVid();
-        int count = event.count_value.getRecord().getValues().get(1).getInt();
-        double lav = event.speed_value.getRecord().getValues().get(1).getDouble();
+        int count = event.count_value.getRecord().getValue().getHashSet().size();
+        double lav = event.speed_value.getRecord().getValue().getDouble();
 
 
-        toll_process(vid, count, lav, event.getPOSReport().getTime());
+        toll_process(event.getBid(), vid, count, lav, event.getPOSReport().getTime());
 //        int sum = 0;
 //        for (int i = 0; i < NUM_ACCESSES; ++i) {
 //            SchemaRecordRef ref = event.getRecord_refs()[i];
@@ -154,7 +153,7 @@ public abstract class TPBolt extends TransactionalBolt {
             SegmentIdentifier segId = vehicleEntry.getRight();
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt=new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage());
 
             // set to null to get new vehicle entry below
             vehicleEntry = null;
@@ -166,14 +165,14 @@ public abstract class TPBolt extends TransactionalBolt {
             this.avgSpeedsMap.put(vid, vehicleEntry);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt=new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
 
         } else {// vehicle does not change segment but only update its speed.
             //write.
             vehicleEntry.getLeft().updateAverage(speed);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt=new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
         }
 
 

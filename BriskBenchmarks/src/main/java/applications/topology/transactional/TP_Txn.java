@@ -22,8 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
+import static applications.constants.TP_TxnConstants.Component.EXECUTOR;
 import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
 import static applications.constants.TP_TxnConstants.PREFIX;
+import static applications.datatype.util.LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID;
 import static engine.content.Content.CCOption_TStream;
 import static utils.PartitionHelper.setPartition_interval;
 
@@ -116,7 +118,7 @@ public class TP_Txn extends TransactionTopology {
             }
 
             builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
-                    , new ShuffleGrouping(LinearRoadConstants.Component.EXECUTOR)
+                    , new ShuffleGrouping(EXECUTOR)
             );
 
         } catch (InvalidIDException e) {

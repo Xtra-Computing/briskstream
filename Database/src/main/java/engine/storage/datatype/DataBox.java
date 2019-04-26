@@ -2,6 +2,7 @@ package engine.storage.datatype;
 
 import engine.storage.SchemaRecord;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -186,11 +187,15 @@ public abstract class DataBox implements Comparable, Cloneable {
         throw new DataBoxException("Not Implemented");
     }
 
+    public HashSet getHashSet() {
+        throw new DataBoxException("Not Implemented");
+    }
+
 
     /**
      * An enum with the current supported types.
      */
     public enum Types {
-        BOOL, INT, LONG, TimestampType, FLOAT, STRING
+        BOOL, INT, LONG, TimestampType, FLOAT, STRING, OTHERS
     }
 }
