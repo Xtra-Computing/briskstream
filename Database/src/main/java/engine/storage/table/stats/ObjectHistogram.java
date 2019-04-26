@@ -327,8 +327,8 @@ public class ObjectHistogram<X> implements Histogram<X> {
     // ----------------------------------------------------------------------------
 
 //	@Override
-//	public synchronized long put(X value_list, long delta) {
-//		return this._put(value_list, delta);
+//	public synchronized long put(X value_list, long delta_long) {
+//		return this._put(value_list, delta_long);
 //	}
 
     @Override
@@ -405,9 +405,9 @@ public class ObjectHistogram<X> implements Histogram<X> {
     // ----------------------------------------------------------------------------
 
 //	@Override
-//	public synchronized long dec(X value_list, long delta) {
+//	public synchronized long dec(X value_list, long delta_long) {
 //		assert (this.histogram.containsKey(value_list));
-//		return this._put(value_list, delta * -1);
+//		return this._put(value_list, delta_long * -1);
 //	}
 //
 //	@Override
@@ -421,9 +421,9 @@ public class ObjectHistogram<X> implements Histogram<X> {
 //	}
 //
 //	@Override
-//	public synchronized void dec(Collection<X> values, long delta) {
+//	public synchronized void dec(Collection<X> values, long delta_long) {
 //		for (X v : values) {
-//			this._put(v, -1 * delta);
+//			this._put(v, -1 * delta_long);
 //		} // FOR
 //	}
 

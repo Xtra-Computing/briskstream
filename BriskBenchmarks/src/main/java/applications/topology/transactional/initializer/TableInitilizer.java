@@ -107,9 +107,9 @@ public abstract class TableInitilizer {
 
     public abstract void loadData(int thread_id, SpinLock[] spinlock, TopologyContext context);
 
-    public abstract void loadData(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_);
+    public abstract void loadData_Central(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_);
 
-    public abstract void loadData(double scale_factor, double theta);
+    public abstract void loadData_Central(double scale_factor, double theta);
 
     protected int get_pid(int partition_interval, int key) {
         return (int) Math.floor(key / (double) partition_interval);//NUM_ITEMS / tthread;

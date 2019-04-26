@@ -63,7 +63,7 @@ public class PKInitializer extends TableInitilizer {
         }
     }
 
-    public void loadData(double scale_factor, double theta) {
+    public void loadData_Central(double scale_factor, double theta) {
 
         for (int key = 0; key < NUM_MACHINES * scale_factor; key++) {
             insertRecord(key);
@@ -86,7 +86,7 @@ public class PKInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
+    public void loadData_Central(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
 
         for (int key = 0; key < NUM_MACHINES; key++) {
             int pid = get_pid(partition_interval, key);

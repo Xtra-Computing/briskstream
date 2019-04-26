@@ -96,6 +96,14 @@ public class MultiStreamOutputContoller extends OutputController {
         }
     }
 
+    @Override
+    public void force_emitOnStream(MetaGroup MetaGroup, String streamId, long bid, StreamValues data) throws InterruptedException {
+        for (PartitionController p :
+                PClist.get(streamId).values()) {
+
+            p.force_emit(MetaGroup.get(p.childOP), streamId, bid, data);
+        }
+    }
 
     @Override
     public void force_emitOnStream(MetaGroup MetaGroup, String streamId, long bid, Object... data) throws InterruptedException {
@@ -309,6 +317,8 @@ public class MultiStreamOutputContoller extends OutputController {
     }
 
 
+
+
     @Override
     public void create_marker_boardcast(MetaGroup meta, long timestamp, long bid, int myiteration) {
 
@@ -328,6 +338,13 @@ public class MultiStreamOutputContoller extends OutputController {
                 p.create_marker_boardcast(meta.get(p.childOP), streamId, timestamp, bid, myiteration);
             }
         }
+    }
+
+    @Override
+    public void create_marker_single(MetaGroup meta, long timestamp, String streamId, long bid, int myiteration) {
+        for (PartitionController p : PClist.get(streamId).values())
+            p.create_marker_single(meta.get(p.childOP), streamId, timestamp, bid, myiteration);
+
     }
 
     @Override

@@ -1,75 +1,78 @@
 package applications.topology.transactional;
 
 
+import applications.bolts.lr.DispatcherBolt;
 import applications.bolts.lr.txn.TP_TStream;
 import applications.constants.LinearRoadConstants;
-import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
+import applications.topology.transactional.initializer.TPInitializer;
+import applications.topology.transactional.initializer.TableInitilizer;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
 import brisk.components.grouping.ShuffleGrouping;
+import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
-import brisk.topology.BasicTopology;
+import brisk.topology.TransactionTopology;
+import engine.common.SpinLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.LinearRoadConstants.PREFIX;
-import static applications.constants.MicroBenchmarkConstants.Conf.Executor_Threads;
+import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
+import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
+import static applications.constants.TP_TxnConstants.PREFIX;
 import static engine.content.Content.CCOption_TStream;
+import static utils.PartitionHelper.setPartition_interval;
 
-public class TP_Txn extends BasicTopology {
-	private static final Logger LOG = LoggerFactory.getLogger(TP_Txn.class);
-	private final int accidentBoltThreads;
-	private final int dailyExpBoltThreads;
-	private final int toll_cv_BoltThreads, toll_las_BoltThreads, toll_pos_BoltThreads;
+public class TP_Txn extends TransactionTopology {
+    private static final Logger LOG = LoggerFactory.getLogger(TP_Txn.class);
 
-
-	private final int DispatcherBoltThreads;
-	private final int COUNT_VEHICLES_Threads;
-	private final int AccidentNotificationBoltThreads;
-	private final int AccountBalanceBoltThreads;
-	private final int averageSpeedThreads;
-	private final int latestAverageVelocityThreads;
-	private final int averageVehicleSpeedThreads;
-
-	public TP_Txn(String topologyName, Configuration config) {
-		super(topologyName, config);
+    public TP_Txn(String topologyName, Configuration config) {
+        super(topologyName, config);
 //        initilize_parser();
-		DispatcherBoltThreads = config.getInt(Conf.DispatcherBoltThreads, 1);
-		COUNT_VEHICLES_Threads = config.getInt(Conf.COUNT_VEHICLES_Threads, 1);
-		averageSpeedThreads = config.getInt(Conf.AverageSpeedThreads, 1);
-		averageVehicleSpeedThreads = config.getInt(Conf.AverageVehicleSpeedThreads, 1);
-		latestAverageVelocityThreads = config.getInt(Conf.LatestAverageVelocityThreads, 1);
-		toll_cv_BoltThreads = config.getInt(Conf.toll_cv_BoltThreads, 1);
-		toll_las_BoltThreads = config.getInt(Conf.toll_las_BoltThreads, 1);
-		toll_pos_BoltThreads = config.getInt(Conf.toll_pos_BoltThreads, 1);
-		accidentBoltThreads = config.getInt(Conf.AccidentDetectionBoltThreads, 1);
-		AccidentNotificationBoltThreads = config.getInt(Conf.AccidentNotificationBoltThreads, 1);
-		AccountBalanceBoltThreads = config.getInt(Conf.AccountBalanceBoltThreads, 1);
-		dailyExpBoltThreads = config.getInt(Conf.dailyExpBoltThreads, 1);
-	}
+    }
 
-	public static String getPrefix() {
-		return PREFIX;
-	}
+    public static String getPrefix() {
+        return PREFIX;
+    }
 
-	public void initialize() {
-		super.initialize();
-		sink = loadSink();
-	}
+    public void initialize() {
+        super.initialize();
+        sink = loadSink();
+    }
 
-	@Override
-	public Topology buildTopology() {
+    @Override
+    public TableInitilizer initializeDB(SpinLock[] spinlock_) {
+        double scale_factor = config.getDouble("scale_factor", 1);
+        double theta = config.getDouble("theta", 1);
+        int tthread = config.getInt("tthread");
+        setPartition_interval((int) (Math.ceil(NUM_SEGMENTS / (double) tthread)), tthread);
+        TableInitilizer ini = new TPInitializer(db, scale_factor, theta, tthread, config);
 
-		try {
-			spout.setFields(new Fields(Field.TEXT));//output of a spouts
-			builder.setSpout(LRTopologyControl.SPOUT, spout, spoutThreads);
+        ini.creates_Table();
 
-			switch (config.getInt("CCOption", 0)) {
+//        ini.loadData_Central(scale_factor, theta); // load data by multiple threads.
+
+//        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
+        return ini;
+    }
+
+    @Override
+    public Topology buildTopology() {
+
+        try {
+            spout.setFields(new Fields(Field.TEXT));//output of a spouts
+            builder.setSpout(LRTopologyControl.SPOUT, spout, 1);
+
+            builder.setBolt(LRTopologyControl.DISPATCHER,
+                    new DispatcherBolt(), 1,
+                    new ShuffleGrouping(LRTopologyControl.SPOUT));
+
+            switch (config.getInt("CCOption", 0)) {
 //                case CCOption_LOCK: {//no-order
 //                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_nocc(0)//not available
 //                            , config.getInt(Executor_Threads, 2)
@@ -91,16 +94,17 @@ public class TP_Txn extends BasicTopology {
 //                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
 //                    break;
 //                }
-				case CCOption_TStream: {//T-Stream
-					builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_TStream(0)//
-							, config.getInt(Executor_Threads, 2),
-							new FieldsGrouping(
-									LRTopologyControl.DISPATCHER,
-									LRTopologyControl.POSITION_REPORTS_STREAM_ID
-									, SegmentIdentifier.getSchema())
-					);
-					break;
-				}
+                case CCOption_TStream: {//T-Stream
+                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR,
+                            new TP_TStream(0)//
+                            , config.getInt(Executor_Threads, 2),
+                            new FieldsGrouping(
+                                    LRTopologyControl.DISPATCHER,
+                                    LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                    , SegmentIdentifier.getSchema())
+                    );
+                    break;
+                }
 //                case CCOption_SStore: {//SStore
 //
 //                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_sstore(0)//
@@ -109,92 +113,26 @@ public class TP_Txn extends BasicTopology {
 //                    break;
 //                }
 
-			}
+            }
 
+            builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
+                    , new ShuffleGrouping(LinearRoadConstants.Component.EXECUTOR)
+            );
 
-//            builder.setBolt(LinearRoadConstants.Component.PARSER, new StringParserBolt(parser,
-//                            new Fields(Field.TEXT))
-//                    , config.getInt(Conf.PARSER_THREADS, 1)
-//                    , new ShuffleGrouping(LRTopologyControl.SPOUT));
+        } catch (InvalidIDException e) {
+            e.printStackTrace();
+        }
+        builder.setGlobalScheduler(new SequentialScheduler());
+        return builder.createTopology(db, this);
+    }
 
-//            builder.setBolt(LRTopologyControl.DISPATCHER, new DispatcherBolt(), DispatcherBoltThreads,
-//                    new ShuffleGrouping(LinearRoadConstants.Component.PARSER));
-//
-//            builder.setBolt(LRTopologyControl.AVERAGE_SPEED_BOLT, new AverageVehicleSpeedBolt(), averageSpeedThreads,
-//                    new ShuffleGrouping(
-//                            LRTopologyControl.DISPATCHER,
-//                            LRTopologyControl.POSITION_REPORTS_STREAM_ID
-//                    )
-//            );
-////
-//            builder.setBolt(LRTopologyControl.ACCIDENT_DETECTION_BOLT, new AccidentDetectionBolt(), accidentBoltThreads,
-//                    new ShuffleGrouping(
-//                            LRTopologyControl.DISPATCHER,
-//                            LRTopologyControl.POSITION_REPORTS_STREAM_ID
-////							, new Fields(LRTopologyControl.XWAY_FIELD_NAME, LRTopologyControl.DIRECTION_FIELD_NAME)
-//                    )
-//            );
-//
-//            builder.setBolt(LRTopologyControl.COUNT_VEHICLES_BOLT, new CountVehiclesBolt(), COUNT_VEHICLES_Threads,
-////					new TimestampMerger(new CountVehiclesBolt(), PositionReport.TIME_IDX), COUNT_VEHICLES_Threads,
-//                    new ShuffleGrouping(
-//                            LRTopologyControl.DISPATCHER, LRTopologyControl.POSITION_REPORTS_STREAM_ID
-////							, SegmentIdentifier.getSchema()
-//                    )
-//            );
-//
-//
-//            builder.setBolt(LRTopologyControl.LAST_AVERAGE_SPEED_BOLT_NAME, new LatestAverageVelocityBolt(), latestAverageVelocityThreads,
-//                    new ShuffleGrouping(
-//                            LRTopologyControl.AVERAGE_SPEED_BOLT,
-//                            LRTopologyControl.LAST_AVERAGE_SPEED_STREAM_ID
-//                    ));
-//
-//            builder.setBolt(LRTopologyControl.ACCIDENT_NOTIFICATION_BOLT_NAME, new AccidentNotificationBolt(), AccidentNotificationBoltThreads,
-//                    new ShuffleGrouping(LRTopologyControl.DISPATCHER, //FieldsGrouping
-//                            LRTopologyControl.POSITION_REPORTS_STREAM_ID// streamId
-//                    )
-//            );
-//
-//            builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_POS_BOLT_NAME, new TollNotificationBolt_pos(), toll_pos_BoltThreads
-//                    , new ShuffleGrouping(LRTopologyControl.DISPATCHER, LRTopologyControl.POSITION_REPORTS_STREAM_ID
-//                    )
-//            );
-//
-//            builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_CV_BOLT_NAME, new TollNotificationBolt_cv(), toll_cv_BoltThreads
-//                    , new ShuffleGrouping(LRTopologyControl.COUNT_VEHICLES_BOLT, LRTopologyControl.CAR_COUNTS_STREAM_ID)
-//            );
-//
-//            builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_LAS_BOLT_NAME, new TollNotificationBolt_las(), toll_las_BoltThreads
-//                    , new ShuffleGrouping(LRTopologyControl.LAST_AVERAGE_SPEED_BOLT_NAME, LRTopologyControl.LAVS_STREAM_ID)
-//            );
-//
-//            builder.setSink(LRTopologyControl.SINK, sink, sinkThreads
-//                    , new ShuffleGrouping(LRTopologyControl.TOLL_NOTIFICATION_POS_BOLT_NAME,
-//                            LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID)
-//                    , new ShuffleGrouping(LRTopologyControl.TOLL_NOTIFICATION_CV_BOLT_NAME,
-//                            LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID)
-//                    , new ShuffleGrouping(LRTopologyControl.TOLL_NOTIFICATION_LAS_BOLT_NAME,
-//                            LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID)
-//            );
+    @Override
+    public Logger getLogger() {
+        return LOG;
+    }
 
-			builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
-					, new ShuffleGrouping(LinearRoadConstants.Component.EXECUTOR)
-			);
-
-		} catch (InvalidIDException e) {
-			e.printStackTrace();
-		}
-		return builder.createTopology();
-	}
-
-	@Override
-	public Logger getLogger() {
-		return LOG;
-	}
-
-	@Override
-	public String getConfigPrefix() {
-		return PREFIX;
-	}
+    @Override
+    public String getConfigPrefix() {
+        return PREFIX;
+    }
 }

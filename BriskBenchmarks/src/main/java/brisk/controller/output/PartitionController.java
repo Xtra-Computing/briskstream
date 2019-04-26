@@ -134,7 +134,7 @@ public abstract class PartitionController implements IPartitionController, Seria
 //        if (enable_latency_measurement) {
 //            queue_size_per_core = 2;
 //        } else {
-            queue_size_per_core = (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint"));
+        queue_size_per_core = (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint"));
 //        }
         threashold = queue_size_per_core - 1;//leave one space for watermark filling!
 
@@ -199,6 +199,24 @@ public abstract class PartitionController implements IPartitionController, Seria
         }
         return targetTasks.length;
     }
+
+
+    @Override
+    public int create_marker_single(Meta meta, String streamId, long timestamp, long bid, int myiteration) {
+
+
+        Tuple marker = create_marker(meta.src_id, streamId, timestamp, bid, package_marker(streamId, timestamp, bid, myiteration));
+
+//        long start_offer_watermark = System.nanoTime();
+
+        offer_create_marker(marker, targetTasks[0]);//only send to the first instance.
+
+//        long end = System.nanoTime();
+//        LOG.info("water_mark offer gaps:" + (end - start_offer_watermark) + " for bid:" + bid);
+
+        return targetTasks.length;
+    }
+
 
     @Override
     public int create_marker_boardcast(Meta meta, String streamId, long timestamp, long bid, int myiteration) {

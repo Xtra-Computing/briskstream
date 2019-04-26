@@ -55,6 +55,10 @@ public interface LinearRoadConstants extends BaseConstants {
 		String AverageSpeedThreads = "lrf.average.threads";
 		String COUNT_VEHICLES_Threads = "lrf.count.threads";
 
+		String Executor_Threads ="lrf.executor.threads";
+
+
+
     }
 
 	interface Component extends BaseComponent {

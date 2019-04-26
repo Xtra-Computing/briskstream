@@ -18,7 +18,7 @@ import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
 public class TPSpout extends TransactionalSpout {
-    private static final Logger LOG = LoggerFactory.getLogger(MicroBenchmarkSpout.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TPSpout.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
     int i = 0;
@@ -55,7 +55,6 @@ public class TPSpout extends TransactionalSpout {
 
         tthread = config.getInt("tthread");
 
-
         for (TopologyComponent children : this.context.getThisComponent().getChildrenOfStream().keySet()) {
             int numTasks = children.getNumTasks();
             total_children_tasks += numTasks;
@@ -68,18 +67,17 @@ public class TPSpout extends TransactionalSpout {
         double theta = config.getDouble("theta", 0);
         p_generator = new FastZipfGenerator(NUM_ITEMS, theta, 0);
 
-
         load_input();
     }
 
 
-    private void control_emit() throws InterruptedException {
+    void control_emit() throws InterruptedException {
         if (control < target_Hz && success) {
 
             if (enable_latency_measurement)
-                collector.emit(bid++, array_array[counter], System.nanoTime());//combined R/W executor.
+                collector.emit_single(bid++, array_array[counter], System.nanoTime());//combined R/W executor.
             else
-                collector.emit(bid++, array_array[counter]);//combined R/W executor.
+                collector.emit_single(bid++, array_array[counter]);//combined R/W executor.
             control++;
             counter++;
             if (counter == array_array.length) {

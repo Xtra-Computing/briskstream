@@ -93,7 +93,15 @@ public class sink_ft extends MapBolt implements Checkpointable {
         }
 
     }
+    @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
 
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
 
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {

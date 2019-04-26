@@ -52,7 +52,7 @@ public class TimeEvictionPolicy<T> implements EvictionPolicy<T, EvictionContext>
     public void setContext(EvictionContext context) {
         EvictionContext prevContext = evictionContext;
         evictionContext = context;
-        // compute window length adjustment (delta) to account for time drift
+        // compute window length adjustment (delta_long) to account for time drift
         if (context.getSlidingInterval() != null) {
             if (prevContext == null) {
                 delta = Integer.MAX_VALUE; // consider all events for the set_executor_ready window

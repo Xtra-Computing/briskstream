@@ -112,6 +112,8 @@ public class FieldsPartitionController extends PartitionController {
         return target;
     }
 
+
+
     @Override
     public int force_emit(Meta meta, String streamId, long bid, Object... output) throws InterruptedException {
         int target = chooseTasks(output);

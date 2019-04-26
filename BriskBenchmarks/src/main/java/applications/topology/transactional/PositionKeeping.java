@@ -64,12 +64,12 @@ public class PositionKeeping extends TransactionTopology {
             for (int i = 0; i < tthread; i++)
                 spinlock_[i] = new SpinLock();
 
-            ini.loadData(scale_factor, theta, getPartition_interval(), spinlock_);
+            ini.loadData_Central(scale_factor, theta, getPartition_interval(), spinlock_);
 
             //initialize order locks.
             PartitionedOrderLock.getInstance().initilize(tthread);
         } else {
-            ini.loadData(scale_factor, theta);
+            ini.loadData_Central(scale_factor, theta);
         }
         return null;
     }

@@ -29,6 +29,7 @@ import java.util.Properties;
 import static applications.CONTROL.enable_profile;
 import static applications.Constants.System_Plan_Path;
 import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
+import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
 import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
 import static applications.constants.PositionKeepingConstants.Conf.PK_THREADS;
 import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
@@ -238,7 +239,16 @@ public class BriskRunner extends abstractRunner {
                     config.put(OB_THREADS, threads);
                     break;
                 }
-
+                case "TP_Txn": {
+                    config.put("app", 3);
+                    int threads = Math.max(1, (int) Math.floor((tthread)));
+//                    config.put(DEG_THREADS, threads);
+//                    config.put(TEG_THREADS, threads);
+//                    config.put(DT_THREADS, threads);
+//                    config.put(TT_THREADS, threads);
+                    config.put(Executor_Threads, threads);
+                    break;
+                }
                 case "PositionKeeping": {
                     int threads = Math.max(1, (int) Math.floor((tthread)));
 //                    config.put(DEG_THREADS, threads);

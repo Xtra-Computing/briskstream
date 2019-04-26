@@ -39,7 +39,7 @@ storm.getClusterConfiguration()
     "Brisk.topology.tick.Brisk.execution.runtime.tuple.freq.secs": null,
     "Brisk.topology.builtin.metrics.bucket.size.secs": 60,
     "Brisk.topology.fall.back.on.java.serialization": true,
-    "Brisk.topology.max.error.report.per.interval": 5,
+    "Brisk.topology.max.error.posreport.per.interval": 5,
     "zmq.linger.millis": 5000,
     "Brisk.topology.skip.missing.kryo.registrations": false,
     "storm.messaging.netty.client_worker_threads": 1,

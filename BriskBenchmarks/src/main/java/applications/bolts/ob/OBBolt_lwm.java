@@ -6,6 +6,7 @@ import applications.param.ob.ToppingEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
+import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
@@ -39,7 +40,6 @@ public class OBBolt_lwm extends OBBolt_LA {
 //        prepareEvents();
         loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
-
 
 
 

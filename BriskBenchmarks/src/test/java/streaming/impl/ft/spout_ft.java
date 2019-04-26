@@ -52,7 +52,15 @@ public class spout_ft extends AbstractSpout implements Checkpointable {
 //			forward_checkpoint(this.getContext().getThisTaskId(), bid, marker);
 //		}
     }
+    @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
 
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
     /**
      * spout has updated its state for every emit, so we don't need to update it further here.
      */

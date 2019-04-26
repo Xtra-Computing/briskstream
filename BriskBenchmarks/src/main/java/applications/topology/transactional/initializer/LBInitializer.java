@@ -344,12 +344,12 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
+    public void loadData_Central(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
 
     }
 
     @Override
-    public void loadData(double scale_factor, double theta) {
+    public void loadData_Central(double scale_factor, double theta) {
 
     }
 

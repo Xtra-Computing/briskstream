@@ -6,6 +6,10 @@ public interface Checkpointable {
 
     void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException;
 
+    void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException;
+
+    void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException;
+
     void forward_checkpoint(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException;
 
     /**

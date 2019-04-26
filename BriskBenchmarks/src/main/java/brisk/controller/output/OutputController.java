@@ -59,6 +59,8 @@ public abstract class OutputController implements Serializable {
 
     public abstract void emitOnStream(MetaGroup MetaGroup, String streamId, long bid, Object data) throws InterruptedException;
 
+    public abstract void force_emitOnStream(MetaGroup MetaGroup, String streamId, long bid, StreamValues data) throws InterruptedException;
+
 
     public abstract void force_emitOnStream(MetaGroup MetaGroup, String streamId, long bid, Object... data) throws InterruptedException;
 
@@ -135,6 +137,9 @@ public abstract class OutputController implements Serializable {
 
     public abstract void emitOnStream_nowait(MetaGroup MetaGroup, String streamId, char[] data) throws InterruptedException;
 
+    public abstract void create_marker_single(MetaGroup meta, long boardcast_time, String streamId, long bid, int myiteration);
+
+
     /**
      * create and boardcast the Marker
      *
@@ -166,6 +171,7 @@ public abstract class OutputController implements Serializable {
 //	public abstract void try_fill_gap(String streamId);
 
     public abstract long getBID(String streamId);
+
 
 
 //	public abstract void increaseGap(String streamId);

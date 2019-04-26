@@ -52,7 +52,7 @@ public class ACEP extends TransactionTopology {
         TableInitilizer ini = new MBInitializer(db, scale_factor, theta, tthread, config);
         ini.creates_Table();
 
-        ini.loadData(scale_factor, theta);
+        ini.loadData_Central(scale_factor, theta);
         return ini;
     }
 

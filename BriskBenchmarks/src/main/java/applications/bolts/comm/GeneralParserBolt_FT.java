@@ -41,7 +41,15 @@ public class GeneralParserBolt_FT<T> extends GeneralParserBolt implements Checkp
         }
     }
 
+    @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
 
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         final boolean check = checkpoint_forward(sourceId);//simply forward marker when it is ready.

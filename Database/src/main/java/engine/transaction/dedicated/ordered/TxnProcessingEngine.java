@@ -9,9 +9,7 @@ import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.DoubleDataBox;
 import engine.storage.datatype.ListDoubleDataBox;
-import engine.transaction.function.DEC;
-import engine.transaction.function.INC;
-import engine.transaction.function.Mean;
+import engine.transaction.function.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +77,9 @@ public final class TxnProcessingEngine {
             holder_by_stage.put("bookEntries", new Holder_in_range(num_op));
         } else if (app == 2) {//OB
             holder_by_stage.put("goods", new Holder_in_range(num_op));
+        } else if (app == 3) {//TP
+            holder_by_stage.put("segment_speed", new Holder_in_range(num_op));
+            holder_by_stage.put("segment_cnt", new Holder_in_range(num_op));
         } else {//MB
             holder_by_stage.put("MicroTable", new Holder_in_range(num_op));
         }
@@ -143,7 +144,7 @@ public final class TxnProcessingEngine {
             for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[0].content_).versions.entrySet()) {
                 LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
             }
-            LOG.info("TRY reading:"+ ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
+            LOG.info("TRY reading:" + ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
         }
         if (preValues1 == null) {
             LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
@@ -151,7 +152,7 @@ public final class TxnProcessingEngine {
             for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[1].content_).versions.entrySet()) {
                 LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
             }
-            LOG.info("TRY reading:"+ ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
+            LOG.info("TRY reading:" + ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
         }
 
         final long sourceAccountBalance = preValues.getValues().get(1).getLong();
@@ -176,9 +177,9 @@ public final class TxnProcessingEngine {
 
             //apply function.
             if (operation.function instanceof INC) {
-                tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta);//compute.
+                tempo_record.getValues().get(1).incLong(sourceAccountBalance, operation.function.delta_long);//compute.
             } else if (operation.function instanceof DEC) {
-                tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta);//compute.
+                tempo_record.getValues().get(1).decLong(sourceAccountBalance, operation.function.delta_long);//compute.
             } else
                 throw new UnsupportedOperationException();
 
@@ -201,7 +202,7 @@ public final class TxnProcessingEngine {
         //apply function to modify..
         SchemaRecord tempo_record;
         tempo_record = new SchemaRecord(values);//tempo record
-        tempo_record.getValues().get(operation.column_id).incLong(operation.function.delta);//compute.
+        tempo_record.getValues().get(operation.column_id).incLong(operation.function.delta_long);//compute.
         operation.s_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
     }
 
@@ -244,7 +245,7 @@ public final class TxnProcessingEngine {
 
                 //apply function to modify..
                 if (operation.function instanceof INC) {
-                    values.get(operation.column_id).setLong(values.get(operation.column_id).getLong() + operation.function.delta);
+                    values.get(operation.column_id).setLong(values.get(operation.column_id).getLong() + operation.function.delta_long);
                 } else
                     throw new UnsupportedOperationException();
             }
@@ -268,7 +269,7 @@ public final class TxnProcessingEngine {
                 if (bidPrice < askPrice || bid_qty > left_qty) {
                     operation.success[0] = false;
                 } else {
-                    d_record.get(2).setLong(left_qty - operation.function.delta);//new quantity.
+                    d_record.get(2).setLong(left_qty - operation.function.delta_long);//new quantity.
                     operation.success[0] = true;
                 }
             }
@@ -285,7 +286,7 @@ public final class TxnProcessingEngine {
                 System.out.println("Not assigning");
                 System.exit(-1);
             }
-        } else if (operation.accessType == READ_WRITE_READ) {//used in PK.
+        } else if (operation.accessType == READ_WRITE_READ) {//used in PK, TP.
             assert operation.record_ref != null;
 
             //read source.
@@ -315,6 +316,12 @@ public final class TxnProcessingEngine {
                     operation.record_ref.setRecord(new SchemaRecord(new DoubleDataBox(sum / MOVING_AVERAGE_WINDOW)));
                 }
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
+            } else if (operation.function instanceof AVG) {//used by TP
+                srcRecord.get(1);
+
+            } else if (operation.function instanceof CNT) {//used by TP
+
+
             } else
                 throw new UnsupportedOperationException();
         }

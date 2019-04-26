@@ -166,7 +166,7 @@ public class CTInitializer extends TableInitilizer {
      * @param partition_interval
      * @param spinlock_
      */
-    public void loadData(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
+    public void loadData_Central(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_) {
         int elements = (int) (NUM_ACCOUNTS * scale_factor);
         int elements_per_socket;
 
@@ -211,7 +211,7 @@ public class CTInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(double scale_factor, double theta) {
+    public void loadData_Central(double scale_factor, double theta) {
         int elements = (int) (NUM_ACCOUNTS * scale_factor);
         int elements_per_socket;
 

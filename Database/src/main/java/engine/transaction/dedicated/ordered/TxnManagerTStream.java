@@ -24,6 +24,7 @@ import java.util.concurrent.BrokenBarrierException;
 
 import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
 import static applications.constants.PositionKeepingConstants.Constant.NUM_MACHINES;
+import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
 import static engine.Meta.MetaTypes.AccessType.INSERT_ONLY;
 import static engine.profiler.Metrics.H2_SIZE;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -43,7 +44,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
         super(storageManager, thisComponentId, thisTaskId, thread_countw);
         OsUtils.configLOG(LOG);
         instance = TxnProcessingEngine.getInstance();
-//        delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//range of each partition. depends on the number of op in the stage.
+//        delta_long = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//range of each partition. depends on the number of op in the stage.
 
 
         switch (config.getString("application")) {
@@ -53,6 +54,11 @@ public class TxnManagerTStream extends TxnManagerDedicated {
             }
             case "OnlineBiding": {
                 delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//NUM_ITEMS / tthread;
+                break;
+            }
+
+            case "TP_Txn": {
+                delta = (int) Math.ceil(NUM_SEGMENTS / (double) thread_countw);//NUM_ITEMS / tthread;
                 break;
             }
 

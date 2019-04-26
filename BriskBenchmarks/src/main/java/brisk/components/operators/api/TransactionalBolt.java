@@ -84,6 +84,16 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     }
 
     @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
+
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+
+    }
+
+    @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         this.collector.broadcast_marker(bid, marker);//bolt needs to broadcast_marker
     }

@@ -73,6 +73,8 @@ public interface IPartitionController extends Serializable {
 
     int marker_boardcast(Meta meta, String streamId, long bid, Marker marker) throws InterruptedException;
 
+    int create_marker_single(Meta meta, String streamId, long timestamp, long bid, int myiteration);
+
     int create_marker_boardcast(Meta meta, String streamId, long timestamp, long bid, int myiteration) throws InterruptedException;
 //    int emit(TupleImpl output, TupleImpl input);
 }

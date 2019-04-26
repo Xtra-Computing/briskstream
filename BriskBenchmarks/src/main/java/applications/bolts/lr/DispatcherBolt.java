@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
+import static applications.CONTROL.enable_shared_state;
 import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
 
 
@@ -70,29 +71,56 @@ public class DispatcherBolt extends filterBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException {
-        String raw = null;
+        long bid = in.getBID();
 
-        raw = in.getString(0);
+        if (in.isMarker()) {//only one instance of dispatcher can broadcast
 
-        String[] token = raw.split(" ");
+            this.collector.broadcast_marker(bid, in.getMarker());
 
-        short type = Short.parseShort(token[0]);
-        Short time = Short.parseShort(token[1]);
-        Integer vid = Integer.parseInt(token[2]);
-        assert (time.shortValue() == Short.parseShort(token[1]));
+        } else {
 
-        if (type == AbstractLRBTuple.position_report) {
-            this.collector.emit(POSITION_REPORTS_STREAM_ID,
-                    in.getBID(), new PositionReport(//
-                            time,//
-                            vid,//
-                            Integer.parseInt(token[3]), // speed
-                            Integer.parseInt(token[4]), // xway
-                            Short.parseShort(token[5]), // lane
-                            Short.parseShort(token[6]), // direction
-                            Short.parseShort(token[7]), // segment
-                            Integer.parseInt(token[8]))); // position
-        } else {//not in use in this experiment.
+            String raw = null;
+
+            try {
+                raw = in.getString(0);
+            } catch (Exception e) {
+                System.nanoTime();
+            }
+            String[] token = raw.split(" ");
+
+            short type = Short.parseShort(token[0]);
+            Short time = Short.parseShort(token[1]);
+            Integer vid = Integer.parseInt(token[2]);
+            assert (time.shortValue() == Short.parseShort(token[1]));
+
+            if (type == AbstractLRBTuple.position_report) {
+
+                if (enable_shared_state)
+                    this.collector.emit_single(POSITION_REPORTS_STREAM_ID,
+                            bid,
+                            new PositionReport(//
+                                    time,//
+                                    vid,//
+                                    Integer.parseInt(token[3]), // speed
+                                    Integer.parseInt(token[4]), // xway
+                                    Short.parseShort(token[5]), // lane
+                                    Short.parseShort(token[6]), // direction
+                                    Short.parseShort(token[7]), // segment
+                                    Integer.parseInt(token[8]))); // position
+                else
+                    this.collector.emit(POSITION_REPORTS_STREAM_ID,
+                            bid, new PositionReport(//
+                                    time,//
+                                    vid,//
+                                    Integer.parseInt(token[3]), // speed
+                                    Integer.parseInt(token[4]), // xway
+                                    Short.parseShort(token[5]), // lane
+                                    Short.parseShort(token[6]), // direction
+                                    Short.parseShort(token[7]), // segment
+                                    Integer.parseInt(token[8]))); // position
+
+            } else {//not in use in this experiment.
+            }
         }
     }
 

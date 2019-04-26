@@ -53,6 +53,30 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         forward_checkpoint(sourceId, DEFAULT_STREAM_ID, bid, marker);
     }
+    @Override
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
+        forward_checkpoint_single(sourceId, DEFAULT_STREAM_ID, bid, marker);
+    }
+
+    @Override
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+        if (clock.tick(myiteration) && success) {//emit marker tuple
+//			forwardResultAndMark(streamId, values, bid_counter++ % bid_end);
+//			final long msgId = bid_counter++;//++ % bid_end;
+//            LOG.debug(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now());
+//            long start = System.nanoTime();
+            collector.create_marker_single(boardcast_time, streamId, bid, myiteration);
+            boardcast_time = System.nanoTime();
+//            LOG.info("Broadcast marker takes:" + (boardcast_time - start));
+
+            myiteration++;
+            success = false;
+
+            epoch_size = bid - previous_bid;
+            previous_bid = bid;
+            earilier_check = true;
+        }
+    }
 
     @Override
     public void forward_checkpoint(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
