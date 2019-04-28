@@ -1,6 +1,6 @@
 package engine.storage;
 
-import java.util.Arrays;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * A hack ref to SchemaRecord, simulating C++ pointer.
@@ -16,9 +16,13 @@ public class SchemaRecordRef {
     }
 
     public SchemaRecord getRecord() {
-        if (cnt == 0) {
-            System.out.println("The record has not being assigned yet!" + Arrays.toString(Thread.currentThread().getStackTrace()));
-            System.exit(-1);
+        try {
+            if (cnt == 0) {
+                throw new RejectedExecutionException();
+            }
+        } catch (RejectedExecutionException e) {
+            System.out.println("The record has not being assigned yet!" + this.record.GetPrimaryKey());
+            e.printStackTrace();
         }
         return record;
     }

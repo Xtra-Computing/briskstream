@@ -28,6 +28,8 @@ public abstract class TPBolt extends TransactionalBolt {
      */
     private short currentMinute = 1;
 
+    private short time = -1;//not in use.
+
     public TPBolt(Logger log, int fid) {
         super(log, fid);
     }
@@ -153,7 +155,8 @@ public abstract class TPBolt extends TransactionalBolt {
             SegmentIdentifier segId = vehicleEntry.getRight();
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(),
+                    segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage(), time);
 
             // set to null to get new vehicle entry below
             vehicleEntry = null;
@@ -165,14 +168,16 @@ public abstract class TPBolt extends TransactionalBolt {
             this.avgSpeedsMap.put(vid, vehicleEntry);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(),
+                    segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage(), time);
 
         } else {// vehicle does not change segment but only update its speed.
             //write.
             vehicleEntry.getLeft().updateAverage(speed);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage());
+            rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(),
+                    segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage(), time);
         }
 
 

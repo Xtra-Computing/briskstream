@@ -19,7 +19,6 @@
 
 package applications.bolts.lr;
 
-import applications.datatype.PositionReport;
 import applications.datatype.util.TimeStampExtractor;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -136,7 +135,7 @@ public class StreamMerger<T> {
      * timestamp of the inserted tuple is not smaller
      */
     public void addTuple(Integer partitionNumber, T t) {
-        logger.trace("Add tuple to buffer (partitionId, tuple): {}, {}", partitionNumber, t);
+        logger.trace("Add tuple to buffer (partitionId, tuple): {}, {}", partitionNumber, this.getTsValue(t));
         assert (partitionNumber != null);
         assert (t != null);
         LinkedList<T> partitionBuffer = this.mergeBuffer.get(partitionNumber);
@@ -163,7 +162,12 @@ public class StreamMerger<T> {
             LinkedList<T> partitionBuffer = partition.getValue();
             try {
                 long ts = this.getTsValue(partitionBuffer.getFirst());
-                assert (ts >= this.latestTs);
+
+
+                if (ts < this.latestTs) {
+                    System.nanoTime();
+                }
+
 
                 if (ts == this.latestTs) {
                     logger.trace("Extract tuple with same timestamp (partition, tuple): {}, {}", partition.getKey(),
@@ -200,7 +204,7 @@ public class StreamMerger<T> {
 //                return ((Number) ((Tuple) tuple).getValue(this.tsIndex)).longValue();
 //            }
 //            assert (tuple instanceof JumboTuple);
-            return ((PositionReport) (((Tuple) tuple).getValue(0))).getTime();
+            return ((Tuple) tuple).getBID(); //((PositionReport) (((Tuple) tuple).getValue(0))).getTime();
 
         }
 //		if (this.tsAttributeName != null) {

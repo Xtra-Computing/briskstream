@@ -1,11 +1,11 @@
 package applications.topology.transactional;
 
 
-import applications.bolts.comm.StringParserBolt;
 import applications.bolts.lr.*;
-import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;
+import applications.datatype.PositionReport;
+import applications.datatype.internal.AvgVehicleSpeedTuple;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import applications.util.Configuration;
@@ -19,6 +19,8 @@ import brisk.topology.BasicTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static applications.CONTROL.enable_force_ordering;
+import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
 import static applications.constants.TPConstants.PREFIX;
 import static applications.datatype.util.LRTopologyControl.*;
 
@@ -70,55 +72,112 @@ public class TP extends BasicTopology {
 //                    , new ShuffleGrouping(LRTopologyControl.SPOUT));
 
             builder.setBolt(LRTopologyControl.DISPATCHER,
-                    new DispatcherBolt(), DispatcherBoltThreads,
+                    new DispatcherBolt(), 1,
                     new ShuffleGrouping(LRTopologyControl.SPOUT));
 
             //accident query -- not in use. There's no accident.
 
-            //speed query
 
-            builder.setBolt(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME,//calculate average vehicle speed -- Avgsv, window = 1 min, slide = 1 report.
-                    new AverageVehicleSpeedBolt(), averageVehicleSpeedThreads, //ideally, we should keep input tuple to this operator sorted by TimestampMerger, PositionReport.TIME_IDX
-                    new FieldsGrouping(
-                            LRTopologyControl.DISPATCHER,
-                            LRTopologyControl.POSITION_REPORTS_STREAM_ID
-                            , SegmentIdentifier.getSchema()
-                    )
-            );
+            if (enable_force_ordering) {//force order -- improved accuracy.
 
-            builder.setBolt(LAST_AVERAGE_SPEED_BOLT_NAME, //calculate the 5-minute average road speed considering all vehicles.
-                    new LatestAverageVelocityBolt(), latestAverageVelocityThreads,//window = 5 min, slide=1 report. //ideally, we should keep input tuple to this operator sorted by TimestampMerger, PositionReport.TIME_IDX
-                    new FieldsGrouping(
-                            LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME
-                            , SegmentIdentifier.getSchema()
-                    ));
+                //speed query
+                TimestampMerger AVS_ORDERED = new TimestampMerger(new AverageVehicleSpeedBolt(), PositionReport.TIME_IDX);
+                builder.setBolt(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME,//calculate average vehicle speed -- Avgsv, window = 1 min, slide = 1 report.
+                        AVS_ORDERED,  config.getInt(Executor_Threads, 2),
+//                        new AverageVehicleSpeedBolt(), averageVehicleSpeedThreads,
+                        new FieldsGrouping(
+                                LRTopologyControl.DISPATCHER,
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                , SegmentIdentifier.getSchema()
+                        )
+                );
 
 
-            //count query
+                TimestampMerger LVS_ORDERED = new TimestampMerger(new LatestAverageVelocityBolt(), AvgVehicleSpeedTuple.TIME_IDX);
 
-            builder.setBolt(COUNT_VEHICLES_BOLT, //calculate number of distinct vehicles on a road.
-                    new CountVehiclesBolt(), COUNT_VEHICLES_Threads,
-                    new FieldsGrouping(
-                            LRTopologyControl.DISPATCHER,
-                            LRTopologyControl.POSITION_REPORTS_STREAM_ID
-                            , SegmentIdentifier.getSchema()
-                    )
-            );
+                builder.setBolt(LAST_AVERAGE_SPEED_BOLT_NAME, //calculate the 5-minute average road speed considering all vehicles.
+                        LVS_ORDERED, config.getInt(Executor_Threads, 2),
+//                        new LatestAverageVelocityBolt(), latestAverageVelocityThreads,//window = 5 min, slide=1 report.
+                        new FieldsGrouping(
+                                LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME
+                                , SegmentIdentifier.getSchema()
+                        ));
 
 
-            builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME,
-                    new TollNotificationBolt()
+                //count query
+
+                builder.setBolt(COUNT_VEHICLES_BOLT, //calculate number of distinct vehicles on a road.
+                        new TimestampMerger(new CountVehiclesBolt(), PositionReport.TIME_IDX),
+                        config.getInt(Executor_Threads, 2),
+//                        new CountVehiclesBolt(), COUNT_VEHICLES_Threads,
+                        new FieldsGrouping(
+                                LRTopologyControl.DISPATCHER,
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                , SegmentIdentifier.getSchema()
+                        )
+                );
+
+
+                builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME,
+//                        new TollNotificationBolt()
+                        new TimestampMerger(new TollNotificationBolt(), 1//new TollInputStreamsTsExtractor()
+                        )
+                        ,config.getInt(Executor_Threads, 2),
+
+                       new FieldsGrouping(LRTopologyControl.DISPATCHER,//position report..
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID,
+                                new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME))
+
+                        , new AllGrouping(LAST_AVERAGE_SPEED_BOLT_NAME, LAVS_STREAM_ID)//broadcast latest road speed information to TN.
+
+                        , new AllGrouping(COUNT_VEHICLES_BOLT, CAR_COUNTS_STREAM_ID)//broadcast latest vehicle count information to TN.
+                );
+            } else {//any order -- no accuracy guarantee.
+                builder.setBolt(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME,//calculate average vehicle speed -- Avgsv, window = 1 min, slide = 1 report.
+                        new AverageVehicleSpeedBolt(), config.getInt(Executor_Threads, 2),
+
+                        new FieldsGrouping(
+                                LRTopologyControl.DISPATCHER,
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                , SegmentIdentifier.getSchema()
+                        )
+                );
+
+                builder.setBolt(LAST_AVERAGE_SPEED_BOLT_NAME, //calculate the 5-minute average road speed considering all vehicles.
+                        new LatestAverageVelocityBolt(), config.getInt(Executor_Threads, 2),//window = 5 min, slide=1 report.
+                        new FieldsGrouping(
+                                LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME
+                                , SegmentIdentifier.getSchema()
+                        ));
+
+
+                //count query
+
+                builder.setBolt(COUNT_VEHICLES_BOLT, //calculate number of distinct vehicles on a road.
+                        new CountVehiclesBolt(), config.getInt(Executor_Threads, 2),
+                        new FieldsGrouping(
+                                LRTopologyControl.DISPATCHER,
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                , SegmentIdentifier.getSchema()
+                        )
+                );
+
+
+                builder.setBolt(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME,
+                        new TollNotificationBolt()
 //                    new TimestampMerger(new TollNotificationBolt(), new TollInputStreamsTsExtractor())
-                    , toll_BoltThreads
+                        , toll_BoltThreads
 
-                    , new FieldsGrouping(LRTopologyControl.DISPATCHER,//position report..
-                            LRTopologyControl.POSITION_REPORTS_STREAM_ID,
-                            new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME))
+                        , new FieldsGrouping(LRTopologyControl.DISPATCHER,//position report..
+                                LRTopologyControl.POSITION_REPORTS_STREAM_ID,
+                                new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME))
 
-                    , new AllGrouping(LAST_AVERAGE_SPEED_BOLT_NAME, LAVS_STREAM_ID)//broadcast road speed information to TN.
+                        , new AllGrouping(LAST_AVERAGE_SPEED_BOLT_NAME, LAVS_STREAM_ID)//broadcast latest road speed information to TN.
 
-                    , new AllGrouping(COUNT_VEHICLES_BOLT, CAR_COUNTS_STREAM_ID)//broadcast vehicle count information to TN.
-            );
+                        , new AllGrouping(COUNT_VEHICLES_BOLT, CAR_COUNTS_STREAM_ID)//broadcast latest vehicle count information to TN.
+                );
+            }
+
 
             builder.setSink(LRTopologyControl.SINK, sink, 1 // single sink.
                     , new ShuffleGrouping(LRTopologyControl.TOLL_NOTIFICATION_BOLT_NAME, TOLL_NOTIFICATIONS_STREAM_ID)

@@ -46,7 +46,12 @@ public abstract class Operator implements IOperator {
     public final double branch_selectivity;
     private final boolean ByP;//Time by processing? or by event.
     private final double Event_frequency;
-    private final Map<String, Fields> fields;
+
+    public Map<String, Fields> getOutputFields() {
+        return fields;
+    }
+
+    protected final Map<String, Fields> fields;
     public double read_selectivity;//the ratio of actual reading..
     public double loops = -1;//by default use argument loops.
     public boolean scalable = true;

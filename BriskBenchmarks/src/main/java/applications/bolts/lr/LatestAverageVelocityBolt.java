@@ -25,7 +25,6 @@ import applications.datatype.internal.LavTuple;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
 import brisk.components.operators.base.filterBolt;
-import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
@@ -46,7 +45,7 @@ import java.util.Map;
  * @author msoyka
  * @author richter
  * @author mjsax
- *
+ * <p>
  * TODO: For simplicity, we only keep 1 elements.. that is window length=1, slide=1. The original LR benchmark requires to keep "last five minutes" @author Tony
  */
 public class LatestAverageVelocityBolt extends filterBolt {
@@ -77,7 +76,7 @@ public class LatestAverageVelocityBolt extends filterBolt {
     }
 
 
-    private void update_avgs(double speed) throws InterruptedException {
+    private void update_avgs(long bid, double speed, short time) throws InterruptedException {
 
         Double latestAvgSpeeds = this.averageSpeedsPerSegment.get(this.segment);
 
@@ -92,9 +91,13 @@ public class LatestAverageVelocityBolt extends filterBolt {
 
         //broadcast the updated average road speed to TN.
         this.collector.emit(LRTopologyControl.LAVS_STREAM_ID,
+                bid,
                 new LavTuple((short) (-1),//remove minutes
                         this.segment.getXWay(), this.segment.getSegment(),
-                        this.segment.getDirection(), lav));
+                        this.segment.getDirection(), lav, time)
+
+
+        );
     }
 
 
@@ -103,7 +106,7 @@ public class LatestAverageVelocityBolt extends filterBolt {
         AvgVehicleSpeedTuple inputTuple = (AvgVehicleSpeedTuple) input.getValues();
         this.segment.set(inputTuple);
         Double avgSpeed = inputTuple.getAvgSpeed();
-        update_avgs(avgSpeed);
+        update_avgs(input.getBID(), avgSpeed, inputTuple.getTime());
     }
 
 

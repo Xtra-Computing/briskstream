@@ -112,7 +112,8 @@ public class DispatcherBolt extends filterBolt implements Checkpointable {
                                     Integer.parseInt(token[8]))); // position
                 else
                     this.collector.emit(POSITION_REPORTS_STREAM_ID,
-                            bid, new PositionReport(//
+                            bid,
+                            new PositionReport(//
                                     time,//
                                     vid,//
                                     Integer.parseInt(token[3]), // speed

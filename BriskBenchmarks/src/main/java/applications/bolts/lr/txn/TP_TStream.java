@@ -35,6 +35,7 @@ public class TP_TStream extends TPBolt {
     private static final long serialVersionUID = -5968750340131744744L;
     private ArrayDeque<LREvent> LREvents = new ArrayDeque<>();
 
+
     public TP_TStream(int fid) {
         super(LOG, fid);
         state = new ValueState();

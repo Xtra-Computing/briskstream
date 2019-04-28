@@ -43,51 +43,62 @@ import brisk.execution.runtime.tuple.impl.Fields;
  */
 public final class LavTuple extends StreamValues implements ISegmentIdentifier {
     // attribute indexes
-    /** The index of the TIME attribute. */
-    public final static int TIME_IDX = 0;
+    /**
+     * The index of the Minutes attribute.
+     */
+    public final static int MIN_IDX = 0;
 
-    /** The index of the XWAY attribute. */
+    /**
+     * The index of the XWAY attribute.
+     */
     public final static int XWAY_IDX = 1;
 
-    /** The index of the SEGMENT attribute. */
+    /**
+     * The index of the SEGMENT attribute.
+     */
     public final static int SEG_IDX = 2;
 
-    /** The index of the DIR attribute. */
+    /**
+     * The index of the DIR attribute.
+     */
     public final static int DIR_IDX = 3;
 
-    /** The index of the LAV attribute. */
+    /**
+     * The index of the LAV attribute.
+     */
     public final static int LAV_IDX = 4;
 
+    public final static int TIME_IDX = 5;
 
 
-    public LavTuple() {}
+    public LavTuple() {
+    }
 
     /**
      * Instantiates a new {@link LavTuple} for the given attributes.
-     * @param time
-     *            the 'minute number' (in LRB seconds) of the speed average
-     * @param xway
-     *            the expressway the vehicle is on
-     * @param segment
-*            the segment number the vehicle is in
-     * @param direction
-*            the vehicle's driving direction
+     *
+     * @param minute    the 'minute number' (in LRB seconds) of the speed average
+     * @param xway      the expressway the vehicle is on
+     * @param segment   the segment number the vehicle is in
+     * @param direction the vehicle's driving direction
      * @param lav
+     * @param i
      */
-    public LavTuple(Short time, Integer xway, Short segment, Short direction, Double lav) {
-        assert (time != null);
+    public LavTuple(Short minute, Integer xway, Short segment, Short direction, Double lav, short time) {
+        assert (minute != null);
         assert (xway != null);
         assert (segment != null);
         assert (direction != null);
         assert (lav != null);
 
-        super.add(TIME_IDX, time);
+        super.add(MIN_IDX, minute);
         super.add(XWAY_IDX, xway);
         super.add(SEG_IDX, segment);
         super.add(DIR_IDX, direction);
         super.add(LAV_IDX, lav);
+        super.add(TIME_IDX, time);
 
-        assert (super.size() == 5);
+        assert (super.size() == 6);
     }
 
     public static Fields getLatencySchema() {
@@ -101,7 +112,7 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      * @return the timestamp of this tuple
      */
     public final Short getTime() {
-        return (Short)super.get(TIME_IDX);
+        return (Short) super.get(MIN_IDX);
     }
 
     /**
@@ -120,7 +131,7 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      */
     @Override
     public final Integer getXWay() {
-        return (Integer)super.get(XWAY_IDX);
+        return (Integer) super.get(XWAY_IDX);
     }
 
     /**
@@ -130,7 +141,7 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      */
     @Override
     public final Short getSegment() {
-        return (Short)super.get(SEG_IDX);
+        return (Short) super.get(SEG_IDX);
     }
 
     /**
@@ -140,7 +151,7 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      */
     @Override
     public final Short getDirection() {
-        return (Short)super.get(DIR_IDX);
+        return (Short) super.get(DIR_IDX);
     }
 
     /**
@@ -149,7 +160,7 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
      * @return the latest average velocity (LAV) of this tuple
      */
     public final Double getLav() {
-        return (Double)super.get(LAV_IDX);
+        return (Double) super.get(LAV_IDX);
     }
 
     /**
@@ -160,7 +171,9 @@ public final class LavTuple extends StreamValues implements ISegmentIdentifier {
     public static Fields getSchema() {
         return new Fields(LRTopologyControl.MINUTE_FIELD_NAME, LRTopologyControl.XWAY_FIELD_NAME,
                 LRTopologyControl.SEGMENT_FIELD_NAME, LRTopologyControl.DIRECTION_FIELD_NAME,
-                LRTopologyControl.LAST_AVERAGE_SPEED_FIELD_NAME);
+                LRTopologyControl.LAST_AVERAGE_SPEED_FIELD_NAME,
+                LRTopologyControl.TIME_FIELD_NAME
+        );
     }
 
 

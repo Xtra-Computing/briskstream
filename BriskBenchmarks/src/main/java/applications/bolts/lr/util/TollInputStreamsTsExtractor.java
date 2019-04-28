@@ -41,15 +41,20 @@ public class TollInputStreamsTsExtractor implements TimeStampExtractor<Tuple> {
 
     @Override
     public long getTs(Tuple tuple) {
+
+
         final String inputStreamId = tuple.getSourceStreamId();
         if (inputStreamId.equals(LRTopologyControl.POSITION_REPORTS_STREAM_ID)) {
-            return tuple.getShort(PositionReport.TIME_IDX).longValue();
+            PositionReport report = (PositionReport) tuple.getValue(0);
+            return report.getTime();//PositionReport.MIN_IDX.longValue();
         } else if (inputStreamId.equals(LRTopologyControl.ACCIDENTS_STREAM_ID)) {
             return tuple.getShort(AccidentTuple.TIME_IDX).longValue();
         } else if (inputStreamId.equals(LRTopologyControl.CAR_COUNTS_STREAM_ID)) {
-            return tuple.getShort(CountTuple.TIME_IDX).longValue();
+            CountTuple report = (CountTuple) tuple.getValue(0);
+            return report.getTime();//tuple.getShort(CountTuple.MIN_IDX).longValue();
         } else if (inputStreamId.equals(LRTopologyControl.LAVS_STREAM_ID)) {
-            return tuple.getShort(LavTuple.TIME_IDX).longValue() - 60;
+            LavTuple report = (LavTuple) tuple.getValue(0);
+            return report.getTime();//tuple.getShort(LavTuple.MIN_IDX).longValue() - 60;
         } else {
             LOGGER.error("Unknown input stream: '" + inputStreamId + "' for tuple " + tuple);
             throw new RuntimeException("Unknown input stream: '" + inputStreamId + "' for tuple " + tuple);

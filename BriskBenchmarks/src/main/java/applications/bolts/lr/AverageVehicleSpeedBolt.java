@@ -81,7 +81,7 @@ public class AverageVehicleSpeedBolt extends filterBolt {
     }
 
 
-    private void update_avgsv(Integer vid, int speed) throws InterruptedException {
+    private void update_avgsv(long bid, Integer vid, int speed, Short time) throws InterruptedException {
         Pair<AvgValue, SegmentIdentifier> vehicleEntry = this.avgSpeedsMap.get(vid);
 
         if (vehicleEntry != null && !vehicleEntry.getRight().equals(this.segment)) {// vehicle changes segment.
@@ -89,7 +89,8 @@ public class AverageVehicleSpeedBolt extends filterBolt {
             SegmentIdentifier segId = vehicleEntry.getRight();
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            this.collector.emit(new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage()));
+            this.collector.emit(bid, new AvgVehicleSpeedTuple(vid, this.currentMinute,
+                    segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage(), time));
 
             // set to null to get new vehicle entry below
             vehicleEntry = null;
@@ -101,14 +102,22 @@ public class AverageVehicleSpeedBolt extends filterBolt {
             this.avgSpeedsMap.put(vid, vehicleEntry);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            this.collector.emit(new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage()));
+            this.collector.emit(bid,
+                    new AvgVehicleSpeedTuple(vid, this.currentMinute,
+                            segment.getXWay(), segment.getSegment(),
+                            segment.getDirection(), vehicleEntry.getLeft().getAverage(), time));
 
         } else {// vehicle does not change segment but only update its speed.
             //write.
             vehicleEntry.getLeft().updateAverage(speed);
 
             // VID, Minute-Number, X-Way, Segment, Direction, Avg(speed)
-            this.collector.emit(new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(), segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage()));
+            this.collector.emit(bid,
+                    new AvgVehicleSpeedTuple(vid, this.currentMinute,
+                            segment.getXWay(), segment.getSegment(),
+                            segment.getDirection(), vehicleEntry.getLeft().getAverage(),
+                            time
+                    ));
         }
     }
 
@@ -120,7 +129,7 @@ public class AverageVehicleSpeedBolt extends filterBolt {
         int vid = this.inputPositionReport.getVid();
         int speed = this.inputPositionReport.getSpeed().intValue();
         this.segment.set(this.inputPositionReport);
-        update_avgsv(vid, speed);
+        update_avgsv(input.getBID(), vid, speed, inputPositionReport.getTime());
     }
 
 

@@ -19,6 +19,7 @@
 
 package applications.bolts.lr;
 
+import applications.constants.BaseConstants;
 import applications.datatype.util.TimeStampExtractor;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
@@ -27,14 +28,17 @@ import brisk.components.operators.api.AbstractBolt;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
+import brisk.execution.runtime.tuple.impl.Fields;
+import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-
+import java.util.concurrent.BrokenBarrierException;
 
 
 /**
@@ -53,22 +57,34 @@ public class TimestampMerger extends MapBolt {
     private final static Logger LOG = LoggerFactory.getLogger(TimestampMerger.class);
 
 
-    /** The name of the flush stream. */
+    /**
+     * The name of the flush stream.
+     */
     public final static String FLUSH_STREAM_ID = "flush";
 
-    /** The original bolt that consumers a stream of input tuples that are ordered by their timestamp attribute. */
+    /**
+     * The original bolt that consumers a stream of input tuples that are ordered by their timestamp attribute.
+     */
     private final AbstractBolt wrappedBolt;
 
-    /** The index of the timestamp attribute ({@code -1} if attribute name or timestamp extractor is used). */
+    /**
+     * The index of the timestamp attribute ({@code -1} if attribute name or timestamp extractor is used).
+     */
     private final int tsIndex;
 
-    /** The name of the timestamp attribute ({@code null} if attribute index or timestamp extractor is used). */
+    /**
+     * The name of the timestamp attribute ({@code null} if attribute index or timestamp extractor is used).
+     */
     private final String tsAttributeName;
 
-    /** The extractor for the timestamp ({@code null} if attribute index or name is used). */
+    /**
+     * The extractor for the timestamp ({@code null} if attribute index or name is used).
+     */
     private final TimeStampExtractor<Tuple> tsExtractor;
 
-    /** Input tuple buffer for merging. */
+    /**
+     * Input tuple buffer for merging.
+     */
     private StreamMerger<Tuple> merger;
 
     /**
@@ -156,19 +172,19 @@ public class TimestampMerger extends MapBolt {
             this.merger = new StreamMerger<>(taskIds, this.tsExtractor);
         }
 
-		this.wrappedBolt.prepare(conf, context, outputCollector);
+        this.wrappedBolt.prepare(conf, context, outputCollector);
     }
 
     @Override
-    public void execute(Tuple tuple) throws InterruptedException {
+    public void execute(Tuple tuple) throws InterruptedException, DatabaseException, BrokenBarrierException {
 
-        LOG.info("Adding tuple to internal buffer tuple: {}", tuple);
+        LOG.trace("Adding tuple to internal buffer tuple: {}", tuple.getBID());
         this.merger.addTuple(tuple.getSourceTask(), tuple);
 
         Tuple t;
         while ((t = this.merger.getNextTuple()) != null) {
-            LOG.info("Extrated tuple from internal buffer for processing: {}", tuple);
-            this.wrappedBolt._execute(t);
+            LOG.trace("Extrated tuple from internal buffer for processing: {}", tuple.getBID());
+            this.wrappedBolt.execute(t);
         }
     }
 
@@ -178,4 +194,9 @@ public class TimestampMerger extends MapBolt {
         this.wrappedBolt.cleanup();
     }
 
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        this.wrappedBolt.declareOutputFields(declarer);
+    }
 }

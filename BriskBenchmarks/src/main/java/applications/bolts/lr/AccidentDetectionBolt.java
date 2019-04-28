@@ -89,7 +89,7 @@ public class AccidentDetectionBolt extends filterBolt {
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-//		merger = new TimestampMerger(this, PositionReport.TIME_IDX);
+//		merger = new TimestampMerger(this, PositionReport.MIN_IDX);
 //		merger.prepare(config, context, this.collector);
 
     }

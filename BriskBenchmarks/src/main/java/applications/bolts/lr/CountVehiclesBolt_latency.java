@@ -124,14 +124,14 @@ public class CountVehiclesBolt_latency extends filterBolt {
 
                         this.collector.emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, bid
 
-                                , new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count
-                                ), msgID, in.getLong(2, i)
+                                , new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count,
+                                        inputPositionReport.getTime()), msgID, in.getLong(2, i)
                         );
                     } else {
                         this.collector.emit(LRTopologyControl.CAR_COUNTS_STREAM_ID, bid
 
-                                , new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count
-                                ), msgID, 0
+                                , new CountTuple(this.currentMinute, segId.getXWay(), segId.getSegment(), segId.getDirection(), count,
+                                        inputPositionReport.getTime()), msgID, 0
                         );
                     }
 
@@ -169,7 +169,7 @@ public class CountVehiclesBolt_latency extends filterBolt {
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-//		merger = new TimestampMerger(this, PositionReport.TIME_IDX);
+//		merger = new TimestampMerger(this, PositionReport.MIN_IDX);
 //		merger.prepare(config, context, this.collector);
     }
 

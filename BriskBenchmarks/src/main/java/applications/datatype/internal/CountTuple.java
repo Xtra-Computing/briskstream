@@ -43,7 +43,7 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mjsax
  */
 public final class CountTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
-    public static final int TIME_IDX = 0;
+
     /**
      * The index of the MINUTE attribute.
      */
@@ -66,6 +66,9 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
      * The index of the CNT attribute.
      */
     private final static int CNT_IDX = 4;
+
+    public static final int TIME_IDX = 5;
+
     private static final long serialVersionUID = 2521804330216975272L;
 
 
@@ -96,8 +99,9 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
      * @param segment  the segment number the vehicle is in
      * @param diretion the vehicle's driving direction
      * @param count    the number the vehicles counted
+     * @param time
      */
-    public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count) {
+    public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count, Short time) {
         assert (minute != null);
         assert (xway != null);
         assert (segment != null);
@@ -109,6 +113,7 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
         super.add(SEG_IDX, segment);
         super.add(DIR_IDX, diretion);
         super.add(CNT_IDX, count);
+        super.add(TIME_IDX, time);
     }
 
     public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count, long msgID, long timeStamp) {
@@ -146,7 +151,9 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
     public static Fields getSchema() {
         return new Fields(LRTopologyControl.MINUTE_FIELD_NAME, LRTopologyControl.XWAY_FIELD_NAME,
                 LRTopologyControl.SEGMENT_FIELD_NAME, LRTopologyControl.DIRECTION_FIELD_NAME,
-                LRTopologyControl.CAR_COUNT_FIELD_NAME);
+                LRTopologyControl.CAR_COUNT_FIELD_NAME,
+                LRTopologyControl.TIME_FIELD_NAME
+        );
     }
 
     public static Fields getLatencySchema() {
@@ -212,12 +219,15 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
         return super.get(XWAY_IDX) == null;
     }
 
-
-    public long getMsgID() {
-        return (long) super.get(5);
+    public long getTime() {
+        return (long) super.get(TIME_IDX);
     }
-
-    public long getTimeStamp() {
-        return (long) super.get(6);
-    }
+//
+//    public long getMsgID() {
+//        return (long) super.get(5);
+//    }
+//
+//    public long getTimeStamp() {
+//        return (long) super.get(6);
+//    }
 }

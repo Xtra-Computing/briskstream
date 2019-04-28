@@ -88,12 +88,16 @@ public class CountVehiclesBolt extends MapBolt {
 
         //broadcast the updated road segment count information to all TN instances.
         this.collector.emit(LRTopologyControl.CAR_COUNTS_STREAM_ID,
+                in.getBID(),
                 new CountTuple(
                         (short) (-1)//minutes. not in use in this experiment.
                         , this.segment.getXWay(),
                         this.segment.getSegment(),
                         this.segment.getDirection(),
-                        segCnt.size()));
+                        segCnt.size(),
+                        inputPositionReport.getTime()
+                )
+        );
     }
 
     @Override

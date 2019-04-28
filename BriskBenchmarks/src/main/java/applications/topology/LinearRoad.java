@@ -100,7 +100,7 @@ public class LinearRoad extends BasicTopology {
             );
 
             builder.setBolt(LRTopologyControl.COUNT_VEHICLES_BOLT, new CountVehiclesBolt(), COUNT_VEHICLES_Threads,
-//					new TimestampMerger(new CountVehiclesBolt(), PositionReport.TIME_IDX), COUNT_VEHICLES_Threads,
+//					new TimestampMerger(new CountVehiclesBolt(), PositionReport.MIN_IDX), COUNT_VEHICLES_Threads,
                     new ShuffleGrouping(
                             LRTopologyControl.DISPATCHER, LRTopologyControl.POSITION_REPORTS_STREAM_ID
 //							, SegmentIdentifier.getSchema()

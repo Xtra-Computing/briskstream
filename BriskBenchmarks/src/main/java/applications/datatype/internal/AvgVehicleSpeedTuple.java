@@ -71,6 +71,12 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
      */
     private final static int AVGS_IDX = 5;
 
+
+    /**
+     * The index of the TIME attribute.
+     */
+    public final static int TIME_IDX = 6;
+
     private static final long serialVersionUID = 9178312919140032032L;
 
 
@@ -86,8 +92,9 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
      * @param segment  the segment number the vehicle is in
      * @param diretion the vehicle's driving direction
      * @param avgSpeed the average speed of the vehicle
+     * @param time
      */
-    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Double avgSpeed) {
+    public AvgVehicleSpeedTuple(Integer vid, Short minute, Integer xway, Short segment, Short diretion, Double avgSpeed, Short time) {
         assert (vid != null);
         assert (minute != null);
         assert (xway != null);
@@ -101,6 +108,7 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
         super.add(SEG_IDX, segment);
         super.add(DIR_IDX, diretion);
         super.add(AVGS_IDX, avgSpeed);
+        super.add(TIME_IDX, time);
     }
 
 
@@ -124,20 +132,6 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
     }
 
 
-    /**
-     * Returns the schema of a {@link AvgVehicleSpeedTuple}.
-     *
-     * @return the schema of a {@link AvgVehicleSpeedTuple}
-     */
-    public static Fields getSchema() {
-        return new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME, LRTopologyControl.MINUTE_FIELD_NAME,
-                LRTopologyControl.XWAY_FIELD_NAME, LRTopologyControl.SEGMENT_FIELD_NAME, LRTopologyControl.DIRECTION_FIELD_NAME,
-                LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME);
-    }
-
-    public static Fields getLatencySchema() {
-        return new Fields(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
-    }
 
     /**
      * Returns the vehicle ID of this {@link AvgVehicleSpeedTuple}.
@@ -196,12 +190,32 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
         return (Double) super.get(AVGS_IDX);
     }
 
+    public final short getTime() {
+        return (short) super.get(TIME_IDX);
+    }
+//
+//    public long getMsgID() {
+//        return (long) super.get(6);
+//    }
+//
+//    public long getTimeStamp() {
+//        return (long) super.get(7);
+//    }
 
-    public long getMsgID() {
-        return (long) super.get(6);
+
+
+    /**
+     * Returns the schema of a {@link AvgVehicleSpeedTuple}.
+     *
+     * @return the schema of a {@link AvgVehicleSpeedTuple}
+     */
+    public static Fields getSchema() {
+        return new Fields(LRTopologyControl.VEHICLE_ID_FIELD_NAME, LRTopologyControl.MINUTE_FIELD_NAME,
+                LRTopologyControl.XWAY_FIELD_NAME, LRTopologyControl.SEGMENT_FIELD_NAME, LRTopologyControl.DIRECTION_FIELD_NAME,
+                LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME);
     }
 
-    public long getTimeStamp() {
-        return (long) super.get(7);
+    public static Fields getLatencySchema() {
+        return new Fields(LRTopologyControl.AVERAGE_VEHICLE_SPEED_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
     }
 }

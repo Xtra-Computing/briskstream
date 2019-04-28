@@ -285,6 +285,9 @@ public class OutputCollector<T> {
         emit(DEFAULT_STREAM_ID, bid, values);
     }
 
+    public void emit(long bid, StreamValues values) throws InterruptedException {
+        emit(DEFAULT_STREAM_ID, bid, values);
+    }
     public void emit(long bid, Object values) throws InterruptedException {
         emit(DEFAULT_STREAM_ID, bid, values);
     }

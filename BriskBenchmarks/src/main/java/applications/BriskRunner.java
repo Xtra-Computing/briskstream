@@ -249,6 +249,16 @@ public class BriskRunner extends abstractRunner {
                     config.put(Executor_Threads, threads);
                     break;
                 }
+                case "TP": {
+                    config.put("app", 3);
+                    int threads = Math.max(1, (int) Math.floor((tthread)));
+//                    config.put(DEG_THREADS, threads);
+//                    config.put(TEG_THREADS, threads);
+//                    config.put(DT_THREADS, threads);
+//                    config.put(TT_THREADS, threads);
+                    config.put(Executor_Threads, threads);
+                    break;
+                }
                 case "PositionKeeping": {
                     int threads = Math.max(1, (int) Math.floor((tthread)));
 //                    config.put(DEG_THREADS, threads);
