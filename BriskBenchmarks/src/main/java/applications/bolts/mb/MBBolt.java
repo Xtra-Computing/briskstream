@@ -46,7 +46,7 @@ public abstract class MBBolt extends TransactionalBolt {
             //so nothing is send out.
 
         } else
-            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
+            collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
     }
 
 
@@ -58,7 +58,7 @@ public abstract class MBBolt extends TransactionalBolt {
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
-        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
+        collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
     }
 
     protected void read_lock_ahead(MicroEvent Event, long bid) throws DatabaseException {
@@ -155,7 +155,7 @@ public abstract class MBBolt extends TransactionalBolt {
             write_handle(event, timestamp);
         }
         if (enable_debug)
-            LOG.info("Commit event:" + in.getBID() + " by " + this.thread_Id);
+            LOG.trace("Commit event:" + in.getBID() + " by " + this.thread_Id);
     }
 
     protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;

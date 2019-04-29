@@ -108,11 +108,11 @@ public class spoutThread extends executorThread {
             if (!conf.getBoolean("NAV", true)) {
                 binding = binding();
             }
-            if (enable_numa_placement)
-                if (conf.getBoolean("Sequential_Binding", true)) {
-                    binding = sequential_binding();
-
-                }
+//            if (enable_numa_placement)
+//                if (conf.getBoolean("Sequential_Binding", true)) {
+//                    binding = sequential_binding();
+//
+//                }
 
             initilize_queue(this.executor.getExecutorID());
             boolean binding_finished = true;

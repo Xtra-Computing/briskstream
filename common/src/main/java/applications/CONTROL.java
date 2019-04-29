@@ -24,13 +24,14 @@ public interface CONTROL {
 
     //profile related.
     boolean enable_profile = true;//enable this only when we want to test for breakdown.
-    boolean enable_debug = true;//some critical debug section.
+    boolean enable_debug = false;//some critical debug section.
 
     //engine related.
     boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.
+    boolean enable_numa_placement = true;//3. numa placement.
+
     boolean enable_work_stealing = false; // 2. this is a sub-option, only useful when engine is enabled. Still BUGGY, resolve in future.
     boolean enable_mvcc = enable_work_stealing;// always enabled in CT and enable if work_stealing is enabled.
-    boolean enable_numa_placement = false;//3. numa placement. not useful, sometimes even worse, disable by default.
     boolean enable_speculative = false;//work in future!
 
     //used for fixed-partition engine (no work-stealing).

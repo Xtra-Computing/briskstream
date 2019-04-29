@@ -269,7 +269,7 @@ do
     let "gc_factor = 0"
     let "socket = 4"
     let "cpu = 10"
-    let "bt = 1"
+    let "bt = 30"
     let "gc_factor = 0"
     let "iteration = 1"
     checkpoint=0.25
@@ -384,9 +384,9 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1 38
+                        for tt in 1 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38
                         do
-                            for CCOption in 1 #0 1 2
+                            for CCOption in 1 #2 #0 1 2
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do

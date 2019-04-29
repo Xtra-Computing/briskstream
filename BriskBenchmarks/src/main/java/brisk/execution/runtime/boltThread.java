@@ -178,14 +178,14 @@ public class boltThread extends executorThread {
 
         Object tuple = fetchResult();
 
-        if(tuple instanceof  Tuple){
+        if (tuple instanceof Tuple) {
             if (tuple != null) {
                 bolt.execute((Tuple) tuple);
                 cnt += batch;
             } else {
                 miss++;
             }
-        }else {
+        } else {
             if (tuple != null) {
                 bolt.execute((JumboTuple) tuple);
                 cnt += batch;
@@ -237,11 +237,13 @@ public class boltThread extends executorThread {
                 binding = binding();
             }
 
-            if (enable_numa_placement && enable_shared_state)//used only in T-Stream.
-                if (conf.getBoolean("Sequential_Binding", true) && !this.executor.isLeafNode()) {
+            if (enable_numa_placement && enable_shared_state && !this.executor.isLeafNode())//used only in T-Stream.
+                if (conf.getBoolean("Sequential_Binding", true)) {
                     binding = sequential_binding();
 
                 }
+
+
             initilize_queue(this.executor.getExecutorID());
 
             //do preparation.

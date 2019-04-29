@@ -20,9 +20,13 @@ public class OrderLock implements Serializable {
 
     //	SpinLock spinlock_ = new SpinLock();
 //	volatile int fid = 0;
-    volatile AtomicLong bid = new AtomicLong(0);
+    AtomicLong bid = new AtomicLong(0);// it is already volatiled.
     //	private transient HashMap<Integer, HashMap<Integer, Boolean>> executors_ready;//<FID, ExecutorID, true/false>
     private int end_fid;
+
+    SpinLock check_lock = new SpinLock();
+
+    boolean wasSignalled = false;//to fight with missing signals.
 
     private OrderLock() {
         OsUtils.configLOG(LOG);
@@ -79,6 +83,7 @@ public class OrderLock implements Serializable {
         return false;
     }
 
+
     public boolean blocking_wait(final long bid) throws InterruptedException {
 
         /* busy waiting.
@@ -92,13 +97,31 @@ public class OrderLock implements Serializable {
         }
         */
 
-        if (!this.bid.compareAndSet(bid, bid)) {
+
+/*
+        while (!this.bid.compareAndSet(bid, bid)) {
             if (enable_debug)
-                LOG.info("BLOCK WAITING FOR " + bid + " CURRENT COUNTER:" + this.bid + " Thread:" + Thread.currentThread().getName());
-            synchronized (this.bid) {
-                this.bid.wait();
+                LOG.trace("BLOCK WAITING FOR " + bid + " CURRENT COUNTER:" + this.bid + " Thread:" + Thread.currentThread().getName());
+            synchronized (this.bid) {//this overhead is too high.
+                if(!wasSignalled) {
+                    this.bid.wait(1);
+                }
             }
         }
+        //clear signal and continue running.
+        wasSignalled = false;
+*/
+
+        //busy waiting with sleep.
+        while (!this.bid.compareAndSet(bid, bid)) {
+            //not ready for this batch to proceed! Wait for previous batch to finish execution.
+//            Thread.sleep(1);
+            if (Thread.currentThread().isInterrupted()) {
+//				 throw new InterruptedException();
+                return false;
+            }
+        }
+
 
         return true;
     }
@@ -111,12 +134,20 @@ public class OrderLock implements Serializable {
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
+
+/*
+        long value = bid.incrementAndGet();//allow next batch to proceed.
+        if (enable_debug)
+            LOG.trace("ADVANCE BID to:" + value + " Thread:" + Thread.currentThread().getName());
+        synchronized (this.bid) {
+            wasSignalled = true;
+            this.bid.notifyAll();
+        }
+*/
+
         long value = bid.incrementAndGet();//allow next batch to proceed.
         if (enable_debug)
             LOG.info("ADVANCE BID to:" + value + " Thread:" + Thread.currentThread().getName());
-        synchronized (this.bid) {
-            this.bid.notifyAll();
-        }
 
 //		//LOG.DEBUG(Thread.currentThread().getName() + " advance bid to: " + bid+ " @ "+ DateTime.now());
 //		if (joinedOperators(txn_context)) {

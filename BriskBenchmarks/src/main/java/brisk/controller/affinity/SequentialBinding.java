@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class SequentialBinding {
     private static final Logger LOG = LoggerFactory.getLogger(SequentialBinding.class);
     static int socket = 0;
-    static int cpu = 1;//skip first cpu--> it is reserved by OS.
+    static int cpu = 0;//skip first cpu--> it is reserved by OS.
 
 
     static int cpu_for_db;

@@ -183,17 +183,32 @@ public class Platform implements Serializable {
 //    node 2 free: 2185 MB
 //    node 3 cpus: 3 7 11 15 19 23 27 31 35 39 43 47 51 55 59 63 67 71 75 79
 
-            Integer[] no_0 = {0, 4, 8, 12, 16, 20, 24, 28, 32, 36};// 40 44 48 52 56 60 64 68 72 76
+//            Integer[] no_0 = {0, 4, 8, 12, 16, 20, 24, 28, 32, 36};// 40 44 48 52 56 60 64 68 72 76
+//            node_0 = new ArrayList<>(Arrays.asList(no_0));
+//
+//            Integer[] no_1 = {1, 5, 9, 13, 17, 21, 25, 29, 33, 37};//41 45 49 53 57 61 65 69 73 77
+//            ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
+//
+//            Integer[] no_2 = {2, 6, 10, 14, 18, 22, 26, 30, 34, 38};// 42 46 50 54 58 62 66 70 74 78
+//            ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
+//
+//            Integer[] no_3 = {3, 7, 11, 15, 19, 23, 27, 31, 35, 39};//  43 47 51 55 59 63 67 71 75 79
+//            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
+
+
+            //reverse .
+
+            Integer[] no_0 = {39, 35, 31, 27, 23, 19, 15, 11, 7, 3};// 40 44 48 52 56 60 64 68 72 76
             node_0 = new ArrayList<>(Arrays.asList(no_0));
 
-            Integer[] no_1 = {1, 5, 9, 13, 17, 21, 25, 29, 33, 37};//41 45 49 53 57 61 65 69 73 77
+            Integer[] no_1 = {38, 34, 30, 26, 22, 18, 14, 10, 6, 2};//41 45 49 53 57 61 65 69 73 77
             ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
 
-            Integer[] no_2 = {2, 6, 10, 14, 18, 22, 26, 30, 34, 38};// 42 46 50 54 58 62 66 70 74 78
+            Integer[] no_2 = {37, 33, 29, 25, 21, 17, 13, 9, 5, 1};// 42 46 50 54 58 62 66 70 74 78
             ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
-            Integer[] no_3 = {3, 7, 11, 15, 19, 23, 27, 31, 35, 39};//  43 47 51 55 59 63 67 71 75 79
-            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
 
+            Integer[] no_3 = {36, 32, 28, 24, 20, 16, 12, 8, 4, 0};//  43 47 51 55 59 63 67 71 75 79
+            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
 
             return new ArrayList[]{
                     node_0,
@@ -203,7 +218,7 @@ public class Platform implements Serializable {
             };
         } else {//my MAC..
 
-            Integer[] no_0 = {0, 1, 2, 3, 4, 5};//
+            Integer[] no_0 = {5, 4, 3, 2, 1, 0};//
             node_0 = new ArrayList<>(Arrays.asList(no_0));
 
             return new ArrayList[]{

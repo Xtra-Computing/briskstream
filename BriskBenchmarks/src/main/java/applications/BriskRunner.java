@@ -496,9 +496,6 @@ public class BriskRunner extends abstractRunner {
 //                        .append("compute time:\t").append(metrics.exe_time[i].getMean()).append("\n");
 
 
-                stream_processing += metrics.stream_total[i].getSum();
-                txn_processing += metrics.txn_total[i].getSum();
-
                 useful_time += metrics.useful_time[i].getSum();
                 abort_time += metrics.abort_time[i].getSum();
                 ts_alloc_time += metrics.ts_allocation[i].getSum();
@@ -508,25 +505,31 @@ public class BriskRunner extends abstractRunner {
                 compute_time += metrics.exe_time[i].getSum();
                 sum += metrics.useful_time[i].getN();
 
-                sb.append("Processed:" + metrics.useful_time[i].getN()).append("\n");
-                sb.append("average tp processing:");
-                sb.append("\t").append(metrics.average_tp[i].getMean() / 1E6).append("\n");
-                sb.append("average tp submit:");
-                sb.append("\t").append(metrics.average_tp_submit[i].getMean() / 1E6).append("\n");
 
-                sb.append("average tp processing w/ synchronization:");
-                sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() / 1E6).append("\n");
+                if (config.getInt("CCOption", 0) == CCOption_TStream) {
 
-                sb.append("tp processing per event:");
-                sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");
+                    sb.append("Processed:" + metrics.useful_time[i].getN()).append("\n");
+                    sb.append("average tp processing:");
+                    sb.append("\t").append(metrics.average_tp[i].getMean() / 1E6).append("\n");
+                    sb.append("average tp submit:");
+                    sb.append("\t").append(metrics.average_tp_submit[i].getMean() / 1E6).append("\n");
+
+                    sb.append("average tp processing w/ synchronization:");
+                    sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() / 1E6).append("\n");
+
+                    sb.append("tp processing per event:");
+                    sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");
+
+                }
+                stream_processing += metrics.stream_total[i].getSum();
+                txn_processing += metrics.txn_total[i].getSum();
 
             }
 
-
             LOG.info(sb.toString());
             LOG.info("===OVERALL===");
-            LOG.info("Stream Processing:" + String.format("%.2f", stream_processing / sum / tthread));
-            LOG.info("TXN Processing:" + String.format("%.2f", txn_processing / sum / tthread));
+            LOG.info("Stream Processing time on one event:" + String.format("%.2f", stream_processing / sum));
+            LOG.info("TXN Processing on one event:" + String.format("%.2f", txn_processing / sum));
 
             LOG.info("===BREAKDOWN TXN===");
             LOG.info("Useful time:\t" + String.format("%.2f", useful_time / sum));
@@ -551,7 +554,8 @@ public class BriskRunner extends abstractRunner {
             algorithm = "opt";
         }
 
-        String directory = System_Plan_Path + OsUtils.OS_wrapper("BriskStream")
+        String directory = System_Plan_Path
+                + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(topology.getPrefix())
                 + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket")));
 
