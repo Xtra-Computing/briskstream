@@ -42,7 +42,7 @@ public abstract class TPBolt_LA extends TPBolt {
 
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
-        write_core(event);
+        read_core(event);
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
@@ -51,7 +51,7 @@ public abstract class TPBolt_LA extends TPBolt {
     }
 
     @Override
-    protected void write_core(LREvent event) throws InterruptedException {
+    protected void read_core(LREvent event) throws InterruptedException {
         Integer vid = event.getVSreport().getVid();
 
         DataBox speed_value_box = event.speed_value.getRecord().getValues().get(1);

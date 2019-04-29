@@ -198,6 +198,6 @@ public abstract class TPBolt extends TransactionalBolt {
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
     }
 
-    protected abstract void write_core(LREvent event) throws InterruptedException;
+    protected abstract void read_core(LREvent event) throws InterruptedException;
 }
 

@@ -8,7 +8,7 @@ import engine.profiler.Metrics;
 import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.DoubleDataBox;
-import engine.storage.datatype.HashSetDataBox;
+import engine.storage.datatype.IntDataBox;
 import engine.storage.datatype.ListDoubleDataBox;
 import engine.transaction.function.*;
 import org.slf4j.Logger;
@@ -20,6 +20,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static applications.CONTROL.*;
+import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static applications.constants.PositionKeepingConstants.Constant.MOVING_AVERAGE_WINDOW;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
@@ -209,13 +210,13 @@ public final class TxnProcessingEngine {
 
     private void process(Operation operation) {
 
-        if (operation.accessType == READ_ONLY) {
+        if (operation.accessType == READ_ONLY) {//used in MB.
 //            operation.record_ref.inc(Thread.currentThread().getName());
 
-            if (enable_mvcc)
-                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));
-            else
-                operation.record_ref.setRecord(operation.d_record.record_);
+            //read source.
+            List<DataBox> dstRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
+
+            operation.record_ref.setRecord(new SchemaRecord(dstRecord));
 
             if (enable_debug)
                 if (operation.record_ref.cnt == 0) {
@@ -223,14 +224,23 @@ public final class TxnProcessingEngine {
                     System.exit(-1);
                 }
 
-        } else if (operation.accessType == WRITE_ONLY) {//push evaluation down.
+        } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. //used in MB.
 
             if (operation.value_list != null) { //directly replace value_list --only used for MB.
+
+                //read source.
+//                List<DataBox> dstRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
+
+
 //                if (enable_mvcc) {
-//                    operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
+//
 //                }else {
-                operation.d_record.record_.updateValues(operation.value_list);
+//                operation.d_record.record_.updateValues(operation.value_list);
 //                }
+
+//                operation.d_record.record_.s.get(1).setString(values.get(1).getString(), VALUE_LEN);
+
+                operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
 
             } else { //update by column_id.
                 operation.d_record.record_.getValues().get(operation.column_id).setLong(operation.value);
@@ -334,7 +344,7 @@ public final class TxnProcessingEngine {
             } else if (operation.function instanceof CNT) {//used by TP
                 HashSet cnt_segment = srcRecord.get(1).getHashSet();
                 cnt_segment.add(operation.function.delta_int);//update hashset; updated state also. TODO: be careful of this.
-                operation.record_ref.setRecord(new SchemaRecord(new HashSetDataBox(cnt_segment)));//return updated record.
+                operation.record_ref.setRecord(new SchemaRecord(new IntDataBox(cnt_segment.size())));//return updated record.
             } else
                 throw new UnsupportedOperationException();
         }

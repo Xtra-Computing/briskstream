@@ -211,7 +211,7 @@ public class Metrics {
                 index_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_INDEX_TIME_MEASURE(int thread_id) {
+        public static void END_INDEX_TIME_MEASURE_TS(int thread_id) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
                 index_time[thread_id] += System.nanoTime() - index_start[thread_id];
         }
@@ -335,6 +335,7 @@ public class Metrics {
 
                 metrics.ts_allocation[thread_id].addValue(ts_allocate[thread_id] / txn_total[thread_id]);
 
+                //clean.
                 index_time[thread_id] = 0;
             }
         }

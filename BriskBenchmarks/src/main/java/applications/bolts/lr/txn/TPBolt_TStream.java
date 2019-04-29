@@ -57,9 +57,9 @@ public class TPBolt_TStream extends TPBolt {
     }
 
     @Override
-    protected void write_core(LREvent event) throws InterruptedException {
+    protected void read_core(LREvent event) throws InterruptedException {
         Integer vid = event.getVSreport().getVid();
-        int count = event.count_value.getRecord().getValue().getHashSet().size();
+        int count = event.count_value.getRecord().getValue().getInt();
         double lav = event.speed_value.getRecord().getValue().getDouble();
 
 
@@ -129,10 +129,10 @@ public class TPBolt_TStream extends TPBolt {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             for (LREvent event : LREvents) {
-                write_core(event);
+                read_core(event);
             }
 
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, LREvents.size(), 0);
 
 
             final Marker marker = in.getMarker();

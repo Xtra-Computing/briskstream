@@ -42,7 +42,7 @@ public class Bolt_ts extends MBBolt {
 
         BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
         long bid = event.getBid();
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
+        txn_context = new TxnContext(thread_Id, this.fid, bid);
 
         read_requests(event, this.fid, bid);
 
@@ -60,7 +60,7 @@ public class Bolt_ts extends MBBolt {
 
         BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
         long bid = event.getBid();
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
+        txn_context = new TxnContext(thread_Id, this.fid, bid);
         write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), bid);
 
         if (enable_profile)

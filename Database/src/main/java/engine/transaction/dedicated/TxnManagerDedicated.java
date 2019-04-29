@@ -22,7 +22,7 @@ import java.util.concurrent.BrokenBarrierException;
 
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_TS;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -106,7 +106,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
 
         if (t_record != null) {
@@ -124,7 +124,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
 
         if (t_record != null) {
@@ -142,7 +142,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
         if (t_record != null) {
             return Asy_ReadRecordCC(txn_context, srcTable, t_record, record_ref, enqueue_time, accessType);
         } else {
@@ -158,7 +158,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, t_record, function, accessType, column_id);
@@ -176,7 +176,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
         TableRecord d_record = storageManager_.getTable(srcTable).SelectKeyRecord(dest_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, d_record, function, accessType, 1);
@@ -194,7 +194,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, t_record, function, accessType, 1);
@@ -212,7 +212,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
         TableRecord d_record = storageManager_.getTable(srcTable).SelectKeyRecord(dest_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
             return Asy_ModifyRecord_ReadCC(txn_context, srcTable, t_record, d_record, record_ref, function, accessType);
@@ -229,7 +229,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
             return Asy_ModifyRecord_ReadCC(txn_context, srcTable, t_record, record_ref, function, accessType);
@@ -369,7 +369,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 //
         if (t_record != null) {
 //			BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
@@ -401,7 +401,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 
         if (t_record != null) {
 
@@ -428,7 +428,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         storageManager_.getTable(table_name).SelectRecords(idx_id, secondary_key, t_records_);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id);
 //		BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
         SelectRecordsCC(txn_context, table_name, t_records_, records_, access_type, gap);
         t_records_.Clear();
