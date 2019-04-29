@@ -18,7 +18,7 @@ import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE_TS;
+import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
 
 public abstract class MBBolt extends TransactionalBolt {
     public MBBolt(Logger log, int fid) {
@@ -46,7 +46,7 @@ public abstract class MBBolt extends TransactionalBolt {
             //so nothing is send out.
 
         } else
-            collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
+            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
     }
 
 
@@ -58,7 +58,7 @@ public abstract class MBBolt extends TransactionalBolt {
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
-        collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
+        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
     }
 
     protected void read_lock_ahead(MicroEvent Event, long bid) throws DatabaseException {
@@ -87,7 +87,7 @@ public abstract class MBBolt extends TransactionalBolt {
         return false;
     }
 
-    private boolean process_request(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException {
+    private boolean process_request(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException, InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable",
                     String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
@@ -113,14 +113,14 @@ public abstract class MBBolt extends TransactionalBolt {
         return true;
     }
 
-    protected boolean read_request_lock(MicroEvent event, long bid) throws DatabaseException {
+    protected boolean read_request_lock(MicroEvent event, long bid) throws DatabaseException, InterruptedException {
 
         if (process_request(event, READ_ONLY)) return false;
         return true;
     }
 
 
-    protected boolean write_request_lock(MicroEvent event, long bid) throws DatabaseException {
+    protected boolean write_request_lock(MicroEvent event, long bid) throws DatabaseException, InterruptedException {
 
         if (process_request(event, READ_WRITE)) return false;
         return true;
@@ -146,7 +146,8 @@ public abstract class MBBolt extends TransactionalBolt {
         boolean flag = event.READ_EVENT();
         (event).setTimestamp(timestamp);
 
-        END_PREPARE_TIME_MEASURE_TS(thread_Id);
+
+        END_PREPARE_TIME_MEASURE(thread_Id);
 
         if (flag) {
             read_handle(event, timestamp);
@@ -154,7 +155,7 @@ public abstract class MBBolt extends TransactionalBolt {
             write_handle(event, timestamp);
         }
         if (enable_debug)
-            LOG.trace("Commit event:" + in.getBID());
+            LOG.info("Commit event:" + in.getBID() + " by " + this.thread_Id);
     }
 
     protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;

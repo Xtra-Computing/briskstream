@@ -91,6 +91,7 @@ public class ShufflePartitionController extends PartitionController {
         return target;
     }
 
+
     @Override
     public int emit(Meta meta, String streamId, long bid, Object output) throws InterruptedException {
         if (meta.index == extendedTargetId.size()) {

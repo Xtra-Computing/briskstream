@@ -24,14 +24,14 @@ public class LockContentImpl extends LockContent {
 
     //used by non-blocking lock.
     @Override
-    public boolean TryWriteLock(OrderLock orderLock, TxnContext txn_context) {
+    public boolean TryWriteLock(OrderLock orderLock, TxnContext txn_context) throws InterruptedException {
 
         return orderLock.blocking_wait(txn_context.getBID()) &&
                 lock_.TryWriteLock();
     }
 
     @Override
-    public boolean TryReadLock(OrderLock orderLock, TxnContext txn_context) {
+    public boolean TryReadLock(OrderLock orderLock, TxnContext txn_context) throws InterruptedException {
         return orderLock.blocking_wait(txn_context.getBID()) &&
                 lock_.TryReadLock();
     }

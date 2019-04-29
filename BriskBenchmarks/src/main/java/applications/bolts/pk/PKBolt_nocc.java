@@ -98,7 +98,7 @@ public class PKBolt_nocc extends PKBolt {
      * @param bid
      * @throws DatabaseException
      */
-    private boolean PK_request(PKEvent event, int fid, long bid) throws DatabaseException {
+    private boolean PK_request(PKEvent event, int fid, long bid) throws DatabaseException, InterruptedException {
 
         int i = 0;
         for (Integer key : event.getKey()) {

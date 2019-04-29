@@ -64,7 +64,7 @@ public abstract class TPBolt extends TransactionalBolt {
                 = new TollNotification(
                 time, time, vid, lav, toll);
 
-        this.collector.emit_single(bid, tollNotification);
+        this.collector.emit(bid, tollNotification);
     }
 
 
@@ -192,7 +192,7 @@ public abstract class TPBolt extends TransactionalBolt {
 
 
     //simply push forward.
-    protected void write_handle(long bid) {
+    protected void write_handle(long bid) throws InterruptedException {
         transactionManager.getOrderLock().blocking_wait(bid);//ensures that locks are added in the event sequence order.
         //nothing to add..
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.

@@ -44,7 +44,7 @@ public class TxnManagerOrderLock extends TxnManagerDedicated {
 
     @Override
     public boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap)
-            throws DatabaseException {
+            throws DatabaseException, InterruptedException {
 //		BEGIN_PHASE_MEASURE(thread_id_, INSERT_PHASE);
         record.is_visible_ = false;
         TableRecord tb_record = new TableRecord(record);
@@ -71,7 +71,7 @@ public class TxnManagerOrderLock extends TxnManagerDedicated {
     }
 
     @Override
-    protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
+    protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) throws InterruptedException {
         SchemaRecord s_record = t_record.record_;
         if (accessType == READ_ONLY) {
             // if cannot get Lock, then return immediately.

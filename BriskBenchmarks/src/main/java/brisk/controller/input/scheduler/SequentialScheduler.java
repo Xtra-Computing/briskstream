@@ -68,7 +68,7 @@ public class SequentialScheduler extends InputStreamController {
 //	}
 
     @Override
-    public JumboTuple fetchResults() {
+    public Object fetchResults() {
         if (current == size) {
             current = 0;
         }

@@ -5,7 +5,6 @@ import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.BoltExecutor;
 import brisk.controller.input.InputStreamController;
-import engine.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.JumboTuple;
@@ -14,6 +13,7 @@ import brisk.optimization.OptimizationManager;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
 import com.javamex.classmexer.MemoryUtil;
+import engine.Clock;
 import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,24 +176,42 @@ public class boltThread extends executorThread {
 //            miss++;
 //        }
 
+        Object tuple = fetchResult();
 
-        if (enable_shared_state) {//this is for T-Stream.
-            Tuple in = fetchResult_single();
-            if (in != null) {
-                bolt.execute(in);
+        if(tuple instanceof  Tuple){
+            if (tuple != null) {
+                bolt.execute((Tuple) tuple);
                 cnt += batch;
             } else {
                 miss++;
             }
-        } else {
-            JumboTuple in = fetchResult();
-            if (in != null) {
-                bolt.execute(in);
+        }else {
+            if (tuple != null) {
+                bolt.execute((JumboTuple) tuple);
                 cnt += batch;
             } else {
                 miss++;
             }
         }
+
+
+//        if (enable_shared_state) {//this is for T-Stream.
+//            Tuple in = fetchResult_single();
+//            if (in != null) {
+//                bolt.execute(in);
+//                cnt += batch;
+//            } else {
+//                miss++;
+//            }
+//        } else {
+//            JumboTuple in = fetchResult();
+//            if (in != null) {
+//                bolt.execute(in);
+//                cnt += batch;
+//            } else {
+//                miss++;
+//            }
+//        }
 
     }
 
@@ -310,7 +328,7 @@ public class boltThread extends executorThread {
      *
      * @since 0.0.7 we add a tuple txn module so that we can support customized txn rules in Brisk.execution.runtime.tuple fetching.
      */
-    private JumboTuple fetchResult() {
+    private Object fetchResult() {
 
         return scheduler.fetchResults();
 //		return scheduler.fetchResults_inorder();

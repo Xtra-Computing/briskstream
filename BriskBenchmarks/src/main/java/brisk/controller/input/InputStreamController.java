@@ -34,7 +34,7 @@ TreeSet<JumboTuple> tuples = new TreeSet<>();//temporarily holds all retrieved t
 
     public abstract JumboTuple fetchResults_inorder();
 
-    public abstract JumboTuple fetchResults();
+    public abstract Object fetchResults();
 
     public abstract Tuple fetchResults_single();
 
@@ -83,12 +83,12 @@ TreeSet<JumboTuple> tuples = new TreeSet<>();//temporarily holds all retrieved t
         return null;
     }
 
-    protected JumboTuple fetchFromqueue(Queue queue) {
-        JumboTuple tuple;
-        tuple = (JumboTuple) queue.poll();
+    protected Object fetchFromqueue(Queue queue) {
+        Object tuple;
+        tuple = queue.poll();
         if (tuple != null) {
             synchronized (queue) {
-                queue.notify();
+                queue.notifyAll();
             }
             return tuple;
         }
@@ -100,7 +100,7 @@ TreeSet<JumboTuple> tuples = new TreeSet<>();//temporarily holds all retrieved t
         if (stat != null) {
             stat.start_measure();
         }
-        JumboTuple tuple = fetchFromqueue(queue);
+        JumboTuple tuple = (JumboTuple) fetchFromqueue(queue);
         if (tuple != null) {
             if (stat != null) {
                 stat.end_measure_inFetch(batch);
@@ -119,7 +119,7 @@ TreeSet<JumboTuple> tuples = new TreeSet<>();//temporarily holds all retrieved t
         final int size = queue.size();//at this moment, how many elements are there?
 
         for (int i = 0; i < size; i++) {
-            tuples.add(fetchFromqueue(queue));
+            tuples.add((JumboTuple) fetchFromqueue(queue));
         }
         return tuples.pollFirst();
     }

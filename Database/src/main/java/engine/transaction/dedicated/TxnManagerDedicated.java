@@ -57,7 +57,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         throw new UnsupportedOperationException();
     }
 
-    public abstract boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) throws DatabaseException;
+    public abstract boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) throws DatabaseException, InterruptedException;
 
 
     public abstract void AbortTransaction();
@@ -365,7 +365,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
      * @param access_type
      * @return
      */
-    public boolean SelectKeyRecord(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException {
+    public boolean SelectKeyRecord(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException, InterruptedException {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
@@ -424,7 +424,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
      * @return
      * @throws DatabaseException
      */
-    public boolean SelectRecords(TxnContext txn_context, String table_name, int idx_id, String secondary_key, SchemaRecords records_, AccessType access_type, LinkedList<Long> gap) throws DatabaseException {
+    public boolean SelectRecords(TxnContext txn_context, String table_name, int idx_id, String secondary_key, SchemaRecords records_, AccessType access_type, LinkedList<Long> gap) throws DatabaseException, InterruptedException {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         storageManager_.getTable(table_name).SelectRecords(idx_id, secondary_key, t_records_);
@@ -444,7 +444,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
      * @param access_type
      * @return
      */
-    protected boolean SelectRecordsCC(TxnContext txn_context, String table_name, TableRecords t_records, SchemaRecords records_, AccessType access_type, LinkedList<Long> gap) {
+    protected boolean SelectRecordsCC(TxnContext txn_context, String table_name, TableRecords t_records, SchemaRecords records_, AccessType access_type, LinkedList<Long> gap) throws InterruptedException {
 
 
         /**
@@ -527,7 +527,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         return Asy_ModifyRecordCC(txn_context, srcTable, s_record, s_record, function, condition_source, condition, accessType, success);
     }
 
-    protected abstract boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, AccessType access_type);
+    protected abstract boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, AccessType access_type) throws InterruptedException;
 
 
     public boolean SelectKeyRecord_noLockCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, AccessType accessType) {

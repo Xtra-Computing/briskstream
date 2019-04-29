@@ -105,9 +105,9 @@ public class SIMPLETxnSpout extends TransactionalSpout {
         if (control < target_Hz && success) {
 
             if (enable_latency_measurement)
-                collector.emit(bid++, System.nanoTime());//combined R/W executor.
+                collector.emit_single(bid++, System.nanoTime());//combined R/W executor.
             else
-                collector.emit(bid++);//combined R/W executor.
+                collector.emit_single(bid++);//combined R/W executor.
             control++;
         } else
             empty++;
@@ -124,9 +124,9 @@ public class SIMPLETxnSpout extends TransactionalSpout {
                 control_emit();
             } else {
                 if (enable_latency_measurement)
-                    collector.emit(bid++, System.nanoTime());//combined R/W executor.
+                    collector.emit_single(bid++, System.nanoTime());//combined R/W executor.
                 else
-                    collector.emit(bid++);//combined R/W executor.
+                    collector.emit_single(bid++);//combined R/W executor.
             }
 //            LOG.info("Emit:" + bid);
 

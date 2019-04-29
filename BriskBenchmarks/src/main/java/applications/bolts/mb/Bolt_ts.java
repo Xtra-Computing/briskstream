@@ -18,8 +18,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_profile;
-import static applications.CONTROL.enable_speculative;
+import static applications.CONTROL.*;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public class Bolt_ts extends MBBolt {
@@ -51,7 +50,7 @@ public class Bolt_ts extends MBBolt {
 
         if (enable_speculative) {
             //earlier emit
-            collector.force_emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
+            collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
         }
     }
 
@@ -66,7 +65,7 @@ public class Bolt_ts extends MBBolt {
         if (enable_profile)
             writeEvents++;//just for record purpose.
 
-        collector.force_emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
+        collector.emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
 
         END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
     }
@@ -149,7 +148,34 @@ public class Bolt_ts extends MBBolt {
                 writeEvents = 0;//all tuples in the holder is finished.
 
         } else {
-            super.execute(in);
+
+            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+
+            long bid = in.getBID();
+
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
+
+            Long timestamp;//in.getLong(1);
+
+            if (enable_latency_measurement)
+                timestamp = in.getLong(0);
+            else
+                timestamp = 0L;//
+
+
+            boolean flag = event.READ_EVENT();
+            (event).setTimestamp(timestamp);
+
+
+            END_PREPARE_TIME_MEASURE_TS(thread_Id);
+
+            if (flag) {
+                read_handle(event, timestamp);
+            } else {
+                write_handle(event, timestamp);
+            }
+            if (enable_debug)
+                LOG.trace("Commit event:" + in.getBID());
         }
     }
 }

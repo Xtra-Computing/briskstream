@@ -32,9 +32,9 @@ public interface Content {
     /**
      * new API for ordering guarantee
      */
-    boolean TryWriteLock(OrderLock lock, TxnContext txn_context);
+    boolean TryWriteLock(OrderLock lock, TxnContext txn_context) throws InterruptedException;
 
-    boolean TryReadLock(OrderLock lock, TxnContext txn_context);
+    boolean TryReadLock(OrderLock lock, TxnContext txn_context) throws InterruptedException;
 
     boolean AcquireReadLock();
 

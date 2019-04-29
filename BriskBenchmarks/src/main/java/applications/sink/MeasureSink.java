@@ -106,30 +106,30 @@ public class MeasureSink extends BaseSink {
         cnt++;
     }
 
-    @Override
-    public void execute(JumboTuple input) {
-        //	store.add(input);
-        int bound = input.length;
-        for (int i = 0; i < bound; i++) {
-//			read = (input.getString(0, i));
-            //simulate work..
-//			dummy_execute();
-            double results = helper.execute(input.getBID());
-            if (results != 0) {
-                this.setResults(results);
-                LOG.info("Sink finished:" + results);
-                if (LAST) {
-                    measure_end();
-                }
-            }
-        }
-
-    }
+//    @Override
+//    public void execute(JumboTuple input) {
+//        //	store.add(input);
+//        int bound = input.length;
+//        for (int i = 0; i < bound; i++) {
+////			read = (input.getString(0, i));
+//            //simulate work..
+////			dummy_execute();
+//            double results = helper.execute(input.getBID());
+//            if (results != 0) {
+//                this.setResults(results);
+//                LOG.info("Sink finished:" + results);
+//                if (LAST) {
+//                    measure_end();
+//                }
+//            }
+//        }
+//
+//    }
 
     protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
             helper.StartMeasurement();
-        } else if (cnt == (NUM_EVENTS - 1)) {
+        } else if (cnt == (NUM_EVENTS - 40 * 10 - 1)) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
             if (!enable_engine)//performance measure for TStream is different.

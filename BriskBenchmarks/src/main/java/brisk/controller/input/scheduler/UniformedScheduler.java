@@ -56,7 +56,7 @@ public class UniformedScheduler extends InputStreamController {
     }
 
     @Override
-    public JumboTuple fetchResults() {
+    public Object fetchResults() {
 //        JumboTuple[] t = new JumboTuple[batch];
         for (int i = stream_index++; i < streams.length + stream_index; i++) {
             String streamId = streams[i % streams.length];

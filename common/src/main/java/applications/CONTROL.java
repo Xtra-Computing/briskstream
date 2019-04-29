@@ -3,7 +3,7 @@ package applications;
 public interface CONTROL {
 
     //application related.
-    int NUM_EVENTS = 1_000_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
+    int NUM_EVENTS = 100_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
 
     //order related.
 
@@ -24,7 +24,7 @@ public interface CONTROL {
 
     //profile related.
     boolean enable_profile = true;//enable this only when we want to test for breakdown.
-    boolean enable_debug = false;//some critical debug section.
+    boolean enable_debug = true;//some critical debug section.
 
     //engine related.
     boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.

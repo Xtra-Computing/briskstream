@@ -39,7 +39,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
 
     @Override
     public boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap)
-            throws DatabaseException {
+            throws DatabaseException, InterruptedException {
         record.is_visible_ = false;
         TableRecord tb_record = new TableRecord(record);
         if (storageManager_.getTable(table_name).InsertRecord(tb_record)) {//maybe we can also skip this for testing purpose.

@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static applications.CONTROL.enable_debug;
+
 /**
  * Order lock should be globally shared.
  */
@@ -16,9 +18,9 @@ public class OrderLock implements Serializable {
     private static final long serialVersionUID = 1347267778748318967L;
     private static OrderLock ourInstance = new OrderLock();
 
-//	SpinLock spinlock_ = new SpinLock();
+    //	SpinLock spinlock_ = new SpinLock();
 //	volatile int fid = 0;
-volatile AtomicLong bid = new AtomicLong();
+    volatile AtomicLong bid = new AtomicLong(0);
     //	private transient HashMap<Integer, HashMap<Integer, Boolean>> executors_ready;//<FID, ExecutorID, true/false>
     private int end_fid;
 
@@ -77,8 +79,9 @@ volatile AtomicLong bid = new AtomicLong();
         return false;
     }
 
-    public boolean blocking_wait(final long bid) {
+    public boolean blocking_wait(final long bid) throws InterruptedException {
 
+        /* busy waiting.
         while (!this.bid.compareAndSet(bid, bid)) {
             //not ready for this batch to proceed! Wait for previous batch to finish execution.
             if (Thread.currentThread().isInterrupted()) {
@@ -87,6 +90,16 @@ volatile AtomicLong bid = new AtomicLong();
             }
 //			fill_gap(gap);
         }
+        */
+
+        if (!this.bid.compareAndSet(bid, bid)) {
+            if (enable_debug)
+                LOG.info("BLOCK WAITING FOR " + bid + " CURRENT COUNTER:" + this.bid + " Thread:" + Thread.currentThread().getName());
+            synchronized (this.bid) {
+                this.bid.wait();
+            }
+        }
+
         return true;
     }
 
@@ -98,7 +111,13 @@ volatile AtomicLong bid = new AtomicLong();
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
-        bid.incrementAndGet();//allow next batch to proceed.
+        long value = bid.incrementAndGet();//allow next batch to proceed.
+        if (enable_debug)
+            LOG.info("ADVANCE BID to:" + value + " Thread:" + Thread.currentThread().getName());
+        synchronized (this.bid) {
+            this.bid.notifyAll();
+        }
+
 //		//LOG.DEBUG(Thread.currentThread().getName() + " advance bid to: " + bid+ " @ "+ DateTime.now());
 //		if (joinedOperators(txn_context)) {
 ////			advanceFID();//allow next operator to proceed.
