@@ -10,17 +10,21 @@ public interface CONTROL {
     boolean enable_force_ordering = true;
 
     //db related.
-    boolean enable_shared_state = false;//this is for T-Stream.
-    boolean enable_states_partition = true;
+    boolean enable_shared_state = true;//this is for transactional state mgmt.
+
+    boolean enable_states_partition = false;
+
+    boolean enable_TSTREAM = false;
+
 
     //latency related.
-    boolean enable_admission_control = true;//only enable for TStream
+
     boolean enable_latency_measurement = false;//
+    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
-    boolean enable_profile = false;//enable this only when we want to test for breakdown.
+    boolean enable_profile = true;//enable this only when we want to test for breakdown.
     boolean enable_debug = false;//some critical debug section.
-
 
     //engine related.
     boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.

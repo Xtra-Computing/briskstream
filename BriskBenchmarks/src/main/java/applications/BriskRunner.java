@@ -455,6 +455,10 @@ public class BriskRunner extends abstractRunner {
                 + (Math.abs(record.getPercentile(50) - config.getDouble("predict", 0)) / config.getDouble("predict", 0)) + ")");
 
         if (enable_profile) {
+            double stream_processing = 0;
+            double txn_processing = 0;
+
+
             double useful_time = 0;
             double abort_time = 0;
             double ts_alloc_time = 0;
@@ -481,16 +485,19 @@ public class BriskRunner extends abstractRunner {
 //
 //            ;
 
-                sb.append("====Mean======\n")
-                        .append("Id :\t").append(i).append("\n")
-                        .append("useful time:\t").append(String.format("%.2f", metrics.useful_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("abort time:\t").append(String.format("%.2f", metrics.abort_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("ts_alloc. time:\t").append(String.format("%.2f", metrics.ts_allocation[i].getMean() / 1E4)).append(" %\n")
-                        .append("index time:\t").append(String.format("%.2f", metrics.index_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("wait time:\t").append(String.format("%.2f", metrics.wait[i].getMean() / 1E4)).append(" %\n")
-                        .append("lock time:\t").append(String.format("%.2f", metrics.lock[i].getMean() / 1E4)).append(" %\n")
-                        .append("compute time:\t").append(metrics.exe_time[i].getMean()).append("\n");
+//                sb.append("====Mean======\n")
+//                        .append("Id :\t").append(i).append("\n")
+//                        .append("useful time:\t").append(String.format("%.2f", metrics.useful_time[i].getMean() / 1E4)).append(" %\n")
+//                        .append("abort time:\t").append(String.format("%.2f", metrics.abort_time[i].getMean() / 1E4)).append(" %\n")
+//                        .append("ts_alloc. time:\t").append(String.format("%.2f", metrics.ts_allocation[i].getMean() / 1E4)).append(" %\n")
+//                        .append("index time:\t").append(String.format("%.2f", metrics.index_time[i].getMean() / 1E4)).append(" %\n")
+//                        .append("wait time:\t").append(String.format("%.2f", metrics.wait[i].getMean() / 1E4)).append(" %\n")
+//                        .append("lock time:\t").append(String.format("%.2f", metrics.lock[i].getMean() / 1E4)).append(" %\n")
+//                        .append("compute time:\t").append(metrics.exe_time[i].getMean()).append("\n");
 
+
+                stream_processing += metrics.stream_total[i].getSum();
+                txn_processing += metrics.txn_total[i].getSum();
 
                 useful_time += metrics.useful_time[i].getSum();
                 abort_time += metrics.abort_time[i].getSum();
@@ -518,13 +525,17 @@ public class BriskRunner extends abstractRunner {
 
             LOG.info(sb.toString());
             LOG.info("===OVERALL===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_time / sum / 1E6));
-            LOG.info("Abort time:\t" + String.format("%.2f", abort_time / sum / 1E6));
-            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time / sum / 1E6));
-            LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum / 1E6));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum / 1E6));
-            LOG.info("Lock time:\t" + String.format("%.2f", lock_time / sum / 1E6));
-            LOG.info("Compute:\t" + (compute_time / sum));
+            LOG.info("Stream Processing:" + String.format("%.2f", stream_processing / sum / tthread));
+            LOG.info("TXN Processing:" + String.format("%.2f", txn_processing / sum / tthread));
+
+            LOG.info("===BREAKDOWN TXN===");
+            LOG.info("Useful time:\t" + String.format("%.2f", useful_time / sum));
+            LOG.info("Abort time:\t" + String.format("%.2f", abort_time / sum));
+            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time / sum));
+            LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum));
+            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum));
+            LOG.info("Lock time:\t" + String.format("%.2f", lock_time / sum));
+
         }
 
         String algorithm;

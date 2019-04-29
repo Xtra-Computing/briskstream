@@ -18,7 +18,8 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_profile;
+import static applications.CONTROL.enable_speculative;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public class Bolt_ts extends MBBolt {
@@ -46,7 +47,7 @@ public class Bolt_ts extends MBBolt {
         read_requests(event, this.fid, bid);
 
         readEventHolder.add(event);//mark the tuple as ``in-complete"
-        END_READ_HANDLE_TIME_MEASURE(thread_Id);
+        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
 
         if (enable_speculative) {
             //earlier emit
@@ -67,7 +68,7 @@ public class Bolt_ts extends MBBolt {
 
         collector.force_emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
 
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
     }
 
     @Override
@@ -122,8 +123,6 @@ public class Bolt_ts extends MBBolt {
 
         if (in.isMarker()) {
 
-//            long bid = in.getBID();
-
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
@@ -136,48 +135,21 @@ public class Bolt_ts extends MBBolt {
 
             read_core();
 
-            END_COMPUTE_TIME_MEASURE(thread_Id);
-
-
-            readEventHolder.clear();//all tuples in the readEventHolder is finished.
-
-            if (enable_profile)
-                writeEvents = 0;//all tuples in the holder is finished.
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readEventHolder.size(), writeEvents);
 
             final Marker marker = in.getMarker();
 
-            this.collector.ack(in, marker);//tell spout it has finished the work.
+            this.collector.ack(in, marker);//tell spout it has finished transaction processing.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, readEventHolder.size() + writeEvents);
+
+
+            readEventHolder.clear();//all tuples in the readEventHolder are finished.
+            if (enable_profile)
+                writeEvents = 0;//all tuples in the holder is finished.
+
         } else {
-
-            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-            long bid = in.getBID();
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
-            long timestamp;
-            if (enable_latency_measurement) {
-                timestamp = in.getLong(0);
-                (event).setTimestamp(timestamp);
-            } else
-                timestamp = 0L;//
-
-//            try {
-            boolean flag = event.READ_EVENT();
-
-            END_PREPARE_TIME_MEASURE_TS(thread_Id);
-
-            if (flag) {
-                read_handle(event, timestamp);
-            } else {
-                write_handle(event, timestamp);
-            }
-//            } catch (Exception e) {
-//                System.nanoTime();
-//            }
-
-            if (enable_debug)
-                LOG.info("Commit event:" + flag + " " + bid);
-
+            super.execute(in);
         }
     }
 }

@@ -49,7 +49,7 @@ public class CTBolt_ts extends CTBolt {
             depositeEvents++;//just for record purpose.
         }
 
-        END_READ_HANDLE_TIME_MEASURE(thread_Id);
+        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
 
         collector.force_emit(event.getBid(), null, event.getTimestamp());
     }
@@ -75,7 +75,7 @@ public class CTBolt_ts extends CTBolt {
 
         transactionEvents.add(event);
 
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 
     }
 
@@ -154,7 +154,7 @@ public class CTBolt_ts extends CTBolt {
             END_TP_TIME_MEASURE(thread_Id);
 
 //            final Marker marker = in.getMarker();
-            this.collector.ack(in, null);//tell spout, please emit earlier!
+            this.collector.ack(in, in.getMarker());//tell spout, please emit earlier!
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
@@ -170,21 +170,24 @@ public class CTBolt_ts extends CTBolt {
                 }
                 // measure_end the preconditions
                 if (event.success[0]) {
-                    collector.force_emit(event.getBid(), new TransactionResult(event, true, sourceAccountBalance, targetAccountBalance), event.getTimestamp());
+                    collector.force_emit(event.getBid(),
+                            new TransactionResult(event, true, sourceAccountBalance, targetAccountBalance), event.getTimestamp());
                 } else {
-                    collector.force_emit(event.getBid(), new TransactionResult(event, false, sourceAccountBalance, targetAccountBalance), event.getTimestamp());
+                    collector.force_emit(event.getBid(),
+                            new TransactionResult(event, false, sourceAccountBalance, targetAccountBalance), event.getTimestamp());
                 }
             }
+
+
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, transactionEvents.size(), depositeEvents);
+
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, transactionEvents.size() + depositeEvents);
+
             transactionEvents.clear();//all tuples in the holder is finished.
-
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, depositeEvents + transactionEvents.size());
-
 
             if (enable_profile) {
                 depositeEvents = 0;//all tuples in the holder is finished.
             }
-
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
 
         } else {
             Long timestamp;//in.getLong(1);

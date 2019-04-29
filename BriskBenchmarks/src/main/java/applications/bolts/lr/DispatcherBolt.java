@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
+import static applications.CONTROL.enable_TSTREAM;
 import static applications.CONTROL.enable_shared_state;
 import static applications.datatype.util.LRTopologyControl.POSITION_REPORTS_STREAM_ID;
 
@@ -111,7 +112,7 @@ public class DispatcherBolt extends filterBolt implements Checkpointable {
                                     Short.parseShort(token[7]), // segment
                                     Integer.parseInt(token[8]))); // position
                 else
-                    this.collector.emit(POSITION_REPORTS_STREAM_ID,
+                    this.collector.emit_single(POSITION_REPORTS_STREAM_ID,
                             bid,
                             new PositionReport(//
                                     time,//
@@ -124,6 +125,20 @@ public class DispatcherBolt extends filterBolt implements Checkpointable {
                                     Integer.parseInt(token[8]))); // position
 
             } else {//not in use in this experiment.
+
+                if (!enable_TSTREAM)
+                    this.collector.emit_single(POSITION_REPORTS_STREAM_ID, bid,
+                            new PositionReport(//
+                                    time,//
+                                    vid,//
+                                    Integer.parseInt("0"), // speed
+                                    Integer.parseInt("0"), // xway
+                                    Short.parseShort("0"), // lane
+                                    Short.parseShort("0"), // direction
+                                    Short.parseShort("0"), // segment
+                                    Integer.parseInt("0")// position
+                            )
+                    );//just send a signal.
             }
         }
     }

@@ -97,6 +97,10 @@ public class SIMPLETxnSpout extends TransactionalSpout {
 //        }
 //    }
 
+    /**
+     * Regulate Spout Speed.
+     * @throws InterruptedException
+     */
     private void control_emit() throws InterruptedException {
         if (control < target_Hz && success) {
 

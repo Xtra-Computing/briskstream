@@ -2,7 +2,8 @@ package applications.topology.transactional;
 
 
 import applications.bolts.lr.DispatcherBolt;
-import applications.bolts.lr.txn.TP_TStream;
+import applications.bolts.lr.txn.TPBolt_TStream;
+import applications.bolts.lr.txn.TPBolt_olb;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;
@@ -25,7 +26,7 @@ import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
 import static applications.constants.TP_TxnConstants.Component.EXECUTOR;
 import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
 import static applications.constants.TP_TxnConstants.PREFIX;
-import static applications.datatype.util.LRTopologyControl.TOLL_NOTIFICATIONS_STREAM_ID;
+import static engine.content.Content.CCOption_OrderLOCK;
 import static engine.content.Content.CCOption_TStream;
 import static utils.PartitionHelper.setPartition_interval;
 
@@ -81,14 +82,18 @@ public class TP_Txn extends TransactionTopology {
 //                            , new ShuffleGrouping(LinearRoadConstants.Component.SPOUT));
 //                    break;
 //                }
-//
-//                case CCOption_OrderLOCK: {//LOB
-//
-//                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_olb(0)//
-//                            , config.getInt(Executor_Threads, 2)
-//                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
-//                    break;
-//                }
+
+                case CCOption_OrderLOCK: {//LOB
+
+                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TPBolt_olb(0)//
+                            , config.getInt(Executor_Threads, 2),
+                            new FieldsGrouping(
+                                    LRTopologyControl.DISPATCHER,
+                                    LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                    , SegmentIdentifier.getSchema())
+                    );
+                    break;
+                }
 //                case CCOption_LWM: {//LWM
 //
 //                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_lwm(0)//
@@ -98,7 +103,7 @@ public class TP_Txn extends TransactionTopology {
 //                }
                 case CCOption_TStream: {//T-Stream
                     builder.setBolt(LinearRoadConstants.Component.EXECUTOR,
-                            new TP_TStream(0)//
+                            new TPBolt_TStream(0)//
                             , config.getInt(Executor_Threads, 2),
                             new FieldsGrouping(
                                     LRTopologyControl.DISPATCHER,

@@ -1,8 +1,6 @@
 package applications.bolts.lr.txn;
 
 
-import applications.datatype.PositionReport;
-import applications.datatype.internal.AvgVehicleSpeedTuple;
 import applications.param.lr.LREvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
@@ -22,21 +20,19 @@ import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_debug;
-import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
 /**
  * Combine Read-Write for TStream.
  */
-public class TP_TStream extends TPBolt {
-    private static final Logger LOG = LoggerFactory.getLogger(TP_TStream.class);
+public class TPBolt_TStream extends TPBolt {
+    private static final Logger LOG = LoggerFactory.getLogger(TPBolt_TStream.class);
     private static final long serialVersionUID = -5968750340131744744L;
     private ArrayDeque<LREvent> LREvents = new ArrayDeque<>();
 
 
-    public TP_TStream(int fid) {
+    public TPBolt_TStream(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }
@@ -45,18 +41,6 @@ public class TP_TStream extends TPBolt {
 //        prepareEvents();
         loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
                 , context.getThisTaskId(), context.getGraph());
-    }
-
-    @Override
-    protected void read_handle(LREvent event, Long timestamp) throws DatabaseException {
-        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-
-        read_request(event, event.getBid());
-
-        LREvents.add(event);
-
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-
     }
 
 
@@ -68,24 +52,39 @@ public class TP_TStream extends TPBolt {
 
         LREvents.add(event);
 
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 
     }
 
-    private void read_request(LREvent event, long bid) throws DatabaseException {
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-        transactionManager.Asy_ReadRecord(txn_context
-                , "segment_speed"
-                , String.valueOf(event.getVSreport().getSegment())
-                , event.speed_value
-                , event.enqueue_time);
+    @Override
+    protected void write_core(LREvent event) throws InterruptedException {
+        Integer vid = event.getVSreport().getVid();
+        int count = event.count_value.getRecord().getValue().getHashSet().size();
+        double lav = event.speed_value.getRecord().getValue().getDouble();
 
-        transactionManager.Asy_ReadRecord(txn_context
-                , "segment_cnt"
-                , String.valueOf(event.getVSreport().getSegment())
-                , event.count_value
-                , event.enqueue_time);
+
+        toll_process(event.getBid(), vid, count, lav, event.getPOSReport().getTime());
+//        int sum = 0;
+//        for (int i = 0; i < NUM_ACCESSES; ++i) {
+//            SchemaRecordRef ref = event.getRecord_refs()[i];
+//            try {
+//                DataBox dataBox = ref.getRecord().getValues().get(1);
+//                int read_result = Integer.parseInt(dataBox.getString().trim());
+//                sum += read_result;
+//            } catch (Exception e) {
+//                System.out.println("Null Pointer Exception at: " + event.getBid() + "i:" + i);
+//                System.out.println("What causes the exception?" + event.getKeys()[i]);
+//            }
+//        }
+//
+//        if (enable_speculative) {
+//            //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
+//            //now we assume it's all correct for testing its upper bond.
+//            //so nothing is send out.
+//        } else
+//            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
     }
+
 
     protected void write_request(LREvent event, long bid) throws DatabaseException {
         txn_context = new TxnContext(thread_Id, this.fid, bid);//create a new txn_context for this new transaction.
@@ -130,54 +129,23 @@ public class TP_TStream extends TPBolt {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             for (LREvent event : LREvents) {
-                post_process(event);
+                write_core(event);
             }
 
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
-            LREvents.clear();//clear stored events.
 
             final Marker marker = in.getMarker();
 
             this.collector.ack(in, marker);//tell spout it has finished the work.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, LREvents.size());
+
+            LREvents.clear();//clear stored events.
+
 
         } else {
-
-            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-
-            long bid = in.getBID();
-
-            Long timestamp;//in.getLong(1);
-
-            if (enable_latency_measurement)
-                timestamp = in.getLong(0);
-            else
-                timestamp = 0L;//
-
-            //pre process.
-//            String[] token = parser(in);
-//            PositionReport report = dispatcher(token);
-
-            PositionReport report = (PositionReport) in.getValue(0);
-            int vid = report.getVid();
-            int speed = report.getSpeed().intValue();
-            this.segment.set(report);
-
-            AvgVehicleSpeedTuple vehicleSpeedTuple = update_avgsv(vid, speed);
-
-            LREvent event = new LREvent(report, vehicleSpeedTuple, bid);
-            //txn process.
-
-            //update segment statistics. Write and Read Requests.
-            write_handle(event, timestamp);
-
-            //post process.
-
-            if (enable_debug)
-                LOG.info("Commit event of bid:" + bid);
-
+            super.execute(in);
         }
     }
 }

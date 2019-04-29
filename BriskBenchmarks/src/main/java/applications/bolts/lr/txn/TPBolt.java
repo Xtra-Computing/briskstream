@@ -18,6 +18,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 
+import static applications.CONTROL.enable_debug;
+import static applications.CONTROL.enable_latency_measurement;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
+
 public abstract class TPBolt extends TransactionalBolt {
     /**
      * Maps each vehicle to its average speed value that corresponds to the current 'minute number' and specified segment.
@@ -34,7 +38,7 @@ public abstract class TPBolt extends TransactionalBolt {
         super(log, fid);
     }
 
-    private void toll_process(long bid, Integer vid, Integer count, Double lav, short time) throws InterruptedException {
+    void toll_process(long bid, Integer vid, Integer count, Double lav, short time) throws InterruptedException {
         int toll = 0;
 
         if (lav < 40) {
@@ -63,45 +67,7 @@ public abstract class TPBolt extends TransactionalBolt {
         this.collector.emit_single(bid, tollNotification);
     }
 
-    protected void post_process(LREvent event) throws InterruptedException {
-        Integer vid = event.getVSreport().getVid();
-        int count = event.count_value.getRecord().getValue().getHashSet().size();
-        double lav = event.speed_value.getRecord().getValue().getDouble();
 
-
-        toll_process(event.getBid(), vid, count, lav, event.getPOSReport().getTime());
-//        int sum = 0;
-//        for (int i = 0; i < NUM_ACCESSES; ++i) {
-//            SchemaRecordRef ref = event.getRecord_refs()[i];
-//            try {
-//                DataBox dataBox = ref.getRecord().getValues().get(1);
-//                int read_result = Integer.parseInt(dataBox.getString().trim());
-//                sum += read_result;
-//            } catch (Exception e) {
-//                System.out.println("Null Pointer Exception at: " + event.getBid() + "i:" + i);
-//                System.out.println("What causes the exception?" + event.getKeys()[i]);
-//            }
-//        }
-//
-//        if (enable_speculative) {
-//            //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
-//            //now we assume it's all correct for testing its upper bond.
-//            //so nothing is send out.
-//        } else
-//            collector.force_emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
-    }
-
-
-    protected void write_core(LREvent event) throws InterruptedException {
-//        for (int i = 0; i < NUM_ACCESSES; ++i) {
-//            List<DataBox> values = event.getValues()[i];
-//            SchemaRecordRef recordRef = event.getRecord_refs()[i];
-//            SchemaRecord record = recordRef.getRecord();
-//            List<DataBox> recordValues = record.getValues();
-//            recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
-//        }
-//        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
-    }
 
 
     /**
@@ -188,14 +154,50 @@ public abstract class TPBolt extends TransactionalBolt {
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
 
-        //not supported.
+
+        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+
+        long bid = in.getBID();
+
+        Long timestamp;//in.getLong(1);
+
+        if (enable_latency_measurement)
+            timestamp = in.getLong(0);
+        else
+            timestamp = 0L;//
+
+        if (in.getValue(0) != null) {
+
+            PositionReport report = (PositionReport) in.getValue(0);
+            int vid = report.getVid();
+            int speed = report.getSpeed().intValue();
+            this.segment.set(report);
+
+            AvgVehicleSpeedTuple vehicleSpeedTuple = update_avgsv(vid, speed);
+
+            LREvent event = new LREvent(report, vehicleSpeedTuple, bid);
+            //txn process.
+            write_handle(event, timestamp);//update segment statistics. Write and Read Requests.
+        } else {
+            //Simply push forward.
+            write_handle(bid);
+        }
+
+        if (enable_debug)
+            LOG.info("Commit event of bid:" + bid);
 
     }
 
     protected abstract void write_handle(LREvent event, Long timestamp) throws DatabaseException, InterruptedException;
 
-    protected abstract void read_handle(LREvent event, Long timestamp) throws InterruptedException, DatabaseException;
 
+    //simply push forward.
+    protected void write_handle(long bid) {
+        transactionManager.getOrderLock().blocking_wait(bid);//ensures that locks are added in the event sequence order.
+        //nothing to add..
+        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
+    }
 
+    protected abstract void write_core(LREvent event) throws InterruptedException;
 }
 

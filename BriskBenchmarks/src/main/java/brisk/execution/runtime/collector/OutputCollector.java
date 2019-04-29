@@ -20,6 +20,8 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.Set;
 
+import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_debug;
 import static applications.Constants.DEFAULT_STREAM_ID;
 
 /**
@@ -288,6 +290,7 @@ public class OutputCollector<T> {
     public void emit(long bid, StreamValues values) throws InterruptedException {
         emit(DEFAULT_STREAM_ID, bid, values);
     }
+
     public void emit(long bid, Object values) throws InterruptedException {
         emit(DEFAULT_STREAM_ID, bid, values);
     }
@@ -497,7 +500,8 @@ public class OutputCollector<T> {
         sc.force_emitOnStream(meta, streamId, bid, bid);
         return null;//marker
     }
-    public Marker emit_single(  long bid, TollNotification tollNotification) throws InterruptedException {
+
+    public Marker emit_single(long bid, TollNotification tollNotification) throws InterruptedException {
         assert sc != null;
         sc.force_emitOnStream(meta, DEFAULT_STREAM_ID, bid, tollNotification);
         return null;//marker
@@ -550,9 +554,12 @@ public class OutputCollector<T> {
     public void ack(Tuple input, Marker marker) {
 
         final int executorID = executor.getExecutorID();
-        //LOG.DEBUG(executor.getOP_full() + " is giving acknowledgement for marker:" + marker.msgId + " from " + input.getSourceTask());
+        if (enable_debug)
+            LOG.info(executor.getOP_full() + " is giving acknowledgement for marker:" + marker.msgId + " to " + input.getSourceComponent());
+
         final ExecutionNode src = input.getContext().getExecutor(input.getSourceTask());
-        src.op.callback(executorID, marker);
+        if (input.getBID() != NUM_EVENTS)
+            src.op.callback(executorID, marker);
 
         //non-blocking ack.
 //		Runnable r = () -> {
@@ -597,8 +604,6 @@ public class OutputCollector<T> {
     public void create_marker_single(long boardcast_time, String streamId, long bid, int myiteration) throws InterruptedException {
         sc.create_marker_single(meta, boardcast_time, streamId, bid, myiteration);
     }
-
-
 
 
 //	public void increaseGap(String streamId) {

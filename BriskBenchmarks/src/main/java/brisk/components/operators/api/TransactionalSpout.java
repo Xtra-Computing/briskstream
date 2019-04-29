@@ -2,6 +2,7 @@ package brisk.components.operators.api;
 
 import applications.tools.FastZipfGenerator;
 import brisk.execution.runtime.tuple.impl.Marker;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         forward_checkpoint(sourceId, DEFAULT_STREAM_ID, bid, marker);
     }
+
     @Override
     public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
         forward_checkpoint_single(sourceId, DEFAULT_STREAM_ID, bid, marker);
@@ -83,7 +85,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
         if (clock.tick(myiteration) && success) {//emit marker tuple
 //			forwardResultAndMark(streamId, values, bid_counter++ % bid_end);
 //			final long msgId = bid_counter++;//++ % bid_end;
-//            LOG.debug(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now());
+            LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " BID: " + bid);
 //            long start = System.nanoTime();
             collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
             boardcast_time = System.nanoTime();
@@ -101,10 +103,11 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public void ack_checkpoint(Marker marker) {
         //Do something to clear past state. (optional)
+
         success = true;//I can emit next marker.
 
         if (enable_debug)
-            LOG.info("task_size: " + epoch_size * NUM_ACCESSES);
+            LOG.trace("task_size: " + epoch_size * NUM_ACCESSES);
 
 
         long elapsed_time = System.nanoTime() - boardcast_time;//the time elapsed for the system to handle the previous epoch.

@@ -68,7 +68,7 @@ public class PKBolt_ts extends PKBolt {
 
         PKEvents.add(event);
 
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 
     }
 
@@ -118,16 +118,13 @@ public class PKBolt_ts extends PKBolt {
 
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
-
-            PKEvents.clear();//all tuples in the holder is finished.
 
             final Marker marker = in.getMarker();
-
             this.collector.ack(in, marker);//tell spout it has finished the work.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, PKEvents.size());
 
+            PKEvents.clear();//all tuples in the holder is finished.
         } else {
             Set<Integer> deviceID = (Set<Integer>) in.getValue(0);
             event_handle(bid, deviceID);//calculate moving average.

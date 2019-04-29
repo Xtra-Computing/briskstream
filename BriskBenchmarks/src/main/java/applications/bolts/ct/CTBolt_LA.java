@@ -85,6 +85,7 @@ public class CTBolt_LA extends CTBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
+        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
 
         long bid = in.getBID();
 
@@ -96,6 +97,8 @@ public class CTBolt_LA extends CTBolt {
             timestamp = in.getLong(0);
         else
             timestamp = 0L;//
+
+        END_PREPARE_TIME_MEASURE(thread_Id);
 
         dispatch_process(event, timestamp);
     }

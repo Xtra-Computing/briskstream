@@ -52,7 +52,7 @@ public class OBBolt_ts extends OBBolt {
 
         buyingEvents.add(event);
 
-        END_READ_HANDLE_TIME_MEASURE(thread_Id);
+        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
 
     }
 
@@ -66,7 +66,7 @@ public class OBBolt_ts extends OBBolt {
             alertEvents++;//just for record purpose.
         }
 
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 
 
         collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
@@ -80,7 +80,7 @@ public class OBBolt_ts extends OBBolt {
         if (enable_profile) {
             toppingEvents++;//just for record purpose.
         }
-        END_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 
         collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
     }
@@ -178,16 +178,16 @@ public class OBBolt_ts extends OBBolt {
                     collector.force_emit(event.getBid(), new BidingResult(event, false), event.getTimestamp());
                 }
             }
+
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, buyingEvents.size(), alertEvents + toppingEvents);
+
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, buyingEvents.size() + alertEvents + toppingEvents);
+
             buyingEvents.clear();//all tuples in the holder is finished.
-
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, +alertEvents + toppingEvents + buyingEvents.size());
-
             if (enable_profile) {
                 alertEvents = 0;//all tuples in the holder is finished.
                 toppingEvents = 0;
             }
-
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
 
         } else {
 

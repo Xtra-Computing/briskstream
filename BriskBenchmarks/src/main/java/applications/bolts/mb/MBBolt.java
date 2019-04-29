@@ -13,13 +13,12 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_latency_measurement;
-import static applications.CONTROL.enable_speculative;
+import static applications.CONTROL.*;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE_TS;
 
 public abstract class MBBolt extends TransactionalBolt {
     public MBBolt(Logger log, int fid) {
@@ -146,13 +145,16 @@ public abstract class MBBolt extends TransactionalBolt {
 
         boolean flag = event.READ_EVENT();
         (event).setTimestamp(timestamp);
-        END_PREPARE_TIME_MEASURE(thread_Id);
+
+        END_PREPARE_TIME_MEASURE_TS(thread_Id);
 
         if (flag) {
             read_handle(event, timestamp);
         } else {
             write_handle(event, timestamp);
         }
+        if (enable_debug)
+            LOG.trace("Commit event:" + in.getBID());
     }
 
     protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;

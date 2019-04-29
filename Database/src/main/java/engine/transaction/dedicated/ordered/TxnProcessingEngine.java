@@ -401,7 +401,8 @@ public final class TxnProcessingEngine {
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
                         Task task = new Task(operation_chain);
-//                        LOG.debug("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
+
+                        LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
                         if (!enable_work_stealing) {
                             multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
@@ -645,7 +646,7 @@ public final class TxnProcessingEngine {
 
                     process((MyList<Operation>) operation_chain);
                     if (enable_debug)
-                        LOG.info("Thread:\t" + Thread.currentThread().getName()
+                        LOG.trace("Thread:\t" + Thread.currentThread().getName()
                                 + "reset task:" + OsUtils.Addresser.addressOf(this));
 
 

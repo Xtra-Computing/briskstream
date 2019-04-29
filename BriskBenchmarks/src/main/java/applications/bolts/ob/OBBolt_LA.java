@@ -117,7 +117,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
-
+        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
 
         long bid = in.getBID();
 
@@ -131,6 +131,8 @@ public abstract class OBBolt_LA extends OBBolt {
             timestamp = 0L;//
 
         auth(bid, timestamp);//do nothing for now..
+
+        END_PREPARE_TIME_MEASURE(thread_Id);
 
         dispatch_process(event, timestamp);
 

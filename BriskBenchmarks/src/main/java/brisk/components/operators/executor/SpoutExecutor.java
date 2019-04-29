@@ -2,7 +2,7 @@ package brisk.components.operators.executor;
 
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.api.Operator;
-import brisk.execution.Clock;
+import engine.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;

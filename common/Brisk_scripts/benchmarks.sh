@@ -181,6 +181,17 @@ function CrossTables_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
+function TP_Txn_test {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$theta
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
+
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
+
 
 function OnlineBiding_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
@@ -234,9 +245,9 @@ function clean_cache {
 output=test.csv
 # Generate a timestamp
 timestamp=$(date +%Y%m%d-%H%M)
-FULL_SPEED_TEST=("PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
+FULL_SPEED_TEST=("TP_Txn" "TP" "PositionKeeping" "CrossTables" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "MultiPartition"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "Read_Write_Mixture"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="MicroBenchmark"
     machine=3 #RTM.
@@ -373,13 +384,13 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 38
+                        for tt in 1 38
                         do
-                            for CCOption in 0 1 2
+                            for CCOption in 1 #0 1 2
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
-                                    for ratio_of_read in 0.25 0.5 0.75
+                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
                                         for checkpoint in 1
                                         do
@@ -395,7 +406,7 @@ do
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 0.005 0.015 0.025 0.05 0.1 0.25 0.5
+                                        for checkpoint in 0.05 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
                                         do
                                             TP=$tt
                                             Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
@@ -612,8 +623,8 @@ do
                     done #Input Hz
                 done #varying DB size.
                 ;;
-            "CrossTables") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="CrossTables"
+            "TP_Txn") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="TP_Txn"
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0.6
@@ -629,6 +640,51 @@ do
                                     do
                                         TP=$tt
                                         for checkpoint in 0.005 0.015 0.025 0.05 0.1 0.25 0.5
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                            for CCOption in 1 #2 #4
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done # Threads/Cores
+                    done #Theta
+                done #Input Hz
+                ;;
+            "CrossTables") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="CrossTables"
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.6
+                    do
+                        for tt in 1 #2 8 16 24 32
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 0.1 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4

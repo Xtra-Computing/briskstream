@@ -16,8 +16,6 @@ public abstract class Bolt_LA extends MBBolt{
         super(log, fid);
     }
 
-
-
     @Override
     protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
         //begin transaction processing.
@@ -25,7 +23,6 @@ public abstract class Bolt_LA extends MBBolt{
         long bid = event.getBid();
 
         txn_context = new TxnContext(thread_Id, this.fid, bid);
-
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //ensures that locks are added in the event sequence order.
