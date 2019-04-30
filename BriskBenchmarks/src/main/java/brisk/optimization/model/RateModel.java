@@ -599,7 +599,7 @@ public class RateModel implements Serializable {
 //            }
 //
 //
-//            if (cacheMap.getSub_expected_processRate().get(sid) == null) {
+//            if (cacheMap.getSub_expected_processRate().GetAndUpdate(sid) == null) {
 //                LOG.info("Failed to obtain getSub_expected_processRate, sid:" + sid + "\tExecutionNode:"
 //                        + executionNode.show() + "\tParentE:" + parentE.show() + "streamId:" + streamId);
 //                try {

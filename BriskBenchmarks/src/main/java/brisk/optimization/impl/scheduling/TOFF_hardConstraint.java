@@ -44,7 +44,7 @@ public class TOFF_hardConstraint extends PlanScheduler {
 
         if (output_rate > targetOutput) {
             targetOutput = output_rate;
-            best_plan = new SchedulingPlan(currentPlan, false);//update best plan
+            best_plan = new SchedulingPlan(currentPlan, false);//GetAndUpdate best plan
             Pre_plan = new SchedulingPlan(currentPlan, false);//d_record current plan.
         } else {
             currentPlan = new SchedulingPlan(Pre_plan, false);

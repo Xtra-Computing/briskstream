@@ -88,7 +88,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
         if (clock.tick(myiteration) && success) {//emit marker tuple
 //			forwardResultAndMark(streamId, values, bid_counter++ % bid_end);
 //			final long msgId = bid_counter++;//++ % bid_end;
-            LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " BID: " + bid);
+            LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " SOURCE_CONTROL: " + bid);
 //            long start = System.nanoTime();
             collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
             boardcast_time = System.nanoTime();

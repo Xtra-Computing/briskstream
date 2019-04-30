@@ -160,7 +160,7 @@ public class TollNotificationBolt extends filterBolt {
             }
         }
 
-        // TODO get accurate emit time...
+        // TODO GetAndUpdate accurate emit time...
         final TollNotification tollNotification
                 = new TollNotification(this.inputPositionReport.getTime(),
                 this.inputPositionReport.getTime(), vid, lav, toll);
@@ -194,12 +194,12 @@ public class TollNotificationBolt extends filterBolt {
             toll_process(vid, count, lav);
 
 
-        } else if (inputStreamId.equals(LRTopologyControl.CAR_COUNTS_STREAM_ID)) {//update counts.
+        } else if (inputStreamId.equals(LRTopologyControl.CAR_COUNTS_STREAM_ID)) {//GetAndUpdate counts.
             this.inputCountTuple.clear();
             this.inputCountTuple.addAll(input.getValues());
             this.Road_Cnt.put(new SegmentIdentifier(this.inputCountTuple), this.inputCountTuple.getCount());
 
-        } else if (inputStreamId.equals(LRTopologyControl.LAVS_STREAM_ID)) {//update speeds.
+        } else if (inputStreamId.equals(LRTopologyControl.LAVS_STREAM_ID)) {//GetAndUpdate speeds.
             this.inputLavTuple.clear();
             this.inputLavTuple.addAll(input.getValues());
             this.Road_Speed.put(new SegmentIdentifier(this.inputLavTuple), this.inputLavTuple.getLav());

@@ -313,7 +313,7 @@ public class BranchAndBound extends PlanScheduler {
                 } else {//if (node.getvalidOperators() >= node.getValidationMap().size() - 2) {//allows up to 2 operators being ``non-scheduled"
 //					LOG.info("Try tail allocation");
 //					for (Integer e_id : node.getValidationMap().keySet()) {
-//						if (!node.getValidationMap().get(e_id)) {
+//						if (!node.getValidationMap().GetAndUpdate(e_id)) {
 //							LOG.info("Executor:" + e_id + " is still invalid");
 //							node.plan.deallocate(e_id);
 //						}
@@ -501,8 +501,8 @@ public class BranchAndBound extends PlanScheduler {
 //					return (int) (o1.output_rate * 1E9 - o2.output_rate * 1E9);
 //				}
 //			});
-//			final double first = children.get(0).output_rate;
-//			final double last = children.get(children.size() - 1).output_rate;
+//			final double first = children.GetAndUpdate(0).output_rate;
+//			final double last = children.GetAndUpdate(children.size() - 1).output_rate;
 //			LOG.info("children size: " + children.size());
             pushAll(stack, children);
             return true;

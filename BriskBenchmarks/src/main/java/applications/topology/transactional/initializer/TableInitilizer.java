@@ -96,16 +96,16 @@ public abstract class TableInitilizer {
 
     }
 
-    public void loadData(int maxContestants, String contestants) {
+    public void loadDB(int maxContestants, String contestants) {
         throw new UnsupportedOperationException();
     }
 
     public abstract void creates_Table();
 
 
-    public abstract void loadData(int thread_id, TopologyContext context);
+    public abstract void loadDB(int thread_id, TopologyContext context);
 
-    public abstract void loadData(int thread_id, SpinLock[] spinlock, TopologyContext context);
+    public abstract void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context);
 
     public abstract void loadData_Central(double scale_factor, double theta, int partition_interval, SpinLock[] spinlock_);
 

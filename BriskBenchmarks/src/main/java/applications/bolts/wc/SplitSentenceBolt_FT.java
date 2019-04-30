@@ -26,7 +26,7 @@ public class SplitSentenceBolt_FT extends splitBolt implements Checkpointable {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt_FT.class);
     private static final long serialVersionUID = -8704562309673923018L;
 //	long end = 0;
-//	boolean update = false;
+//	boolean GetAndUpdate = false;
 //	int loop = 1;
 //	private int curr = 0, precurr = 0;
 //	private int dummy = 0;

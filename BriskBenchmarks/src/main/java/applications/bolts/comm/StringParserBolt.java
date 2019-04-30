@@ -61,7 +61,7 @@ public class StringParserBolt extends MapBolt {
 			String string = in.getString(0, i);
 			List<StreamValues> emit = parser.parse(string);
 			for (StreamValues values : emit) {
-				collector.emit(-1L, values.get(0));
+				collector.emit(-1L, values.GetAndUpdate(0));
 			}
 			*/
             char[] string = in.getCharArray(0, i);

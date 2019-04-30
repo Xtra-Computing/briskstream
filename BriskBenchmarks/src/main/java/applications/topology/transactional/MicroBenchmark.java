@@ -71,12 +71,12 @@ public class MicroBenchmark extends TransactionTopology {
             for (int i = 0; i < tthread; i++)
                 spinlock_[i] = new SpinLock();
 
-//            ini.loadData(scale_factor, theta, getPartition_interval(), spinlock_);
+//            ini.loadDB(scale_factor, theta, getPartition_interval(), spinlock_);
 
             //initilize order locks.
             PartitionedOrderLock.getInstance().initilize(tthread);
         } else {
-//            ini.loadData(scale_factor, theta);
+//            ini.loadDB(scale_factor, theta);
         }
         double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
 

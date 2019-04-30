@@ -120,9 +120,9 @@ public class CTBolt_sstore extends CTBolt {
         rnd = new SplittableRandom(1234);
     }
 
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
+    public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
-        context.getGraph().topology.tableinitilizer.loadData(thread_Id, context.getGraph().topology.spinlock, this.context);
+        context.getGraph().topology.tableinitilizer.loadDB(thread_Id, context.getGraph().topology.spinlock, this.context);
     }
 
 

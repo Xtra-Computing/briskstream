@@ -44,7 +44,7 @@ public class sink extends MapBolt {
                 + " receives:" + value
                 + " from:" + in.getSourceComponent());
 
-        //state.update(value_list);
+        //state.GetAndUpdate(value_list);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -71,7 +71,7 @@ public class sink extends MapBolt {
                     + " receives: value_list " + value + "\t bid: (" + bid + ")"
                     + " from:" + in.getSourceComponent());
 
-            //state.update(value_list);
+            //state.GetAndUpdate(value_list);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

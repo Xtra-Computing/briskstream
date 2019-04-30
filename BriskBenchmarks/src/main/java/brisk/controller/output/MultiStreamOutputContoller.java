@@ -325,8 +325,8 @@ public class MultiStreamOutputContoller extends OutputController {
         //non-blocking boardcast.
 //		Runnable r = () -> {
 //			for (PartitionController p :
-//					PClist.get(streamId).values()) {
-//				p.create_marker_boardcast(MetaGroup.get(p.childOP), streamId, timestamp, msgID, myiteration);
+//					PClist.GetAndUpdate(streamId).values()) {
+//				p.create_marker_boardcast(MetaGroup.GetAndUpdate(p.childOP), streamId, timestamp, msgID, myiteration);
 //			}
 //		};
 //		new Thread(r).start();
@@ -352,9 +352,9 @@ public class MultiStreamOutputContoller extends OutputController {
 //        non-blocking boardcast.
 //		Runnable r = () -> {
 //			for (PartitionController p :
-//					PClist.get(streamId).values()) {
+//					PClist.GetAndUpdate(streamId).values()) {
 //                try {
-//                    p.create_marker_boardcast(meta.get(p.childOP), streamId, timestamp, bid, myiteration);
+//                    p.create_marker_boardcast(meta.GetAndUpdate(p.childOP), streamId, timestamp, bid, myiteration);
 //                } catch (InterruptedException e) {
 ////                    e.printStackTrace();
 //                }
@@ -373,8 +373,8 @@ public class MultiStreamOutputContoller extends OutputController {
 //		//non-blocking boardcast.
 //		Runnable r = () -> {
 //			for (PartitionController p :
-//					PClist.get(streamId).values()) {
-//				p.marker_boardcast(MetaGroup.get(p.childOP), streamId, marker);
+//					PClist.GetAndUpdate(streamId).values()) {
+//				p.marker_boardcast(MetaGroup.GetAndUpdate(p.childOP), streamId, marker);
 //			}
 //		};
 //		new Thread(r).start();
@@ -391,8 +391,8 @@ public class MultiStreamOutputContoller extends OutputController {
 //		//non-blocking boardcast.
 //		Runnable r = () -> {
 //			for (PartitionController p :
-//					PClist.get(streamId).values()) {
-//				p.marker_boardcast(MetaGroup.get(p.childOP), streamId, marker);
+//					PClist.GetAndUpdate(streamId).values()) {
+//				p.marker_boardcast(MetaGroup.GetAndUpdate(p.childOP), streamId, marker);
 //			}
 //		};
 //		new Thread(r).start();
@@ -413,14 +413,14 @@ public class MultiStreamOutputContoller extends OutputController {
 
 //	public void try_fill_gap(String streamId){
 //		for (PartitionController p :
-//				PClist.get(streamId).values()) {
+//				PClist.GetAndUpdate(streamId).values()) {
 //			p.try_fill_gap(g);
 //		}
 //	}
 
 //	public void increaseGap(String streamId){
 //		for (PartitionController p :
-//				PClist.get(streamId).values()) {
+//				PClist.GetAndUpdate(streamId).values()) {
 //			p.increaseGap();
 //		}
 //	}
@@ -428,7 +428,7 @@ public class MultiStreamOutputContoller extends OutputController {
 //	@Override
 //	public void addGap(String streamId, long bid) {
 //		for (PartitionController p :
-//				PClist.get(streamId).values()) {
+//				PClist.GetAndUpdate(streamId).values()) {
 //			p.addGap(bid);
 //		}
 //	}
@@ -443,7 +443,7 @@ public class MultiStreamOutputContoller extends OutputController {
 
         return 0;
 
-//		return PClist.get(streamId).values().iterator().next().getBID();
+//		return PClist.GetAndUpdate(streamId).values().iterator().next().getBID();
     }
 
 

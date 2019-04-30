@@ -37,9 +37,9 @@ public class TPBolt_TStream extends TPBolt {
         state = new ValueState();
     }
 
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
+    public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
-        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
+        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
                 , context.getThisTaskId(), context.getGraph());
     }
 
@@ -68,7 +68,7 @@ public class TPBolt_TStream extends TPBolt {
 //        for (int i = 0; i < NUM_ACCESSES; ++i) {
 //            SchemaRecordRef ref = event.getRecord_refs()[i];
 //            try {
-//                DataBox dataBox = ref.getRecord().getValues().get(1);
+//                DataBox dataBox = ref.getRecord().getValues().GetAndUpdate(1);
 //                int read_result = Integer.parseInt(dataBox.getString().trim());
 //                sum += read_result;
 //            } catch (Exception e) {

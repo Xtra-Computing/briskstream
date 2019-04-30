@@ -146,7 +146,7 @@ public class TimestampMerger extends MapBolt {
 
     @Override
     public void prepare(Map conf, TopologyContext context, OutputCollector outputCollector) {
-        // for each logical input stream (ie, each producer bolt), we get an input partition for each of its tasks
+        // for each logical input stream (ie, each producer bolt), we GetAndUpdate an input partition for each of its tasks
         LinkedList<Integer> taskIds = new LinkedList<Integer>();
         HashMap<String, Map<TopologyComponent, Grouping>> parents = context.getThisComponent().getParents();
 

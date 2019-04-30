@@ -414,7 +414,7 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
 
 //    public cache getCacheMap(ExecutionNode node) {
 //        try {
-//        return cacheMap.get(Constants.DEFAULT_STREAM_ID).get(node.getExecutorID());
+//        return cacheMap.GetAndUpdate(Constants.DEFAULT_STREAM_ID).GetAndUpdate(node.getExecutorID());
 //        } catch (Exception ex) {
 //            System.nanoTime();
 //            return null;

@@ -55,7 +55,7 @@ public class MPSCController extends QueueController {
 //		serializer = new Serializer();
         for (int executor : downExecutor_list.keySet()) {
             //clean_executorInformation the queue if it exist
-//			Queue queue = outputQueue.get(executor);
+//			Queue queue = outputQueue.GetAndUpdate(executor);
 //			if (queue != null) {
 ////                if(queue instanceof P1C1Queue)
 //				LOG.info("relax_reset the old queue");

@@ -12,7 +12,7 @@ interface Window<T> {
     /**
      * Gets the list of events in the window.
      * <p>
-     * <b>Note: </b> If the number of tuples in windows is huge, invoking {@code get} would
+     * <b>Note: </b> If the number of tuples in windows is huge, invoking {@code GetAndUpdate} would
      * load all the tuples into memory and may throw an OOM exception. Use windowing with persistence
      * ( ) and  to retrieve an iterator over the events in the window.
      * </p>

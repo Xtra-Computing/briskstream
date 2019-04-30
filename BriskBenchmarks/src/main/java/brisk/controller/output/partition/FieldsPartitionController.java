@@ -39,21 +39,21 @@ public class FieldsPartitionController extends PartitionController {
 
     public int chooseTasks(Object... values) {
 //		int targetTaskIndex = TupleUtils.chooseTaskIndex(outFields.select(groupFields, values), numTasks);
-//		return targetTasks.get(targetTaskIndex);
+//		return targetTasks.GetAndUpdate(targetTaskIndex);
         int targetTaskIndex = TupleUtils.chooseTaskIndex(output_fields.select(input_fields, values), targetTasksize);
         return targetTasks[targetTaskIndex];
     }
 
     public int chooseTasks(Object values) {
 //		int targetTaskIndex = TupleUtils.chooseTaskIndex(outFields.select(groupFields, values), numTasks);
-//		return targetTasks.get(targetTaskIndex);
+//		return targetTasks.GetAndUpdate(targetTaskIndex);
         int targetTaskIndex = TupleUtils.chooseTaskIndex(output_fields.select(input_fields, values), targetTasksize);
         return targetTasks[targetTaskIndex];
     }
 
     public int chooseTasks(StreamValues values) {
 //		int targetTaskIndex = TupleUtils.chooseTaskIndex(outFields.select(groupFields, values), numTasks);
-//		return targetTasks.get(targetTaskIndex);
+//		return targetTasks.GetAndUpdate(targetTaskIndex);
         int targetTaskIndex = TupleUtils.chooseTaskIndex(output_fields.select(input_fields, values), targetTasksize);
         return targetTasks[targetTaskIndex];
     }
@@ -61,7 +61,7 @@ public class FieldsPartitionController extends PartitionController {
 
     public int chooseTasks(char[] values) {
 //		int targetTaskIndex = TupleUtils.chooseTaskIndex(outFields.select(groupFields, values), numTasks);
-//		return targetTasks.get(targetTaskIndex);
+//		return targetTasks.GetAndUpdate(targetTaskIndex);
 
         int targetTaskIndex = TupleUtils.chooseTaskIndex(Arrays.hashCode(values), targetTasksize);
         return targetTasks[targetTaskIndex];
@@ -69,7 +69,7 @@ public class FieldsPartitionController extends PartitionController {
 
     public int chooseTasks(int values) {
 //		int targetTaskIndex = TupleUtils.chooseTaskIndex(outFields.select(groupFields, values), numTasks);
-//		return targetTasks.get(targetTaskIndex);
+//		return targetTasks.GetAndUpdate(targetTaskIndex);
 
         int targetTaskIndex = TupleUtils.chooseTaskIndex(Integer.hashCode(values), targetTasksize);
         return targetTasks[targetTaskIndex];

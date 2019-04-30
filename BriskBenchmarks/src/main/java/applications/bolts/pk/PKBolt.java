@@ -34,7 +34,7 @@ public abstract class PKBolt extends TransactionalBolt {
                 sum -= valueList.addItem(nextDouble[j]);
                 sum += nextDouble[j];
             }
-            //update content.
+            //GetAndUpdate content.
             srcRecord.get(2).setDouble(sum);
             collector.force_emit(event.getBid(), true);
 

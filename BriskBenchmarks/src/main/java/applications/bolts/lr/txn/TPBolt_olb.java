@@ -25,9 +25,9 @@ public class TPBolt_olb extends TPBolt_LA {
         state = new ValueState();
     }
 
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
+    public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
-        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
+        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID()
                 , context.getThisTaskId(), context.getGraph());
     }
 

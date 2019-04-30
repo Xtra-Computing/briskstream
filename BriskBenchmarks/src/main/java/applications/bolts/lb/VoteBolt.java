@@ -154,7 +154,7 @@ public class VoteBolt extends MapBolt {
             // Some sample client libraries use the legacy random phone generation that mostly
             // created invalid phone numbers. Until refactoring, re-assign all such votes to
             // the "XX" fake state (those votes will not appear on the Live Statistics dashboard,
-            // but are tracked as legitimate instead of invalid, as old clients would mostly get
+            // but are tracked as legitimate instead of invalid, as old clients would mostly GetAndUpdate
             // it wrong and see all their transactions rejected).
 //			final String state = (validation[2].getRowCount() > 0) ? validation[2].fetchRow(0).getString(0) : "XX";
 

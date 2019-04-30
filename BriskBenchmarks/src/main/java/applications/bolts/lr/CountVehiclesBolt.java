@@ -82,7 +82,7 @@ public class CountVehiclesBolt extends MapBolt {
             segCnt = new CarCount();
             this.countsMap.put(this.segment.copy(), segCnt);
         } else {
-            segCnt.add(this.inputPositionReport.getVid());//update count.
+            segCnt.add(this.inputPositionReport.getVid());//GetAndUpdate count.
         }
 
 

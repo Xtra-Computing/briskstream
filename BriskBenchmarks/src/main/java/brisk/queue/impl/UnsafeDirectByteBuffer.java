@@ -22,7 +22,7 @@ class UnsafeDirectByteBuffer {
     }
 
     /**
-     * put byte and skip position update and boundary checks
+     * put byte and skip position GetAndUpdate and boundary checks
      *
      * @param b
      */

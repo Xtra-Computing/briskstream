@@ -21,7 +21,7 @@ public class SplitSentenceBolt extends splitBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt.class);
     private static final long serialVersionUID = 8089145995668583749L;
 //	long end = 0;
-//	boolean update = false;
+//	boolean GetAndUpdate = false;
 //	int loop = 1;
 //	private int curr = 0, precurr = 0;
 //	private int dummy = 0;

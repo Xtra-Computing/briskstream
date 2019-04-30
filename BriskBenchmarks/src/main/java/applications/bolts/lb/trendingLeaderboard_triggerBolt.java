@@ -54,7 +54,7 @@ public class trendingLeaderboard_triggerBolt extends MapBolt {
         final long bid = in.getBID();
 //		if (in.isTickerMark()) {
 //			//contestantNumber,
-//			collector.emit(bid, new StreamValues(contestantNumber, counts.get(contestantNumber)));
+//			collector.emit(bid, new StreamValues(contestantNumber, counts.GetAndUpdate(contestantNumber)));
 //		} else {
 //			MutableInt count = counts.computeIfAbsent(contestantNumber, k -> new MutableInt(0));
 //			count.increment();

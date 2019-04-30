@@ -57,9 +57,9 @@ public class randomSearch_hardConstraints extends PlanScheduler {
             for (int i = 0; i < threads; i++) {
                 double outputRate = plans[i].outputrate;
                 if (outputRate > targetOutput) {
-                    //LOG.DEBUG("best search, update plan to:" + outputRate);
+                    //LOG.DEBUG("best search, GetAndUpdate plan to:" + outputRate);
                     targetOutput = outputRate;
-                    best_plan = plans[i];//update best plan
+                    best_plan = plans[i];//GetAndUpdate best plan
 //                        Pre_plan = new SchedulingPlan(plans[i], false);//d_record current plan.
 //                        currentPlan = best_plan;
                 }
@@ -79,7 +79,7 @@ public class randomSearch_hardConstraints extends PlanScheduler {
         Random r = new Random();
         int satisfy = cons.allstatisfy;//by default it is satisfied.
         for (ExecutionNode executor : sort_opList) {//if all are allocated then exit.
-//			ExecutionNode executor = Operation.get(r.nextInt(Operation.size()));//randomly pick one executor to proceed.
+//			ExecutionNode executor = Operation.GetAndUpdate(r.nextInt(Operation.size()));//randomly pick one executor to proceed.
 //			if (sp.Allocated(executor)) {
 //				LOG.info("Something wrong in the algorithm!");
 //			}

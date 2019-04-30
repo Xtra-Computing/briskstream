@@ -119,7 +119,7 @@ public class NullSink_LR extends BaseSink {
                         //writer.write(start_true+"\n");
 
 //    			for(int i=0;i<recorder.fieldSize();i++){
-//    				writer.write(recorder.get(i)+"\n");
+//    				writer.write(recorder.GetAndUpdate(i)+"\n");
 //    			}
                         writer.write(String.valueOf((end - start_true) / 1000000000));
                         //writer.write(((end-start)/1000.0)/1000000.0+"\t"+timestamp_counter+"\n");

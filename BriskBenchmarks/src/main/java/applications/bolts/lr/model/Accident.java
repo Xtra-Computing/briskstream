@@ -126,7 +126,7 @@ public class Accident implements Serializable {
     }
 
     /**
-     * get accident position
+     * GetAndUpdate accident position
      *
      * @return position number
      */
@@ -172,7 +172,7 @@ public class Accident implements Serializable {
     }
 
     /**
-     * get all vids of vehicles involved in that accident
+     * GetAndUpdate all vids of vehicles involved in that accident
      *
      * @return vehicles hashset wtih vids
      */
@@ -203,7 +203,7 @@ public class Accident implements Serializable {
     }
 
     /**
-     * update accident information (includes updating time and adding vid of current position report if not already
+     * GetAndUpdate accident information (includes updating time and adding vid of current position report if not already
      * present
      *
      * @param report positionreport of accident car

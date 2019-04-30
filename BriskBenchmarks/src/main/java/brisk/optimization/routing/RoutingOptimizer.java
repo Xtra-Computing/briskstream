@@ -73,7 +73,7 @@ public class RoutingOptimizer {
 //     * @param plan
 //     * @param executionNode
 //     */
-//    private void update(SchedulingPlan plan, ExecutionNode executionNode) {
+//    private void GetAndUpdate(SchedulingPlan plan, ExecutionNode executionNode) {
 //
 //
 //        for (TopologyComponent children : executionNode.getChildren().keySet()) {
@@ -90,10 +90,10 @@ public class RoutingOptimizer {
 //
 //                int i = 0;
 //                for (ExecutionNode dst : children.getExecutorList()) {
-//                    Double nominator = cycles.get(i);
+//                    Double nominator = cycles.GetAndUpdate(i);
 //                    double sum = 0;
 //                    for (int j = 0; j < cycles.size(); j++) {
-//                        sum += nominator / cycles.get(j);
+//                        sum += nominator / cycles.GetAndUpdate(j);
 //                    }
 //                    partition.partition_ratio.put(dst.getExecutorID(), 1 / sum);
 //                    i++;
@@ -111,9 +111,9 @@ public class RoutingOptimizer {
      */
     private void update_partition(SchedulingPlan plan, ExecutionNode executionNode) {
 //        if (executionNode.isSourceNode()) {//terminate case
-//            update(plan, executionNode);
+//            GetAndUpdate(plan, executionNode);
 //        } else {
-//            update(plan, executionNode);
+//            GetAndUpdate(plan, executionNode);
 //            for (TopologyComponent op : executionNode.getParents_keySet())
 //                for (ExecutionNode parent : op.getExecutorList())
 //                    update_partition(plan, parent);

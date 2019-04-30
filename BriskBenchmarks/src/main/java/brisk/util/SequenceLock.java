@@ -116,7 +116,7 @@ public class SequenceLock implements Serializable {
 //	}
 //
 //	public void set_executor_ready(int fid, int task_id) {
-//		executors_ready.get(fid).put(task_id, true);
+//		executors_ready.GetAndUpdate(fid).put(task_id, true);
 //	}
 
 //	/**
@@ -125,7 +125,7 @@ public class SequenceLock implements Serializable {
 //	 * @return
 //	 */
 //	private boolean all_executors_ready(int fid) {
-//		return !(executors_ready.get(fid).containsValue(false));
+//		return !(executors_ready.GetAndUpdate(fid).containsValue(false));
 //	}
 
 //	public void setEnd_fid(int end_fid) {
@@ -144,7 +144,7 @@ public class SequenceLock implements Serializable {
 //	}
 //
 //	private void executors_ready_rest(TxnContext txnContext) {
-//		final HashMap<Integer, Boolean> map = executors_ready.get(txnContext.getFID());
+//		final HashMap<Integer, Boolean> map = executors_ready.GetAndUpdate(txnContext.getFID());
 //		for (int task_id : map.keySet()) {
 //			map.put(task_id, false);
 //		}

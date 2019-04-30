@@ -11,15 +11,14 @@ import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
-import brisk.util.BID;
+import brisk.util.SOURCE_CONTROL;
 import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.combo_bid_size;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.content.Content.*;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -90,6 +89,12 @@ public class GSCombo extends TransactionalSpout {
                 break;
             }
         }
+
+        //do preparation.
+        bolt.prepare(config, context, collector);
+        if (enable_shared_state)
+            bolt.loadDB(config, context, collector);
+
     }
 
 
@@ -100,14 +105,13 @@ public class GSCombo extends TransactionalSpout {
 //            if (ccOption == CCOption_TStream)
 //                forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
-            int bid = BID.getInstance().get();
+            int bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
 
             if (bid < NUM_EVENTS) {
 
                 for (int i = bid; i < bid + combo_bid_size; i++) {
                     bolt.execute(new Tuple(i, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
                 }
-
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             e.printStackTrace();

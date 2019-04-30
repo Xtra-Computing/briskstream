@@ -95,7 +95,7 @@ public class DailyExpenditureBolt extends filterBolt {
         super.prepare(conf, context, collector);
         @SuppressWarnings("unchecked")
 
-        String tollDataStoreClass = MemoryTollDataStore.class.getName();//(String) conf.get(Helper.TOLL_DATA_STORE_CONF_KEY);
+        String tollDataStoreClass = MemoryTollDataStore.class.getName();//(String) conf.GetAndUpdate(Helper.TOLL_DATA_STORE_CONF_KEY);
         try {
             this.dataStore = (TollDataStore) Class.forName(tollDataStoreClass).newInstance();
         } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {

@@ -236,7 +236,7 @@ public class TollNotificationBolt_pos extends filterBolt {
                 }
             }
         }
-        // TODO get accurate emit time...
+        // TODO GetAndUpdate accurate emit time...
         final TollNotification tollNotification = new TollNotification
                 (this.inputPositionReport.getTime(),
                         this.inputPositionReport.getTime(),
@@ -351,7 +351,7 @@ public class TollNotificationBolt_pos extends filterBolt {
                     }
                 }
             }
-            // TODO get accurate emit time...
+            // TODO GetAndUpdate accurate emit time...
             final TollNotification tollNotification = new TollNotification
                     (this.inputPositionReport.getTime(),
                             this.inputPositionReport.getTime(),

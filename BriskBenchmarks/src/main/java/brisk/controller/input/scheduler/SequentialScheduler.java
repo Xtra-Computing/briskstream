@@ -60,7 +60,7 @@ public class SequentialScheduler extends InputStreamController {
 //			if (current == size) {
 //				current = 0;
 //			}
-//			tuple = fetchFromqueue(LQ.get(current++));
+//			tuple = fetchFromqueue(LQ.GetAndUpdate(current++));
 //			cnt++;
 //		} while (tuple == null && cnt < size);
 //

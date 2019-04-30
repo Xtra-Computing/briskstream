@@ -46,7 +46,7 @@ public class OBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, TopologyContext context) {
+    public void loadDB(int thread_id, TopologyContext context) {
         int partition_interval = getPartition_interval();
         int left_bound = thread_id * partition_interval;
         int right_bound;
@@ -65,7 +65,7 @@ public class OBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, SpinLock[] spinlock, TopologyContext context) {
+    public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
         int partition_interval = getPartition_interval();
         int left_bound = thread_id * partition_interval;
         int right_bound;

@@ -59,7 +59,7 @@ public abstract class TPBolt extends TransactionalBolt {
             }
         }
 
-        // TODO get accurate emit time...
+        // TODO GetAndUpdate accurate emit time...
         final TollNotification tollNotification
                 = new TollNotification(
                 time, time, vid, lav, toll);
@@ -124,7 +124,7 @@ public abstract class TPBolt extends TransactionalBolt {
             rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segId.getXWay(),
                     segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage(), time);
 
-            // set to null to get new vehicle entry below
+            // set to null to GetAndUpdate new vehicle entry below
             vehicleEntry = null;
         }
 
@@ -137,7 +137,7 @@ public abstract class TPBolt extends TransactionalBolt {
             rt = new AvgVehicleSpeedTuple(vid, this.currentMinute, segment.getXWay(),
                     segment.getSegment(), segment.getDirection(), vehicleEntry.getLeft().getAverage(), time);
 
-        } else {// vehicle does not change segment but only update its speed.
+        } else {// vehicle does not change segment but only GetAndUpdate its speed.
             //write.
             vehicleEntry.getLeft().updateAverage(speed);
 
@@ -177,7 +177,7 @@ public abstract class TPBolt extends TransactionalBolt {
 
             LREvent event = new LREvent(report, vehicleSpeedTuple, bid);
             //txn process.
-            write_handle(event, timestamp);//update segment statistics. Write and Read Requests.
+            write_handle(event, timestamp);//GetAndUpdate segment statistics. Write and Read Requests.
         } else {
             //Simply push forward.
             write_handle(bid);

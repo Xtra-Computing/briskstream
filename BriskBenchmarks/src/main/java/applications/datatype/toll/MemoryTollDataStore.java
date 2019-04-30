@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * a {@link TollDataStore} which stores data in memory. Due to the fact that data to satisfy historical LRB query can
- * get huge, you're advised to use it carefully, only.<br />
+ * GetAndUpdate huge, you're advised to use it carefully, only.<br />
  * <br />
  * This implementation is not thread-safe.
  *

@@ -154,7 +154,7 @@ public abstract class AbstractSpout extends Operator {
 //
 
 //		for (int i = 0; i < bound; i++) {
-//			array[i] = str_l.get(i).toCharArray();
+//			array[i] = str_l.GetAndUpdate(i).toCharArray();
 //		}
 //
 

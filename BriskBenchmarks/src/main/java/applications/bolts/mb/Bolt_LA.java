@@ -29,7 +29,7 @@ public abstract class Bolt_LA extends MBBolt{
         transactionManager.getOrderLock().blocking_wait(bid);
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        read_lock_ahead(event, bid);
+        read_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         transactionManager.getOrderLock().advance();
@@ -37,7 +37,7 @@ public abstract class Bolt_LA extends MBBolt{
         END_WAIT_TIME_MEASURE(thread_Id);
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-        read_request(event, bid);
+        read_request(event);
         END_TP_CORE_TIME_MEASURE(txn_context.thread_Id, 1);
 
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -63,13 +63,13 @@ public abstract class Bolt_LA extends MBBolt{
         transactionManager.getOrderLock().blocking_wait(bid);//ensures that locks are added in the event sequence order.
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        write_lock_ahead(event, bid);
+        write_lock_ahead(event);
         END_LOCK_TIME_MEASURE(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
         END_WAIT_TIME_MEASURE(thread_Id);
 
-        write_request(event, bid);
+        write_request(event);
 
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 

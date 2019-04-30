@@ -69,7 +69,7 @@ public class URLBolt extends AbstractScoreBolt {
                 double score = score(thresholdMin, thresholdMax, ratio);
 
                 ////LOG.DEBUG(String.format("T1=%f; T2=%f; ENCR=%f; ECR=%f; Ratio=%f; Score=%f",
-                //        thresholdMin, thresholdMax, e.get(Source.ENCR), e.get(Source.ECR), ratio, score));
+                //        thresholdMin, thresholdMax, e.GetAndUpdate(Source.ENCR), e.GetAndUpdate(Source.ECR), ratio, score));
 //                cnt1++;
                 collector.emit(URL_STREAM_ID, bid, new StreamValues(number, timestamp, score, cdr));
                 map.remove(key);

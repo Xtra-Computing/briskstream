@@ -466,8 +466,8 @@ public class STAT implements Serializable {
                 LLC_MISS_PS_inFetch[bit] = LLCM_stats_inFetch[bit].getPercentile(percentile);
                 LLC_MISS_PS[bit] = LLCM_stats[bit].getPercentile(percentile);
 
-                LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(percentile);//get median.
-                LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(percentile);//get median.
+                LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(percentile);//GetAndUpdate median.
+                LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(percentile);//GetAndUpdate median.
 
                 L1_MISS_PS_inFetch[bit] = L1_stats_inFetch[bit].getPercentile(percentile);
                 L1_MISS_PS[bit] = L1_stats[bit].getPercentile(percentile);
@@ -489,8 +489,8 @@ public class STAT implements Serializable {
                     LLC_MISS_PS_inFetch[bit] = LLCM_stats_inFetch[bit].getPercentile(i);
                     LLC_MISS_PS[bit] = LLCM_stats[bit].getPercentile(i);
 
-                    LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(i);//get median.
-                    LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(i);//get median.
+                    LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(i);//GetAndUpdate median.
+                    LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(i);//GetAndUpdate median.
 
                     L1_MISS_PS_inFetch[bit] = L1_stats_inFetch[bit].getPercentile(i);
                     L1_MISS_PS[bit] = L1_stats[bit].getPercentile(i);
@@ -509,8 +509,8 @@ public class STAT implements Serializable {
                 LLC_MISS_PS_inFetch[bit] = LLCM_stats_inFetch[bit].getPercentile(i);
                 LLC_MISS_PS[bit] = LLCM_stats[bit].getPercentile(i);
 
-                LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(i);//get median.
-                LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(i);//get median.
+                LLC_REF_PS_inFetch[bit] = LLCR_stats_inFetch[bit].getPercentile(i);//GetAndUpdate median.
+                LLC_REF_PS[bit] = LLCR_stats[bit].getPercentile(i);//GetAndUpdate median.
 
                 L1_MISS_PS_inFetch[bit] = L1_stats_inFetch[bit].getPercentile(i);
                 L1_MISS_PS[bit] = L1_stats[bit].getPercentile(i);

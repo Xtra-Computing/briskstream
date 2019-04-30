@@ -244,7 +244,7 @@ public class ExecutionNode implements Serializable {
                         for (ExecutionNode downstream_executor : op.getExecutorList()) {
                             int executorID = this.getExecutorID();
 
-                            //get output queue from output partition.
+                            //GetAndUpdate output queue from output partition.
                             final Queue queue = this.getController()
                                     .getPartitionController(streamId, op.getId())
                                     .get_queue(downstream_executor.getExecutorID());
@@ -299,7 +299,7 @@ public class ExecutionNode implements Serializable {
         return "sum";
     }
 
-    //get partition ratio for the downstream executor
+    //GetAndUpdate partition ratio for the downstream executor
     public double getPartition_ratio(String input_stream_downOpID, String downOpID, int ExecutorID) {
         if (ExecutorID == -2) {
             return 1;//virtual ground.
@@ -466,7 +466,7 @@ public class ExecutionNode implements Serializable {
         return RM.brp_sc(this, parentE, streamId, sp, bound);
     }
 
-    //get outputRate of specific output streams..
+    //GetAndUpdate outputRate of specific output streams..
     public double getOutputRate(String executionNode_InputStreamId, String executionNode_OnputStreamId, ExecutionNode parent, SchedulingPlan sp, boolean bound) {
         return RM.ro_sc(this, parent, executionNode_InputStreamId, executionNode_OnputStreamId, sp, bound);
     }
@@ -482,7 +482,7 @@ public class ExecutionNode implements Serializable {
 //		}
 //		for (TopologyComponent child_Op : children_keySet) {
 //			for (ExecutionNode child : child_Op.getExecutorList()) {
-//				//  if (child.BP.get(this.getExecutorID())!=null&&!child.BP.get(this.getExecutorID())) return false;
+//				//  if (child.BP.GetAndUpdate(this.getExecutorID())!=null&&!child.BP.GetAndUpdate(this.getExecutorID())) return false;
 //				if (!child.BP) {
 //					return false;
 //				}

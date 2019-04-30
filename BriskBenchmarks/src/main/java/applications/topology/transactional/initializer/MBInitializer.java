@@ -101,7 +101,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, TopologyContext context) {
+    public void loadDB(int thread_id, TopologyContext context) {
 
         int partition_interval = getPartition_interval();
         int left_bound = thread_id * partition_interval;
@@ -123,7 +123,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, SpinLock[] spinlock_, TopologyContext context) {
+    public void loadDB(int thread_id, SpinLock[] spinlock_, TopologyContext context) {
 
         int partition_interval = getPartition_interval();
         int left_bound = thread_id * partition_interval;

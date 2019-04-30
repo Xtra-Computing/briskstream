@@ -37,7 +37,7 @@ public class Bolt_nocc extends MBBolt {
 
         boolean rt;
 
-        if (read_request_lock(event, bid)) {
+        if (read_request_lock(event)) {
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             read_core(event);
@@ -49,7 +49,7 @@ public class Bolt_nocc extends MBBolt {
         } else {
             txn_context.is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
-            while (!read_request_lock(event, bid)) ;
+            while (!read_request_lock(event)) ;
             END_ABORT_TIME_MEASURE(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -68,7 +68,7 @@ public class Bolt_nocc extends MBBolt {
         long bid = event.getBid();
         txn_context = new TxnContext(thread_Id, this.fid, bid);
 
-        if (write_request_lock(event, bid)) {
+        if (write_request_lock(event)) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             write_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
@@ -78,7 +78,7 @@ public class Bolt_nocc extends MBBolt {
         } else {
             txn_context.is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
-            while (!write_request_lock(event, bid)) ;
+            while (!write_request_lock(event)) ;
             END_ABORT_TIME_MEASURE(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);

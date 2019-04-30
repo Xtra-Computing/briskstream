@@ -224,10 +224,10 @@ public final class CountTuple extends applications.util.datatypes.StreamValues i
     }
 //
 //    public long getMsgID() {
-//        return (long) super.get(5);
+//        return (long) super.GetAndUpdate(5);
 //    }
 //
 //    public long getTimeStamp() {
-//        return (long) super.get(6);
+//        return (long) super.GetAndUpdate(6);
 //    }
 }

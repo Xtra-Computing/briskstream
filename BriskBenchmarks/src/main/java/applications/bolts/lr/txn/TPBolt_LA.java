@@ -60,7 +60,7 @@ public abstract class TPBolt_LA extends TPBolt {
         HashSet cnt_segment = cnt_value_box.getHashSet();
         double latestAvgSpeeds = speed_value_box.getDouble();
 
-        cnt_segment.add(vid);//update hashset; updated state also. TODO: be careful of this.
+        cnt_segment.add(vid);//GetAndUpdate hashset; updated state also. TODO: be careful of this.
 
         int count = cnt_segment.size();
 

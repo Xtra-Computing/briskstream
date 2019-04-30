@@ -376,7 +376,7 @@ public class ExecutionManager {
                 Thread.sleep(1000);
             }
             LOG.info("Rebind Executors " + thread.getOP() + "-" + thread.getExecutorID() + " on core: " + Arrays.toString(cpu));
-            TopologyContext.plan = plan;//update context.
+            TopologyContext.plan = plan;//GetAndUpdate context.
 //			contexts[i] = new TopologyContext(g, null, plan, thread.executor, ThreadMap, HPCMonotor);
 //			thread.setContext(contexts[i]);
 //			i++;

@@ -63,7 +63,7 @@ public class PartialKeyGroupingController extends FieldsPartitionController {
 
         int taskId = 0;
         if (values.length > 0) {
-            //String str = values.get(0).toString(); // assume key is the first field
+            //String str = values.GetAndUpdate(0).toString(); // assume key is the first field
             String str = output_fields.select(input_fields, values).toString();
             int firstChoice = (int) (Math.abs(h1.hashBytes(str.getBytes()).asLong()) % downTaskSize);
             int secondChoice = (int) (Math.abs(h2.hashBytes(str.getBytes()).asLong()) % downTaskSize);
@@ -79,7 +79,7 @@ public class PartialKeyGroupingController extends FieldsPartitionController {
 
         int taskId = 0;
         if (values.length > 0) {
-            //String str = values.get(0).toString(); // assume key is the first field
+            //String str = values.GetAndUpdate(0).toString(); // assume key is the first field
             String str = new String(values);
             int firstChoice = (int) (Math.abs(h1.hashBytes(str.getBytes()).asLong()) % downTaskSize);
             int secondChoice = (int) (Math.abs(h2.hashBytes(str.getBytes()).asLong()) % downTaskSize);

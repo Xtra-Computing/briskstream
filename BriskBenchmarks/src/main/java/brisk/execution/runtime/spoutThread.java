@@ -78,7 +78,7 @@ public class spoutThread extends executorThread {
 //        profiling = true;
 //                int repeate = 1;
         for (int i = 0; i < loop; i++) {
-//            executor.profiling.get(-1).start_measure(1);
+//            executor.profiling.GetAndUpdate(-1).start_measure(1);
 //            stat.start_measure(1);
 //                    for (int r = 0; r < repeate; r++)
             stat.start_measure();
@@ -88,7 +88,7 @@ public class spoutThread extends executorThread {
 
             stat.end_measure(batch);//* repeat
 //            stat.end_measure();
-//                    executor.profiling.get(-1).end_measure();
+//                    executor.profiling.GetAndUpdate(-1).end_measure();
             stat.setProfiling(
                     true//it must be local for spout thread.
                     , 0);
@@ -108,11 +108,11 @@ public class spoutThread extends executorThread {
             if (!conf.getBoolean("NAV", true)) {
                 binding = binding();
             }
-//            if (enable_numa_placement)
-//                if (conf.getBoolean("Sequential_Binding", true)) {
-//                    binding = sequential_binding();
-//
-//                }
+            if (enable_numa_placement)
+                if (conf.getBoolean("Sequential_Binding", true)) {
+                    binding = sequential_binding();
+
+                }
 
             initilize_queue(this.executor.getExecutorID());
             boolean binding_finished = true;
@@ -137,6 +137,8 @@ public class spoutThread extends executorThread {
             //pre-loading input tuples.
 //            int preload_size = conf.getInt("targetHz") * conf.getInt("checkpoint") * conf.getInt("tthread") / 2;
 //            sp.bulk_emit(preload_size);
+
+
 //            cnt += preload_size;
 
             System.gc();

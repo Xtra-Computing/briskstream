@@ -71,7 +71,7 @@ public class TimeTriggerPolicy<T> implements TriggerPolicy<T, Void> {
      * Check for uncaught exceptions during the execution
      * of the trigger and fail fast.
      * The uncaught exceptions will be wrapped in
-     * ExecutionException and thrown when future.get() is invoked.
+     * ExecutionException and thrown when future.GetAndUpdate() is invoked.
      */
     private void checkFailures() {
         if (executorFuture != null && executorFuture.isDone()) {
@@ -99,7 +99,7 @@ public class TimeTriggerPolicy<T> implements TriggerPolicy<T, Void> {
                 LOG.error("handler.onTrigger failed ", th);
                 /*
                  * propagate it so that Task gets canceled and the exception
-                 * can be retrieved from executorFuture.get()
+                 * can be retrieved from executorFuture.GetAndUpdate()
                  */
                 throw th;
             }

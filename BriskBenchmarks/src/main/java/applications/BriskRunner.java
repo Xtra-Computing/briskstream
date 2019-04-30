@@ -473,14 +473,14 @@ public class BriskRunner extends abstractRunner {
 
 //            sb.append("====Median======\n")
 //                    .append("Task Id :\t").append(i).append("\n")
-//                    .append("useful time:\t").append(metrics.useful_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("abort time:\t").append(metrics.abort_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("ts allocation time:\t").append(metrics.ts_allocation.get(componentId).getPercentile(50)).append("\n")
-//                    .append("index time:\t").append(metrics.index_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("wait time:\t").append(metrics.wait.get(componentId).getPercentile(50)).append("\n")
-////                            .append("order_wait time:\t").append(metrics.order_wait.get(componentId).getPercentile(50)).append("\n")
+//                    .append("useful time:\t").append(metrics.useful_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("abort time:\t").append(metrics.abort_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("ts allocation time:\t").append(metrics.ts_allocation.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("index time:\t").append(metrics.index_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("wait time:\t").append(metrics.wait.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+////                            .append("order_wait time:\t").append(metrics.order_wait.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 //
-////                            .append("enqueue time:\t").append(metrics.enqueue_time.get(componentId).getPercentile(50)).append("\n")
+////                            .append("enqueue time:\t").append(metrics.enqueue_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 ////                            .append("rma time:\t").append((VALUE_LEN + 4) * metrics.NUM_ACCESSES / p.cache_line * p.latency_map[0][7]).append("\n")
 //
 //            ;

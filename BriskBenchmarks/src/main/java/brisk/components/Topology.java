@@ -17,7 +17,7 @@ import static applications.Constants.sinkType;
 /**
  * Class to d_record a Topology description
  * Topology build (user side) -> (system side) build children link.
- * -> Topology Compile to get Brisk.execution graph -> link executor to each Brisk.topology component.
+ * -> Topology Compile to GetAndUpdate Brisk.execution graph -> link executor to each Brisk.topology component.
  */
 public class Topology implements Serializable {
     private static final long serialVersionUID = 42L;

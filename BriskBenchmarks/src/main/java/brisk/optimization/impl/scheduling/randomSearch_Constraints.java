@@ -56,9 +56,9 @@ public class randomSearch_Constraints extends PlanScheduler {
                 for (int i = 0; i < threads; i++) {
                     double outputRate = plans[i].getOutput_rate(true);
                     if (outputRate < targetOutput) {
-                        LOG.info("worst search, update plan to:" + outputRate);
+                        LOG.info("worst search, GetAndUpdate plan to:" + outputRate);
                         targetOutput = outputRate;
-                        best_plan = plans[i];//update best plan
+                        best_plan = plans[i];//GetAndUpdate best plan
 //                        Pre_plan = new SchedulingPlan(plans[i], false);//d_record current plan.
 //                        currentPlan = best_plan;
                     }
@@ -67,9 +67,9 @@ public class randomSearch_Constraints extends PlanScheduler {
                 for (int i = 0; i < threads; i++) {
                     double outputRate = plans[i].getOutput_rate(true);
                     if (outputRate > targetOutput) {
-                        LOG.info("best search, update plan to:" + outputRate);
+                        LOG.info("best search, GetAndUpdate plan to:" + outputRate);
                         targetOutput = outputRate;
-                        best_plan = plans[i];//update best plan
+                        best_plan = plans[i];//GetAndUpdate best plan
 //                        Pre_plan = new SchedulingPlan(plans[i], false);//d_record current plan.
 //                        currentPlan = best_plan;
                     }

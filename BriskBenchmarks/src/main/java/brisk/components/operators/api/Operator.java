@@ -4,7 +4,6 @@ import applications.constants.BaseConstants;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
-import engine.Clock;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
@@ -12,6 +11,7 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.faulttolerance.State;
+import engine.Clock;
 import engine.Database;
 import engine.common.OrderLock;
 import engine.common.OrderValidate;
@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static applications.CONTROL.enable_app_combo;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.BaseConstants.BaseField.TEXT;
 
@@ -40,7 +41,7 @@ public abstract class Operator implements IOperator {
     private static final long serialVersionUID = -7816511217365808709L;
     public static String flatMap = "flatMap";//Takes one element and produces zero, one, or more elements, e.g., A flatmap function that splits sentences to words:
     public static String w_join = "w_join";//Join two data streams on a given key and a common window.
-    public static String union = "union";//Union of two or more data streams creating a new stream containing all the elements from all the streams. SimExecutionNode: If you union a data stream with itself you will get each element twice in the resulting stream.
+    public static String union = "union";//Union of two or more data streams creating a new stream containing all the elements from all the streams. SimExecutionNode: If you union a data stream with itself you will GetAndUpdate each element twice in the resulting stream.
     public final Map<String, Double> input_selectivity;//input_selectivity used to capture multi-stream effect.
     public final Map<String, Double> output_selectivity;//output_selectivity can be > 1
     public final double branch_selectivity;
@@ -234,8 +235,8 @@ public abstract class Operator implements IOperator {
 //		txn_context = new TxnContext(thisTaskId, fid, bid);
     }
 
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
-        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
+    public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
+        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
 
     /**
@@ -263,8 +264,11 @@ public abstract class Operator implements IOperator {
                         "but no state is initialized");
 //				System.exit(-1);
             } else {
-                state.source_state_ini(executor);
-                state.dst_state_init(executor);
+
+                if (!enable_app_combo) {
+                    state.source_state_ini(executor);
+                    state.dst_state_init(executor);
+                }
             }
         }
         db = getContext().getDb();
@@ -290,10 +294,10 @@ public abstract class Operator implements IOperator {
 
     }
 
-    public void loadData(int thread_Id, int thisTaskId, ExecutionGraph graph) {
+    public void loadDB(int thread_Id, int thisTaskId, ExecutionGraph graph) {
 
 
-        graph.topology.tableinitilizer.loadData(thread_Id, this.context);
+        graph.topology.tableinitilizer.loadDB(thread_Id, this.context);
     }
 
     public void setExecutionNode(ExecutionNode e) {

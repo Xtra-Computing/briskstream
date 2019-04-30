@@ -92,7 +92,7 @@ public class AverageVehicleSpeedBolt extends filterBolt {
             this.collector.emit(bid, new AvgVehicleSpeedTuple(vid, this.currentMinute,
                     segId.getXWay(), segId.getSegment(), segId.getDirection(), vehicleEntry.getLeft().getAverage(), time));
 
-            // set to null to get new vehicle entry below
+            // set to null to GetAndUpdate new vehicle entry below
             vehicleEntry = null;
         }
 
@@ -107,7 +107,7 @@ public class AverageVehicleSpeedBolt extends filterBolt {
                             segment.getXWay(), segment.getSegment(),
                             segment.getDirection(), vehicleEntry.getLeft().getAverage(), time));
 
-        } else {// vehicle does not change segment but only update its speed.
+        } else {// vehicle does not change segment but only GetAndUpdate its speed.
             //write.
             vehicleEntry.getLeft().updateAverage(speed);
 

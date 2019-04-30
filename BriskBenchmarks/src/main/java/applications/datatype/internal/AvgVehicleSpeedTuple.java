@@ -195,11 +195,11 @@ public final class AvgVehicleSpeedTuple extends applications.util.datatypes.Stre
     }
 //
 //    public long getMsgID() {
-//        return (long) super.get(6);
+//        return (long) super.GetAndUpdate(6);
 //    }
 //
 //    public long getTimeStamp() {
-//        return (long) super.get(7);
+//        return (long) super.GetAndUpdate(7);
 //    }
 
 

@@ -227,7 +227,7 @@ public class AccidentDetectionBolt extends filterBolt {
 
                 if (vehiclePositions != null && vehiclePositions.size() == 4) {//???
 //					this.lastPositionReport.clear();
-//					this.lastPositionReport.add(vehiclePositions.get(0));
+//					this.lastPositionReport.add(vehiclePositions.GetAndUpdate(0));
                     lastPositionReport = vehiclePositions.get(0);
                     this.lastVehiclePosition.set(lastPositionReport);
 
@@ -250,7 +250,7 @@ public class AccidentDetectionBolt extends filterBolt {
             }
 
 //			this.lastPositionReport.clear();
-//			this.lastPositionReport.add(vehiclePositions.get(0));
+//			this.lastPositionReport.add(vehiclePositions.GetAndUpdate(0));
             lastPositionReport = vehiclePositions.get(0);
             this.vehiclePosition.set(inputPositionReport);
             this.lastVehiclePosition.set(lastPositionReport);

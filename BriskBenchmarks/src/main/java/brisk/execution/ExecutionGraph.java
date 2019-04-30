@@ -175,7 +175,7 @@ public class ExecutionGraph extends RawExecutionGraph {
 //			executionNode.prepareProfilingStruct(conf, null, null, p);
 //			if (!conf.getBoolean("profile", true)) {
 //				for (int srcId : executionNode.profiling.keySet()) {
-//					executionNode.profiling.get(srcId).load();
+//					executionNode.profiling.GetAndUpdate(srcId).load();
 //				}
 //			}
 //		});
@@ -265,7 +265,7 @@ public class ExecutionGraph extends RawExecutionGraph {
 ////			numTasks++;
 //		}
 
-//		operator.numTasks = numTasks;//update numTasks.
+//		operator.numTasks = numTasks;//GetAndUpdate numTasks.
 
     }
 

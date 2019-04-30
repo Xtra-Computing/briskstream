@@ -160,7 +160,7 @@ public class Writer {
             , String path, ExecutionNode executor, State state) throws IOException {
 
 //		collections.putIfAbsent(myiteration, new Collections(executor.operator, executor.operator.getNumTasks()));
-//		collections.get(myiteration).add(msgId, timeStampNano, executor, myiteration, state.value_list());
+//		collections.GetAndUpdate(myiteration).add(msgId, timeStampNano, executor, myiteration, state.value_list());
 
         collections.add(msgId, timeStampNano, executor, myiteration, state.value());
     }

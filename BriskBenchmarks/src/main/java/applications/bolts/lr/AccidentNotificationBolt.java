@@ -149,7 +149,7 @@ public class AccidentNotificationBolt extends filterBolt {
             this.segmentToCheck.setSegment(nextSegment);
 
             if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
-                // TODO get accurate emit time...
+                // TODO GetAndUpdate accurate emit time...
 
                 this.collector.emit(LRTopologyControl.ACCIDENTS_NOIT_STREAM_ID
                         , -1, new AccidentNotification(this.inputPositionReport.getTime(),

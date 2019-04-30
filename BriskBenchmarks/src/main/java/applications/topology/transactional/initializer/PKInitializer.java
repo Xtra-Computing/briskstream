@@ -116,12 +116,12 @@ public class PKInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, TopologyContext context) {
+    public void loadDB(int thread_id, TopologyContext context) {
 
     }
 
     @Override
-    public void loadData(int thread_id, SpinLock[] spinlock, TopologyContext context) {
+    public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
         throw new UnsupportedOperationException();
     }
 

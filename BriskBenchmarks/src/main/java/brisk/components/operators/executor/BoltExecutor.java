@@ -39,7 +39,7 @@ public abstract class BoltExecutor implements IExecutor {
     }
 
     public void loadDB(Configuration conf, TopologyContext context, OutputCollector collector) {
-        op.loadData(conf, context, collector);
+        op.loadDB(conf, context, collector);
     }
 
     @Override

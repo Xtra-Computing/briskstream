@@ -62,7 +62,7 @@ public class spout_ft extends AbstractSpout implements Checkpointable {
 
     }
     /**
-     * spout has updated its state for every emit, so we don't need to update it further here.
+     * spout has updated its state for every emit, so we don't need to GetAndUpdate it further here.
      */
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) {

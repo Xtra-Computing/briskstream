@@ -43,7 +43,7 @@ public class sink_ft extends MapBolt implements Checkpointable {
 //				+ " receives:" + value_list
 //				+ " from:" + in.getSourceComponent());
 
-        //state.update(value_list);
+        //state.GetAndUpdate(value_list);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -82,7 +82,7 @@ public class sink_ft extends MapBolt implements Checkpointable {
 //						+ " receives:" + value_list
 //						+ " from:" + input.getSourceComponent());
 
-                //state.update(value_list);
+                //state.GetAndUpdate(value_list);
 
            /* if(this.getContext().getThisTaskId()==1){
                 System.out.print(".");

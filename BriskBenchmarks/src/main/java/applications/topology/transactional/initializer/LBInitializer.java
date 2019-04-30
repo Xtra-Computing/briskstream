@@ -168,7 +168,7 @@ public class LBInitializer extends TableInitilizer {
      * @param contestants
      */
     @Override
-    public void loadData(int maxContestants, String contestants) {
+    public void loadDB(int maxContestants, String contestants) {
 
         String[] contestantArray = contestants.split(",");
 
@@ -334,12 +334,12 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    public void loadData(int thread_id, TopologyContext context) {
+    public void loadDB(int thread_id, TopologyContext context) {
 
     }
 
     @Override
-    public void loadData(int thread_id, SpinLock[] spinlock, TopologyContext context) {
+    public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
         throw new UnsupportedOperationException();
     }
 
