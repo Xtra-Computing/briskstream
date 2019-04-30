@@ -5,6 +5,7 @@ import applications.param.mb.MicroEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
+import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerSStore;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_states_partition;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
@@ -59,7 +61,7 @@ public class Bolt_sstore extends MBBolt {
         _pid = event.getPid();
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
         read_request(event);
@@ -70,7 +72,7 @@ public class Bolt_sstore extends MBBolt {
         END_COMPUTE_TIME_MEASURE(thread_Id);
 
         transactionManager.CommitTransaction(txn_context);
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
     }
 
@@ -98,7 +100,7 @@ public class Bolt_sstore extends MBBolt {
         _pid = pid;
         LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
         write_request(event);
 
@@ -110,7 +112,7 @@ public class Bolt_sstore extends MBBolt {
 
         transactionManager.CommitTransaction(txn_context);
 
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
 
     }
@@ -164,4 +166,8 @@ public class Bolt_sstore extends MBBolt {
         return false;
     }
 
+    @Override
+    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+
+    }
 }

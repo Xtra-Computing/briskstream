@@ -8,7 +8,7 @@ public class SOURCE_CONTROL {
 
     static ReentrantLock counterLock = new ReentrantLock(true); // enable fairness policy
 
-    private volatile int counter = 0;
+    private volatile long counter = 0;
 
     private static SOURCE_CONTROL ourInstance = new SOURCE_CONTROL();
 
@@ -18,9 +18,9 @@ public class SOURCE_CONTROL {
 
 
     //return the starting point of counter.
-    public int GetAndUpdate() {
+    public long GetAndUpdate() {
         counterLock.lock();
-        int rt = counter;
+        long rt = counter;
         // Always good practice to enclose locks in a try-finally block
         try {
             counter += combo_bid_size;//increment counter by combo_bid_size times...

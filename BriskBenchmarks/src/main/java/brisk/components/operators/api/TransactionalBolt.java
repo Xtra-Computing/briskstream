@@ -1,6 +1,7 @@
 package brisk.components.operators.api;
 
 import applications.param.*;
+import applications.sink.SINKComBO;
 import applications.tools.FastZipfGenerator;
 import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
@@ -34,6 +35,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
     private int i = 0;
     private int NUM_ITEMS;
+
+    protected SINKComBO sink = new SINKComBO();
 
 
     public TransactionalBolt(Logger log, int fid) {
@@ -70,6 +73,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         tthread = config.getInt("tthread", 0);
         NUM_ACCESSES = Metrics.NUM_ACCESSES;
         //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
+        sink.prepare(config,context,collector);
     }
 
     protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {

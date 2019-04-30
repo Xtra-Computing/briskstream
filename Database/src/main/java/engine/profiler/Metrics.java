@@ -1,8 +1,10 @@
 package engine.profiler;
 
 import applications.CONTROL;
+import engine.transaction.impl.TxnContext;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
+import static applications.CONTROL.enable_debug;
 import static engine.Meta.MetaTypes.kMaxThreadNum;
 
 public class Metrics {
@@ -157,10 +159,15 @@ public class Metrics {
             }
         }
 
-        public static void END_PREPARE_TIME_MEASURE_TS(int thread_id) {
+        public static void END_PREPARE_TIME_MEASURE_ACC(int thread_id) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 prepare_time[thread_id] += System.nanoTime() - prepare_start[thread_id];
             }
+        }
+
+        public static void BEGIN_LOCK_TIME_MEASURE_ACC(int thread_id) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
+                txn_lock_start[thread_id] += System.nanoTime();
         }
 
         public static void BEGIN_LOCK_TIME_MEASURE(int thread_id) {
@@ -178,9 +185,9 @@ public class Metrics {
                 txn_wait_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_WAIT_TIME_MEASURE(int thread_id) {
+        public static void END_WAIT_TIME_MEASURE_ACC(int thread_id) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                txn_wait[thread_id] = (System.nanoTime() - txn_wait_start[thread_id] - txn_lock[thread_id]);
+                txn_wait[thread_id] += (System.nanoTime() - txn_wait_start[thread_id]);
         }
 
         public static void BEGIN_COMPUTE_TIME_MEASURE(int thread_id) {
@@ -211,9 +218,10 @@ public class Metrics {
                 index_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_INDEX_TIME_MEASURE_TS(int thread_id) {
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                index_time[thread_id] += System.nanoTime() - index_start[thread_id];
+        public static void END_INDEX_TIME_MEASURE_TS(int thread_id, boolean is_retry_) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                if (!is_retry_) index_time[thread_id] += System.nanoTime() - index_start[thread_id];
+            }
         }
 
         public static void BEGIN_ABORT_TIME_MEASURE(int thread_id) {
@@ -300,7 +308,7 @@ public class Metrics {
                 tp[thread_id] = System.nanoTime() - tp_start[thread_id];
         }
 
-        public static void END_TRANSACTION_TIME_MEASURE(int thread_id) {
+        public static void END_TRANSACTION_TIME_MEASURE(int thread_id, TxnContext txn_context) {
 
             if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
                 //                LOG.info("wait time:" + (txn_wait[thread_id]));
@@ -335,6 +343,14 @@ public class Metrics {
 
                 metrics.ts_allocation[thread_id].addValue(ts_allocate[thread_id] / txn_total[thread_id]);
 
+
+                if (enable_debug)
+                    if (txn_context.is_retry_) {
+                        System.out.println("abort_time[thread_id]" + abort_time[thread_id]);
+                        System.out.println("txn_total[thread_id]" + txn_total[thread_id]);
+                        System.out.println("ABORT RATIO:" + abort_time[thread_id] / txn_total[thread_id]);
+                    }
+
                 //clean.
                 index_time[thread_id] = 0;
             }
@@ -362,7 +378,7 @@ public class Metrics {
 //                System.out.println("COMPUTE:" + compute_total[thread_id]);
 
 
-                metrics.stream_total[thread_id].addValue((prepare_time[thread_id] + compute_total[thread_id])/ txn_size);
+                metrics.stream_total[thread_id].addValue((prepare_time[thread_id] + compute_total[thread_id]) / txn_size);
 
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
 

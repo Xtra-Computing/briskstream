@@ -18,7 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_shared_state;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.content.Content.*;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -105,14 +106,14 @@ public class GSCombo extends TransactionalSpout {
 //            if (ccOption == CCOption_TStream)
 //                forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
 
-            int bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
+            long bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
 
             if (bid < NUM_EVENTS) {
 
-                for (int i = bid; i < bid + combo_bid_size; i++) {
-                    bolt.execute(new Tuple(i, this.taskId, context,
-                            new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
-                }
+                bolt.execute(new Tuple(bid, this.taskId, context,
+                        new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+
+
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             e.printStackTrace();

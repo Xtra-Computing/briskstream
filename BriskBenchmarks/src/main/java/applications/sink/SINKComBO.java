@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.combo_bid_size;
 
-public class MBSinkCombo extends MeasureSink {
-    private static final Logger LOG = LoggerFactory.getLogger(MBSinkCombo.class);
+public class SINKComBO extends MeasureSink {
+    private static final Logger LOG = LoggerFactory.getLogger(SINKComBO.class);
     private static final long serialVersionUID = 5481794109405775823L;
 
     int cnt = 0;

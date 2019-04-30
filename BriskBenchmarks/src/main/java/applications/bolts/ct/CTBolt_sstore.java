@@ -56,7 +56,7 @@ public class CTBolt_sstore extends CTBolt {
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
         deposite_request(event);
@@ -70,7 +70,7 @@ public class CTBolt_sstore extends CTBolt {
 
         transactionManager.CommitTransaction(txn_context);//always success..
 
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
 
     }
@@ -94,7 +94,7 @@ public class CTBolt_sstore extends CTBolt {
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
         transfer_request(event);
@@ -107,7 +107,7 @@ public class CTBolt_sstore extends CTBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
 
     }

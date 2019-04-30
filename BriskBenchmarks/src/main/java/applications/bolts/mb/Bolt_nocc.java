@@ -3,6 +3,7 @@ package applications.bolts.mb;
 
 import applications.param.mb.MicroEvent;
 import brisk.execution.ExecutionGraph;
+import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.TxnManagerLock;
@@ -10,6 +11,7 @@ import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static applications.CONTROL.*;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
@@ -34,9 +36,6 @@ public class Bolt_nocc extends MBBolt {
 
         txn_context = new TxnContext(thread_Id, this.fid, bid);
 
-
-        boolean rt;
-
         if (read_request_lock(event)) {
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -45,7 +44,7 @@ public class Bolt_nocc extends MBBolt {
             CLEAN_ABORT_TIME_MEASURE(thread_Id);
             transactionManager.CommitTransaction(txn_context);//always success..
 
-            END_TRANSACTION_TIME_MEASURE(thread_Id);
+            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
         } else {
             txn_context.is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
@@ -57,7 +56,7 @@ public class Bolt_nocc extends MBBolt {
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
             transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id);
+            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
         }
     }
 
@@ -74,7 +73,7 @@ public class Bolt_nocc extends MBBolt {
             END_COMPUTE_TIME_MEASURE(thread_Id);
             transactionManager.CommitTransaction(txn_context);//always success..
             CLEAN_ABORT_TIME_MEASURE(thread_Id);
-            END_TRANSACTION_TIME_MEASURE(thread_Id);
+            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
         } else {
             txn_context.is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
@@ -86,7 +85,7 @@ public class Bolt_nocc extends MBBolt {
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
             transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id);
+            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
         }
 
     }
@@ -98,5 +97,36 @@ public class Bolt_nocc extends MBBolt {
         transactionManager = new TxnManagerLock(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
     }
 
+    @Override
+    public void execute(Tuple in) throws InterruptedException, DatabaseException {
+
+        Long timestamp;//in.getLong(1);
+        if (enable_latency_measurement)
+            timestamp = in.getLong(0);
+        else
+            timestamp = 0L;//
+
+        long _bid = in.getBID();
+
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+
+            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+
+            (event).setTimestamp(timestamp);
+
+            END_PREPARE_TIME_MEASURE(thread_Id);
+
+            boolean flag = event.READ_EVENT();
+            if (flag) {
+                read_handle(event, timestamp);
+            } else {
+                write_handle(event, timestamp);
+            }
+            if (enable_debug)
+                LOG.trace("Commit event:" + _bid + " by " + this.thread_Id);
+        }
+    }
 
 }

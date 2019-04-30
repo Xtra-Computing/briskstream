@@ -167,7 +167,7 @@ public class Bolt_ts extends MBBolt {
             (event).setTimestamp(timestamp);
 
 
-            END_PREPARE_TIME_MEASURE_TS(thread_Id);
+            END_PREPARE_TIME_MEASURE_ACC(thread_Id);
 
             if (flag) {
                 read_handle(event, timestamp);

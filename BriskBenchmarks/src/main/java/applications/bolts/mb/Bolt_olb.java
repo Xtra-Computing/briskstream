@@ -1,7 +1,6 @@
 package applications.bolts.mb;
 
 
-import applications.sink.MBSinkCombo;
 import brisk.execution.ExecutionGraph;
 import brisk.faulttolerance.impl.ValueState;
 import engine.transaction.dedicated.ordered.TxnManagerOrderLockBlocking;
@@ -24,7 +23,7 @@ public class Bolt_olb extends Bolt_LA {
         super.initialize(thread_Id, thisTaskId, graph);
         transactionManager = new TxnManagerOrderLockBlocking(db.getStorageManager(),
                 this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
-        sink.prepare(config, context, collector);
+
     }
 
 }

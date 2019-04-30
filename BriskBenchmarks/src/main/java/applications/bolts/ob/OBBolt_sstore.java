@@ -46,7 +46,7 @@ public class OBBolt_sstore extends OBBolt {
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
@@ -60,7 +60,7 @@ public class OBBolt_sstore extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
     }
 
@@ -82,7 +82,7 @@ public class OBBolt_sstore extends OBBolt {
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
@@ -96,7 +96,7 @@ public class OBBolt_sstore extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class OBBolt_sstore extends OBBolt {
         _pid = event.getPid();
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
@@ -132,7 +132,7 @@ public class OBBolt_sstore extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
     }
 
 

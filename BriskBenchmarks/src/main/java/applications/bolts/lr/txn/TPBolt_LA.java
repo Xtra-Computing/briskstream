@@ -33,7 +33,7 @@ public abstract class TPBolt_LA extends TPBolt {
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
-        END_WAIT_TIME_MEASURE(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
         write_request(event);
@@ -46,7 +46,7 @@ public abstract class TPBolt_LA extends TPBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
+        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
     }
 

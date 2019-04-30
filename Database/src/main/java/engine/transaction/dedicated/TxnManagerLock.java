@@ -10,11 +10,13 @@ import engine.storage.SchemaRecordRef;
 import engine.storage.StorageManager;
 import engine.storage.TableRecord;
 import engine.transaction.impl.TxnContext;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 
+import static applications.CONTROL.enable_debug;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;
@@ -160,8 +162,8 @@ public class TxnManagerLock extends TxnManagerDedicated {
     @Override
     protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord
             t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
-        record_ref.setRecord(t_record.record_); //return the table record for modifying in the application layer.
 
+        record_ref.setRecord(t_record.record_); //return the table record for modifying in the application layer.
         if (accessType == READ_ONLY) {
             // if cannot get Lock, then return immediately.
             if (!t_record.content_.TryReadLock()) {
@@ -179,7 +181,8 @@ public class TxnManagerLock extends TxnManagerDedicated {
             }
         } else if (accessType == READ_WRITE) {
             if (!t_record.content_.TryWriteLock()) {
-//                LOG.trace(txn_context.getThisOpId() + " failed to get lock" + DateTime.now());
+                if (enable_debug)
+                    LOG.info(Thread.currentThread().getName() + " failed to get lock" + DateTime.now());
                 this.AbortTransaction();
                 return false;
             } else {

@@ -1,7 +1,7 @@
 package applications.bolts.mb;
 
 import applications.param.mb.MicroEvent;
-import applications.sink.MBSinkCombo;
+import applications.sink.SINKComBO;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
@@ -24,7 +24,6 @@ import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
 import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
 
 public abstract class MBBolt extends TransactionalBolt {
-    MBSinkCombo sink = new MBSinkCombo();
 
     public MBBolt(Logger log, int fid) {
         super(log, fid);
@@ -141,37 +140,7 @@ public abstract class MBBolt extends TransactionalBolt {
         return true;
     }
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
 
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-
-        long bid = in.getBID();
-
-        MicroEvent event = (MicroEvent) db.eventManager.get((int) bid);
-
-        Long timestamp;//in.getLong(1);
-
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
-
-
-        boolean flag = event.READ_EVENT();
-        (event).setTimestamp(timestamp);
-
-
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
-        if (flag) {
-            read_handle(event, timestamp);
-        } else {
-            write_handle(event, timestamp);
-        }
-        if (enable_debug)
-            LOG.trace("Commit event:" + in.getBID() + " by " + this.thread_Id);
-    }
 
     protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;
 

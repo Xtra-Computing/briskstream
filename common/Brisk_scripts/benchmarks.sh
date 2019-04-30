@@ -275,7 +275,7 @@ do
     checkpoint=0.25
     ratio_of_multi_partition=1
     number_partitions=-1 #no partitions.
-    NUM_ITEMS=100000 #smaller means higher contention! 10K or 100K
+    NUM_ITEMS=10000 #smaller means higher contention! 1000 or 10K
         case "$benchmark" in
             "Read_Only")
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
@@ -386,7 +386,7 @@ do
                     do
                         for tt in 1	5 10 15 20 25 30 35 38
                         do
-                            for CCOption in 4 #2 #0 1 2
+                            for CCOption in 0 #2 #0 1 2
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -397,7 +397,7 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -413,7 +413,7 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done
