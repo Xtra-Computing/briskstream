@@ -14,6 +14,7 @@ import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
+import brisk.util.SINK_CONTROL;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import engine.common.SpinLock;
@@ -26,6 +27,7 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Properties;
 
+import static applications.CONTROL.enable_app_combo;
 import static applications.CONTROL.enable_profile;
 import static applications.Constants.System_Plan_Path;
 import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
@@ -126,21 +128,28 @@ public class BriskRunner extends abstractRunner {
             LOG.info("The application fails to stop normally, exist...");
             return -1;
         } else {
-            TopologyComponent sink = submitter.getOM().g.getSink().operator;
-            double sum = 0;
+
+            if (enable_app_combo) {
+                return SINK_CONTROL.getInstance().throughput;
+            } else {
+                TopologyComponent sink = submitter.getOM().g.getSink().operator;
+                double sum = 0;
 //			double pre_results = sinkThread.getResults();
-            int cnt = 0;
-            for (ExecutionNode e : sink.getExecutorList()) {
-                double results = e.op.getResults();
-                if (results != 0) {
+                int cnt = 0;
+                for (ExecutionNode e : sink.getExecutorList()) {
+                    double results = e.op.getResults();
+                    if (results != 0) {
 //					pre_results = results;
-                    sum += results;
-                } else {
-                    sum += sum / cnt;
+                        sum += results;
+                    } else {
+                        sum += sum / cnt;
+                    }
+                    cnt++;
                 }
-                cnt++;
+                return sum;
             }
-            return sum;
+
+
         }
     }
 
@@ -214,7 +223,14 @@ public class BriskRunner extends abstractRunner {
             //configure threads.
             int tthread = config.getInt("tthread");
 
-            config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
+
+            if (enable_app_combo)
+                config.put(BaseConstants.BaseConf.SPOUT_THREADS, tthread);
+
+            else
+                config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
+
+
             config.put(BaseConstants.BaseConf.SINK_THREADS, sithread);
             config.put(BaseConstants.BaseConf.PARSER_THREADS, pthread);
             //set total parallelism, equally parallelism

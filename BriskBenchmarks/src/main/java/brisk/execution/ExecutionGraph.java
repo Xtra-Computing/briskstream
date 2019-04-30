@@ -36,6 +36,8 @@ public class ExecutionGraph extends RawExecutionGraph {
     private final Configuration conf;
     //	public LinkedList<ExecutionNode> bottleneck = new LinkedList<>();
     private ExecutionNode virtualNode;
+
+    private ExecutionNode spout;
     private ExecutionNode sink;
     private boolean shared;//share by multi producers
     private boolean common;//shared by mutlti consumers
@@ -98,6 +100,7 @@ public class ExecutionGraph extends RawExecutionGraph {
                 addRecord(e, topology.getRecord(e.operator.getId()), p);
             }
         }
+        spout = executionNodeArrayList.get(0);
         sink = executionNodeArrayList.get(executionNodeArrayList.size() - 1);
         setup(conf, p);
     }
@@ -140,6 +143,7 @@ public class ExecutionGraph extends RawExecutionGraph {
         common = conf.getBoolean("common", false);
 
         final ArrayList<ExecutionNode> executionNodeArrayList = getExecutionNodeArrayList();
+        spout = executionNodeArrayList.get(0);
         sink = executionNodeArrayList.get(executionNodeArrayList.size() - 1);
         virtualNode = addVirtual(p);
 
@@ -187,6 +191,9 @@ public class ExecutionGraph extends RawExecutionGraph {
         }
     }
 
+    public ExecutionNode getSpout() {
+        return spout;
+    }
 
     public ExecutionNode getSink() {
         return sink;

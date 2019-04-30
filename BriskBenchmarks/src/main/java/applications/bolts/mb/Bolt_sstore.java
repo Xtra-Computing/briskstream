@@ -137,29 +137,31 @@ public class Bolt_sstore extends MBBolt {
 
     }
 
-    private void read_request(MicroEvent Event) throws DatabaseException {
+    protected boolean read_request(MicroEvent Event) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
+        return false;
     }
 
-    private void read_lock_ahead(MicroEvent Event) throws DatabaseException {
+    protected void read_lock_ahead(MicroEvent Event) throws DatabaseException {
 
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
 
 
-    private void write_lock_ahead(MicroEvent Event) throws DatabaseException {
+    protected void write_lock_ahead(MicroEvent Event) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
     }
 
 
-    private void write_request(MicroEvent Event) throws DatabaseException {
+    protected boolean write_request(MicroEvent Event) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             String key = String.valueOf(Event.getKeys()[i]);
             boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", key, Event.getRecord_refs()[i], READ_WRITE);
         }
+        return false;
     }
 
 }

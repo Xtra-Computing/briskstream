@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 
 import static applications.Constants.sinkType;
+import static applications.constants.BaseConstants.BaseComponent.SPOUT;
 
 
 /**
@@ -107,7 +108,7 @@ public class Topology implements Serializable {
 
 
     public String getPrefix() {
-        return sink.getOp().getConfigPrefix();
+        return records.get(SPOUT).getOp().getConfigPrefix();
     }
 
 }

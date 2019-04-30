@@ -69,13 +69,10 @@ public abstract class MBBolt extends TransactionalBolt {
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
-        {
-
-            if (!enable_app_combo) {
-                collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
-            } else {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true)));//(long bid, int sourceId, TopologyContext context, Message message)
-            }
+        if (!enable_app_combo) {
+            collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
+        } else {
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true)));//(long bid, int sourceId, TopologyContext context, Message message)
         }
     }
 

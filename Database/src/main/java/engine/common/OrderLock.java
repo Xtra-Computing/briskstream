@@ -117,8 +117,8 @@ public class OrderLock implements Serializable {
             //not ready for this batch to proceed! Wait for previous batch to finish execution.
 //            Thread.sleep(1);
             if (Thread.currentThread().isInterrupted()) {
-//				 throw new InterruptedException();
-                return false;
+				 throw new InterruptedException();
+//                return false;
             }
         }
 

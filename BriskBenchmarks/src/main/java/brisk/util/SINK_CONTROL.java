@@ -10,6 +10,9 @@ public class SINK_CONTROL {
 
     private volatile int counter = 0;
 
+    public double throughput = 0;
+
+
     private static SINK_CONTROL ourInstance = new SINK_CONTROL();
 
     public static SINK_CONTROL getInstance() {

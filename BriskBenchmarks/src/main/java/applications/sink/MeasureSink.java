@@ -6,7 +6,6 @@ import applications.sink.helper.stable_sink_helper;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.tuple.JumboTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
@@ -169,54 +168,55 @@ public class MeasureSink extends BaseSink {
     protected void measure_end() {
         if (!profile) {
 
-            for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
+            if (enable_latency_measurement) {
+                for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
 //                LOG.info("=====Process latency of msg====");
-                //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
-                latency.addValue((entry.getValue() / 1E6));
-            }
-            try {
+                    //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
+                    latency.addValue((entry.getValue() / 1E6));
+                }
+                try {
 //                Collections.sort(col_value);
 
-                FileWriter f = null;
-                switch (algorithm) {
-                    case "random": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("random.latency")));
-                        break;
+                    FileWriter f = null;
+                    switch (algorithm) {
+                        case "random": {
+                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("random.latency")));
+                            break;
+                        }
+                        case "toff": {
+                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("toff.latency")));
+                            break;
+                        }
+                        case "roundrobin": {
+                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("roundrobin.latency")));
+                            break;
+                        }
+                        case "worst": {
+                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("worst.latency")));
+                            break;
+                        }
+                        case "opt": {
+                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("opt.latency")));
+                            break;
+                        }
                     }
-                    case "toff": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("toff.latency")));
-                        break;
+
+                    Writer w = new BufferedWriter(f);
+
+                    for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
+                        w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
                     }
-                    case "roundrobin": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("roundrobin.latency")));
-                        break;
-                    }
-                    case "worst": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("worst.latency")));
-                        break;
-                    }
-                    case "opt": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("opt.latency")));
-                        break;
-                    }
+                    w.write("=======Details=======");
+                    w.write(latency.toString() + "\n");
+                    w.write("===90th===" + "\n");
+                    w.write(String.valueOf(latency.getPercentile(90) + "\n"));
+                    w.close();
+                    f.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                Writer w = new BufferedWriter(f);
-
-                for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
-                    w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
-                }
-                w.write("=======Details=======");
-                w.write(latency.toString() + "\n");
-                w.write("===90th===" + "\n");
-                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
-                w.close();
-                f.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
             LOG.info("Stop all threads sequentially");
 //			context.stop_runningALL();
             context.Sequential_stopAll();

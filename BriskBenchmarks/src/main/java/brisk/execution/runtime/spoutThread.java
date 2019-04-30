@@ -4,11 +4,11 @@ import applications.Constants;
 import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.BasicSpoutBatchExecutor;
-import engine.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
+import engine.Clock;
 import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
-import static applications.CONTROL.enable_numa_placement;
+import static applications.CONTROL.*;
 
 /**
  * Task thread that hosts spout logic.
@@ -62,7 +62,11 @@ public class spoutThread extends executorThread {
     @Override
     protected void _execute_noControl() throws InterruptedException {
         sp.bulk_emit(batch);
-        cnt += batch;
+
+        if (enable_app_combo)
+            cnt += batch * combo_bid_size;
+        else
+            cnt += batch;
     }
 
     protected void _execute() throws InterruptedException {

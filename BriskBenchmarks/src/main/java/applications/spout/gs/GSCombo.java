@@ -110,7 +110,8 @@ public class GSCombo extends TransactionalSpout {
             if (bid < NUM_EVENTS) {
 
                 for (int i = bid; i < bid + combo_bid_size; i++) {
-                    bolt.execute(new Tuple(i, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+                    bolt.execute(new Tuple(i, this.taskId, context,
+                            new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
                 }
             }
         } catch (DatabaseException | BrokenBarrierException e) {
