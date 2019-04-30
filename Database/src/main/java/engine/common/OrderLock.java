@@ -20,7 +20,7 @@ public class OrderLock implements Serializable {
 
     //	SpinLock spinlock_ = new SpinLock();
 //	volatile int fid = 0;
-    AtomicLong bid = new AtomicLong(0);// it is already volatiled.
+    AtomicLong counter = new AtomicLong(0);// it is already volatiled.
     //	private transient HashMap<Integer, HashMap<Integer, Boolean>> executors_ready;//<FID, ExecutorID, true/false>
     private int end_fid;
 
@@ -41,7 +41,7 @@ public class OrderLock implements Serializable {
 //	}
 
     public long getBID() {
-        return bid.get();
+        return counter.get();
     }
 
 //	public synchronized void advanceFID() {
@@ -49,12 +49,12 @@ public class OrderLock implements Serializable {
 //	}
 
 //	public synchronized void try_fill_gap() {
-//		bid.getAndIncrement();
+//		counter.getAndIncrement();
 ////		fid = 0;
 //	}
 
     public void setBID(long bid) {
-        this.bid.set(bid);
+        this.counter.set(bid);
     }
 
     protected void fill_gap(LinkedList<Long> gap) {
@@ -77,7 +77,7 @@ public class OrderLock implements Serializable {
      */
     public boolean try_fill_gap(Long g) {
         if (getBID() == g) {
-            bid.incrementAndGet();//allow next batch to proceed.
+            counter.incrementAndGet();//allow next batch to proceed.
             return true;
         }
         return false;
@@ -87,7 +87,7 @@ public class OrderLock implements Serializable {
     public boolean blocking_wait(final long bid) throws InterruptedException {
 
         /* busy waiting.
-        while (!this.bid.compareAndSet(bid, bid)) {
+        while (!this.counter.compareAndSet(counter, counter)) {
             //not ready for this batch to proceed! Wait for previous batch to finish execution.
             if (Thread.currentThread().isInterrupted()) {
 //				 throw new InterruptedException();
@@ -99,12 +99,12 @@ public class OrderLock implements Serializable {
 
 
 /*
-        while (!this.bid.compareAndSet(bid, bid)) {
+        while (!this.counter.compareAndSet(counter, counter)) {
             if (enable_debug)
-                LOG.trace("BLOCK WAITING FOR " + bid + " CURRENT COUNTER:" + this.bid + " Thread:" + Thread.currentThread().getName());
-            synchronized (this.bid) {//this overhead is too high.
+                LOG.trace("BLOCK WAITING FOR " + counter + " CURRENT COUNTER:" + this.counter + " Thread:" + Thread.currentThread().getName());
+            synchronized (this.counter) {//this overhead is too high.
                 if(!wasSignalled) {
-                    this.bid.wait(1);
+                    this.counter.wait(1);
                 }
             }
         }
@@ -113,7 +113,7 @@ public class OrderLock implements Serializable {
 */
 
         //busy waiting with sleep.
-        while (!this.bid.compareAndSet(bid, bid)) {
+        while (!this.counter.compareAndSet(bid, bid)) {
             //not ready for this batch to proceed! Wait for previous batch to finish execution.
 //            Thread.sleep(1);
             if (Thread.currentThread().isInterrupted()) {
@@ -136,20 +136,20 @@ public class OrderLock implements Serializable {
 //		}
 
 /*
-        long value = bid.incrementAndGet();//allow next batch to proceed.
+        long value = counter.incrementAndGet();//allow next batch to proceed.
         if (enable_debug)
             LOG.trace("ADVANCE BID to:" + value + " Thread:" + Thread.currentThread().getName());
-        synchronized (this.bid) {
+        synchronized (this.counter) {
             wasSignalled = true;
-            this.bid.notifyAll();
+            this.counter.notifyAll();
         }
 */
 
-        long value = bid.incrementAndGet();//allow next batch to proceed.
+        long value = counter.incrementAndGet();//allow next batch to proceed.
         if (enable_debug)
             LOG.info("ADVANCE BID to:" + value + " Thread:" + Thread.currentThread().getName());
 
-//		//LOG.DEBUG(Thread.currentThread().getName() + " advance bid to: " + bid+ " @ "+ DateTime.now());
+//		//LOG.DEBUG(Thread.currentThread().getName() + " advance counter to: " + counter+ " @ "+ DateTime.now());
 //		if (joinedOperators(txn_context)) {
 ////			advanceFID();//allow next operator to proceed.
 //

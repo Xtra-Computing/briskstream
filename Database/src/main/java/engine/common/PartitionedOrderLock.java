@@ -47,8 +47,8 @@ public class PartitionedOrderLock implements Serializable {
         volatile AtomicLong bid = new AtomicLong();
 
         public boolean blocking_wait(final long bid) {
-//            if (!this.bid.compareAndSet(bid, bid))
-//                LOG.info("not ready for this batch to proceed:" + bid + " lock @" + this);
+//            if (!this.counter.compareAndSet(counter, counter))
+//                LOG.info("not ready for this batch to proceed:" + counter + " lock @" + this);
 
 
             while (!this.bid.compareAndSet(bid, bid)) {

@@ -16,7 +16,6 @@ public class MBSink extends MeasureSink {
         cnt++;
     }
 
-
     public void display() {
     }
 }

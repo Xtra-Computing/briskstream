@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static applications.CONTROL.enable_states_partition;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
@@ -118,6 +119,11 @@ public class Bolt_sstore extends MBBolt {
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
         transactionManager = new TxnManagerSStore(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
+
+        if (!enable_states_partition) {
+            LOG.info("Please enable `enable_states_partition` for PAT scheme");
+            System.exit(-1);
+        }
 
     }
 

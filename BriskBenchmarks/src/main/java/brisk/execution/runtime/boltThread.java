@@ -181,7 +181,7 @@ public class boltThread extends executorThread {
         if (tuple instanceof Tuple) {
             if (tuple != null) {
                 bolt.execute((Tuple) tuple);
-                cnt += batch;
+                cnt += 1;
             } else {
                 miss++;
             }

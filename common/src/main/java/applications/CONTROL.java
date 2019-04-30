@@ -5,6 +5,12 @@ public interface CONTROL {
     //application related.
     int NUM_EVENTS = 100_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
 
+
+    //combo optimization
+    boolean enable_app_combo = true;//compose all operators into one.
+    int combo_bid_size = 10;//reduce conflict.
+
+
     //order related.
 
     boolean enable_force_ordering = true;
@@ -12,7 +18,7 @@ public interface CONTROL {
     //db related.
     boolean enable_shared_state = true;//this is for transactional state mgmt.
 
-    boolean enable_states_partition = false;
+    boolean enable_states_partition = true;//must be enabled for PAT/SSTORE.
 
     boolean enable_TSTREAM = false;
 

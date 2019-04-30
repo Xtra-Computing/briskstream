@@ -44,7 +44,7 @@ final AtomicLong bid = new AtomicLong();
 //	}
 
 //	public synchronized void try_fill_gap() {
-//		bid.getAndIncrement();
+//		counter.getAndIncrement();
 ////		fid = 0;
 //	}
 
@@ -73,7 +73,7 @@ final AtomicLong bid = new AtomicLong();
     public boolean try_fill_gap(Long g) {
         if (getBID() == g) {
             bid.incrementAndGet();//allow next batch to proceed.
-            //LOG.DEBUG(Thread.currentThread().getName() + " advance bid to: " + bid + " @ " + DateTime.now());
+            //LOG.DEBUG(Thread.currentThread().getName() + " advance counter to: " + counter + " @ " + DateTime.now());
             return true;
         }
         return false;
@@ -93,7 +93,7 @@ final AtomicLong bid = new AtomicLong();
 
 //		try_fill_gap();
         bid.incrementAndGet();//allow next batch to proceed.
-        //LOG.DEBUG(Thread.currentThread().getName() + " advance bid to: " + bid + " @ " + DateTime.now());
+        //LOG.DEBUG(Thread.currentThread().getName() + " advance counter to: " + counter + " @ " + DateTime.now());
 //		if (joinedOperators(txn_context)) {
 ////			advanceFID();//allow next operator to proceed.
 //

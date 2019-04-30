@@ -10,7 +10,7 @@ import engine.transaction.impl.TxnContext;
 
 import java.util.List;
 
-//contains the place-holder to fill, as well as timestamp (bid).
+//contains the place-holder to fill, as well as timestamp (counter).
 public class Operation implements Comparable<Operation> {
 
     public final TableRecord d_record;
@@ -183,7 +183,7 @@ public class Operation implements Comparable<Operation> {
     @Override
     public int compareTo(Operation operation) {
         if (this.bid == (operation.bid)) {
-            return this.d_record.getID() - operation.d_record.getID();//different records, don't care about its bid.
+            return this.d_record.getID() - operation.d_record.getID();//different records, don't care about its counter.
         } else
             return Long.compare(this.bid, operation.bid);
     }

@@ -34,7 +34,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     protected int taskId;
     protected int event_counter = 0;
     protected int ccOption;
-    protected long bid = 0;
+    protected long bid = 0;//local bid.
     volatile boolean earilier_check = true;
 
     public int empty = 0;//execute without emit.
@@ -49,6 +49,9 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
     @Override
     public abstract void nextTuple() throws InterruptedException;
+
+
+
 
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {

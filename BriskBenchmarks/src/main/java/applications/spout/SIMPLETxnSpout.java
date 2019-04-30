@@ -126,7 +126,7 @@ public class SIMPLETxnSpout extends TransactionalSpout {
                 if (enable_latency_measurement)
                     collector.emit_single(bid++, System.nanoTime());//combined R/W executor.
                 else
-                    collector.emit_single(bid++);//combined R/W executor.
+                    collector.emit(bid++);//combined R/W executor.
             }
 //            LOG.info("Emit:" + bid);
 

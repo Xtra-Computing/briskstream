@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
+import static applications.CONTROL.enable_app_combo;
 import static applications.constants.MicroBenchmarkConstants.Conf.Executor_Threads;
 import static applications.constants.MicroBenchmarkConstants.PREFIX;
 import static engine.content.Content.*;
@@ -65,7 +66,6 @@ public class MicroBenchmark extends TransactionTopology {
         int num_partitions;
 
 
-
         if (config.getBoolean("partition", false)) {
 
             for (int i = 0; i < tthread; i++)
@@ -89,6 +89,10 @@ public class MicroBenchmark extends TransactionTopology {
 
             builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
+            if (enable_app_combo) {
+            //spout only.
+
+            } else {
 
 //            builder.setBolt(Component.SEQUNCER, new MicroEventSequencer(-1)
 //                    , 1
@@ -96,50 +100,50 @@ public class MicroBenchmark extends TransactionTopology {
 //            );
 
 
-            switch (config.getInt("CCOption", 0)) {
-                case CCOption_LOCK: {//no-order
+                switch (config.getInt("CCOption", 0)) {
+                    case CCOption_LOCK: {//no-order
 
-                    builder.setBolt(Component.EXECUTOR, new Bolt_nocc(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
+                        builder.setBolt(Component.EXECUTOR, new Bolt_nocc(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+
+                    case CCOption_OrderLOCK: {//LOB
+
+                        builder.setBolt(Component.EXECUTOR, new Bolt_olb(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+                    case CCOption_LWM: {//LWM
+
+                        builder.setBolt(Component.EXECUTOR, new Bolt_lwm(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+                    case CCOption_TStream: {//T-Stream
+
+                        builder.setBolt(Component.EXECUTOR, new Bolt_ts(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+                    case CCOption_SStore: {//SStore
+
+                        builder.setBolt(Component.EXECUTOR, new Bolt_sstore(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+
                 }
 
-                case CCOption_OrderLOCK: {//LOB
-
-                    builder.setBolt(Component.EXECUTOR, new Bolt_olb(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
-                case CCOption_LWM: {//LWM
-
-                    builder.setBolt(Component.EXECUTOR, new Bolt_lwm(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
-                case CCOption_TStream: {//T-Stream
-
-                    builder.setBolt(Component.EXECUTOR, new Bolt_ts(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
-                case CCOption_SStore: {//SStore
-
-                    builder.setBolt(Component.EXECUTOR, new Bolt_sstore(0)//
-                            , config.getInt(Executor_Threads, 2)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
-
+                builder.setSink(Component.SINK, sink, sinkThreads
+                        , new ShuffleGrouping(Component.EXECUTOR)
+                );
             }
-
-            builder.setSink(Component.SINK, sink, sinkThreads
-                    , new ShuffleGrouping(Component.EXECUTOR)
-            );
-
         } catch (InvalidIDException e) {
             e.printStackTrace();
         }

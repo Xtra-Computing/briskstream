@@ -87,7 +87,7 @@ public abstract class helper {
     }
 
     public double EndMeasurement(long cnt) {
-        end = System.nanoTime();//actual processing started.
+        end = System.nanoTime();
         long time_elapsed = end - start;
         return ((double) (cnt) * 1E6 / time_elapsed);
     }
