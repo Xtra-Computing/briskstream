@@ -32,8 +32,9 @@ public class GSCombo extends TransactionalSpout {
 
     GSBolt bolt;//compose the bolt here.
 
+
     public GSCombo() {
-        super(LOG);
+        super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
     }
@@ -110,6 +111,7 @@ public class GSCombo extends TransactionalSpout {
                 else {
                     if (checkpoint()) {
                         bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), SOURCE_CONTROL.getInstance().Get(), myiteration)));
+                        success=true;
                     }
                 }
             }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
+import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_admission_control;
 import static applications.CONTROL.enable_debug;
@@ -40,8 +41,9 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
     public int empty = 0;//execute without emit.
 
-    protected TransactionalSpout(Logger log) {
+    protected TransactionalSpout(Logger log, int fid) {
         super(log);
+        this.fid=fid;
     }
 
     public double getEmpty() {
@@ -55,9 +57,9 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
      * THIS IS USED ONLY WHEN "enable_app_combo" is true.
      */
     @Override
-    public boolean checkpoint() throws InterruptedException {
+    public boolean checkpoint() throws InterruptedException, BrokenBarrierException {
         if (clock.tick(myiteration) && success) {//emit marker tuple
-            SOURCE_CONTROL.getInstance().getWm().wait();//wait for all threads to come to this line.
+            SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
             myiteration++;
             success = false;
             return true;

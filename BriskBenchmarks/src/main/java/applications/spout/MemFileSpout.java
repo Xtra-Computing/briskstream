@@ -1,10 +1,7 @@
 package applications.spout;
 
-import applications.constants.BaseConstants;
-import applications.spout.helper.wrapper.StringStatesWrapper;
 import applications.util.Configuration;
 import applications.util.OsUtils;
-import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
 import org.slf4j.Logger;
@@ -13,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MemFileSpout extends AbstractSpout {
     private static final Logger LOG = LoggerFactory.getLogger(MemFileSpout.class);

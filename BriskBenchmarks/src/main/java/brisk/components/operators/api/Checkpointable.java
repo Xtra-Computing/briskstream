@@ -2,9 +2,11 @@ package brisk.components.operators.api;
 
 import brisk.execution.runtime.tuple.impl.Marker;
 
+import java.util.concurrent.BrokenBarrierException;
+
 public interface Checkpointable {
 
-    boolean checkpoint() throws InterruptedException;
+    boolean checkpoint() throws InterruptedException, BrokenBarrierException;
 
     void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException;
 

@@ -28,7 +28,7 @@ public class TPSpout extends TransactionalSpout {
     private Random r = new Random();
 
     public TPSpout() {
-        super(LOG);
+        super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
     }

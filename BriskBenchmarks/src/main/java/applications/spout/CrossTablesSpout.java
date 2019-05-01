@@ -43,7 +43,7 @@ public class CrossTablesSpout extends TransactionalSpout {
 
 
     public CrossTablesSpout() {
-        super(LOG);
+        super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
     }

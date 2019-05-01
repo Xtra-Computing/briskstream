@@ -28,7 +28,7 @@ public class SIMPLETxnSpout extends TransactionalSpout {
     private Random r = new Random();
 
     public SIMPLETxnSpout() {
-        super(LOG);
+        super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
     }

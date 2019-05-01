@@ -305,7 +305,10 @@ public abstract class abstractRunner {
 
         config.put("measure", measure);
         config.put("checkpoint", checkpoint);
-        config.put("TP", TP);
+        if (TP != -1)
+            config.put("TP", TP);
+        else
+            config.put("TP", tthread);
         config.put("NUM_ACCESS", NUM_ACCESS);
         config.put("NUM_ITEMS", NUM_ITEMS);
         config.put("CCOption", CCOption);
