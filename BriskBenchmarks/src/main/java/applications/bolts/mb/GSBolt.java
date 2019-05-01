@@ -14,16 +14,18 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
-import static applications.CONTROL.enable_app_combo;
-import static applications.CONTROL.enable_speculative;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
+import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.Metrics.MeasureTools.END_LOCK_TIME_MEASURE_ACC;
+import static engine.profiler.Metrics.MeasureTools.END_WAIT_TIME_MEASURE_ACC;
 
-public abstract class MBBolt extends TransactionalBolt {
+public abstract class GSBolt extends TransactionalBolt {
 
-    public MBBolt(Logger log, int fid) {
+    public GSBolt(Logger log, int fid) {
         super(log, fid);
     }
 
@@ -61,6 +63,14 @@ public abstract class MBBolt extends TransactionalBolt {
         }
 
     }
+    protected void write_post(MicroEvent event) throws InterruptedException {
+        if (!enable_app_combo) {
+            collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
+        } else {
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true)));//(long bid, int sourceId, TopologyContext context, Message message)
+        }
+    }
+
 
     protected void write_core(MicroEvent event) throws InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
@@ -72,13 +82,6 @@ public abstract class MBBolt extends TransactionalBolt {
         }
     }
 
-    protected void write_post(MicroEvent event) throws InterruptedException {
-        if (!enable_app_combo) {
-            collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
-        } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true)));//(long bid, int sourceId, TopologyContext context, Message message)
-        }
-    }
 
 
     protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
@@ -107,9 +110,9 @@ public abstract class MBBolt extends TransactionalBolt {
         return false;
     }
 
-    private boolean process_request(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException, InterruptedException {
+    private boolean process_request(MicroEvent event, TxnContext txnContext, MetaTypes.AccessType accessType) throws DatabaseException, InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord(txn_context, "MicroTable",
+            boolean rt = transactionManager.SelectKeyRecord(txnContext, "MicroTable",
                     String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
                 assert event.getRecord_refs()[i].getRecord() != null;
@@ -120,34 +123,108 @@ public abstract class MBBolt extends TransactionalBolt {
         return false;
     }
 
-    protected boolean read_request(MicroEvent event, TxnContext txnContext) throws DatabaseException {
+    protected boolean read_request_noLock(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
         if (process_request_noLock(event, txnContext, READ_ONLY)) return false;
         return true;
     }
 
 
-    protected boolean write_request(MicroEvent event, TxnContext txnContext) throws DatabaseException {
+    protected boolean write_request_noLock(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
         if (process_request_noLock(event, txnContext, READ_WRITE)) return false;
         return true;
     }
 
-    protected boolean read_request_lock(MicroEvent event) throws DatabaseException, InterruptedException {
+    protected boolean read_request(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
 
-        if (process_request(event, READ_ONLY)) return false;
+        if (process_request(event, txnContext, READ_ONLY)) return false;
         return true;
     }
 
 
-    protected boolean write_request_lock(MicroEvent event) throws DatabaseException, InterruptedException {
+    protected boolean write_request(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
 
-        if (process_request(event, READ_WRITE)) return false;
+        if (process_request(event, txnContext, READ_WRITE)) return false;
         return true;
     }
 
+    public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
 
-    protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+    //lock-ahead phase.
+    protected void LAL_process(long _bid) throws DatabaseException, InterruptedException {
 
-    protected abstract void read_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException;
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+
+            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+
+            BEGIN_WAIT_TIME_MEASURE(thread_Id);
+            //ensures that locks are added in the event sequence order.
+            transactionManager.getOrderLock().blocking_wait(i);
+
+            BEGIN_LOCK_TIME_MEASURE(thread_Id);
+            boolean flag = event.READ_EVENT();
+            if (flag) {//read
+                read_lock_ahead(event, txn_context[(int) (i - _bid)]);
+            } else {
+                write_lock_ahead(event, txn_context[(int) (i - _bid)]);
+            }
+
+            END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            transactionManager.getOrderLock().advance();
+            END_WAIT_TIME_MEASURE_ACC(thread_Id);
+        }
+    }
+
+    protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {
+        //txn process phase.
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+
+            boolean flag = event.READ_EVENT();
+
+            if (flag) {//read
+
+                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+                read_request_noLock(event, txn_context[(int) (i - _bid)]);
+                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
+
+                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                read_core(event);
+                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+
+            } else {
+
+                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+                write_request_noLock(event, txn_context[(int) (i - _bid)]);
+                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
+
+                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                write_core(event);
+                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+
+            }
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);
+        }
+    }
+
+    //post stream processing phase..
+    protected void post_process(long _bid, long timestamp) throws InterruptedException {
+        BEGIN_POST_TIME_MEASURE(thread_Id);
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+            (event).setTimestamp(timestamp);
+            boolean flag = event.READ_EVENT();
+            if (flag) {//read
+                read_post(event);
+            } else {
+                write_post(event);
+            }
+        }
+        END_POST_TIME_MEASURE(thread_Id);
+    }
+
 }

@@ -47,7 +47,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
 
     }
     @Override
@@ -79,7 +79,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
     }
 
     @Override
@@ -111,7 +111,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         END_COMPUTE_TIME_MEASURE(thread_Id);
         transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
     }
 
 

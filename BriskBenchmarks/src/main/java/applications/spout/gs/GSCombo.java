@@ -24,13 +24,13 @@ import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.content.Content.*;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
+//TODO: Re-name microbenchmark as GS (Grep and Sum).
 public class GSCombo extends TransactionalSpout {
     private static final Logger LOG = LoggerFactory.getLogger(MicroBenchmarkSpout.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
 
-    MBBolt bolt;//compose the bolt here.
-
+    GSBolt bolt;//compose the bolt here.
 
     public GSCombo() {
         super(LOG);

@@ -240,9 +240,9 @@ public class Metrics {
                 abort_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_ABORT_TIME_MEASURE(int thread_id) {
+        public static void END_ABORT_TIME_MEASURE_ACC(int thread_id) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                abort_time[thread_id] = System.nanoTime() - abort_start[thread_id];
+                abort_time[thread_id] += System.nanoTime() - abort_start[thread_id];
         }
 
         public static void CLEAN_ABORT_TIME_MEASURE(int thread_id) {
@@ -325,68 +325,22 @@ public class Metrics {
                 tp[thread_id] = System.nanoTime() - tp_start[thread_id];
         }
 
-        public static void END_TRANSACTION_TIME_MEASURE(int thread_id, TxnContext txn_context) {
+        public static void END_TRANSACTION_TIME_MEASURE(int thread_id) {
 
             if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
-                //                LOG.info("wait time:" + (txn_wait[thread_id]));
+
                 txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
-                //                        (prepare_time[thread_id] //includes event extraction time.
-                //                                + txn_wait[thread_id]
-                //                                + index_time[thread_id]
-                //                                + tp_core[thread_id]
-                //                                + abort_time[thread_id]
-                //                                + compute_total[thread_id]//includes compute and emit.
-                //                                + System.nanoTime() - compute_end[thread_id]//commit time.
-                //                        ) / 1E6;
-
-
-                metrics.stream_total[thread_id].addValue(prepare_time[thread_id] + compute_total[thread_id]);
-
-                metrics.txn_total[thread_id].addValue(txn_total[thread_id]);
-
-                metrics.exe_time[thread_id].addValue(compute_total[thread_id]);
 
                 metrics.useful_time[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
                 metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
-
                 metrics.lock[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
-
 
                 metrics.wait[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
 
                 metrics.abort_time[thread_id].addValue(abort_time[thread_id] / txn_total[thread_id]);
 
-                metrics.ts_allocation[thread_id].addValue(ts_allocate[thread_id] / txn_total[thread_id]);
-
-
-                if (enable_debug)
-                    if (txn_context.is_retry_) {
-                        System.out.println("abort_time[thread_id]" + abort_time[thread_id]);
-                        System.out.println("txn_total[thread_id]" + txn_total[thread_id]);
-                        System.out.println("ABORT RATIO:" + abort_time[thread_id] / txn_total[thread_id]);
-                    }
-
-                //clean.
-                index_time[thread_id] = 0;
-            }
-        }
-
-        public static void END_TRANSACTION_TIME_MEASURE_LAL(int thread_id) {//used by LAL-based method.
-
-            if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
-
-                txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
-
-
-                metrics.useful_time[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
-
-                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
-
-                metrics.lock[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
-
-                metrics.wait[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
 
                 //clean.
                 compute_total[thread_id] = 0;
@@ -394,6 +348,7 @@ public class Metrics {
                 index_time[thread_id] = 0;
                 txn_lock[thread_id] = 0;
                 txn_wait[thread_id] = 0;
+                abort_time[thread_id] = 0;
 
             }
         }
@@ -406,14 +361,6 @@ public class Metrics {
 
                 metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
-
-                metrics.average_tp_event[thread_id].addValue(tp_core_event[thread_id]);
-
-                metrics.average_tp[thread_id].addValue(tp_core[thread_id]);
-
-                metrics.average_tp_submit[thread_id].addValue(tp_submit[thread_id]);
-
-                metrics.average_tp_w_syn[thread_id].addValue(tp[thread_id]);
 
             }
         }

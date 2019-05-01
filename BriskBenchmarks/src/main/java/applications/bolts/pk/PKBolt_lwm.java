@@ -91,7 +91,7 @@ public class PKBolt_lwm extends PKBolt {
 
         transactionManager.CommitTransaction(txn_context);//always success..
 
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
 
     }
 

@@ -70,7 +70,7 @@ public class PKBolt_nocc extends PKBolt {
             CLEAN_ABORT_TIME_MEASURE(thread_Id);
 
             transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+            END_TRANSACTION_TIME_MEASURE(thread_Id);
 
         } else {
 
@@ -80,14 +80,14 @@ public class PKBolt_nocc extends PKBolt {
                     return;
                 }
             }
-            END_ABORT_TIME_MEASURE(thread_Id);
+            END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             PK_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
             transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+            END_TRANSACTION_TIME_MEASURE(thread_Id);
         }
 
 

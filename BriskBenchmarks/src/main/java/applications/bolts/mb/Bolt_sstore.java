@@ -19,13 +19,12 @@ import java.util.concurrent.BrokenBarrierException;
 import static applications.CONTROL.enable_states_partition;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.*;
 
 
 /**
  * Different from OLB, each executor in SStore has an associated partition id.
  */
-public class Bolt_sstore extends MBBolt {
+public class Bolt_sstore extends GSBolt {
     private static final Logger LOG = LoggerFactory.getLogger(Bolt_sstore.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
@@ -34,7 +33,7 @@ public class Bolt_sstore extends MBBolt {
         state = new ValueState();
     }
 
-    @Override
+//    @Override
     protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
 //        //begin transaction processing.
 //
@@ -64,7 +63,7 @@ public class Bolt_sstore extends MBBolt {
 //        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 //
 //        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-//        read_request(event, txn_context[(int) (i - _bid)]);
+//        read_request_noLock(event, txn_context[(int) (i - _bid)]);
 //        END_TP_CORE_TIME_MEASURE_TS(txn_context.thread_Id, 1);
 //
 //        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -76,7 +75,7 @@ public class Bolt_sstore extends MBBolt {
 
     }
 
-    @Override
+//    @Override
     protected void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
 //        //begin transaction processing.
 //
@@ -102,7 +101,7 @@ public class Bolt_sstore extends MBBolt {
 //
 //        END_WAIT_TIME_MEASURE_ACC(thread_Id);
 //
-//        write_request(event, txn_context[(int) (i - _bid)]);
+//        write_request_noLock(event, txn_context[(int) (i - _bid)]);
 //
 //        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 //
@@ -139,29 +138,29 @@ public class Bolt_sstore extends MBBolt {
 
     }
 
-    protected boolean read_request(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
-        for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
+    protected boolean read_request_noLock(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
+//        for (int i = 0; i < NUM_ACCESSES; ++i)
+//            transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
         return false;
     }
 
     protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
 
-        for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
+//        for (int i = 0; i < NUM_ACCESSES; ++i)
+//            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
 
 
     protected void write_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
-        for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
+//        for (int i = 0; i < NUM_ACCESSES; ++i)
+//            transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
     }
 
 
-    protected boolean write_request(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
+    protected boolean write_request_noLock(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             String key = String.valueOf(Event.getKeys()[i]);
-            boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", key, Event.getRecord_refs()[i], READ_WRITE);
+//            boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", key, Event.getRecord_refs()[i], READ_WRITE);
         }
         return false;
     }

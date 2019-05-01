@@ -21,7 +21,7 @@ import java.util.concurrent.BrokenBarrierException;
 import static applications.CONTROL.*;
 import static engine.profiler.Metrics.MeasureTools.*;
 
-public class Bolt_ts extends MBBolt {
+public class Bolt_ts extends GSBolt {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(Bolt_ts.class);
@@ -35,40 +35,40 @@ public class Bolt_ts extends MBBolt {
         super(LOG, fid);
         state = new ValueState();
     }
+//
+//    @Override
+//    protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
+//
+//        BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
+//        long bid = event.getBid();
+//        txn_context = new TxnContext(thread_Id, this.fid, bid);
+//
+//        read_requests(event, this.fid, bid);
+//
+//        readEventHolder.add(event);//mark the tuple as ``in-complete"
+//        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
+//
+//        if (enable_speculative) {
+//            //earlier emit
+//            collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
+//        }
+//    }
 
-    @Override
-    protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-
-        BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
-        long bid = event.getBid();
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-
-        read_requests(event, this.fid, bid);
-
-        readEventHolder.add(event);//mark the tuple as ``in-complete"
-        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
-
-        if (enable_speculative) {
-            //earlier emit
-            collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
-        }
-    }
-
-    @Override
-    protected void write_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException {
-
-        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-        long bid = event.getBid();
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-        write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), bid);
-
-        if (enable_profile)
-            writeEvents++;//just for record purpose.
-
-        collector.emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
-
-        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
-    }
+//    @Override
+//    protected void write_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException {
+//
+//        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+//        long bid = event.getBid();
+//        txn_context = new TxnContext(thread_Id, this.fid, bid);
+//        write_requests(event.enqueue_time, event.index_time, event.getKeys(), event.getValues(), bid);
+//
+//        if (enable_profile)
+//            writeEvents++;//just for record purpose.
+//
+//        collector.emit(bid, true, event.getTimestamp());//the tuple is immediately finished.
+//
+//        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
+//    }
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
@@ -76,39 +76,39 @@ public class Bolt_ts extends MBBolt {
         transactionManager = new TxnManagerTStream(config, db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
     }
 
-    /**
-     * @param event
-     * @param fid
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void read_requests(MicroEvent event, int fid, long bid) throws DatabaseException {
-
-        for (int i = 0; i < NUM_ACCESSES; i++) {
-            //it simply construct the operations and return.
-            SchemaRecordRef ref = event.getRecord_refs()[i];
-//            assert ref.cnt == 0;
-//            LOG.info("Insert ref:" + OsUtils.Addresser.addressOf(ref));
-            transactionManager.Asy_ReadRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
-        }
-    }
-
-
-    /**
-     * @param enqueue_time
-     * @param index_time
-     * @param keys
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void write_requests(double[] enqueue_time, double[] index_time, int[] keys, List<DataBox>[] values, long bid) throws DatabaseException {
-
-        for (int i = 0; i < NUM_ACCESSES; ++i) {
-            //it simply construct the operations and return.
-            transactionManager.Asy_WriteRecord(txn_context, "MicroTable", String.valueOf(keys[i]), values[i], enqueue_time);//asynchronously return.
-        }
-
-    }
+//    /**
+//     * @param event
+//     * @param fid
+//     * @param bid
+//     * @throws DatabaseException
+//     */
+//    private void read_requests(MicroEvent event, int fid, long bid) throws DatabaseException {
+//
+//        for (int i = 0; i < NUM_ACCESSES; i++) {
+//            //it simply construct the operations and return.
+//            SchemaRecordRef ref = event.getRecord_refs()[i];
+////            assert ref.cnt == 0;
+////            LOG.info("Insert ref:" + OsUtils.Addresser.addressOf(ref));
+//            transactionManager.Asy_ReadRecord(txn_context, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
+//        }
+//    }
+//
+//
+//    /**
+//     * @param enqueue_time
+//     * @param index_time
+//     * @param keys
+//     * @param bid
+//     * @throws DatabaseException
+//     */
+//    private void write_requests(double[] enqueue_time, double[] index_time, int[] keys, List<DataBox>[] values, long bid) throws DatabaseException {
+//
+//        for (int i = 0; i < NUM_ACCESSES; ++i) {
+//            //it simply construct the operations and return.
+//            transactionManager.Asy_WriteRecord(txn_context, "MicroTable", String.valueOf(keys[i]), values[i], enqueue_time);//asynchronously return.
+//        }
+//
+//    }
 
     private void read_core() throws InterruptedException {
         for (MicroEvent event : readEventHolder) {
@@ -169,11 +169,11 @@ public class Bolt_ts extends MBBolt {
 
             END_PREPARE_TIME_MEASURE(thread_Id);
 
-            if (flag) {
-                read_handle(event, timestamp);
-            } else {
-                write_handle(event, timestamp);
-            }
+//            if (flag) {
+//                read_handle(event, timestamp);
+//            } else {
+//                write_handle(event, timestamp);
+//            }
             if (enable_debug)
                 LOG.trace("Commit event:" + in.getBID());
         }

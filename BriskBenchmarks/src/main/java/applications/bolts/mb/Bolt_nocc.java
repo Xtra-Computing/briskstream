@@ -11,14 +11,15 @@ import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.combo_bid_size;
+import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
 /**
  * Combine Read-Write for nocc.
  */
-public class Bolt_nocc extends MBBolt {
+public class Bolt_nocc extends GSBolt {
     private static final Logger LOG = LoggerFactory.getLogger(Bolt_nocc.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
@@ -27,67 +28,66 @@ public class Bolt_nocc extends MBBolt {
         state = new ValueState();
     }
 
-    @Override
-    protected void read_handle(MicroEvent event, Long timestamp) throws InterruptedException, DatabaseException {
+    private void write_txn_process(MicroEvent event, long i, long _bid) throws DatabaseException, InterruptedException {
+        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+        boolean success = write_request(event, txn_context[(int) (i - _bid)]);
+        END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        long bid = event.getBid();
-
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
-
-        if (read_request_lock(event)) {
-
+        if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            read_core(event);
+            write_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
-            CLEAN_ABORT_TIME_MEASURE(thread_Id);
-            transactionManager.CommitTransaction(txn_context);//always success..
-
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
-        } else {
-            txn_context.is_retry_ = true;
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
+        } else {//being aborted.
+            txn_context[(int) (i - _bid)].is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
-            while (!read_request_lock(event)) ;
-            END_ABORT_TIME_MEASURE(thread_Id);
+            while (!write_request(event, txn_context[(int) (i - _bid)])) ;
+            END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            read_core(event);
+            write_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
-            transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
     }
 
-    @Override
-    protected void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        long bid = event.getBid();
-        txn_context = new TxnContext(thread_Id, this.fid, bid);
+    private void read_txn_process(MicroEvent event, long i, long _bid) throws DatabaseException, InterruptedException {
+        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+        boolean success = read_request(event, txn_context[(int) (i - _bid)]);
+        END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-        if (write_request_lock(event)) {
+        if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            write_core(event);
+            read_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
-            transactionManager.CommitTransaction(txn_context);//always success..
-            CLEAN_ABORT_TIME_MEASURE(thread_Id);
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
-        } else {
-            txn_context.is_retry_ = true;
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
+        } else {//being aborted.
+            txn_context[(int) (i - _bid)].is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
-            while (!write_request_lock(event)) ;
-            END_ABORT_TIME_MEASURE(thread_Id);
+            while (!read_request(event, txn_context[(int) (i - _bid)])) ;
+            END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            write_core(event);
+            read_core(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
-            transactionManager.CommitTransaction(txn_context);//always success..
-            END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
+    }
 
+    private void txn_process(long _bid) throws DatabaseException, InterruptedException {
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+            boolean flag = event.READ_EVENT();
+
+            if (flag) {
+                read_txn_process(event, i, _bid);
+            } else {
+                write_txn_process(event, i, _bid);
+            }
+        }
     }
 
 
@@ -100,6 +100,8 @@ public class Bolt_nocc extends MBBolt {
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
 
+        //pre stream processing phase..
+        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
         Long timestamp;//in.getLong(1);
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
@@ -107,26 +109,20 @@ public class Bolt_nocc extends MBBolt {
             timestamp = 0L;//
 
         long _bid = in.getBID();
+        END_PREPARE_TIME_MEASURE(thread_Id);
 
-        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+        //begin transaction processing.
+        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
 
-            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+        txn_process(_bid);
 
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+        //end transaction processing.
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
 
-            (event).setTimestamp(timestamp);
+        post_process(_bid, timestamp);
 
-            END_PREPARE_TIME_MEASURE(thread_Id);
-
-            boolean flag = event.READ_EVENT();
-            if (flag) {
-                read_handle(event, timestamp);
-            } else {
-                write_handle(event, timestamp);
-            }
-            if (enable_debug)
-                LOG.trace("Commit event:" + _bid + " by " + this.thread_Id);
-        }
+        END_TOTAL_TIME_MEASURE_ACC(thread_Id);
     }
+
 
 }
