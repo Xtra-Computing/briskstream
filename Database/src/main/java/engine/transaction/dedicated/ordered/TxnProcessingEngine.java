@@ -403,7 +403,7 @@ public final class TxnProcessingEngine {
 //            ConcurrentSkipListSet<Operation> operation_chain = holder.holder_v2[i];
 //        Set<Operation> operation_chain = holder.holder_v3;
             if (operation_chain.size() > 0) {
-                if (enable_debug)
+                if (enable_profile)
                     sum += operation_chain.size();
 
 //                Instance instance = standalone_engine;//multi_engine.get(key);
@@ -479,7 +479,7 @@ public final class TxnProcessingEngine {
 
         int size = evaluation(thread_Id);
 
-        END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission time.
+        END_TP_CORE_TIME_MEASURE_TS(thread_Id);//exclude task submission time.
 
         barrier.await();// Because the insertor (operator) does not know if his stored event has been processed or not.
     }

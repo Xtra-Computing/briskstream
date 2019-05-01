@@ -1,5 +1,6 @@
 package brisk.util;
 
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static applications.CONTROL.combo_bid_size;
@@ -10,12 +11,18 @@ public class SOURCE_CONTROL {
 
     private volatile long counter = 0;
 
+    private CyclicBarrier wm;
+
     private static SOURCE_CONTROL ourInstance = new SOURCE_CONTROL();
 
     public static SOURCE_CONTROL getInstance() {
         return ourInstance;
     }
 
+
+    public void setWM(int number_threads){
+        wm = new CyclicBarrier(number_threads);
+    }
 
     //return the starting point of counter.
     public long GetAndUpdate() {
@@ -29,5 +36,7 @@ public class SOURCE_CONTROL {
         }
         return rt;
     }
+
+
 
 }

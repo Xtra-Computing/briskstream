@@ -139,7 +139,10 @@ public class TPBolt_TStream extends TPBolt {
 
             this.collector.ack(in, marker);//tell spout it has finished the work.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, LREvents.size());
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+
+
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, LREvents.size());
 
             LREvents.clear();//clear stored events.
 

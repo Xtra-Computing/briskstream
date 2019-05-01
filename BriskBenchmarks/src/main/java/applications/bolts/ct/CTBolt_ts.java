@@ -41,7 +41,7 @@ public class CTBolt_ts extends CTBolt {
 
     @Override
     protected void deposite_handle(DepositEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
+        BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
         deposite_request(event, event.getBid());
 
@@ -49,7 +49,7 @@ public class CTBolt_ts extends CTBolt {
             depositeEvents++;//just for record purpose.
         }
 
-        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
+        END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
 
         collector.force_emit(event.getBid(), null, event.getTimestamp());
     }
@@ -181,7 +181,10 @@ public class CTBolt_ts extends CTBolt {
 
             END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, transactionEvents.size(), depositeEvents);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, transactionEvents.size() + depositeEvents);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+
+
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, transactionEvents.size() + depositeEvents);
 
             transactionEvents.clear();//all tuples in the holder is finished.
 

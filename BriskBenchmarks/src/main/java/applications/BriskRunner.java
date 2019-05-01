@@ -15,6 +15,7 @@ import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
 import brisk.util.SINK_CONTROL;
+import brisk.util.SOURCE_CONTROL;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import engine.common.SpinLock;
@@ -224,10 +225,11 @@ public class BriskRunner extends abstractRunner {
             int tthread = config.getInt("tthread");
 
 
-            if (enable_app_combo)
+            if (enable_app_combo) {
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, tthread);
+                SOURCE_CONTROL.getInstance().setWM(tthread);
 
-            else
+            } else
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
 
 
@@ -533,8 +535,8 @@ public class BriskRunner extends abstractRunner {
                     sb.append("average tp processing w/ synchronization:");
                     sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() / 1E6).append("\n");
 
-                    sb.append("tp processing per event:");
-                    sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");
+//                    sb.append("tp processing per event:");
+//                    sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");
 
                 }
                 stream_processing += metrics.stream_total[i].getSum();

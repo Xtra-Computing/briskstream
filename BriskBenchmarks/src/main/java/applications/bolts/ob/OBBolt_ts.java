@@ -46,13 +46,13 @@ public class OBBolt_ts extends OBBolt {
     @Override
     protected void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException {
 
-        BEGIN_READ_HANDLE_TIME_MEASURE(thread_Id);
+        BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
         buy_request(event, this.fid, event.getBid());
 
         buyingEvents.add(event);
 
-        END_READ_HANDLE_TIME_MEASURE_TS(thread_Id);
+        END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
 
     }
 
@@ -181,7 +181,9 @@ public class OBBolt_ts extends OBBolt {
 
             END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, buyingEvents.size(), alertEvents + toppingEvents);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, buyingEvents.size() + alertEvents + toppingEvents);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, buyingEvents.size() + alertEvents + toppingEvents);
 
             buyingEvents.clear();//all tuples in the holder is finished.
             if (enable_profile) {

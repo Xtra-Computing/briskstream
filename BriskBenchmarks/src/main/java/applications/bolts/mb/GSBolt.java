@@ -20,8 +20,6 @@ import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
-import static engine.profiler.Metrics.MeasureTools.END_LOCK_TIME_MEASURE_ACC;
-import static engine.profiler.Metrics.MeasureTools.END_WAIT_TIME_MEASURE_ACC;
 
 public abstract class GSBolt extends TransactionalBolt {
 
@@ -30,7 +28,7 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-    protected void read_core(MicroEvent event) throws InterruptedException {
+    protected void READ_CORE(MicroEvent event) throws InterruptedException {
 
         int sum = 0;
         for (int i = 0; i < NUM_ACCESSES; ++i) {
@@ -48,7 +46,7 @@ public abstract class GSBolt extends TransactionalBolt {
 
     }
 
-    protected void read_post(MicroEvent event) throws InterruptedException {
+    protected void READ_POST(MicroEvent event) throws InterruptedException {
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.
@@ -63,7 +61,8 @@ public abstract class GSBolt extends TransactionalBolt {
         }
 
     }
-    protected void write_post(MicroEvent event) throws InterruptedException {
+
+    protected void WRITE_POST(MicroEvent event) throws InterruptedException {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
@@ -81,7 +80,6 @@ public abstract class GSBolt extends TransactionalBolt {
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
     }
-
 
 
     protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
@@ -151,31 +149,10 @@ public abstract class GSBolt extends TransactionalBolt {
 
     public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
 
+
     //lock-ahead phase.
-    protected void LAL_process(long _bid) throws DatabaseException, InterruptedException {
-
-        for (long i = _bid; i < _bid + combo_bid_size; i++) {
-
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
-
-            BEGIN_WAIT_TIME_MEASURE(thread_Id);
-            //ensures that locks are added in the event sequence order.
-            transactionManager.getOrderLock().blocking_wait(i);
-
-            BEGIN_LOCK_TIME_MEASURE(thread_Id);
-            boolean flag = event.READ_EVENT();
-            if (flag) {//read
-                read_lock_ahead(event, txn_context[(int) (i - _bid)]);
-            } else {
-                write_lock_ahead(event, txn_context[(int) (i - _bid)]);
-            }
-
-            END_LOCK_TIME_MEASURE_ACC(thread_Id);
-            transactionManager.getOrderLock().advance();
-            END_WAIT_TIME_MEASURE_ACC(thread_Id);
-        }
+    protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
+        //ONLY USED BY LAL, LWM, and PAT.
     }
 
     protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {
@@ -193,7 +170,7 @@ public abstract class GSBolt extends TransactionalBolt {
                 END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
                 BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-                read_core(event);
+                READ_CORE(event);
                 END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             } else {
@@ -212,16 +189,16 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
     //post stream processing phase..
-    protected void post_process(long _bid, long timestamp) throws InterruptedException {
+    protected void POST_PROCESS(long _bid, long timestamp) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
             (event).setTimestamp(timestamp);
             boolean flag = event.READ_EVENT();
             if (flag) {//read
-                read_post(event);
+                READ_POST(event);
             } else {
-                write_post(event);
+                WRITE_POST(event);
             }
         }
         END_POST_TIME_MEASURE(thread_Id);

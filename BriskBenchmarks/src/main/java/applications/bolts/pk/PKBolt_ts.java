@@ -122,7 +122,9 @@ public class PKBolt_ts extends PKBolt {
             final Marker marker = in.getMarker();
             this.collector.ack(in, marker);//tell spout it has finished the work.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, PKEvents.size());
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, PKEvents.size());
 
             PKEvents.clear();//all tuples in the holder is finished.
         } else {

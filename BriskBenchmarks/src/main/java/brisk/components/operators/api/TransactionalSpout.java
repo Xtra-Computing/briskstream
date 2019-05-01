@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.enable_debug;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -51,8 +50,6 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public abstract void nextTuple() throws InterruptedException;
 
 
-
-
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         forward_checkpoint(sourceId, DEFAULT_STREAM_ID, bid, marker);
@@ -86,20 +83,21 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public void forward_checkpoint(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
         if (clock.tick(myiteration) && success) {//emit marker tuple
-//			forwardResultAndMark(streamId, values, bid_counter++ % bid_end);
-//			final long msgId = bid_counter++;//++ % bid_end;
-            LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " SOURCE_CONTROL: " + bid);
-//            long start = System.nanoTime();
-            collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
-            boardcast_time = System.nanoTime();
-//            LOG.info("Broadcast marker takes:" + (boardcast_time - start));
 
-            myiteration++;
-            success = false;
+            if (!enable_app_combo) {
 
-            epoch_size = bid - previous_bid;
-            previous_bid = bid;
-            earilier_check = true;
+                LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " SOURCE_CONTROL: " + bid);
+                collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
+                boardcast_time = System.nanoTime();
+                myiteration++;
+                success = false;
+                epoch_size = bid - previous_bid;
+                previous_bid = bid;
+                earilier_check = true;
+            } else {
+
+
+            }
         }
     }
 

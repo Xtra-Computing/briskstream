@@ -103,17 +103,13 @@ public class GSCombo extends TransactionalSpout {
     public void nextTuple() throws InterruptedException {
 
         try {
-//            if (ccOption == CCOption_TStream)
-//                forward_checkpoint(-1, bid, null); // This is only required by T-Stream.
+            if (ccOption == CCOption_TStream)
+                forward_checkpoint(this.taskId, bid, null); // This is only required by T-Stream.
 
             long bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
-
             if (bid < NUM_EVENTS) {
-
                 bolt.execute(new Tuple(bid, this.taskId, context,
                         new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
-
-
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             e.printStackTrace();

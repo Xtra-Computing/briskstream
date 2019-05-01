@@ -59,7 +59,7 @@ public class Bolt_nocc extends GSBolt {
 
         if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            read_core(event);
+            READ_CORE(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
@@ -69,14 +69,14 @@ public class Bolt_nocc extends GSBolt {
             END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            read_core(event);
+            READ_CORE(event);
             END_COMPUTE_TIME_MEASURE(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
     }
 
-    private void txn_process(long _bid) throws DatabaseException, InterruptedException {
+    private void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
@@ -97,6 +97,7 @@ public class Bolt_nocc extends GSBolt {
         transactionManager = new TxnManagerLock(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
     }
 
+
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
 
@@ -114,12 +115,12 @@ public class Bolt_nocc extends GSBolt {
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
 
-        txn_process(_bid);
+        TXN_PROCESS(_bid);
 
         //end transaction processing.
         END_TRANSACTION_TIME_MEASURE(thread_Id);
 
-        post_process(_bid, timestamp);
+        POST_PROCESS(_bid, timestamp);
 
         END_TOTAL_TIME_MEASURE_ACC(thread_Id);
     }
