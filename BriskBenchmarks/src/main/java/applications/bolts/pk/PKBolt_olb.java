@@ -71,7 +71,7 @@ public class PKBolt_olb extends PKBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         PK_request_lock_ahead(event, this.fid, bid);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.

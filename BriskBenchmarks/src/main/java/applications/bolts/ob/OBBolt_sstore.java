@@ -40,7 +40,7 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Topping_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 
@@ -76,7 +76,7 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Alert_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 
@@ -113,7 +113,7 @@ public class OBBolt_sstore extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Buying_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);

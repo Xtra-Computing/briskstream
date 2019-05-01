@@ -1,7 +1,6 @@
 package applications.bolts.mb;
 
 import applications.param.mb.MicroEvent;
-import applications.sink.SINKComBO;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
@@ -10,18 +9,17 @@ import engine.Meta.MetaTypes;
 import engine.storage.SchemaRecord;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
+import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
 import java.util.List;
-import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_speculative;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_PREPARE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_PREPARE_TIME_MEASURE;
 
 public abstract class MBBolt extends TransactionalBolt {
 
@@ -44,7 +42,11 @@ public abstract class MBBolt extends TransactionalBolt {
                 System.out.println("What causes the exception?" + event.getKeys()[i]);
             }
         }
+        event.sum = sum;
 
+    }
+
+    protected void read_post(MicroEvent event) throws InterruptedException {
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.
@@ -52,13 +54,13 @@ public abstract class MBBolt extends TransactionalBolt {
 
         } else {
             if (!enable_app_combo) {
-                collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
+                collector.emit(event.getBid(), event.sum, event.getTimestamp());//the tuple is finished finally.
             } else {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum)));//(long bid, int sourceId, TopologyContext context, Message message)
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.sum)));//(long bid, int sourceId, TopologyContext context, Message message)
             }
         }
-    }
 
+    }
 
     protected void write_core(MicroEvent event) throws InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
@@ -68,6 +70,9 @@ public abstract class MBBolt extends TransactionalBolt {
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
+    }
+
+    protected void write_post(MicroEvent event) throws InterruptedException {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
@@ -75,22 +80,23 @@ public abstract class MBBolt extends TransactionalBolt {
         }
     }
 
-    protected void read_lock_ahead(MicroEvent Event) throws DatabaseException {
+
+    protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable",
+            transactionManager.lock_ahead(txnContext, "MicroTable",
                     String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
 
 
-    protected void write_lock_ahead(MicroEvent Event) throws DatabaseException {
+    protected void write_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
-            transactionManager.lock_ahead(txn_context, "MicroTable",
+            transactionManager.lock_ahead(txnContext, "MicroTable",
                     String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
     }
 
-    private boolean process_request_noLock(MicroEvent event, MetaTypes.AccessType accessType) throws DatabaseException {
+    private boolean process_request_noLock(MicroEvent event, TxnContext txnContext, MetaTypes.AccessType accessType) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable",
+            boolean rt = transactionManager.SelectKeyRecord_noLock(txnContext, "MicroTable",
                     String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
                 assert event.getRecord_refs()[i].getRecord() != null;
@@ -114,16 +120,16 @@ public abstract class MBBolt extends TransactionalBolt {
         return false;
     }
 
-    protected boolean read_request(MicroEvent event) throws DatabaseException {
+    protected boolean read_request(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
-        if (process_request_noLock(event, READ_ONLY)) return false;
+        if (process_request_noLock(event, txnContext, READ_ONLY)) return false;
         return true;
     }
 
 
-    protected boolean write_request(MicroEvent event) throws DatabaseException {
+    protected boolean write_request(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
-        if (process_request_noLock(event, READ_WRITE)) return false;
+        if (process_request_noLock(event, txnContext, READ_WRITE)) return false;
         return true;
     }
 
@@ -139,7 +145,6 @@ public abstract class MBBolt extends TransactionalBolt {
         if (process_request(event, READ_WRITE)) return false;
         return true;
     }
-
 
 
     protected abstract void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException;

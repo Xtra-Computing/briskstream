@@ -36,83 +36,83 @@ public class Bolt_sstore extends MBBolt {
 
     @Override
     protected void read_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
-
-        //ensures that locks are added in the event sequence order.
-        //ensures all related partitions are locked.
-
-//        LOG.info("Task id:" + thread_Id + " works on bid: " + Arrays.toString(bid) + " pid: " + pid);
-        //be careful if there is a deadlock.
-
-
-        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        int _pid = event.getPid();
-
-        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
-
-        // //LOG.DEBUG("TaskID: " + thread_Id + " works on PID:" + pid + " bid:" + bid);
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        read_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
-
-        _pid = event.getPid();
-        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
-
-        END_WAIT_TIME_MEASURE_ACC(thread_Id);
-
-        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-        read_request(event);
-        END_TP_CORE_TIME_MEASURE(txn_context.thread_Id, 1);
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-        read_core(event);
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-
-        transactionManager.CommitTransaction(txn_context);
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+//        //begin transaction processing.
+//
+//        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+//        txn_context = new TxnContext(thread_Id, this.fid, event.getBid(), event.getPid());
+//
+//        //ensures that locks are added in the event sequence order.
+//        //ensures all related partitions are locked.
+//
+////        LOG.info("Task id:" + thread_Id + " works on bid: " + Arrays.toString(bid) + " pid: " + pid);
+//        //be careful if there is a deadlock.
+//
+//
+//        BEGIN_WAIT_TIME_MEASURE(thread_Id);
+//        int _pid = event.getPid();
+//
+//        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
+//
+//        // //LOG.DEBUG("TaskID: " + thread_Id + " works on PID:" + pid + " bid:" + bid);
+//        BEGIN_LOCK_TIME_MEASURE(thread_Id);
+//        read_lock_ahead(event, txn_context[(int) (i - _bid)]);
+//        END_LOCK_TIME_MEASURE_ACC(thread_Id);
+//
+//        _pid = event.getPid();
+//        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
+//
+//        END_WAIT_TIME_MEASURE_ACC(thread_Id);
+//
+//        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+//        read_request(event, txn_context[(int) (i - _bid)]);
+//        END_TP_CORE_TIME_MEASURE_TS(txn_context.thread_Id, 1);
+//
+//        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+//        read_core(event);
+//        END_COMPUTE_TIME_MEASURE(thread_Id);
+//
+//        transactionManager.CommitTransaction(txn_context);
+//        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
     }
 
     @Override
     protected void write_handle(MicroEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        long bid = event.getBid();
-        int pid = event.getPid();
-        int number_of_partitions = event.num_p();
-
-        txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
-
-        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        //be careful if there is a deadlock.
-        int _pid = pid;
-        LA_LOCK(_pid, number_of_partitions, transactionManager, event.getBid_array(), tthread);
-
-
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        write_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
-
-        _pid = pid;
-        LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
-
-        END_WAIT_TIME_MEASURE_ACC(thread_Id);
-
-        write_request(event);
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-
-        write_core(event);
-
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-
-        transactionManager.CommitTransaction(txn_context);
-
-        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
+//        //begin transaction processing.
+//
+//        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+//        long bid = event.getBid();
+//        int pid = event.getPid();
+//        int number_of_partitions = event.num_p();
+//
+//        txn_context = new TxnContext(thread_Id, this.fid, bid, pid);
+//
+//        BEGIN_WAIT_TIME_MEASURE(thread_Id);
+//        //be careful if there is a deadlock.
+//        int _pid = pid;
+//        LA_LOCK(_pid, number_of_partitions, transactionManager, event.getBid_array(), tthread);
+//
+//
+//        BEGIN_LOCK_TIME_MEASURE(thread_Id);
+//        write_lock_ahead(event, txn_context[(int) (i - _bid)]);
+//        END_LOCK_TIME_MEASURE_ACC(thread_Id);
+//
+//        _pid = pid;
+//        LA_UNLOCK(_pid, number_of_partitions, transactionManager, tthread);
+//
+//        END_WAIT_TIME_MEASURE_ACC(thread_Id);
+//
+//        write_request(event, txn_context[(int) (i - _bid)]);
+//
+//        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+//
+//        write_core(event);
+//
+//        END_COMPUTE_TIME_MEASURE(thread_Id);
+//
+//        transactionManager.CommitTransaction(txn_context);
+//
+//        END_TRANSACTION_TIME_MEASURE(thread_Id, txn_context);
 
 
     }
@@ -139,26 +139,26 @@ public class Bolt_sstore extends MBBolt {
 
     }
 
-    protected boolean read_request(MicroEvent Event) throws DatabaseException {
+    protected boolean read_request(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
         return false;
     }
 
-    protected void read_lock_ahead(MicroEvent Event) throws DatabaseException {
+    protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
 
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
 
 
-    protected void write_lock_ahead(MicroEvent Event) throws DatabaseException {
+    protected void write_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txn_context, "MicroTable", String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
     }
 
 
-    protected boolean write_request(MicroEvent Event) throws DatabaseException {
+    protected boolean write_request(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             String key = String.valueOf(Event.getKeys()[i]);
             boolean rt = transactionManager.SelectKeyRecord_noLock(txn_context, "MicroTable", key, Event.getRecord_refs()[i], READ_WRITE);

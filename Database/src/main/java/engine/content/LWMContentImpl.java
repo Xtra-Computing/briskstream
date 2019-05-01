@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 import static engine.content.common.ContentCommon.kRecycleLength;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_TS;
 
 /**
  * This corresponds to ACEP's SharedTable, but for every table d_record.
@@ -110,7 +110,7 @@ public class LWMContentImpl extends LWMContent {
         //TODO: there is a null pointer error at this line.
         BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
         SchemaRecord record = readValues(bid);
-        END_TP_CORE_TIME_MEASURE(txn_context.thread_Id, 1);
+        END_TP_CORE_TIME_MEASURE_TS(txn_context.thread_Id, 1);
         return record;
 
     }

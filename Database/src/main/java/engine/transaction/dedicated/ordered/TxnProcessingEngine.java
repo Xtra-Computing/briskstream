@@ -20,7 +20,6 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static applications.CONTROL.*;
-import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
 import static applications.constants.PositionKeepingConstants.Constant.MOVING_AVERAGE_WINDOW;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
@@ -480,7 +479,7 @@ public final class TxnProcessingEngine {
 
         int size = evaluation(thread_Id);
 
-        END_TP_CORE_TIME_MEASURE(thread_Id, size);//exclude task submission time.
+        END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission time.
 
         barrier.await();// Because the insertor (operator) does not know if his stored event has been processed or not.
     }

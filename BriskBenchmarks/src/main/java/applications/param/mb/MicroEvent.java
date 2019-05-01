@@ -23,6 +23,7 @@ public class MicroEvent extends TxnEvent {
 
     private final int[] keys;
     private final boolean flag;//true: read, false: write.
+    public int sum;
     private List<DataBox>[] value;//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 

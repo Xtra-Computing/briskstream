@@ -8,7 +8,7 @@ public interface CONTROL {
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
-    int combo_bid_size = 100;//reduce conflict.
+    int combo_bid_size = 1;//reduce conflict.
 
 
     //order related.

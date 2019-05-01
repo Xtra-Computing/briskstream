@@ -50,7 +50,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 
@@ -88,7 +88,7 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 

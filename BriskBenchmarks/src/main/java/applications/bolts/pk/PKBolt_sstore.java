@@ -76,7 +76,7 @@ public class PKBolt_sstore extends PKBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         PK_request_lock_ahead(event, this.fid);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         for (Integer key : event.getKey()) {
             int p = key_to_partition(key);

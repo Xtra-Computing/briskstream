@@ -60,7 +60,7 @@ public class PKBolt_ts extends PKBolt {
 
         BEGIN_PREPARE_TIME_MEASURE(thread_Id);
         PKEvent event = generatePKEvent(bid, deviceID, value);
-        END_PREPARE_TIME_MEASURE_ACC(thread_Id);
+        END_PREPARE_TIME_MEASURE(thread_Id);
 
         txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
 

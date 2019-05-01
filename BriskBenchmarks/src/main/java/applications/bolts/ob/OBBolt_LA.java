@@ -29,7 +29,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Topping_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
@@ -61,7 +61,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Alert_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
@@ -93,7 +93,7 @@ public abstract class OBBolt_LA extends OBBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         Buying_REQUEST_LA(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 

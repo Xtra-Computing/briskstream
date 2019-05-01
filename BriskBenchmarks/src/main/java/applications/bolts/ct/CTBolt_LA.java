@@ -28,7 +28,7 @@ public class CTBolt_LA extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 
@@ -61,7 +61,7 @@ public class CTBolt_LA extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
 

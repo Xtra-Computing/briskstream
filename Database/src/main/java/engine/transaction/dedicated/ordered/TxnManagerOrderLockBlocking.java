@@ -208,6 +208,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
     @Override
     public boolean CommitTransaction(TxnContext txn_context) {
 
+
 //		long curr_epoch = Epoch.GetEpoch();
         long commit_ts = txn_context.getBID();//This makes the execution appears to execute at one atomic time unit. //GenerateMonotoneTimestamp(curr_epoch, GlobalTimestamp.GetMonotoneTimestamp());
 
