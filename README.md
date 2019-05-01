@@ -12,13 +12,13 @@ They underutilize scale-up server seriously as observed by our careful benchmark
 
 ## How to start
 1. Clone the project.
-- Master branch
+- **Master branch**
 This is an experimental branch, it may not be able to compile. Use this branch at your own risk. :)
 
-- Stable branch
+- **Stable branch**
 This is a stable branch (but old). It should be able to compile and run following the instructions below. If you faced any difficulties for using this branch, please raise an issue, and I will try to fix it as soon as possible. :)
 
-- Other branches
+- **Other branches**
 Those branches are experimental branches, which I'm currently working on. You are welcome to discuss with me about those new features, and we can collaborately work on them. :)
 
 2. Make sure all the dependencies are installed. 
