@@ -8,6 +8,7 @@ import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.TransactionalSpout;
 import brisk.execution.ExecutionGraph;
+import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
@@ -18,8 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.enable_shared_state;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.content.Content.*;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -103,8 +103,16 @@ public class GSCombo extends TransactionalSpout {
     public void nextTuple() throws InterruptedException {
 
         try {
-            if (ccOption == CCOption_TStream)
-                forward_checkpoint(this.taskId, bid, null); // This is only required by T-Stream.
+            if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
+                if (!enable_app_combo)
+                    forward_checkpoint(this.taskId, bid, null);
+
+                else {
+                    if (checkpoint()) {
+                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), SOURCE_CONTROL.getInstance().Get(), myiteration)));
+                    }
+                }
+            }
 
             long bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
             if (bid < NUM_EVENTS) {

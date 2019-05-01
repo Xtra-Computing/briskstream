@@ -149,6 +149,11 @@ public class DispatcherBolt extends filterBolt implements Checkpointable {
     }
 
     @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
+
+    @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         this.collector.broadcast_marker(bid, marker);
     }

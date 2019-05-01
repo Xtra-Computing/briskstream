@@ -98,6 +98,11 @@ public class SplitSentenceBolt_FT extends splitBolt implements Checkpointable {
     }
 
     @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
+
+    @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         final boolean check = checkpoint_forward(sourceId);//simply forward marker when it is ready.
         if (check) {

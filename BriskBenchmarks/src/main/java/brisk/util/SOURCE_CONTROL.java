@@ -20,7 +20,7 @@ public class SOURCE_CONTROL {
     }
 
 
-    public void setWM(int number_threads){
+    public void setWM(int number_threads) {
         wm = new CyclicBarrier(number_threads);
     }
 
@@ -37,6 +37,12 @@ public class SOURCE_CONTROL {
         return rt;
     }
 
+    //return counter.
+    public long Get() {
+        return counter;
+    }
 
-
+    public CyclicBarrier getWm() {
+        return wm;
+    }
 }

@@ -102,6 +102,12 @@ public class bolt_ft extends MapBolt implements Checkpointable {
     public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
 
     }
+
+    @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
+
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         final boolean check = checkpoint_store(current_value, sourceId, marker);//call forward_checkpoint.

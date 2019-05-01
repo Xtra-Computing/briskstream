@@ -117,5 +117,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     public void earlier_ack_checkpoint(Marker marker) {
 
     }
-
+    @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
 }

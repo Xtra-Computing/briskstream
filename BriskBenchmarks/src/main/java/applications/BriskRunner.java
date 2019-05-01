@@ -228,7 +228,6 @@ public class BriskRunner extends abstractRunner {
             if (enable_app_combo) {
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, tthread);
                 SOURCE_CONTROL.getInstance().setWM(tthread);
-
             } else
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
 

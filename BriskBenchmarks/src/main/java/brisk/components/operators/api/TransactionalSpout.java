@@ -2,6 +2,7 @@ package brisk.components.operators.api;
 
 import applications.tools.FastZipfGenerator;
 import brisk.execution.runtime.tuple.impl.Marker;
+import brisk.util.SOURCE_CONTROL;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_admission_control;
+import static applications.CONTROL.enable_debug;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -49,6 +51,19 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public abstract void nextTuple() throws InterruptedException;
 
+    /**
+     * THIS IS USED ONLY WHEN "enable_app_combo" is true.
+     */
+    @Override
+    public boolean checkpoint() throws InterruptedException {
+        if (clock.tick(myiteration) && success) {//emit marker tuple
+            SOURCE_CONTROL.getInstance().getWm().wait();//wait for all threads to come to this line.
+            myiteration++;
+            success = false;
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
@@ -83,21 +98,16 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public void forward_checkpoint(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
         if (clock.tick(myiteration) && success) {//emit marker tuple
-
-            if (!enable_app_combo) {
-
-                LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " SOURCE_CONTROL: " + bid);
-                collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
-                boardcast_time = System.nanoTime();
-                myiteration++;
-                success = false;
-                epoch_size = bid - previous_bid;
-                previous_bid = bid;
-                earilier_check = true;
-            } else {
+            LOG.info(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now() + " SOURCE_CONTROL: " + bid);
+            collector.create_marker_boardcast(boardcast_time, streamId, bid, myiteration);
+            boardcast_time = System.nanoTime();
+            myiteration++;
+            success = false;
+            epoch_size = bid - previous_bid;
+            previous_bid = bid;
+            earilier_check = true;
 
 
-            }
         }
     }
 

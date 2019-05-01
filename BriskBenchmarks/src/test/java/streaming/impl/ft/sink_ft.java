@@ -104,6 +104,11 @@ public class sink_ft extends MapBolt implements Checkpointable {
     }
 
     @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
+
+    @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         final boolean check = checkpoint_store(current_value, sourceId, marker);//call forward_checkpoint.
         if (check) {

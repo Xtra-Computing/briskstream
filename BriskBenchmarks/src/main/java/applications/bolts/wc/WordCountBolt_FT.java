@@ -92,6 +92,11 @@ public class WordCountBolt_FT extends MapBolt implements Checkpointable {
     }
 
     @Override
+    public boolean checkpoint() throws InterruptedException {
+        return false;
+    }
+
+    @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         //(Serializable) counts checkpoint_forward(sourceId);
         final boolean check = checkpoint_store((Serializable) counts, sourceId, marker);//call forward_checkpoint.

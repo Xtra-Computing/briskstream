@@ -4,6 +4,8 @@ import brisk.execution.runtime.tuple.impl.Marker;
 
 public interface Checkpointable {
 
+    boolean checkpoint() throws InterruptedException;
+
     void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException;
 
     void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException;
