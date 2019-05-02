@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 import java.util.TreeSet;
 
 import static engine.content.common.ContentCommon.kRecycleLength;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_TS;
 
 /**
  * This corresponds to ACEP's SharedTable, but for every table d_record.

@@ -2,17 +2,16 @@ package brisk.components.operators.api;
 
 import applications.tools.FastZipfGenerator;
 import brisk.execution.runtime.tuple.impl.Marker;
-import brisk.util.SOURCE_CONTROL;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SOURCE_CONTROL;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.enable_debug;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -43,7 +42,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
     protected TransactionalSpout(Logger log, int fid) {
         super(log);
-        this.fid=fid;
+        this.fid = fid;
     }
 
     public double getEmpty() {
@@ -53,18 +52,24 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public abstract void nextTuple() throws InterruptedException;
 
+
+    int bt = 1;
+
     /**
      * THIS IS USED ONLY WHEN "enable_app_combo" is true.
+     * <p>
+     * Everytime, a thread emits "batch_size" batches, it emits a signal to trigger txn processing.
      */
     @Override
-    public boolean checkpoint() throws InterruptedException, BrokenBarrierException {
-        if (clock.tick(myiteration) && success) {//emit marker tuple
-            SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
+    public boolean checkpoint() {
+        boolean rt = false;
+        if (bt % batch_length == 0) {
             myiteration++;
             success = false;
-            return true;
+            rt = true;
         }
-        return false;
+        bt++;
+        return rt;
     }
 
     @Override
@@ -80,17 +85,10 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
         if (clock.tick(myiteration) && success) {//emit marker tuple
-//			forwardResultAndMark(streamId, values, bid_counter++ % bid_end);
-//			final long msgId = bid_counter++;//++ % bid_end;
-//            LOG.debug(executor.getOP_full() + " emit marker of: " + myiteration + " @" + DateTime.now());
-//            long start = System.nanoTime();
             collector.create_marker_single(boardcast_time, streamId, bid, myiteration);
             boardcast_time = System.nanoTime();
-//            LOG.info("Broadcast marker takes:" + (boardcast_time - start));
-
             myiteration++;
             success = false;
-
             epoch_size = bid - previous_bid;
             previous_bid = bid;
             earilier_check = true;
@@ -116,12 +114,10 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public void ack_checkpoint(Marker marker) {
         //Do something to clear past state. (optional)
-
         success = true;//I can emit next marker.
 
         if (enable_debug)
             LOG.trace("task_size: " + epoch_size * NUM_ACCESSES);
-
 
         long elapsed_time = System.nanoTime() - boardcast_time;//the time elapsed for the system to handle the previous epoch.
         double actual_system_throughput = epoch_size * 1E9 / elapsed_time;//events/ s

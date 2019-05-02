@@ -1,4 +1,4 @@
-package brisk.util;
+package utils;
 
 import java.util.concurrent.locks.ReentrantLock;
 

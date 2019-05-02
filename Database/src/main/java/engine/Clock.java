@@ -14,7 +14,7 @@ public class Clock implements Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(Clock.class);
     long create_time;
     long gap;
-    private int iteration = -1;//start from 1st iteration
+    private int iteration = -100;//let it runs for a while...
 
     private Timer timer;
 
@@ -33,6 +33,7 @@ public class Clock implements Closeable {
 //				LOG.info("Advance iteration" + iteration + " @" + DateTime.now());
             }
         }, 2 * gap, gap);
+
     }
 
     public synchronized boolean tick(int myiteration) {

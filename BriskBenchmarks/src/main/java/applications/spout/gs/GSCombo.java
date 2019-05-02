@@ -12,10 +12,10 @@ import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
-import brisk.util.SOURCE_CONTROL;
 import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SOURCE_CONTROL;
 
 import java.util.concurrent.BrokenBarrierException;
 
@@ -109,9 +109,11 @@ public class GSCombo extends TransactionalSpout {
                     forward_checkpoint(this.taskId, bid, null);
 
                 else {
+                    long current_bid = SOURCE_CONTROL.getInstance().Get();
                     if (checkpoint()) {
-                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), SOURCE_CONTROL.getInstance().Get(), myiteration)));
-                        success=true;
+//                        LOG.info("CHECKPOINT" + current_bid);
+                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), current_bid, myiteration)));
+                        success = true;
                     }
                 }
             }
@@ -122,7 +124,7 @@ public class GSCombo extends TransactionalSpout {
                         new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
             }
         } catch (DatabaseException | BrokenBarrierException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 }

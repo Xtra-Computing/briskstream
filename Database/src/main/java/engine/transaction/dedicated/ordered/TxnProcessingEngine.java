@@ -13,6 +13,7 @@ import engine.storage.datatype.ListDoubleDataBox;
 import engine.transaction.function.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SOURCE_CONTROL;
 
 import java.io.Closeable;
 import java.util.*;
@@ -97,9 +98,6 @@ public final class TxnProcessingEngine {
         this.last_exe = last_exe;
         num_op = stage_size;
         barrier = new CyclicBarrier(stage_size);
-        //start_ready = new ResettableCountDownLatch(num_op);
-//		process_ready = new ResettableCountDownLatch(num_op);
-//		process_barrier = new CyclicBarrier(num_op);
 
         if (!enable_work_stealing) {
             if (island != -1)
@@ -213,9 +211,11 @@ public final class TxnProcessingEngine {
 //            operation.record_ref.inc(Thread.currentThread().getName());
 
             //read source.
-            List<DataBox> dstRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
+//            List<DataBox> dstRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
 
-            operation.record_ref.setRecord(new SchemaRecord(dstRecord));
+            SchemaRecord schemaRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);
+
+            operation.record_ref.setRecord(schemaRecord);//Note that, locking scheme allows directly modifying on original table d_record.
 
             if (enable_debug)
                 if (operation.record_ref.cnt == 0) {
@@ -425,6 +425,7 @@ public final class TxnProcessingEngine {
                 }
             }
         }
+        holder.holder_v1.clear();
         return sum;
     }
 
@@ -445,6 +446,9 @@ public final class TxnProcessingEngine {
 
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
 
+        if (enable_debug)
+            LOG.info("submit task:" + task);
+
         if (enable_engine) {
             if (!enable_work_stealing) {
                 multi_engine.get(ThreadToEngine(thread_Id)).executor.invokeAll(callables);
@@ -457,8 +461,6 @@ public final class TxnProcessingEngine {
 //        for (Holder_in_range holder_in_range : holder_by_stage.values())
 //            holder_in_range.rangeMap.clear();
 
-        if (enable_debug)
-            LOG.info("finished task:" + task);
 
         return task;
     }
@@ -472,16 +474,23 @@ public final class TxnProcessingEngine {
      */
     public void start_evaluation(int thread_Id) throws InterruptedException, BrokenBarrierException {
 
+
         //It first needs to make sure checkpoints from all producers are received.
-        barrier.await();
+//        if (!enable_app_combo)//otherwise, already synchronized at spout side.
+//            barrier.await();
+//        else
+        SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
         int size = evaluation(thread_Id);
 
-        END_TP_CORE_TIME_MEASURE_TS(thread_Id);//exclude task submission time.
+        END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
 
-        barrier.await();// Because the insertor (operator) does not know if his stored event has been processed or not.
+//        if (!enable_app_combo)
+//        barrier.await();// Because the (operator) does not know if his stored event has been processed or not. Every thread must be synchronized at this point.
+//        else
+//            SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
     }
 
     /**

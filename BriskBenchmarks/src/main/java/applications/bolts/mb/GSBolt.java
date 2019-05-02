@@ -28,25 +28,25 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-    protected void READ_CORE(MicroEvent event) throws InterruptedException {
-
-        int sum = 0;
+    protected boolean READ_CORE(MicroEvent event) throws InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             SchemaRecordRef ref = event.getRecord_refs()[i];
-            try {
-                DataBox dataBox = ref.getRecord().getValues().get(1);
-                int read_result = Integer.parseInt(dataBox.getString().trim());
-                sum += read_result;
-            } catch (Exception e) {
-                System.out.println("Null Pointer Exception at: " + event.getBid() + "i:" + i);
-                System.out.println("What causes the exception?" + event.getKeys()[i]);
-            }
-        }
-        event.sum = sum;
 
+            if (ref.isEmpty())
+                return false;//not yet processed.
+
+            DataBox dataBox = ref.getRecord().getValues().get(1);
+            int read_result = Integer.parseInt(dataBox.getString().trim());
+            event.result[i] = read_result;
+        }
+        return true;
     }
 
     protected void READ_POST(MicroEvent event) throws InterruptedException {
+        int sum = 0;
+        for (int i = 0; i < NUM_ACCESSES; ++i) {
+            sum += event.result[i];
+        }
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.
@@ -54,9 +54,9 @@ public abstract class GSBolt extends TransactionalBolt {
 
         } else {
             if (!enable_app_combo) {
-                collector.emit(event.getBid(), event.sum, event.getTimestamp());//the tuple is finished finally.
+                collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
             } else {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.sum)));//(long bid, int sourceId, TopologyContext context, Message message)
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum)));//(long bid, int sourceId, TopologyContext context, Message message)
             }
         }
 
@@ -72,6 +72,7 @@ public abstract class GSBolt extends TransactionalBolt {
 
 
     protected void write_core(MicroEvent event) throws InterruptedException {
+//        long start = System.nanoTime();
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             List<DataBox> values = event.getValues()[i];
             SchemaRecordRef recordRef = event.getRecord_refs()[i];
@@ -79,6 +80,8 @@ public abstract class GSBolt extends TransactionalBolt {
             List<DataBox> recordValues = record.getValues();
             recordValues.get(1).setString(values.get(1).getString(), VALUE_LEN);
         }
+//        long duration = System.nanoTime() - start;
+//        LOG.info("DURATION:" + duration);
     }
 
 

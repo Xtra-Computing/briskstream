@@ -14,8 +14,9 @@ import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
-import brisk.util.SINK_CONTROL;
-import brisk.util.SOURCE_CONTROL;
+import utils.SINK_CONTROL;
+import utils.SOURCE_CONTROL;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import engine.common.SpinLock;
@@ -526,13 +527,14 @@ public class BriskRunner extends abstractRunner {
                 if (config.getInt("CCOption", 0) == CCOption_TStream) {
 
                     sb.append("Processed:" + metrics.useful_time[i].getN()).append("\n");
-                    sb.append("average tp processing:");
-                    sb.append("\t").append(metrics.average_tp[i].getMean() / 1E6).append("\n");
+                    sb.append("average tp construct:");
+                    sb.append("\t").append(metrics.average_txn_construct[i].getMean()).append("\n");
                     sb.append("average tp submit:");
-                    sb.append("\t").append(metrics.average_tp_submit[i].getMean() / 1E6).append("\n");
-
-                    sb.append("average tp processing w/ synchronization:");
-                    sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() / 1E6).append("\n");
+                    sb.append("\t").append(metrics.average_tp_submit[i].getMean()).append("\n");
+                    sb.append("average tp processing synchronization time:");
+                    sb.append("\t").append(metrics.average_tp_w_syn[i].getMean()-metrics.average_tp_core[i].getMean()).append("\n");
+                    sb.append("average tp_core processing:");
+                    sb.append("\t").append(metrics.average_tp_core[i].getMean()).append("\n");
 
 //                    sb.append("tp processing per event:");
 //                    sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");

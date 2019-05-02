@@ -24,6 +24,7 @@ public class MicroEvent extends TxnEvent {
     private final int[] keys;
     private final boolean flag;//true: read, false: write.
     public int sum;
+    public int result[] = new int[NUM_ACCESSES];
     private List<DataBox>[] value;//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
@@ -72,7 +73,7 @@ public class MicroEvent extends TxnEvent {
         for (int i = 0; i < key_arrays.length; i++) {
             this.keys[i] = Integer.parseInt(key_arrays[i].trim());
         }
-         setValues(keys);
+        setValues(keys);
     }
 
     public int[] getKeys() {

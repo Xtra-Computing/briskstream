@@ -1,8 +1,7 @@
 package brisk.components.operators.api;
 
 import applications.param.*;
-import applications.sink.SINKComBO;
-import applications.tools.FastZipfGenerator;
+import applications.sink.SINKCombo;
 import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
@@ -12,12 +11,7 @@ import engine.transaction.TxnManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
-
-import static applications.topology.transactional.State.partioned_store;
-import static applications.topology.transactional.State.shared_store;
 
 public abstract class TransactionalBolt<T> extends MapBolt implements Checkpointable {
     protected static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
@@ -36,7 +30,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     private int i = 0;
     private int NUM_ITEMS;
 
-    protected SINKComBO sink = new SINKComBO();
+    protected SINKCombo sink = new SINKCombo();
 
 
     public TransactionalBolt(Logger log, int fid) {

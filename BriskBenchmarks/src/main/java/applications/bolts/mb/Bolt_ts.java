@@ -13,7 +13,7 @@ import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.*;
@@ -24,10 +24,9 @@ public class Bolt_ts extends GSBolt {
 
     private static final Logger LOG = LoggerFactory.getLogger(Bolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private final ArrayDeque<MicroEvent> EventsHolder = new ArrayDeque<>();
-
-    private int thisTaskId;
+    private LinkedList<MicroEvent> EventsHolder = new LinkedList();
     private int writeEvents;
+    private double write_useful_time = 556;//write-compute time pre-measured.
 
     public Bolt_ts(int fid) {
         super(LOG, fid);
@@ -43,17 +42,19 @@ public class Bolt_ts extends GSBolt {
 
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
-            BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+
+            TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
             (event).setTimestamp(timestamp);
 
             boolean flag = event.READ_EVENT();
 
+            BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
+
             if (flag) {//read
-                read_construct(event, txn_context[(int) (i - _bid)]);
+                read_construct(event, txnContext);
             } else {
-                write_construct(event, txn_context[(int) (i - _bid)]);
+                write_construct(event, txnContext);
             }
             END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
         }
@@ -62,7 +63,7 @@ public class Bolt_ts extends GSBolt {
 
     private void read_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; i++) {
-            //it simply construct the operations and return.
+            //it simply constructs the operations and return.
             SchemaRecordRef ref = event.getRecord_refs()[i];
             transactionManager.Asy_ReadRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
         }
@@ -70,6 +71,8 @@ public class Bolt_ts extends GSBolt {
         if (enable_speculative) {//TODO: future work.
             //earlier emit
             //collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
+        } else {
+            EventsHolder.offer(event);//mark the tuple as ``in-complete"
         }
     }
 
@@ -79,6 +82,7 @@ public class Bolt_ts extends GSBolt {
             transactionManager.Asy_WriteRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), event.getValues()[i], event.enqueue_time);//asynchronously return.
         }
 
+        writeEvents++;
         //post_process for write events immediately.
 
         BEGIN_POST_TIME_MEASURE(thread_Id);
@@ -95,19 +99,17 @@ public class Bolt_ts extends GSBolt {
 
 
     private void READ_CORE() throws InterruptedException {
-        for (MicroEvent event : EventsHolder) {
-            READ_CORE(event);
+
+        while (!EventsHolder.isEmpty()) {
+            MicroEvent event = EventsHolder.remove();
+            if (!READ_CORE(event))
+                EventsHolder.offer(event);
+            else {
+                BEGIN_POST_TIME_MEASURE(thread_Id);
+                READ_POST(event);
+                END_POST_TIME_MEASURE_ACC(thread_Id);
+            }
         }
-    }
-
-
-    private void POST_PROCESS() throws InterruptedException {
-
-        BEGIN_POST_TIME_MEASURE(thread_Id);
-        for (MicroEvent event : EventsHolder) {
-            READ_POST(event);
-        }
-        END_POST_TIME_MEASURE_ACC(thread_Id);
     }
 
 
@@ -116,19 +118,22 @@ public class Bolt_ts extends GSBolt {
 
         if (in.isMarker()) {
 
+            int readSize = EventsHolder.size();
+
+
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
 
             transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
 
-            END_TP_TIME_MEASURE(thread_Id);
+            END_TP_TIME_MEASURE(thread_Id);// total TP time.
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             READ_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, EventsHolder.size(), writeEvents);
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, writeEvents);//total compute time.
 
 
             if (!enable_app_combo) {
@@ -136,24 +141,19 @@ public class Bolt_ts extends GSBolt {
                 this.collector.ack(in, marker);//tell spout it has finished transaction processing.
             } else {
 
-
-
             }
 
-
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
-
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
 
             //post_process for events left-over.
 
-            POST_PROCESS();
 
-            END_TOTAL_TIME_MEASURE_TS(thread_Id, EventsHolder.size() + writeEvents);
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, readSize + writeEvents);
 
 
-            EventsHolder.clear();//all tuples in the EventsHolder are finished.
+//            EventsHolder.clear();//all tuples in the EventsHolder are finished.
             if (enable_profile)
-                writeEvents = 0;//all tuples in the holder is finished.
+                writeEvents = 0;//all tuples in the holder are finished.
 
         } else {
 
@@ -172,9 +172,10 @@ public class Bolt_ts extends GSBolt {
 
             PRE_TXN_PROCESS(_bid, timestamp);
 
+            if (enable_debug)
+                LOG.info("CONSTRUCT FOR BID:" + _bid);
         }
     }
-
 
 
 }

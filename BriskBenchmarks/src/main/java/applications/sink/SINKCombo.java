@@ -1,15 +1,14 @@
 package applications.sink;
 
 import brisk.execution.runtime.tuple.impl.Tuple;
-import brisk.util.SINK_CONTROL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SINK_CONTROL;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.combo_bid_size;
+import static applications.CONTROL.*;
 
-public class SINKComBO extends MeasureSink {
-    private static final Logger LOG = LoggerFactory.getLogger(SINKComBO.class);
+public class SINKCombo extends MeasureSink {
+    private static final Logger LOG = LoggerFactory.getLogger(SINKCombo.class);
     private static final long serialVersionUID = 5481794109405775823L;
 
     int cnt = 0;
@@ -22,6 +21,10 @@ public class SINKComBO extends MeasureSink {
         if (cnt == combo_bid_size) {
             cnt = 0;//clear.
             int global_cnt = SINK_CONTROL.getInstance().GetAndUpdate();
+
+            if (enable_debug) {
+                LOG.info("global_cnt:" + global_cnt);
+            }
 
             if (thisTaskId == 0) {//the first thread.
                 if (!start_measure) {//only once.

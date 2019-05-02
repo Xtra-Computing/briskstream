@@ -15,6 +15,10 @@ public class SchemaRecordRef {
         cnt++;
     }
 
+    public boolean isEmpty() {
+        return cnt == 0;
+    }
+
     public SchemaRecord getRecord() {
         try {
             if (cnt == 0) {
