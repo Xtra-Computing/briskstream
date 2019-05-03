@@ -169,11 +169,14 @@ public class TopologyContext {
             if (id != getThisTaskId()) {
 //                threadMap.GetAndUpdate(id).running = false;
                 while (threadMap.get(id).isAlive()) {
-                    threadMap.get(id).stop();
+                    threadMap.get(id).running = false;
+                    threadMap.get(id).interrupt();
                 }
             }
         }
     }
+
+
 
     public void Sequential_stopAll() {
 
@@ -181,10 +184,10 @@ public class TopologyContext {
         for (int id : threadMap.keySet()) {
             if (id != getThisTaskId()) {
                 threadMap.get(id).running = false;
-                threadMap.get(getThisTaskId()).interrupt();
-                threadMap.get(id).stop();
+                threadMap.get(id).interrupt();
             }
         }
+        force_existALL();
 
 //        for (int id : threadMap.keySet()) {//sequentially stop from spout.
 //            if (id != getThisTaskId()) {

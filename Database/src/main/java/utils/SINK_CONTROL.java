@@ -1,8 +1,8 @@
 package utils;
 
-import java.util.concurrent.locks.ReentrantLock;
+import engine.common.SpinLock;
 
-import static applications.CONTROL.combo_bid_size;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class SINK_CONTROL {
 
@@ -12,6 +12,7 @@ public class SINK_CONTROL {
 
     public double throughput = 0;
 
+    SpinLock lock = new SpinLock();
 
     private static SINK_CONTROL ourInstance = new SINK_CONTROL();
     private int _combo_bid_size;
@@ -20,6 +21,17 @@ public class SINK_CONTROL {
         return ourInstance;
     }
 
+    public void lock() {
+        lock.lock();
+    }
+
+    public boolean try_lock() {
+        return lock.Try_Lock();
+    }
+
+    public void unlock() {
+        lock.unlock();
+    }
 
     public void config(int _combo_bid_size) {
         this._combo_bid_size = _combo_bid_size;//it must be one for LAL, LWM, and PAT.

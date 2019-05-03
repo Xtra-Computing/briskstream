@@ -223,15 +223,4 @@ public class MicroBenchmarkSpout extends TransactionalSpout {
             bid++;
         }
     }
-
-
-    /**
-     * relax_reset source messages.
-     */
-    @Override
-    public void cleanup() {
-
-    }
-
-
 }

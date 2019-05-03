@@ -1,7 +1,6 @@
 package applications.spout.gs;
 
 import applications.bolts.mb.*;
-import applications.spout.MicroBenchmarkSpout;
 import applications.tools.FastZipfGenerator;
 import applications.util.Configuration;
 import applications.util.OsUtils;
@@ -26,7 +25,7 @@ import static engine.profiler.Metrics.NUM_ITEMS;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
 public class GSCombo extends TransactionalSpout {
-    private static final Logger LOG = LoggerFactory.getLogger(MicroBenchmarkSpout.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GSCombo.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
 
@@ -98,11 +97,9 @@ public class GSCombo extends TransactionalSpout {
             bolt.loadDB(config, context, collector);
 
 
-
         double checkpoint = config.getDouble("checkpoint", 1);
-        batch_length = Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
+        batch_length = (int) (100 * checkpoint);//Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
         LOG.info("batch_length (watermark events length)= " + batch_length * combo_bid_size);
-
     }
 
 

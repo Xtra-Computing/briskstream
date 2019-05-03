@@ -99,10 +99,7 @@ public class Bolt_nocc extends GSBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
-
-        //pre stream processing phase..
         BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-
         Long timestamp;//in.getLong(1);
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
@@ -111,6 +108,7 @@ public class Bolt_nocc extends GSBolt {
 
         long _bid = in.getBID();
         END_PREPARE_TIME_MEASURE(thread_Id);
+
 
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.

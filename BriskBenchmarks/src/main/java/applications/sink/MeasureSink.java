@@ -115,7 +115,7 @@ public class MeasureSink extends BaseSink {
     int cnt = 0;
 
     @Override
-    public void execute(Tuple input) {
+    public void execute(Tuple input) throws InterruptedException {
         check(cnt, input);
 //        LOG.info("CNT:" + cnt);
         cnt++;
@@ -130,7 +130,7 @@ public class MeasureSink extends BaseSink {
             if (!enable_engine)//performance measure for TStream is different.
                 LOG.info("Received:" + cnt + " throughput:" + results);
             if (thisTaskId == graph.getSink().getExecutorID()) {
-                measure_end();
+                measure_end(results);
             }
         }
         if (enable_latency_measurement)
@@ -147,9 +147,10 @@ public class MeasureSink extends BaseSink {
 
     /**
      * Only one sink will do the measure_end.
+     *
+     * @param results
      */
-    protected void measure_end() {
-
+    protected void measure_end(double results) {
 
         if (enable_latency_measurement) {
             for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
@@ -200,9 +201,15 @@ public class MeasureSink extends BaseSink {
                 e.printStackTrace();
             }
         }
-        LOG.info("Stop all threads sequentially");
+
+        boolean proceed = SINK_CONTROL.getInstance().try_lock();
+        if (proceed) {
+            SINK_CONTROL.getInstance().throughput = results;
+            LOG.info("Thread:" + thisTaskId + " is going to stop all threads sequentially");
 //			context.stop_runningALL();
-        context.Sequential_stopAll();
+            context.Sequential_stopAll();
+            SINK_CONTROL.getInstance().unlock();
+        }
     }
 
     @Override

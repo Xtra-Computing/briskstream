@@ -15,7 +15,6 @@ public class Metrics {
     public DescriptiveStatistics[] txn_total = new DescriptiveStatistics[kMaxThreadNum];//total time spend in txn.
     public DescriptiveStatistics[] stream_total = new DescriptiveStatistics[kMaxThreadNum];//total time spend in txn.
 
-
     public DescriptiveStatistics[] exe_time = new DescriptiveStatistics[kMaxThreadNum];//useful_work time.
 
 //    public volatile boolean measure = false;
@@ -91,6 +90,7 @@ public class Metrics {
 //        exe_time.put(task, new DescriptiveStatistics());
 
         txn_total[task] = new DescriptiveStatistics();
+
         stream_total[task] = new DescriptiveStatistics();
 
         useful_ratio[task] = new DescriptiveStatistics();
@@ -110,7 +110,12 @@ public class Metrics {
 
     public static class MeasureTools {
         protected static Metrics metrics = getInstance();
+
+
+        static long[] stream_start = new long[kMaxThreadNum];
+
         static long[] txn_start = new long[kMaxThreadNum];
+
         static double[] txn_total = new double[kMaxThreadNum];
         static long[] txn_wait_start = new long[kMaxThreadNum];
         static long[] txn_wait = new long[kMaxThreadNum];
@@ -156,6 +161,11 @@ public class Metrics {
         }
 
         public static void BEGIN_PREPARE_TIME_MEASURE(int thread_id) {
+            if (measure_counts[thread_id] == 0) {//first time measurement.
+                stream_start[thread_id] = System.nanoTime();
+            }
+
+
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
                 prepare_start[thread_id] = System.nanoTime();
         }
@@ -379,9 +389,16 @@ public class Metrics {
         //compute per event time spent.
         public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id, int combo_bid_size) {
 
+
             if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
 
-                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
+                long current_time = System.nanoTime();
+                long overall_processing_time_per_batch = current_time - stream_start[thread_id];
+                stream_start[thread_id] = current_time;
+
+                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_batch - tp_core[thread_id]) / combo_bid_size);
+
+//                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
 
                 //clean.
@@ -414,7 +431,11 @@ public class Metrics {
 
             if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound && txn_size != 0) {
 
-                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / txn_size);
+                long current_time = System.nanoTime();
+                long overall_processing_time_per_wm = current_time - stream_start[thread_id];
+                stream_start[thread_id] = current_time;
+
+                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_wm - tp_core[thread_id]) / txn_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
 
                 metrics.average_tp_core[thread_id].addValue((double) tp_core[thread_id]);
