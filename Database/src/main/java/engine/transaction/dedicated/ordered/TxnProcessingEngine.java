@@ -411,7 +411,8 @@ public final class TxnProcessingEngine {
                     if (enable_engine) {
                         Task task = new Task(operation_chain);
 
-                        LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
+                        if (enable_debug)
+                            LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
                         if (!enable_work_stealing) {
                             multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
@@ -425,7 +426,7 @@ public final class TxnProcessingEngine {
                 }
             }
         }
-        holder.holder_v1.clear();
+//        holder.holder_v1.clear();
         return sum;
     }
 
@@ -672,7 +673,6 @@ public final class TxnProcessingEngine {
                         LOG.trace("Thread:\t" + Thread.currentThread().getName()
                                 + "reset task:" + OsUtils.Addresser.addressOf(this));
 
-
                     operation_chain.clear();
                     this.under_process.set(false);//reset
                     return 0;
@@ -682,7 +682,6 @@ public final class TxnProcessingEngine {
 //                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
 //                        + " with size of:" + operation_chain.size());
 //            while (!this.under_process.compareAndSet(false, true)) ;
-
                 return 0;
             }
         }

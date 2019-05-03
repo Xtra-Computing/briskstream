@@ -2,7 +2,6 @@ package utils;
 
 
 import engine.common.SpinLock;
-import org.mortbay.log.Log;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,19 +84,19 @@ public class SOURCE_CONTROL {
 //            }
 //        }
 
-        Integer itr = iteration.get(thread_Id);
-
-        if (itr > min_iteration() + 1) {
-            Log.info(thread_Id + " is running too fast");
-        }
+//        Integer itr = iteration.get(thread_Id);
+//
+//        if (itr > min_iteration() + 1) {
+//            Log.info(thread_Id + " is running too fast");
+//        }
 
         try {
             barrier.await();
-        } catch (BrokenBarrierException e) {
+        } catch (Exception ex){
 //            e.printStackTrace();
         }
 
-        iteration.put(thread_Id, itr + 1);
+//        iteration.put(thread_Id, itr + 1);
 
 //        assert barrier.getNumberWaiting() == 0;
     }

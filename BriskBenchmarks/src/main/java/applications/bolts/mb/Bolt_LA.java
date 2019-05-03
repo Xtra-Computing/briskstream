@@ -74,8 +74,6 @@ public abstract class Bolt_LA extends GSBolt {
 
         POST_PROCESS(_bid, timestamp, 1);//otherwise deadlock.
 
-        END_TOTAL_TIME_MEASURE_ACC(thread_Id);
-
+        END_TOTAL_TIME_MEASURE_ACC(thread_Id, 1);//otherwise deadlock.
     }
-
 }

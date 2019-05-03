@@ -3,7 +3,6 @@ package engine.profiler;
 import applications.CONTROL;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 
-import static applications.CONTROL.combo_bid_size;
 import static engine.Meta.MetaTypes.kMaxThreadNum;
 
 public class Metrics {
@@ -378,9 +377,9 @@ public class Metrics {
         }
 
         //compute per event time spent.
-        public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id) {
+        public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id, int combo_bid_size) {
 
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+            if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
 
                 metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);

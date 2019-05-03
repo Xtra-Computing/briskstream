@@ -140,11 +140,9 @@ public class Bolt_ts extends GSBolt {
                 SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync_ratio for all threads to come to this line.
             }
 
-
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
 
             //post_process for events left-over.
-
 
             END_TOTAL_TIME_MEASURE_TS(thread_Id, readSize + writeEvents);
 

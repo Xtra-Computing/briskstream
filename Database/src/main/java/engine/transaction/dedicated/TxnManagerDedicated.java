@@ -23,7 +23,6 @@ import java.util.concurrent.BrokenBarrierException;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
 import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -111,7 +110,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
 
         if (t_record != null) {
-            return Asy_WriteRecordCC(txn_context, srcTable, t_record, value, enqueue_time, accessType);
+            return Asy_WriteRecordCC(txn_context, srcTable, t_record, primary_key, value, enqueue_time, accessType);
         } else {
             // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
@@ -129,7 +128,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
 
         if (t_record != null) {
-            return Asy_WriteRecordCC(txn_context, srcTable, t_record, value, column_id, accessType);//TxnContext txn_context, String srcTable, String primary_key, long value_list, int column_id
+            return Asy_WriteRecordCC(txn_context, primary_key, srcTable, t_record, value, column_id, accessType);//TxnContext txn_context, String srcTable, String primary_key, long value_list, int column_id
         } else {
             // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
@@ -145,7 +144,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
 //        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
         if (t_record != null) {
-            return Asy_ReadRecordCC(txn_context, srcTable, t_record, record_ref, enqueue_time, accessType);
+            return Asy_ReadRecordCC(txn_context, primary_key, srcTable, t_record, record_ref, enqueue_time, accessType);
         } else {
             // if no record_ref is found, then a "virtual record_ref" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
@@ -474,16 +473,16 @@ public abstract class TxnManagerDedicated implements TxnManager {
     }
 
 
-    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, AccessType access_type) {
+    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, AccessType access_type) {
         throw new UnsupportedOperationException();
     }
 
     //txn_context, srcTable, t_record, value_list, accessType, column_id
-    protected boolean Asy_WriteRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, long value, int column_id, AccessType access_type) {
+    protected boolean Asy_WriteRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, long value, int column_id, AccessType access_type) {
         throw new UnsupportedOperationException();
     }
 
-    protected boolean Asy_WriteRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, List<DataBox> value, double[] enqueue_time, AccessType access_type) {
+    protected boolean Asy_WriteRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, String primary_key, List<DataBox> value, double[] enqueue_time, AccessType access_type) {
         throw new UnsupportedOperationException();
     }
 

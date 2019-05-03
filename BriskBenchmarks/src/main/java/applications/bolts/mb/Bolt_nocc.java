@@ -122,7 +122,7 @@ public class Bolt_nocc extends GSBolt {
 
         POST_PROCESS(_bid, timestamp, combo_bid_size);
 
-        END_TOTAL_TIME_MEASURE_ACC(thread_Id);
+        END_TOTAL_TIME_MEASURE_ACC(thread_Id, combo_bid_size);
     }
 
 

@@ -181,7 +181,8 @@ public class TopologyContext {
         for (int id : threadMap.keySet()) {
             if (id != getThisTaskId()) {
                 threadMap.get(id).running = false;
-                threadMap.get(id).interrupt();
+                threadMap.get(getThisTaskId()).interrupt();
+                threadMap.get(id).stop();
             }
         }
 
