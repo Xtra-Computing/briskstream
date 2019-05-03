@@ -25,7 +25,7 @@ public class SchemaRecord {
     }
 
     public SchemaRecord(List<DataBox> values) {
-        this.values = Utils.memcpy(values);
+        this.values = values;
         single_value = null;
     }
 
@@ -113,7 +113,6 @@ public class SchemaRecord {
     public void updateValues(List<DataBox> value) {
         this.values = Utils.memcpy(value);
     }
-
 
 
 }

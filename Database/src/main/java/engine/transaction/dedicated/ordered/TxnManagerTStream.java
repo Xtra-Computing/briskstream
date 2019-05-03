@@ -5,7 +5,6 @@ import applications.util.OsUtils;
 import engine.DatabaseException;
 import engine.Meta.MetaTypes;
 import engine.common.Operation;
-import engine.index.high_scale_lib.ConcurrentHashMap;
 import engine.storage.SchemaRecord;
 import engine.storage.SchemaRecordRef;
 import engine.storage.StorageManager;
@@ -21,12 +20,12 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
 import static applications.constants.PositionKeepingConstants.Constant.NUM_MACHINES;
 import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
 import static engine.Meta.MetaTypes.AccessType.INSERT_ONLY;
-import static engine.profiler.Metrics.H2_SIZE;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static engine.transaction.impl.TxnAccess.Access;
 
@@ -129,7 +128,8 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
     /**
      * build the Operation chain.. concurrently..
-     *  @param record      of interest
+     *
+     * @param record      of interest
      * @param primaryKey
      * @param table_name
      * @param accessType  Read or Write @ notice that, in the original Cavalia's design, write is proceed as Read. That is, Read->Modify->Write as one Operation.
@@ -143,7 +143,9 @@ public class TxnManagerTStream extends TxnManagerDedicated {
         MyList<Operation> myList = holder.get(primaryKey);
 
 //        LOG.info(String.valueOf(OsUtils.Addresser.addressOf(record_ref)));
+
         myList.add(new Operation(table_name, txn_context, bid, accessType, record, record_ref));
+
 
 
 //        Integer key = Integer.valueOf(record.record_.GetPrimaryKey());
@@ -289,7 +291,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
         long bid = txn_context.getBID();
 
-        operation_chain_construction_read_only(t_record,primary_key, table_name, bid, accessType, record_ref, txn_context);
+        operation_chain_construction_read_only(t_record, primary_key, table_name, bid, accessType, record_ref, txn_context);
 
         return true;//it should be always success.
     }

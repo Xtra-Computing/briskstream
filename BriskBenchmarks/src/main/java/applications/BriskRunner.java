@@ -516,7 +516,7 @@ public class BriskRunner extends abstractRunner {
             StringBuilder sb = new StringBuilder();
 
             try {
-                f = new FileWriter(new File(directory + OsUtils.OS_wrapper("breakdown.txt")), true);
+                f = new FileWriter(new File(directory + OsUtils.OS_wrapper("breakdown(" + String.valueOf(checkpoint)) + ").txt"), true);
                 Writer w = new BufferedWriter(f);
 
                 w.write(String.valueOf(tthread));
@@ -586,7 +586,6 @@ public class BriskRunner extends abstractRunner {
             LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum));
             LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum));
             LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time / sum));
-
 
             LOG.info("====Details ====");
             LOG.info("\n" + sb.toString());

@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_admission_control;
+import static applications.CONTROL.enable_debug;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -38,7 +39,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
     public int empty = 0;//execute without emit.
 
-    protected int batch_length;
+    protected int batch_number_per_wm;
 
     protected TransactionalSpout(Logger log, int fid) {
         super(log);
@@ -53,7 +54,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public abstract void nextTuple() throws InterruptedException;
 
 
-    int bt = 1;
+    int bt = 0;
 
     /**
      * THIS IS USED ONLY WHEN "enable_app_combo" is true.
@@ -63,7 +64,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public boolean checkpoint() {
         boolean rt = false;
-        if (bt % batch_length == 0) {
+        if (bt > 0 && bt % batch_number_per_wm == 0) {
 //            myiteration++;
 //            success = false;
             rt = true;

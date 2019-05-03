@@ -304,9 +304,13 @@ public class Metrics {
                 pre_txn_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_PRE_TXN_TIME_MEASURE_ACC(int thread_id) {
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                pre_txn_total[thread_id] += System.nanoTime() - pre_txn_start[thread_id];
+        public static long END_PRE_TXN_TIME_MEASURE_ACC(int thread_id) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                long rt = System.nanoTime() - pre_txn_start[thread_id];
+                pre_txn_total[thread_id] += rt;
+                return rt;
+            }
+            return 0;
         }
 
         public static void BEGIN_WRITE_HANDLE_TIME_MEASURE(int thread_id) {
@@ -420,8 +424,11 @@ public class Metrics {
 
 //                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
-                metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id] + tp_submit[thread_id]) / txn_total[thread_id]);
+                metrics.lock_ratio[thread_id].addValue(0);
 
+                metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id]) / txn_total[thread_id]);
+
+                metrics.abort_ratio[thread_id].addValue(0);
 
             }
         }
@@ -436,6 +443,7 @@ public class Metrics {
                 stream_start[thread_id] = current_time;
 
                 metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_wm - tp_core[thread_id]) / txn_size);
+
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
 
                 metrics.average_tp_core[thread_id].addValue((double) tp_core[thread_id]);

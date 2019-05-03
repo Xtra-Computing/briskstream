@@ -98,8 +98,8 @@ public class GSCombo extends TransactionalSpout {
 
 
         double checkpoint = config.getDouble("checkpoint", 1);
-        batch_length = (int) (100 * checkpoint);//Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
-        LOG.info("batch_length (watermark events length)= " + batch_length * combo_bid_size);
+        batch_number_per_wm = (int) (50 * checkpoint);//Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
+        LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
     }
 
 

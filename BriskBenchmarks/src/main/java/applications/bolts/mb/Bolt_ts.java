@@ -38,7 +38,9 @@ public class Bolt_ts extends GSBolt {
      * THIS IS ONLY USED BY TSTREAM.
      * IT CONSTRUCTS and POSTPONES TXNS.
      */
-    private void PRE_TXN_PROCESS(long _bid, Long timestamp) throws DatabaseException, InterruptedException {
+    private long PRE_TXN_PROCESS(long _bid, Long timestamp) throws DatabaseException, InterruptedException {
+
+        BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
@@ -48,15 +50,15 @@ public class Bolt_ts extends GSBolt {
 
             boolean flag = event.READ_EVENT();
 
-            BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
-
             if (flag) {//read
                 read_construct(event, txnContext);
             } else {
                 write_construct(event, txnContext);
             }
-            END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
         }
+
+        return END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
+
     }
 
 
@@ -167,10 +169,10 @@ public class Bolt_ts extends GSBolt {
 
             END_PREPARE_TIME_MEASURE(thread_Id);
 
-            PRE_TXN_PROCESS(_bid, timestamp);
+            long pre_txn_process = PRE_TXN_PROCESS(_bid, timestamp);
 
-            if (enable_debug)
-                LOG.info("CONSTRUCT FOR BID:" + _bid);
+//            if (enable_debug)
+//            LOG.info("CONSTRUCT FOR BID:" + _bid + " takes:" + pre_txn_process);
         }
     }
 

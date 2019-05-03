@@ -24,7 +24,7 @@ function local_execution {
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 #killall -9 java
 #clean_cache
-        JVM_args_local="" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
+        JVM_args_local="-Xms25g -Xmx50g" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
 			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application >> $path/$tt\_$TP.txt		&
@@ -269,13 +269,13 @@ do
     let "gc_factor = 0"
     let "socket = 4"
     let "cpu = 10"
-    let "bt = 30"
+    let "bt = 1"
     let "gc_factor = 0"
     let "iteration = 1"
     checkpoint=0.25
     ratio_of_multi_partition=1
     number_partitions=-1 #no partitions.
-    NUM_ITEMS=100000 #smaller means higher contention! 10k or 100K
+    NUM_ITEMS=1000 #smaller means higher contention! 100, 1000 or 10_000
         case "$benchmark" in
             "Read_Only")
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
@@ -384,7 +384,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1 5 10 15 20 25 30 35 38
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             for CCOption in 0 1 2 4
                             do
@@ -408,7 +408,7 @@ do
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 0.01 0.1 1 # MIN_EVENTS_PER_THREAD * checkpoint
+                                        for checkpoint in 1 0.8 0.6 0.4 0.2 0.1 #
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5

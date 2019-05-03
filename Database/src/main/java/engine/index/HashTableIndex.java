@@ -1,9 +1,10 @@
 package engine.index;
 
-import engine.index.high_scale_lib.ConcurrentHashMap;
+
 import engine.storage.TableRecord;
 
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HashTableIndex extends BaseUnorderedIndex {
 
