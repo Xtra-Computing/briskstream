@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class SStoreContentImpl extends SStoreContent {
     private static final Logger LOG = LoggerFactory.getLogger(SStoreContentImpl.class);
     public final int pid;
-    final SpinLock spinlock_;//Each partition has a spin lock.
+    final SpinLock spinlock_;//Each partition has a spin lock_ratio.
     AtomicLong timestamp_ = new AtomicLong(0);
     public final static String SSTORE_CONTENT = "SSTORE_CONTENT";
 
@@ -48,10 +48,10 @@ public class SStoreContentImpl extends SStoreContent {
 
     public void LockPartitions() {
 
-        spinlock_.Lock();
+        spinlock_.lock();
     }
 
     public void UnlockPartitions() {
-        spinlock_.Unlock();
+        spinlock_.unlock();
     }
 }

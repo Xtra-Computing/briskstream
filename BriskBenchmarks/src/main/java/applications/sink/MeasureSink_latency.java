@@ -210,7 +210,7 @@ public class MeasureSink_latency extends BaseSink {
 //			context.force_existALL();
 //			context.stop_running();
 //			try {
-//				Thread.sleep(10000);//wait for all sink threads stop.
+//				Thread.sleep(10000);//sync_ratio for all sink threads stop.
 //			} catch (InterruptedException e) {
 //				//e.printStackTrace();
 //			}

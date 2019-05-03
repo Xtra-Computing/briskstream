@@ -50,13 +50,13 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         deposite_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE_ACC(thread_Id);
+        long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE_ACC(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
         deposite_request(event);
@@ -88,13 +88,13 @@ public class CTBolt_sstore extends CTBolt {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
         transfer_request_lock_ahead(event);
-        END_LOCK_TIME_MEASURE_ACC(thread_Id);
+        long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
         _pid = event.getPid();
 
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-        END_WAIT_TIME_MEASURE_ACC(thread_Id);
+        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
 
         BEGIN_TP_TIME_MEASURE(thread_Id);
         transfer_request(event);

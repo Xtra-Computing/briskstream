@@ -6,22 +6,22 @@ import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
-import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public abstract class Bolt_LA extends GSBolt {
 
-
     public Bolt_LA(Logger log, int fid) {
         super(log, fid);
     }
 
-    //lock-ahead phase.
+    int _combo_bid_size = 1;//must be one.
+
+    //lock_ratio-ahead phase.
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
 
-        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
 
@@ -39,9 +39,9 @@ public abstract class Bolt_LA extends GSBolt {
                 write_lock_ahead(event, txn_context[(int) (i - _bid)]);
             }
 
-            END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
             transactionManager.getOrderLock().advance();
-            END_WAIT_TIME_MEASURE_ACC(thread_Id);
+            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class Bolt_LA extends GSBolt {
         //end transaction processing.
         END_TRANSACTION_TIME_MEASURE(thread_Id);
 
-        POST_PROCESS(_bid, timestamp);
+        POST_PROCESS(_bid, timestamp, 1);//otherwise deadlock.
 
         END_TOTAL_TIME_MEASURE_ACC(thread_Id);
 

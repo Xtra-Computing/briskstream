@@ -13,11 +13,11 @@ public class LockManager {
     }
 
     /**
-     * Acquires a Lock on tableNum of type lockType for transaction transNum.
+     * Acquires a lock_ratio on tableNum of type lockType for transaction transNum.
      *
-     * @param tableName the database to Lock on
+     * @param tableName the database to lock_ratio on
      * @param transNum  the transactions id
-     * @param lockType  the type of Lock
+     * @param lockType  the type of lock_ratio
      */
     public synchronized void acquireLock(String tableName, long transNum, LockType lockType) {
         while (this.databaseLocked) {
@@ -36,10 +36,10 @@ public class LockManager {
     }
 
     /**
-     * Releases transNum's Lock on tableName.
+     * Releases transNum's lock_ratio on tableName.
      *
      * @param tableName the table that was locked
-     * @param transNum  the transaction that held the Lock
+     * @param transNum  the transaction that held the lock_ratio
      */
     public synchronized void releaseLock(String tableName, long transNum) {
         if (this.databaseLocked && this.databaseTransactionOwner == transNum) {
@@ -51,12 +51,12 @@ public class LockManager {
     }
 
     /**
-     * Returns a boolean indicating whether or not transNum holds a Lock of type lockType on tableName.
+     * Returns a boolean indicating whether or not transNum holds a lock_ratio of type lockType on tableName.
      *
      * @param tableName the table that we're checking
      * @param transNum  the transaction that we're checking for
-     * @param lockType  the Lock type
-     * @return whether the Lock is held or not
+     * @param lockType  the lock_ratio type
+     * @return whether the lock_ratio is held or not
      */
     public synchronized boolean holdsLock(String tableName, long transNum, LockType lockType) {
         return this.databaseLocked && this.databaseTransactionOwner == transNum;

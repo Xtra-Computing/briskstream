@@ -24,26 +24,26 @@ public class Metrics {
     //    public void start_measurement() {
 //        measure = true;
 //    }
-    public DescriptiveStatistics[] useful_time = new DescriptiveStatistics[kMaxThreadNum];//useful_work time.
+    public DescriptiveStatistics[] useful_ratio = new DescriptiveStatistics[kMaxThreadNum];//useful_work time.
     //    public DescriptiveStatistics[] average_tp_event = new DescriptiveStatistics[kMaxThreadNum];// average tp processing time per event thread without considering synchronization.
-    public DescriptiveStatistics[] abort_time = new DescriptiveStatistics[kMaxThreadNum];//abort
+    public DescriptiveStatistics[] abort_ratio = new DescriptiveStatistics[kMaxThreadNum];//abort
 
 
     // Op id, descriptive
-//    public Map<String, DescriptiveStatistics> useful_time = new HashMap<>();//useful_work time.
-//    public Map<String, DescriptiveStatistics> abort_time = new HashMap<>();//abort
+//    public Map<String, DescriptiveStatistics> useful_ratio = new HashMap<>();//useful_work time.
+//    public Map<String, DescriptiveStatistics> abort_ratio = new HashMap<>();//abort
 //    public Map<String, DescriptiveStatistics> ts_allocation = new HashMap<>();//timestamp allocation
 //    public Map<String, DescriptiveStatistics> index_time = new HashMap<>();//index
-//    public Map<String, DescriptiveStatistics> wait = new HashMap<>();// wait lock and order.
+//    public Map<String, DescriptiveStatistics> sync_ratio = new HashMap<>();// sync_ratio lock_ratio and order.
 //    public Map<String, DescriptiveStatistics> exe_time = new HashMap<>();//not in use.
-//    public Map<String, DescriptiveStatistics> order_wait = new HashMap<>();//order wait
+//    public Map<String, DescriptiveStatistics> order_wait = new HashMap<>();//order sync_ratio
 //    public Map<String, DescriptiveStatistics> enqueue_time = new HashMap<>();//event enqueue
 
     //TODO: single op for now. per task/thread.
     public DescriptiveStatistics[] ts_allocation = new DescriptiveStatistics[kMaxThreadNum];//timestamp allocation
     public DescriptiveStatistics[] index_time = new DescriptiveStatistics[kMaxThreadNum];//index
-    public DescriptiveStatistics[] wait = new DescriptiveStatistics[kMaxThreadNum];// wait lock and order.
-    public DescriptiveStatistics[] lock = new DescriptiveStatistics[kMaxThreadNum];// wait lock and order.
+    public DescriptiveStatistics[] sync_ratio = new DescriptiveStatistics[kMaxThreadNum];// sync_ratio lock_ratio and order.
+    public DescriptiveStatistics[] lock_ratio = new DescriptiveStatistics[kMaxThreadNum];// sync_ratio lock_ratio and order.
     public DescriptiveStatistics[] average_tp_core = new DescriptiveStatistics[kMaxThreadNum];// average tp processing time per thread without considering synchronization.
     public DescriptiveStatistics[] average_tp_submit = new DescriptiveStatistics[kMaxThreadNum];// average tp processing time per thread without considering synchronization.
     public DescriptiveStatistics[] average_tp_w_syn = new DescriptiveStatistics[kMaxThreadNum];// average tp processing time per thread with synchronization.
@@ -68,10 +68,10 @@ public class Metrics {
      */
     public void initilize(String ID, int num_access) {
 //        exe_time.put(ID, new DescriptiveStatistics());
-//        useful_time.put(ID, new DescriptiveStatistics());
-//        abort_time.put(ID, new DescriptiveStatistics());
+//        useful_ratio.put(ID, new DescriptiveStatistics());
+//        abort_ratio.put(ID, new DescriptiveStatistics());
 //        index_time.put(ID, new DescriptiveStatistics());
-//        wait.put(ID, new DescriptiveStatistics());
+//        sync_ratio.put(ID, new DescriptiveStatistics());
 //        ts_allocation.put(ID, new DescriptiveStatistics());
 //        enqueue_time.put(ID, new DescriptiveStatistics());
 
@@ -82,25 +82,25 @@ public class Metrics {
 //        average_tp_core.put(task, new DescriptiveStatistics());
 //        average_tp_w_syn.put(task, new DescriptiveStatistics());
 //
-//        useful_time.put(task, new DescriptiveStatistics());
-//        abort_time.put(task, new DescriptiveStatistics());
+//        useful_ratio.put(task, new DescriptiveStatistics());
+//        abort_ratio.put(task, new DescriptiveStatistics());
 //
 //        ts_allocation.put(task, new DescriptiveStatistics());
 //        index_time.put(task, new DescriptiveStatistics());
 //
-//        wait.put(task, new DescriptiveStatistics());
+//        sync_ratio.put(task, new DescriptiveStatistics());
 //        exe_time.put(task, new DescriptiveStatistics());
 
         txn_total[task] = new DescriptiveStatistics();
         stream_total[task] = new DescriptiveStatistics();
 
-        useful_time[task] = new DescriptiveStatistics();
+        useful_ratio[task] = new DescriptiveStatistics();
         exe_time[task] = new DescriptiveStatistics();
-        abort_time[task] = new DescriptiveStatistics();
+        abort_ratio[task] = new DescriptiveStatistics();
         ts_allocation[task] = new DescriptiveStatistics();
         index_time[task] = new DescriptiveStatistics();
-        wait[task] = new DescriptiveStatistics();
-        lock[task] = new DescriptiveStatistics();
+        sync_ratio[task] = new DescriptiveStatistics();
+        lock_ratio[task] = new DescriptiveStatistics();
         average_tp_core[task] = new DescriptiveStatistics();
         average_txn_construct[task] = new DescriptiveStatistics();
         average_tp_submit[task] = new DescriptiveStatistics();
@@ -190,9 +190,21 @@ public class Metrics {
                 txn_lock_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_LOCK_TIME_MEASURE_ACC(int thread_id) {
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                txn_lock[thread_id] += (System.nanoTime() - txn_lock_start[thread_id]);
+        public static long END_LOCK_TIME_MEASURE_ACC(int thread_id) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                long rt = System.nanoTime() - txn_lock_start[thread_id];
+                txn_lock[thread_id] += rt;
+                return rt;
+            }
+            return 0;
+        }
+
+
+        public static void END_LOCK_TIME_MEASURE_NOCC(int thread_id) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                long rt = System.nanoTime() - txn_lock_start[thread_id];
+                txn_lock[thread_id] += rt - tp_core_event[thread_id] - index_time[thread_id];
+            }
         }
 
         public static void BEGIN_WAIT_TIME_MEASURE(int thread_id) {
@@ -200,9 +212,9 @@ public class Metrics {
                 txn_wait_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_WAIT_TIME_MEASURE_ACC(int thread_id) {
+        public static void END_WAIT_TIME_MEASURE_ACC(int thread_id, long lock_time_measure) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
-                txn_wait[thread_id] += (System.nanoTime() - txn_wait_start[thread_id]);
+                txn_wait[thread_id] += (System.nanoTime() - txn_wait_start[thread_id] - lock_time_measure);
         }
 
         public static void BEGIN_COMPUTE_TIME_MEASURE(int thread_id) {
@@ -239,7 +251,13 @@ public class Metrics {
                 index_start[thread_id] = System.nanoTime();
         }
 
-        public static void END_INDEX_TIME_MEASURE_TS(int thread_id, boolean is_retry_) {
+        public static void END_INDEX_TIME_MEASURE(int thread_id, boolean is_retry_) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                if (!is_retry_) index_time[thread_id] = System.nanoTime() - index_start[thread_id];
+            }
+        }
+
+        public static void END_INDEX_TIME_MEASURE_ACC(int thread_id, boolean is_retry_) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 if (!is_retry_) index_time[thread_id] += System.nanoTime() - index_start[thread_id];
             }
@@ -315,6 +333,14 @@ public class Metrics {
             }
         }
 
+        public static void END_TP_CORE_TIME_MEASURE_NOCC(int thread_id) {
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                long duration = System.nanoTime() - tp_core_start[thread_id];
+                tp_core[thread_id] += duration;
+                tp_core_event[thread_id] = duration;
+            }
+        }
+
         public static void END_TP_CORE_TIME_MEASURE_TS(int thread_id, int size) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 tp_core[thread_id] = (System.nanoTime() - tp_core_start[thread_id] - tp_submit[thread_id]) / size;
@@ -337,15 +363,15 @@ public class Metrics {
 
                 txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
 
-                metrics.useful_time[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
+                metrics.useful_ratio[thread_id].addValue((tp_core[thread_id] + compute_total[thread_id]) / txn_total[thread_id]);
 
-                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
+//                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
-                metrics.lock[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
+                metrics.lock_ratio[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
 
-                metrics.wait[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
+                metrics.sync_ratio[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
 
-                metrics.abort_time[thread_id].addValue(abort_time[thread_id] / txn_total[thread_id]);
+                metrics.abort_ratio[thread_id].addValue(abort_time[thread_id] / txn_total[thread_id]);
 
 
             }
@@ -371,14 +397,14 @@ public class Metrics {
 
         //needs to include requests construction time /* pre_txn_total */.
         public static void END_TRANSACTION_TIME_MEASURE_TS(int thread_id) {
-            if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
+            if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 txn_total[thread_id] = ((double) (System.nanoTime() - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);
 
-                metrics.useful_time[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
+                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
-                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
+//                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
-                metrics.wait[thread_id].addValue((tp[thread_id] - tp_core[thread_id] + tp_submit[thread_id]) / txn_total[thread_id]);
+                metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id] + tp_submit[thread_id]) / txn_total[thread_id]);
 
 
             }
@@ -387,7 +413,7 @@ public class Metrics {
         //compute per event time spent.
         public static void END_TOTAL_TIME_MEASURE_TS(int thread_id, int txn_size) {
 
-            if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound && txn_size != 0) {
+            if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound && txn_size != 0) {
 
                 metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / txn_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);

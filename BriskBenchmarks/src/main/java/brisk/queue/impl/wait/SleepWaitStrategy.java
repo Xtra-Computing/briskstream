@@ -21,7 +21,7 @@ public final class SleepWaitStrategy implements WaitStrategy {
 
     @Override
     public int waitFor(final AtomicLong tail, final AtomicLong head, final int capacity, final PaddedLong headCache) throws InterruptedException {
-        int counter = SPIN_TRIES;//try SPIN_TRIES more times, and then go to wait method.
+        int counter = SPIN_TRIES;//try SPIN_TRIES more times, and then go to sync_ratio method.
         int sleep_times = 0;
         while (!_test_offer(tail, head, capacity, headCache)) {
             counter = applyWaitMethod(counter);

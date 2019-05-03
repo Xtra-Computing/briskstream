@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_states_partition;
 import static engine.profiler.Metrics.MeasureTools.*;
 
@@ -51,7 +50,7 @@ public class Bolt_sstore extends Bolt_LA {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
-        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
             int _pid = event.getPid();
@@ -68,11 +67,11 @@ public class Bolt_sstore extends Bolt_LA {
                 write_lock_ahead(event, txn_context[(int) (i - _bid)]);
             }
 
-            END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
             LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-            END_WAIT_TIME_MEASURE_ACC(thread_Id);
+            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
         }
     }
 

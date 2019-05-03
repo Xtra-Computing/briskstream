@@ -9,11 +9,11 @@ public class RWLock {
 
     public void AcquireReadLock() {
         while (lock_type_ == WRITE_LOCK) {
-            //spin wait.
+            //spin sync_ratio.
         }
-        spinlock_.Lock();
+        spinlock_.lock();
         if (lock_type_ == WRITE_LOCK) {
-            spinlock_.Unlock();
+            spinlock_.unlock();
         } else {
             if (lock_type_ == NO_LOCK) {
                 lock_type_ = READ_LOCK;
@@ -22,7 +22,7 @@ public class RWLock {
                 assert (lock_type_ == READ_LOCK);
                 ++reader_count_;
             }
-            spinlock_.Unlock();
+            spinlock_.unlock();
             return;
         }
     }
@@ -31,30 +31,30 @@ public class RWLock {
         while (true) {
             while (lock_type_ != NO_LOCK) {
             }
-            spinlock_.Lock();
+            spinlock_.lock();
             if (lock_type_ != NO_LOCK) {
-                spinlock_.Unlock();
+                spinlock_.unlock();
             } else {
                 assert (lock_type_ == NO_LOCK);
                 lock_type_ = WRITE_LOCK;
-                spinlock_.Unlock();
+                spinlock_.unlock();
                 return;
             }
         }
     }
 
     public void ReleaseReadLock() {
-        spinlock_.Lock();
+        spinlock_.lock();
         --reader_count_;
         if (reader_count_ == 0) {
             lock_type_ = NO_LOCK;
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
     }
 
     public boolean TryReadLock() {
         boolean rt = false;
-        spinlock_.Lock();
+        spinlock_.lock();
         if (lock_type_ == NO_LOCK) {
             lock_type_ = READ_LOCK;
             ++reader_count_;
@@ -65,13 +65,13 @@ public class RWLock {
         } else {
             rt = false;
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
         return rt;
     }
 
     public boolean TryWriteLock() {
         boolean rt = false;
-        spinlock_.Lock();
+        spinlock_.lock();
         if (lock_type_ == NO_LOCK) {
             lock_type_ = WRITE_LOCK;
 
@@ -79,14 +79,14 @@ public class RWLock {
         } else {
             rt = false;
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
         return rt;
     }
 
     public void ReleaseWriteLock() {
-        spinlock_.Lock();
+        spinlock_.lock();
         lock_type_ = NO_LOCK;
-        spinlock_.Unlock();
+        spinlock_.unlock();
     }
 
 

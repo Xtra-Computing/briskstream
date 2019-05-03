@@ -103,7 +103,7 @@ public class ExecutionManager {
      * Launch threads for each executor in executionGraph
      * We make sure no interference among threads --> one thread one core.
      * TODO: let's think about how to due with multi-thread per core in future..
-     * All executors have to wait for OM to start, so it's safe to do initialization here. E.g., initialize database.
+     * All executors have to sync_ratio for OM to start, so it's safe to do initialization here. E.g., initialize database.
      */
     public void distributeTasks(Configuration conf,
                                 ExecutionPlan plan, CountDownLatch latch, boolean benchmark, boolean profile, Database db, Platform p) throws UnhandledCaseException {
@@ -293,7 +293,7 @@ public class ExecutionManager {
         ThreadMap.putIfAbsent(e.getExecutorID(), wt);
 //		try {
 //			while (!wt.binding_finished) {
-//				Thread.sleep(500);//wait for queue allocation.
+//				Thread.sleep(500);//sync_ratio for queue allocation.
 //			}
 //		} catch (InterruptedException e1) {
 //			e1.printStackTrace();

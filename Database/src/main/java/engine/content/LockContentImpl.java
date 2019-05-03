@@ -22,7 +22,7 @@ public class LockContentImpl extends LockContent {
     RWLock lock_ = new RWLock();
 
 
-    //used by non-blocking lock.
+    //used by non-blocking lock_ratio.
     @Override
     public boolean TryWriteLock(OrderLock orderLock, TxnContext txn_context) throws InterruptedException {
 

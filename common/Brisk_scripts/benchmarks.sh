@@ -275,7 +275,7 @@ do
     checkpoint=0.25
     ratio_of_multi_partition=1
     number_partitions=-1 #no partitions.
-    NUM_ITEMS=10000 #smaller means higher contention! 1000 or 10K
+    NUM_ITEMS=100000 #smaller means higher contention! 10k or 100K
         case "$benchmark" in
             "Read_Only")
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
@@ -384,9 +384,9 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1	5 10 15 20 25 30 35 38
+                        for tt in 1 5 10 15 20 25 30 35 38
                         do
-                            for CCOption in 0 #2 #0 1 2
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -397,23 +397,23 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
-                            for CCOption in 3 #0 1 2 3
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 0.1 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
+                                        for checkpoint in 0.01 0.1 1 # MIN_EVENTS_PER_THREAD * checkpoint
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
                                         done
                                     done
                                 done

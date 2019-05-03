@@ -32,18 +32,18 @@ public class LWMContentImpl extends LWMContent {
     @Override
     public boolean AcquireReadLock() {
         boolean rt = true;
-        wait_lock_.Lock();
+        wait_lock_.lock();
         if (is_certifying_) {
             rt = false;
         } else {
             ++read_count_;
         }
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
         return rt;
     }
 
     /**
-     * Read lock will not block write.. --> major difference to S2PL.
+     * Read lock_ratio will not block write.. --> major difference to S2PL.
      * Write will still prevent Write.. --> multiple write to a d_record is not allowed.
      *
      * @return
@@ -51,30 +51,30 @@ public class LWMContentImpl extends LWMContent {
     @Override
     public boolean AcquireWriteLock() {
         boolean rt = true;
-        wait_lock_.Lock();
+        wait_lock_.lock();
         if (is_writing_ == true || is_certifying_ == true) {
             rt = false;
         } else {
             is_writing_ = true;
         }
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
         return rt;
     }
 
     @Override
     public void ReleaseReadLock() {
-        wait_lock_.Lock();
+        wait_lock_.lock();
         assert (read_count_ > 0);
         --read_count_;
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
     }
 
     @Override
     public void ReleaseWriteLock() {
-        wait_lock_.Lock();
+        wait_lock_.lock();
         assert (is_writing_ == true);
         is_writing_ = false;
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
     }
 
 
@@ -123,11 +123,11 @@ public class LWMContentImpl extends LWMContent {
         return null;
     }
 
-    //However, once T is ready to commit, it must obtain a certify lock on all items that it currently holds write locks on before it can commit.
+    //However, once T is ready to commit, it must obtain a certify lock_ratio on all items that it currently holds write locks on before it can commit.
     @Override
     public boolean AcquireCertifyLock() {
         boolean rt = true;
-        wait_lock_.Lock();
+        wait_lock_.lock();
         assert (is_writing_);
         assert (!is_certifying_);
         if (read_count_ != 0) {
@@ -136,7 +136,7 @@ public class LWMContentImpl extends LWMContent {
             is_writing_ = false;
             is_certifying_ = true;
         }
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
         return rt;
     }
 
@@ -161,10 +161,10 @@ public class LWMContentImpl extends LWMContent {
 
     @Override
     public void ReleaseCertifyLock() {
-        wait_lock_.Lock();
+        wait_lock_.lock();
         assert (is_certifying_);
         is_certifying_ = false;
-        wait_lock_.Unlock();
+        wait_lock_.unlock();
     }
 
     private void MaintainLWM() {

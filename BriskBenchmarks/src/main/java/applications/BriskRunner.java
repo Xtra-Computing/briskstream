@@ -14,9 +14,6 @@ import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
-import utils.SINK_CONTROL;
-import utils.SOURCE_CONTROL;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import engine.common.SpinLock;
@@ -24,13 +21,14 @@ import engine.profiler.Metrics;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SINK_CONTROL;
+import utils.SOURCE_CONTROL;
 
 import java.io.*;
 import java.util.Collection;
 import java.util.Properties;
 
-import static applications.CONTROL.enable_app_combo;
-import static applications.CONTROL.enable_profile;
+import static applications.CONTROL.*;
 import static applications.Constants.System_Plan_Path;
 import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
 import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
@@ -112,7 +110,7 @@ public class BriskRunner extends abstractRunner {
         executorThread sinkThread = submitter.getOM().getEM().getSinkThread();
 
         long start = System.currentTimeMillis();
-        sinkThread.join((long) (30 * 1E3 * 60));//wait for sink thread to stop. Maximally wait for 10 mins
+        sinkThread.join((long) (30 * 1E3 * 60));//sync_ratio for sink thread to stop. Maximally sync_ratio for 10 mins
 
         long time_elapsed = (long) ((System.currentTimeMillis() - start) / 1E3 / 60);//in mins
 
@@ -203,9 +201,11 @@ public class BriskRunner extends abstractRunner {
 
             //configure database.
 
+            int _combo_bid_size = 1;
+
             switch (config.getInt("CCOption", 0)) {
-                case CCOption_LOCK://Lock
-                case CCOption_OrderLOCK://Ordered lock
+                case CCOption_LOCK://lock_ratio
+                case CCOption_OrderLOCK://Ordered lock_ratio
                     content_type = LOCK_CONTENT;
                     break;
                 case CCOption_LWM://LWM
@@ -228,7 +228,20 @@ public class BriskRunner extends abstractRunner {
 
             if (enable_app_combo) {
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, tthread);
-                SOURCE_CONTROL.getInstance().setWM(tthread);
+
+
+                switch (config.getInt("CCOption", 0)) {
+
+                    case CCOption_OrderLOCK://Ordered lock_ratio
+                    case CCOption_LWM://LWM
+                    case CCOption_SStore://SStore
+                        _combo_bid_size = 1;
+                        break;
+                    default:
+                        _combo_bid_size = combo_bid_size;
+                }
+                SOURCE_CONTROL.getInstance().config(tthread,_combo_bid_size);
+
             } else
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
 
@@ -491,11 +504,11 @@ public class BriskRunner extends abstractRunner {
 
 //            sb.append("====Median======\n")
 //                    .append("Task Id :\t").append(i).append("\n")
-//                    .append("useful time:\t").append(metrics.useful_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
-//                    .append("abort time:\t").append(metrics.abort_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("useful time:\t").append(metrics.useful_ratio.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("abort time:\t").append(metrics.abort_ratio.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 //                    .append("ts allocation time:\t").append(metrics.ts_allocation.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 //                    .append("index time:\t").append(metrics.index_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
-//                    .append("wait time:\t").append(metrics.wait.GetAndUpdate(componentId).getPercentile(50)).append("\n")
+//                    .append("sync_ratio time:\t").append(metrics.sync_ratio.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 ////                            .append("order_wait time:\t").append(metrics.order_wait.GetAndUpdate(componentId).getPercentile(50)).append("\n")
 //
 ////                            .append("enqueue time:\t").append(metrics.enqueue_time.GetAndUpdate(componentId).getPercentile(50)).append("\n")
@@ -505,34 +518,34 @@ public class BriskRunner extends abstractRunner {
 
 //                sb.append("====Mean======\n")
 //                        .append("Id :\t").append(i).append("\n")
-//                        .append("useful time:\t").append(String.format("%.2f", metrics.useful_time[i].getMean() / 1E4)).append(" %\n")
-//                        .append("abort time:\t").append(String.format("%.2f", metrics.abort_time[i].getMean() / 1E4)).append(" %\n")
+//                        .append("useful time:\t").append(String.format("%.2f", metrics.useful_ratio[i].getMean() / 1E4)).append(" %\n")
+//                        .append("abort time:\t").append(String.format("%.2f", metrics.abort_ratio[i].getMean() / 1E4)).append(" %\n")
 //                        .append("ts_alloc. time:\t").append(String.format("%.2f", metrics.ts_allocation[i].getMean() / 1E4)).append(" %\n")
 //                        .append("index time:\t").append(String.format("%.2f", metrics.index_time[i].getMean() / 1E4)).append(" %\n")
-//                        .append("wait time:\t").append(String.format("%.2f", metrics.wait[i].getMean() / 1E4)).append(" %\n")
-//                        .append("lock time:\t").append(String.format("%.2f", metrics.lock[i].getMean() / 1E4)).append(" %\n")
+//                        .append("sync_ratio time:\t").append(String.format("%.2f", metrics.sync_ratio[i].getMean() / 1E4)).append(" %\n")
+//                        .append("lock_ratio time:\t").append(String.format("%.2f", metrics.lock_ratio[i].getMean() / 1E4)).append(" %\n")
 //                        .append("compute time:\t").append(metrics.exe_time[i].getMean()).append("\n");
 
 
-                useful_time += metrics.useful_time[i].getSum();
-                abort_time += metrics.abort_time[i].getSum();
+                useful_time += metrics.useful_ratio[i].getSum();
+                abort_time += metrics.abort_ratio[i].getSum();
                 ts_alloc_time += metrics.ts_allocation[i].getSum();
                 index_time += metrics.index_time[i].getSum();
-                wait_time += metrics.wait[i].getSum();
-                lock_time += metrics.lock[i].getSum();
+                wait_time += metrics.sync_ratio[i].getSum();
+                lock_time += metrics.lock_ratio[i].getSum();
                 compute_time += metrics.exe_time[i].getSum();
-                sum += metrics.useful_time[i].getN();
+                sum += metrics.useful_ratio[i].getN();
 
 
                 if (config.getInt("CCOption", 0) == CCOption_TStream) {
 
-                    sb.append("Processed:" + metrics.useful_time[i].getN()).append("\n");
+                    sb.append("Processed:" + metrics.useful_ratio[i].getN()).append("\n");
                     sb.append("average tp construct:");
                     sb.append("\t").append(metrics.average_txn_construct[i].getMean()).append("\n");
                     sb.append("average tp submit:");
                     sb.append("\t").append(metrics.average_tp_submit[i].getMean()).append("\n");
                     sb.append("average tp processing synchronization time:");
-                    sb.append("\t").append(metrics.average_tp_w_syn[i].getMean()-metrics.average_tp_core[i].getMean()).append("\n");
+                    sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() - metrics.average_tp_core[i].getMean()).append("\n");
                     sb.append("average tp_core processing:");
                     sb.append("\t").append(metrics.average_tp_core[i].getMean()).append("\n");
 
@@ -556,7 +569,7 @@ public class BriskRunner extends abstractRunner {
             LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time / sum));
             LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum));
             LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum));
-            LOG.info("Lock time:\t" + String.format("%.2f", lock_time / sum));
+            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time / sum));
 
         }
 

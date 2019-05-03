@@ -19,10 +19,13 @@ import java.util.LinkedList;
 import static applications.CONTROL.enable_debug;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_ACC;
+import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
- * conventional two-phase locking with no-wait strategy from Cavalia.
+ * conventional two-phase locking with no-sync_ratio strategy from Cavalia.
  */
 public class TxnManagerLock extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerLock.class);
@@ -165,29 +168,34 @@ public class TxnManagerLock extends TxnManagerDedicated {
 
         record_ref.setRecord(t_record.record_); //return the table record for modifying in the application layer.
         if (accessType == READ_ONLY) {
-            // if cannot get Lock, then return immediately.
+            // if cannot get lock_ratio, then return immediately.
             if (!t_record.content_.TryReadLock()) {
                 this.AbortTransaction();
                 return false;
             } else {
+//                if (!txn_context.is_retry_)
+                    BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
                 Access access = access_list_.NewAccess();
                 access.access_type_ = READ_ONLY;
                 access.access_record_ = t_record;
                 access.local_record_ = null;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-
+//                if (!txn_context.is_retry_)
+                    END_TP_CORE_TIME_MEASURE_NOCC(txn_context.thread_Id);
                 return true;
             }
         } else if (accessType == READ_WRITE) {
             if (!t_record.content_.TryWriteLock()) {
                 if (enable_debug)
-                    LOG.info(Thread.currentThread().getName() + " failed to get lock" + DateTime.now());
+                    LOG.info(Thread.currentThread().getName() + " failed to get lock_ratio" + DateTime.now());
                 this.AbortTransaction();
                 return false;
             } else {
-//                LOG.trace(txn_context.getThisOpId() + " success to get lock" + DateTime.now());
+//                LOG.trace(txn_context.getThisOpId() + " success to get lock_ratio" + DateTime.now());
 
+//                if (!txn_context.is_retry_)
+                    BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
                 /**
                  * 	 const RecordSchema *schema_ptr = t_record->record_->schema_ptr_;
                  char *local_data = MemAllocator::Alloc(schema_ptr->GetSchemaSize());
@@ -213,6 +221,8 @@ public class TxnManagerLock extends TxnManagerDedicated {
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
 
+//                if (!txn_context.is_retry_)
+                    END_TP_CORE_TIME_MEASURE_NOCC(txn_context.thread_Id);
                 return true;
             }
         } else if (accessType == DELETE_ONLY) {

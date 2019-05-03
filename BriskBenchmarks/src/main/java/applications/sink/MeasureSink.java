@@ -10,6 +10,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SINK_CONTROL;
 
 import java.io.*;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import static applications.CONTROL.*;
 import static applications.Constants.STAT_Path;
+import static engine.content.Content.*;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
@@ -30,6 +32,9 @@ public class MeasureSink extends BaseSink {
     protected stable_sink_helper helper;
     protected int ccOption;
     private boolean LAST = false;
+
+    int _combo_bid_size;
+
 
     public MeasureSink() {
         super(new HashMap<>());
@@ -94,6 +99,17 @@ public class MeasureSink extends BaseSink {
 //		store = new ArrayDeque<>((int) 1E11);
         LAST = thisTaskId == graph.getSink().getExecutorID();
 
+
+        switch (config.getInt("CCOption", 0)) {
+            case CCOption_OrderLOCK://Ordered lock_ratio
+            case CCOption_LWM://LWM
+            case CCOption_SStore://SStore
+                _combo_bid_size = 1;
+                break;
+            default:
+                _combo_bid_size = combo_bid_size;
+        }
+        SINK_CONTROL.getInstance().config(_combo_bid_size);
     }
 
     int cnt = 0;
@@ -104,26 +120,6 @@ public class MeasureSink extends BaseSink {
 //        LOG.info("CNT:" + cnt);
         cnt++;
     }
-
-//    @Override
-//    public void execute(JumboTuple input) {
-//        //	store.add(input);
-//        int bound = input.length;
-//        for (int i = 0; i < bound; i++) {
-////			read = (input.getString(0, i));
-//            //simulate work..
-////			dummy_execute();
-//            double results = helper.execute(input.getBID());
-//            if (results != 0) {
-//                this.setResults(results);
-//                LOG.info("Sink finished:" + results);
-//                if (LAST) {
-//                    measure_end();
-//                }
-//            }
-//        }
-//
-//    }
 
     protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
@@ -142,22 +138,9 @@ public class MeasureSink extends BaseSink {
                 long msgId = input.getBID();
                 if (msgId < max_num_msg) {
                     final long end = System.nanoTime();
-
-//                    try {
                     final long start = input.getLong(1);
-
-
                     final long process_latency = end - start;//ns
-//				final Long stored_process_latency = latency_map.getOrDefault(msgId, 0L);
-//				if (process_latency > stored_process_latency)//pick the worst.
-//				{
-//				LOG.debug("msgID:" + msgId + " is at:\t" + process_latency / 1E6 + "\tms");
                     latency_map.put(msgId, process_latency);
-//				}
-//                    } catch (Exception e) {
-//                        System.nanoTime();
-//                    }
-//                    num_msg++;
                 }
             }
     }
@@ -166,62 +149,60 @@ public class MeasureSink extends BaseSink {
      * Only one sink will do the measure_end.
      */
     protected void measure_end() {
-        if (!profile) {
 
-            if (enable_latency_measurement) {
-                for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
+
+        if (enable_latency_measurement) {
+            for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
 //                LOG.info("=====Process latency of msg====");
-                    //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
-                    latency.addValue((entry.getValue() / 1E6));
-                }
-                try {
+                //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
+                latency.addValue((entry.getValue() / 1E6));
+            }
+            try {
 //                Collections.sort(col_value);
 
-                    FileWriter f = null;
-                    switch (algorithm) {
-                        case "random": {
-                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("random.latency")));
-                            break;
-                        }
-                        case "toff": {
-                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("toff.latency")));
-                            break;
-                        }
-                        case "roundrobin": {
-                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("roundrobin.latency")));
-                            break;
-                        }
-                        case "worst": {
-                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("worst.latency")));
-                            break;
-                        }
-                        case "opt": {
-                            f = new FileWriter(new File(directory + OsUtils.OS_wrapper("opt.latency")));
-                            break;
-                        }
+                FileWriter f = null;
+                switch (algorithm) {
+                    case "random": {
+                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("random.latency")));
+                        break;
                     }
-
-                    Writer w = new BufferedWriter(f);
-
-                    for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
-                        w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
+                    case "toff": {
+                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("toff.latency")));
+                        break;
                     }
-                    w.write("=======Details=======");
-                    w.write(latency.toString() + "\n");
-                    w.write("===90th===" + "\n");
-                    w.write(String.valueOf(latency.getPercentile(90) + "\n"));
-                    w.close();
-                    f.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    case "roundrobin": {
+                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("roundrobin.latency")));
+                        break;
+                    }
+                    case "worst": {
+                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("worst.latency")));
+                        break;
+                    }
+                    case "opt": {
+                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("opt.latency")));
+                        break;
+                    }
                 }
-            }
-            LOG.info("Stop all threads sequentially");
-//			context.stop_runningALL();
-            context.Sequential_stopAll();
 
+                Writer w = new BufferedWriter(f);
+
+                for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
+                    w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
+                }
+                w.write("=======Details=======");
+                w.write(latency.toString() + "\n");
+                w.write("===90th===" + "\n");
+                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
+                w.close();
+                f.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        LOG.info("Stop all threads sequentially");
+//			context.stop_runningALL();
+        context.Sequential_stopAll();
     }
 
     @Override

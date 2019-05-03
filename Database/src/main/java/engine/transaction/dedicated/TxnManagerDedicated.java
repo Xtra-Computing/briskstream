@@ -22,7 +22,8 @@ import java.util.concurrent.BrokenBarrierException;
 
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_TS;
+import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -104,15 +105,15 @@ public abstract class TxnManagerDedicated implements TxnManager {
         MetaTypes.AccessType accessType = AccessType.WRITE_ONLY;
 
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
 
         if (t_record != null) {
             return Asy_WriteRecordCC(txn_context, srcTable, t_record, value, enqueue_time, accessType);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -122,15 +123,15 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_WriteRecord(TxnContext txn_context, String srcTable, String primary_key, long value, int column_id) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.WRITE_ONLY;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
 
         if (t_record != null) {
             return Asy_WriteRecordCC(txn_context, srcTable, t_record, value, column_id, accessType);//TxnContext txn_context, String srcTable, String primary_key, long value_list, int column_id
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -140,13 +141,13 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ReadRecord(TxnContext txn_context, String srcTable, String primary_key, SchemaRecordRef record_ref, double[] enqueue_time) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_ONLY;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
         if (t_record != null) {
             return Asy_ReadRecordCC(txn_context, srcTable, t_record, record_ref, enqueue_time, accessType);
         } else {
-            // if no record_ref is found, then a "virtual record_ref" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ref is found, then a "virtual record_ref" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -156,14 +157,14 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord(TxnContext txn_context, String srcTable, String source_key, Function function, int column_id) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, t_record, function, accessType, column_id);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + source_key);
             return false;
         }
@@ -173,15 +174,15 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord(TxnContext txn_context, String srcTable, String source_key, String dest_key, Function function) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
         TableRecord d_record = storageManager_.getTable(srcTable).SelectKeyRecord(dest_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, d_record, function, accessType, 1);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + source_key);
             return false;
         }
@@ -192,14 +193,14 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord(TxnContext txn_context, String srcTable, String key, Function function) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, t_record, function, accessType, 1);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             return false;
         }
     }
@@ -209,15 +210,15 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord_Read(TxnContext txn_context, String srcTable, String source_key, String dest_key, SchemaRecordRef record_ref, Function function) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE_READ;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(source_key);
         TableRecord d_record = storageManager_.getTable(srcTable).SelectKeyRecord(dest_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecord_ReadCC(txn_context, srcTable, t_record, d_record, record_ref, function, accessType);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + source_key);
             return false;
         }
@@ -227,14 +228,14 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord_Read(TxnContext txn_context, String srcTable, String key, SchemaRecordRef record_ref, Function function) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE_READ;
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecord_ReadCC(txn_context, srcTable, t_record, record_ref, function, accessType);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + key);
             return false;
         }
@@ -255,7 +256,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
             return Asy_ModifyRecordCC(txn_context, srcTable, s_record, d_record, function, condition_records, condition, accessType, success);
         } else {
             LOG.info("No record is found:" + src_key);
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             return false;
         }
     }
@@ -285,7 +286,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
             return Asy_ModifyRecordCC(txn_context, srcTable, s_record, function, condition_records, condition, accessType, success);
         } else {
             LOG.info("No record is found:" + key);
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             return false;
         }
     }
@@ -318,7 +319,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
             return Asy_ModifyRecordCC(txn_context, srcTable, s_record, function, condition_records, condition, accessType, success);
         } else {
             LOG.info("No record is found:" + key);
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             return false;
         }
     }
@@ -343,7 +344,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
         if (s_record != null) {
             return Asy_ModifyRecord_ReadCC(txn_context, srcTable, s_record, record_ref, function, condition_records, condition, accessType, success);
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + key);
             return false;
         }
@@ -369,7 +370,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id,txn_context.is_retry_);
+        END_INDEX_TIME_MEASURE(txn_context.thread_Id, txn_context.is_retry_);
 //
         if (t_record != null) {
 //			BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
@@ -378,7 +379,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
             assert !rt || record_.getRecord() != null;
             return rt;
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -387,11 +388,13 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean lock_ahead(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException {
 
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
+
+
         if (t_record != null) {
             boolean rt = lock_aheadCC(txn_context, table_name, t_record, record_, access_type);
             return rt;
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -399,16 +402,16 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
     public boolean SelectKeyRecord_noLock(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException {
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
 
             boolean rt = SelectKeyRecord_noLockCC(txn_context, table_name, t_record, record_, access_type);
             return rt;
         } else {
-            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can Lock it.
+            // if no record_ is found, then a "virtual record_" should be inserted as the placeholder so that we can lock_ratio it.
             LOG.info("No record is found:" + primary_key);
             return false;
         }
@@ -426,9 +429,9 @@ public abstract class TxnManagerDedicated implements TxnManager {
      */
     public boolean SelectRecords(TxnContext txn_context, String table_name, int idx_id, String secondary_key, SchemaRecords records_, AccessType access_type, LinkedList<Long> gap) throws DatabaseException, InterruptedException {
 
-        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         storageManager_.getTable(table_name).SelectRecords(idx_id, secondary_key, t_records_);
-        END_INDEX_TIME_MEASURE_TS(txn_context.thread_Id, txn_context.is_retry_);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 //		BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
         SelectRecordsCC(txn_context, table_name, t_records_, records_, access_type, gap);
         t_records_.Clear();

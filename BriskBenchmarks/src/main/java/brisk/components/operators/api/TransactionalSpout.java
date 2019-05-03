@@ -5,11 +5,9 @@ import brisk.execution.runtime.tuple.impl.Marker;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.SOURCE_CONTROL;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
-import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
@@ -40,6 +38,8 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
 
     public int empty = 0;//execute without emit.
 
+    protected int batch_length;
+
     protected TransactionalSpout(Logger log, int fid) {
         super(log);
         this.fid = fid;
@@ -64,8 +64,8 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public boolean checkpoint() {
         boolean rt = false;
         if (bt % batch_length == 0) {
-            myiteration++;
-            success = false;
+//            myiteration++;
+//            success = false;
             rt = true;
         }
         bt++;

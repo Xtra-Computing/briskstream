@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * <ul>
- * <li>Lock free, observing partition writer principal.
+ * <li>lock_ratio free, observing partition writer principal.
  * <li>Replacing the long fields with AtomicLong and using lazySet instead of
  * volatile assignment.
  * <li>Using the power of 2 mask, forcing the capacity to next power of 2.
@@ -148,7 +148,7 @@ public final class P1C1Queue<E> implements Queue<E> {
     }
 
     /**
-     * Implement new queue full wait strategy. By default, non-blocking.
+     * Implement new queue full sync_ratio strategy. By default, non-blocking.
      *
      * @param e
      * @return

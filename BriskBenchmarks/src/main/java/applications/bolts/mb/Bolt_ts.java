@@ -7,11 +7,11 @@ import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
-import engine.storage.SchemaRecordRef;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.SOURCE_CONTROL;
 
 import java.util.LinkedList;
 import java.util.concurrent.BrokenBarrierException;
@@ -42,7 +42,6 @@ public class Bolt_ts extends GSBolt {
 
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
-
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
             (event).setTimestamp(timestamp);
@@ -64,8 +63,7 @@ public class Bolt_ts extends GSBolt {
     private void read_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; i++) {
             //it simply constructs the operations and return.
-            SchemaRecordRef ref = event.getRecord_refs()[i];
-            transactionManager.Asy_ReadRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), ref, event.enqueue_time);
+            transactionManager.Asy_ReadRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], event.enqueue_time);
         }
 
         if (enable_speculative) {//TODO: future work.
@@ -100,7 +98,7 @@ public class Bolt_ts extends GSBolt {
 
     private void READ_CORE() throws InterruptedException {
 
-        while (!EventsHolder.isEmpty()) {
+        while (!EventsHolder.isEmpty() && !Thread.interrupted()) {
             MicroEvent event = EventsHolder.remove();
             if (!READ_CORE(event))
                 EventsHolder.offer(event);
@@ -119,7 +117,6 @@ public class Bolt_ts extends GSBolt {
         if (in.isMarker()) {
 
             int readSize = EventsHolder.size();
-
 
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
@@ -140,8 +137,9 @@ public class Bolt_ts extends GSBolt {
                 final Marker marker = in.getMarker();
                 this.collector.ack(in, marker);//tell spout it has finished transaction processing.
             } else {
-
+                SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync_ratio for all threads to come to this line.
             }
+
 
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
 
@@ -154,6 +152,7 @@ public class Bolt_ts extends GSBolt {
 //            EventsHolder.clear();//all tuples in the EventsHolder are finished.
             if (enable_profile)
                 writeEvents = 0;//all tuples in the holder are finished.
+
 
         } else {
 

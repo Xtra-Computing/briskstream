@@ -63,7 +63,7 @@ public abstract class Operator implements IOperator {
     public transient TxnContext txn_context;
     public boolean forceStop;
     public int fid = -1;//if fid is -1 it means it does not participate
-    public OrderLock lock;//used for lock-based ordering constraint.
+    public OrderLock lock;//used for lock_ratio-based ordering constraint.
     public OrderValidate orderValidate;
     protected String configPrefix = BaseConstants.BASE_PREFIX;
     protected OutputCollector collector;

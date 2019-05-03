@@ -48,7 +48,7 @@ public class PartitionedOrderLock implements Serializable {
 
         public boolean blocking_wait(final long bid) {
 //            if (!this.counter.compareAndSet(counter, counter))
-//                LOG.info("not ready for this batch to proceed:" + counter + " lock @" + this);
+//                LOG.info("not ready for this batch to proceed:" + counter + " lock_ratio @" + this);
 
 
             while (!this.bid.compareAndSet(bid, bid)) {

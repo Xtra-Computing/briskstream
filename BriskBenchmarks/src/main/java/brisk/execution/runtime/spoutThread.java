@@ -18,6 +18,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
 import static applications.CONTROL.*;
+import static engine.content.Content.*;
 
 /**
  * Task thread that hosts spout logic.
@@ -32,6 +33,9 @@ public class spoutThread extends executorThread {
     private final OutputCollector collector;
     int sleep_time = 0;
     int busy_time = 0;
+
+
+    int _combo_bid_size = 1;
 
     /**
      * @param e                 :                  Each thread corresponds to one executionNode.
@@ -57,6 +61,17 @@ public class spoutThread extends executorThread {
         elements = loadPerTimeslice();//how many elements are required to sent each time.
         sp.setExecutionNode(e);
         sp.setclock(clock);
+
+        switch (conf.getInt("CCOption", 0)) {
+
+            case CCOption_OrderLOCK://Ordered lock_ratio
+            case CCOption_LWM://LWM
+            case CCOption_SStore://SStore
+                _combo_bid_size = 1;
+                break;
+            default:
+                _combo_bid_size = combo_bid_size;
+        }
     }
 
     @Override
@@ -64,7 +79,7 @@ public class spoutThread extends executorThread {
         sp.bulk_emit(batch);
 
         if (enable_app_combo)
-            cnt += batch * combo_bid_size;
+            cnt += batch * _combo_bid_size;
         else
             cnt += batch;
     }

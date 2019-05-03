@@ -23,7 +23,7 @@ import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
- * two-phase locking with no-wait strategy
+ * two-phase locking with no-sync_ratio strategy
  * If stream is in-ordered, this CC will already provide the desired property.
  * This actually results in sequential execution.
  */
@@ -74,7 +74,7 @@ public class TxnManagerOrderLock extends TxnManagerDedicated {
     protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) throws InterruptedException {
         SchemaRecord s_record = t_record.record_;
         if (accessType == READ_ONLY) {
-            // if cannot get Lock, then return immediately.
+            // if cannot get lock_ratio, then return immediately.
             if (!t_record.content_.TryReadLock(orderLock, txn_context)) {
                 this.AbortTransaction();
                 return false;

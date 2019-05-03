@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static applications.CONTROL.enable_debug;
 
 /**
- * Order lock should be globally shared.
+ * Order lock_ratio should be globally shared.
  */
 public class OrderLock implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(OrderLock.class);
@@ -104,7 +104,7 @@ public class OrderLock implements Serializable {
                 LOG.trace("BLOCK WAITING FOR " + counter + " CURRENT COUNTER:" + this.counter + " Thread:" + Thread.currentThread().getName());
             synchronized (this.counter) {//this overhead is too high.
                 if(!wasSignalled) {
-                    this.counter.wait(1);
+                    this.counter.sync_ratio(1);
                 }
             }
         }

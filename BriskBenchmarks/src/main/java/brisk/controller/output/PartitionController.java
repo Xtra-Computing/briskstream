@@ -286,9 +286,9 @@ public abstract class PartitionController implements IPartitionController, Seria
 //		throw new InterruptedException();
 
 //        while (!queue.offer(e)) {
-//			//LOG.DEBUG("queue full.. wait...");
+//			//LOG.DEBUG("queue full.. sync_ratio...");
 //            synchronized (queue) {
-//                queue.wait(1);
+//                queue.sync_ratio(1);
 //            }
 //        }
         return true;
@@ -308,9 +308,9 @@ public abstract class PartitionController implements IPartitionController, Seria
 //		throw new InterruptedException();
 
 //        while (!queue.offer(e)) {
-//			//LOG.DEBUG("queue full.. wait...");
+//			//LOG.DEBUG("queue full.. sync_ratio...");
 //            synchronized (queue) {
-//                queue.wait(1);
+//                queue.sync_ratio(1);
 //            }
 //        }
         return true;
@@ -546,7 +546,7 @@ public abstract class PartitionController implements IPartitionController, Seria
             _inorder_offer(tuple, tuple.getBID(), gap, targetId);
 //			fill_gap();
 
-//			long gap = bid - lock.getBID();
+//			long gap = bid - lock_ratio.getBID();
 //			while (gap >= 1) {
 //				try_fill_gap();//there are gaps between.
 //				gap--;
@@ -646,13 +646,13 @@ public abstract class PartitionController implements IPartitionController, Seria
      * @return
      */
     private boolean _inorder_offer(Object tuple, long bid, LinkedList<Long> gap, int targetId) {
-//		lock.blocking_wait(bid, gap);
+//		lock_ratio.blocking_wait(bid, gap);
 //
 //		Queue queue = get_queue(targetId);
 //
 //		bounded_offer(queue, tuple);
 //
-//		lock.advance();
+//		lock_ratio.advance();
 //		return true;
         return true;
 
@@ -694,7 +694,7 @@ public abstract class PartitionController implements IPartitionController, Seria
     }
 
 //	public long getBID() {
-//		return lock.getBID();
+//		return lock_ratio.getBID();
 //	}
 
 

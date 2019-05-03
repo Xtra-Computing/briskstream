@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
  * CAS'ing a single word is unacceptable.
  *
  * <p>This API is overkill for simple counters (e.g. no need for the 'mask')
- * and is untested as an API for making a scalable r/w Lock and so is likely
+ * and is untested as an API for making a scalable r/w lock_ratio and so is likely
  * to change!
  *
  * @author Cliff Click
@@ -218,10 +218,10 @@ public class ConcurrentAutoTable implements Serializable {
             r += newbytes;
             if (master._cat != this) return old; // Already doubled, don't bother
             if ((r >> 17) != 0) {      // Already too much allocation attempts?
-                // TODO - use a wait with timeout, so we'll wakeup as soon as the new
+                // TODO - use a sync_ratio with timeout, so we'll wakeup as soon as the new
                 // table is ready, or after the timeout in any case.  Annoyingly, this
                 // breaks the non-blocking property - so for now we just briefly sleep.
-                //synchronized( this ) { wait(8*megs); }         // Timeout - we always wakeup
+                //synchronized( this ) { sync_ratio(8*megs); }         // Timeout - we always wakeup
                 try {
                     Thread.sleep(r >> 17);
                 } catch (InterruptedException ignored) {

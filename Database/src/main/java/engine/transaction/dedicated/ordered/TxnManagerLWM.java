@@ -80,7 +80,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
                 assert rt;
                 break;
             case READ_WRITE:
-                while (!t_record.content_.AcquireWriteLock() && !Thread.currentThread().isInterrupted()) {//Could it be two transactions concurrently writing the d_record? NO. it's protected by order lock.
+                while (!t_record.content_.AcquireWriteLock() && !Thread.currentThread().isInterrupted()) {//Could it be two transactions concurrently writing the d_record? NO. it's protected by order lock_ratio.
                     txn_context.is_retry_ = true;//retry, no abort..
                 }
                 t_record.content_.AddLWM(txn_context.getBID());
@@ -89,7 +89,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
         }
     }
 
-    //The following makes sure the lock is added in event sequence as in ACEP.
+    //The following makes sure the lock_ratio is added in event sequence as in ACEP.
     @Override
     protected boolean lock_aheadCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
         InsertLock(t_record, txn_context, accessType);
@@ -135,7 +135,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
         //Different from locking scheme, LWM returns only local copy... The actual install happens later at commit stage.
 
         if (accessType == READ_ONLY) {
-            //The following makes sure the lock is added in event sequence as in ACEP.
+            //The following makes sure the lock_ratio is added in event sequence as in ACEP.
 
             InsertLock(t_record, txn_context, accessType);
 
@@ -175,11 +175,11 @@ public class TxnManagerLWM extends TxnManagerDedicated {
 
 		/*
 			-- This is not required, as lwm will strictly guarantee the read & write sequence.
-		// upgrade write lock to certify lock.
+		// upgrade write lock_ratio to certify lock_ratio.
 		for (int i = 0; i < access_list_.access_count_; ++i) {
 			Access access_ptr = access_list_.GetAccess(i);
 			if (access_ptr.access_type_ == READ_WRITE) {
-				// try to upgrade to certify lock.
+				// try to upgrade to certify lock_ratio.
 				if (!access_ptr.access_record_.content_.AcquireCertifyLock()) {
 					is_success = false;
 					break;

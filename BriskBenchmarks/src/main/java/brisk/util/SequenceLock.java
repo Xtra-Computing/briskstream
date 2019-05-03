@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Order lock should be globally shared.
+ * Order lock_ratio should be globally shared.
  */
 public class SequenceLock implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(SequenceLock.class);

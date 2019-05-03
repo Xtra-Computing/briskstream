@@ -100,9 +100,9 @@ public class OBInitializer extends TableInitilizer {
         setLocalAlloc();
 
         if (OsUtils.isMac())
-            AffinityLock.acquireLock(next_cpu_for_db());//same as lock to 0.
+            AffinityLock.acquireLock(next_cpu_for_db());//same as lock_ratio to 0.
         else
-            AffinityLock.acquireLock(next_cpu_for_db());//same as lock to 0.
+            AffinityLock.acquireLock(next_cpu_for_db());//same as lock_ratio to 0.
 
         if (OsUtils.isMac())
             elements_per_socket = elements;
@@ -134,9 +134,9 @@ public class OBInitializer extends TableInitilizer {
         setLocalAlloc();
 
         if (OsUtils.isMac())
-            AffinityLock.acquireLock(next_cpu_for_db());//same as lock to 0.
+            AffinityLock.acquireLock(next_cpu_for_db());//same as lock_ratio to 0.
         else
-            AffinityLock.acquireLock(next_cpu_for_db());//same as lock to 0.
+            AffinityLock.acquireLock(next_cpu_for_db());//same as lock_ratio to 0.
 
 
         if (OsUtils.isMac())

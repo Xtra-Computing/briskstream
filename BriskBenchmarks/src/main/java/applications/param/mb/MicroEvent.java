@@ -28,7 +28,7 @@ public class MicroEvent extends TxnEvent {
     private List<DataBox>[] value;//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
-    //    public double[] useful_time = new double[1];
+    //    public double[] useful_ratio = new double[1];
 
     /**
      * creating a new MicroEvent.

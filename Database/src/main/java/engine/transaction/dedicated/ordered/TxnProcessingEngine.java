@@ -456,12 +456,10 @@ public final class TxnProcessingEngine {
                 standalone_engine.executor.invokeAll(callables);
         }
 
-        //blocking wait for all operation_chain to complete.
+        //blocking sync_ratio for all operation_chain to complete.
         //TODO: For now, we don't know the relationship between operation_chain and transaction, otherwise, we can asynchronously return.
 //        for (Holder_in_range holder_in_range : holder_by_stage.values())
 //            holder_in_range.rangeMap.clear();
-
-
         return task;
     }
 
@@ -479,18 +477,25 @@ public final class TxnProcessingEngine {
 //        if (!enable_app_combo)//otherwise, already synchronized at spout side.
 //            barrier.await();
 //        else
-        SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
+        SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync_ratio for all threads to come to this line.
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
         int size = evaluation(thread_Id);
 
+
+//        SOURCE_CONTROL.getInstance().CLEARWM();//sync_ratio for all threads to come to this line.
+
+
         END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
+
+//        SOURCE_CONTROL.getInstance().WaitWM();//sync_ratio for all threads to come to this line.
+
 
 //        if (!enable_app_combo)
 //        barrier.await();// Because the (operator) does not know if his stored event has been processed or not. Every thread must be synchronized at this point.
 //        else
-//            SOURCE_CONTROL.getInstance().getWm().await();//wait for all threads to come to this line.
+//            SOURCE_CONTROL.getInstance().WaitWM().await();//sync_ratio for all threads to come to this line.
     }
 
     /**

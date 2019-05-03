@@ -32,7 +32,7 @@ import static engine.transaction.impl.TxnAccess.Access;
 
 
 /**
- * conventional two-phase locking with no-wait strategy from Cavalia.
+ * conventional two-phase locking with no-sync_ratio strategy from Cavalia.
  */
 public class TxnManagerTStream extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerTStream.class);

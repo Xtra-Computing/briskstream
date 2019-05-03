@@ -56,7 +56,7 @@ public class TxnManagerOccOcc extends TxnManagerDedicated {
     @Override
     public boolean CommitTransaction(TxnContext txnContext) {
 
-        // step 1: acquire lock and validate
+        // step 1: acquire lock_ratio and validate
         int lock_count = 0;
         boolean is_success = true;
         access_list_.Sort();
@@ -65,7 +65,7 @@ public class TxnManagerOccOcc extends TxnManagerDedicated {
             Access access_ptr = access_list_.GetAccess(i);
             Content content_ref = access_ptr.access_record_.content_;
             if (access_ptr.access_type_ == READ_ONLY) {
-                // acquire read lock
+                // acquire read lock_ratio
                 content_ref.AcquireReadLock();//make sure no one read it while I'm doing validation.
                 // whether someone has changed the tuple after my read
                 if (content_ref.GetTimestamp() != access_ptr.timestamp_) {
@@ -74,7 +74,7 @@ public class TxnManagerOccOcc extends TxnManagerDedicated {
                     break;
                 }
             } else if (access_ptr.access_type_ == READ_WRITE) {
-                // acquire write lock
+                // acquire write lock_ratio
                 content_ref.AcquireWriteLock();//make sure no one read/write it while I'm doing validation.
                 // whether someone has changed the tuple after my read
                 if (content_ref.GetTimestamp() != access_ptr.timestamp_) {

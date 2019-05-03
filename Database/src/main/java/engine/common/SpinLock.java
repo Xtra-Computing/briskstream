@@ -2,25 +2,28 @@ package engine.common;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import static applications.CONTROL.enable_profile;
+
 /**
  * A spinlock based on CAS
  */
 public class SpinLock {
 
     public int count = 0;
+    //    public int count = 0;
     private AtomicReference<Thread> owner = new AtomicReference<>();
 
-    public void Lock() {
+    public void lock() {
         Thread thread = Thread.currentThread();
         if (!Test_Ownership(thread))
             while (!owner.compareAndSet(null, thread)) {
-                if (thread.isInterrupted()) break;//to exit program.
+                if (thread.isInterrupted()) return;//to exit program.
             }
-//       if(enable_profile)
-        count++;
+        if (enable_profile)
+            count++;
     }
 
-    public void Unlock() {
+    public void unlock() {
         Thread thread = Thread.currentThread();
         owner.compareAndSet(thread, null);
     }

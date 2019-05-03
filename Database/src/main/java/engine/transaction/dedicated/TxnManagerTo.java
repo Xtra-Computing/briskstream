@@ -59,7 +59,7 @@ public class TxnManagerTo extends TxnManagerDedicated {
 //		END_PHASE_MEASURE(thread_id_, INSERT_PHASE);
             return true;
         } else {
-            //	// if the d_record has already existed, then we need to lock the original d_record.
+            //	// if the d_record has already existed, then we need to lock_ratio the original d_record.
             //	END_PHASE_MEASURE(thread_id_, INSERT_PHASE);
             return true;
         }

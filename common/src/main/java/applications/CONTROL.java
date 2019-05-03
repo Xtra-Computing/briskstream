@@ -7,16 +7,16 @@ public interface CONTROL {
     int MeasureBound = 100_000;
 
     //application related.
-    int NUM_EVENTS = 500_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
+    int NUM_EVENTS = 1_000_000; //500_000 : 1_000_000; //5_000_000 for real use cases;
 
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
+
     int combo_bid_size = 100;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
 
-    int MIN_EVENTS_PER_THREAD=NUM_EVENTS / combo_bid_size / kMaxThreadNum;
+    int MIN_EVENTS_PER_THREAD = NUM_EVENTS / combo_bid_size / kMaxThreadNum;
 
-    int batch_length = MIN_EVENTS_PER_THREAD;//only for TSTREAM.
 
     //order related.
 
@@ -43,7 +43,7 @@ public interface CONTROL {
     boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.
     boolean enable_numa_placement = true;//3. numa placement.
 
-    boolean enable_work_stealing = true; // 2. this is a sub-option, only useful when engine is enabled. Still BUGGY, resolve in future.
+    boolean enable_work_stealing = false; // 2. this is a sub-option, only useful when engine is enabled. Still BUGGY, resolve in future.
     boolean enable_mvcc = enable_work_stealing;// always enabled in CT and enable if work_stealing is enabled.
     boolean enable_speculative = false;//work in future!
 

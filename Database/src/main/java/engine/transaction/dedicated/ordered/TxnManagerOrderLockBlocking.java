@@ -66,7 +66,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
         record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
-            //The following makes sure the lock is added in event sequence as in ACEP.
+            //The following makes sure the lock_ratio is added in event sequence as in ACEP.
 
             while (!t_record.content_.TryReadLock()) {
                 txn_context.is_retry_ = true;//retry, no abort..
@@ -148,7 +148,7 @@ public class TxnManagerOrderLockBlocking extends TxnManagerDedicated {
         record_ref.setRecord(t_record.record_);//Note that, locking scheme allows directly modifying on original table d_record.
 
         if (accessType == READ_ONLY) {
-            //The following makes sure the lock is added in event sequence as in ACEP.
+            //The following makes sure the lock_ratio is added in event sequence as in ACEP.
 
 
             while (!t_record.content_.TryReadLock()) {

@@ -29,14 +29,14 @@ public class Bolt_nocc extends GSBolt {
     }
 
     private void write_txn_process(MicroEvent event, long i, long _bid) throws DatabaseException, InterruptedException {
-        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+        BEGIN_LOCK_TIME_MEASURE(thread_Id);
         boolean success = write_request(event, txn_context[(int) (i - _bid)]);
-        END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
+        END_LOCK_TIME_MEASURE_NOCC(thread_Id);//if success, lock-tp_core-index; if failed, lock -0-index;
 
         if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             write_core(event);
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
             txn_context[(int) (i - _bid)].is_retry_ = true;
@@ -46,21 +46,20 @@ public class Bolt_nocc extends GSBolt {
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             write_core(event);
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
     }
 
     private void read_txn_process(MicroEvent event, long i, long _bid) throws DatabaseException, InterruptedException {
-        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+
         boolean success = read_request(event, txn_context[(int) (i - _bid)]);
-        END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
         if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             READ_CORE(event);
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
             txn_context[(int) (i - _bid)].is_retry_ = true;
@@ -70,7 +69,7 @@ public class Bolt_nocc extends GSBolt {
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
             READ_CORE(event);
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
@@ -103,6 +102,7 @@ public class Bolt_nocc extends GSBolt {
 
         //pre stream processing phase..
         BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+
         Long timestamp;//in.getLong(1);
         if (enable_latency_measurement)
             timestamp = in.getLong(0);
@@ -120,7 +120,7 @@ public class Bolt_nocc extends GSBolt {
         //end transaction processing.
         END_TRANSACTION_TIME_MEASURE(thread_Id);
 
-        POST_PROCESS(_bid, timestamp);
+        POST_PROCESS(_bid, timestamp, combo_bid_size);
 
         END_TOTAL_TIME_MEASURE_ACC(thread_Id);
     }

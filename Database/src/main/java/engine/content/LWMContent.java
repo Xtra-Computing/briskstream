@@ -22,8 +22,8 @@ RWLock rw_lock_ = new RWLock();
 //		long lwm;
 //
 //
-//		public void AddLock(XLock lock) {
-//			locks.add(lock);
+//		public void AddLock(XLock lock_ratio) {
+//			locks.add(lock_ratio);
 //			AddLWM();
 //		}
 //

@@ -102,7 +102,7 @@ public abstract class T_StreamContent implements Content {
 
         if (enable_mvcc) {
 
-//            spinlock_.Lock();
+//            spinlock_.lock_ratio();
             SchemaRecord record_at_ts = null;
 //            while (record_at_ts == null) {//polling for correct entry.
 
@@ -113,7 +113,7 @@ public abstract class T_StreamContent implements Content {
                 } else
                     record_at_ts = versions.get(ts);//not modified in last round
 //            }
-//            spinlock_.Unlock();
+//            spinlock_.unlock();
 //            if (record_at_ts.getValues() == null) {
 //                System.out.println("Read a null value??");
 //            }
@@ -125,14 +125,14 @@ public abstract class T_StreamContent implements Content {
     public SchemaRecord readValues(long ts) {
 
         if (enable_mvcc) {
-//            spinlock_.Lock();
+//            spinlock_.lock_ratio();
             SchemaRecord rt = versions.get(ts);//return exact record.
 
             if (rt == null) {
                 rt = versions.lowerEntry(ts).getValue();
             }
 
-//            spinlock_.Unlock();
+//            spinlock_.unlock();
             return rt;
         } else
             return record;
@@ -142,9 +142,9 @@ public abstract class T_StreamContent implements Content {
     public void updateValues(long ts, SchemaRecord record) {
 
         if (enable_mvcc) {
-//            spinlock_.Lock();
+//            spinlock_.lock_ratio();
             versions.put(ts, record);
-//            spinlock_.Unlock();
+//            spinlock_.unlock();
         } else
             this.record = record;
     }

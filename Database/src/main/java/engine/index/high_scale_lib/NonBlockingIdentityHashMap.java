@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicLongFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 /**
- * A Lock-free alternate implementation of {@link java.util.concurrent.ConcurrentHashMap}
+ * A lock_ratio-free alternate implementation of {@link java.util.concurrent.ConcurrentHashMap}
  * with better scaling properties and generally lower costs to mutate the Map.
  * It provides identical correctness properties as ConcurrentHashMap.  All
  * operations are non-blocking and multi-thread safe, including all update
@@ -1124,13 +1124,13 @@ public class NonBlockingIdentityHashMap<TypeK, TypeV>
             // guess at 32-bit pointers; 64-bit pointers screws up the size calc by
             // 2x but does not screw up the heuristic very much.
             int megs = ((((1 << log2) << 1) + 4) << 3/*word to bytes*/) >> 20/*megs*/;
-            if (r >= 2 && megs > 0) { // Already 2 guys trying; wait and see
+            if (r >= 2 && megs > 0) { // Already 2 guys trying; sync_ratio and see
                 newkvs = _newkvs;        // Between dorking around, another thread did it
                 if (newkvs != null)     // See if resize is already in progress
                     return newkvs;         // Use the new table already
-                // TODO - use a wait with timeout, so we'll wakeup as soon as the new table
+                // TODO - use a sync_ratio with timeout, so we'll wakeup as soon as the new table
                 // is ready, or after the timeout in any case.
-                //synchronized( this ) { wait(8*megs); }         // Timeout - we always wakeup
+                //synchronized( this ) { sync_ratio(8*megs); }         // Timeout - we always wakeup
                 // For now, sleep a tad and see if the 2 guys already trying to make
                 // the table actually get around to making it happen.
                 try {
@@ -1188,7 +1188,7 @@ public class NonBlockingIdentityHashMap<TypeK, TypeV>
                 // has not happened.  i.e., twice some thread somewhere claimed they
                 // would copy 'slot X' (by bumping _copyIdx) but they never claimed to
                 // have finished (by bumping _copyDone).  Our choices become limited:
-                // we can wait for the work-claimers to finish (and become a blocking
+                // we can sync_ratio for the work-claimers to finish (and become a blocking
                 // algorithm) or do the copy work ourselves.  Tiny tables with huge
                 // thread counts trying to copy the table often 'panic'.
                 if (panic_start == -1) { // No panic?

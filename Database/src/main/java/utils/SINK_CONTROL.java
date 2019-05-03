@@ -14,9 +14,15 @@ public class SINK_CONTROL {
 
 
     private static SINK_CONTROL ourInstance = new SINK_CONTROL();
+    private int _combo_bid_size;
 
     public static SINK_CONTROL getInstance() {
         return ourInstance;
+    }
+
+
+    public void config(int _combo_bid_size) {
+        this._combo_bid_size = _combo_bid_size;//it must be one for LAL, LWM, and PAT.
     }
 
 
@@ -26,7 +32,7 @@ public class SINK_CONTROL {
         int rt = counter;
         // Always good practice to enclose locks in a try-finally block
         try {
-            counter += combo_bid_size;//increment counter by combo_bid_size times...
+            counter += _combo_bid_size;//increment counter by combo_bid_size times...
         } finally {
             counterLock.unlock();
         }

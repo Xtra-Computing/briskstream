@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
 /**
- * A synchronization aid that allows one or more threads to wait until
+ * A synchronization aid that allows one or more threads to sync_ratio until
  * a set of operations being performed in other threads completes.
  *
  * <p>A {@code CountDownLatch} is initialized with a given <em>count</em>.
@@ -20,13 +20,13 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * and can be used for a number of purposes.  A
  * {@code CountDownLatch} initialized with a count of one serves as a
  * simple on/off latch, or gate: all threads invoking {@link #await await}
- * wait at the gate until it is opened by a thread invoking {@link
+ * sync_ratio at the gate until it is opened by a thread invoking {@link
  * #countDown}.  A {@code CountDownLatch} initialized to <em>N</em>
- * can be used to make one thread wait until <em>N</em> threads have
+ * can be used to make one thread sync_ratio until <em>N</em> threads have
  * completed some action, or some action has been completed N times.
  *
  * <p>A useful property of a {@code CountDownLatch} is that it
- * doesn't require that threads calling {@code countDown} wait for
+ * doesn't require that threads calling {@code countDown} sync_ratio for
  * the count to reach zero before proceeding, it simply prevents any
  * thread from proceeding past an {@link #await await} until all
  * threads could pass.
@@ -36,7 +36,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  * <ul>
  * <li>The first is a start signal that prevents any worker from proceeding
  * until the driver is ready for them to proceed;
- * <li>The second is a completion signal that allows the driver to wait
+ * <li>The second is a completion signal that allows the driver to sync_ratio
  * until all workers have completed.
  * </ul>
  *
@@ -52,7 +52,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  *     doSomethingElse();            // don't let run yet
  *     startSignal.countDown();      // let all threads proceed
  *     doSomethingElse();
- *     doneSignal.await();           // wait for all to finish
+ *     doneSignal.await();           // sync_ratio for all to finish
  *   }
  * }
  *
@@ -92,7 +92,7 @@ import java.util.concurrent.locks.AbstractQueuedSynchronizer;
  *     for (int i = 0; i < N; ++i) // create and start threads
  *       e.execute(new WorkerRunnable(doneSignal, i));
  *
- *     doneSignal.await();           // wait for all to finish
+ *     doneSignal.await();           // sync_ratio for all to finish
  *   }
  * }
  *
@@ -140,7 +140,7 @@ public class ResettableCountDownLatch {
     }
 
     /**
-     * Causes the current thread to wait until the latch has counted down to
+     * Causes the current thread to sync_ratio until the latch has counted down to
      * zero, unless the thread is {@linkplain Thread#interrupt interrupted}.
      *
      * <p>If the current count is zero then this method returns immediately.
@@ -175,7 +175,7 @@ public class ResettableCountDownLatch {
     }
 
     /**
-     * Causes the current thread to wait until the latch has counted down to
+     * Causes the current thread to sync_ratio until the latch has counted down to
      * zero, unless the thread is {@linkplain Thread#interrupt interrupted},
      * or the specified waiting time elapses.
      *
@@ -206,9 +206,9 @@ public class ResettableCountDownLatch {
      *
      * <p>If the specified waiting time elapses then the value_list {@code false}
      * is returned.  If the time is less than or equal to zero, the method
-     * will not wait at all.
+     * will not sync_ratio at all.
      *
-     * @param timeout the maximum time to wait
+     * @param timeout the maximum time to sync_ratio
      * @param unit    the time unit of the {@code timeout} argument
      * @return {@code true} if the count reached zero and {@code false}
      * if the waiting time elapsed before the count reached zero

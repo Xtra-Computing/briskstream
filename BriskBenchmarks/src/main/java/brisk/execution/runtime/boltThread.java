@@ -252,7 +252,7 @@ public class boltThread extends executorThread {
             this.Ready(LOG);
 
             if (enable_shared_state)
-                LOG.info("Operator:\t" + executor.getOP_full() + " is ready" + "\n lock dumps:" + dumpLocks());
+                LOG.info("Operator:\t" + executor.getOP_full() + " is ready" + "\n lock_ratio dumps:" + dumpLocks());
 
 
             binding_finished = true;

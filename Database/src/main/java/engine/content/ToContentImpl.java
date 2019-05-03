@@ -58,7 +58,7 @@ public class ToContentImpl extends ToContent {
     @Override
     public boolean RequestReadAccess(final long timestamp, List<DataBox> data, boolean[] is_ready) {
         boolean is_success = true;
-        spinlock_.Lock();
+        spinlock_.lock();
         // if read ts is smaller than write ts that has been committed, then abort.
         if (timestamp < write_ts_) {
             is_success = false;
@@ -79,14 +79,14 @@ public class ToContentImpl extends ToContent {
             }
             is_ready[0] = true;
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
         return is_success;
     }
 
     @Override
     public boolean RequestWriteAccess(final long timestamp, List<DataBox> data) {
         boolean is_success = true;
-        spinlock_.Lock();
+        spinlock_.lock();
         // if write ts is smaller than read ts that has been issued, than abort.
         if (timestamp < read_ts_) {
             is_success = false;
@@ -96,7 +96,7 @@ public class ToContentImpl extends ToContent {
             // thomas write rule.
             BufferWriteRequest(timestamp, data);
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
         return is_success;
     }
 
@@ -109,7 +109,7 @@ public class ToContentImpl extends ToContent {
      */
     @Override
     public void RequestCommit(long timestamp, boolean[] is_ready) {
-        spinlock_.Lock();
+        spinlock_.lock();
         // thomas write rule: the write is stale. remove it from buffer and return.
         if (timestamp < write_ts_) {
             // get the write entry that can be committed.
@@ -137,15 +137,15 @@ public class ToContentImpl extends ToContent {
 //			delete entry;
 //			entry = null;
         }
-        spinlock_.Unlock();
+        spinlock_.unlock();
     }
 
     @Override
     public void RequestAbort(long timestamp) {
-        spinlock_.Lock();
+        spinlock_.lock();
         RequestEntry entry = DebufferWriteRequest(timestamp);
         UpdateBuffer();
-        spinlock_.Unlock();
+        spinlock_.unlock();
         //delete entry;
         //entry = NULL;
     }

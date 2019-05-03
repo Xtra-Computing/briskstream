@@ -88,7 +88,7 @@ public abstract class executorThread extends Thread {
 
         setLocalAlloc();
         int cpu = next_cpu();
-//        lock = AffinityLock.acquireLock(cpu);
+//        lock_ratio = AffinityLock.acquireLock(cpu);
 
         AffinityLock.acquireLock(cpu);
         LOG.info(this.executor.getOP_full() + " binding to node:" + node + " cpu:" + cpu);
@@ -134,10 +134,10 @@ public abstract class executorThread extends Thread {
         lock = AffinityLock.acquireLock((int) cpu[0]);
 
 //		if (!OsUtils.isMac()) {
-//			lock = AffinityLock.acquireLock((int) cpu[0] + 144);//the HT thread.
+//			lock_ratio = AffinityLock.acquireLock((int) cpu[0] + 144);//the HT thread.
 //		}
-//			lock = new AffinityLock((int) cpu[0], false, false, lockInventory);
-//			lock.bind(true);
+//			lock_ratio = new AffinityLock((int) cpu[0], false, false, lockInventory);
+//			lock_ratio.bind(true);
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
@@ -219,7 +219,7 @@ public abstract class executorThread extends Thread {
             rebinding_clean();
             not_yet_profiled = true;
             this.pause_parent();
-            //wait until all output queues become empty here.
+            //sync_ratio until all output queues become empty here.
             while (!this.executor.isEmpty()) {
                 try {
                     Thread.sleep(1000);
@@ -289,14 +289,14 @@ public abstract class executorThread extends Thread {
     }
 
     public void migrate(long[] cpu) {
-        migrating = true;//wait to be scheduled.
+        migrating = true;//sync_ratio to be scheduled.
 //        LOG.info("Old CPU:" + Arrays.show(this.cpu));
         this.cpu = cpu;
 //        LOG.info("New CPU:" + Arrays.show(this.cpu));
     }
 
     public void migrate(int node) {
-        migrating = true;//wait to be scheduled.
+        migrating = true;//sync_ratio to be scheduled.
         this.node = node;
     }
 

@@ -17,7 +17,7 @@ public class PKEvent {
     private final SchemaRecordRef[] list_value_ref;//this is essentially the place-holder..
 
     public double[] enqueue_time = new double[1];
-    //    public double[] useful_time = new double[1];
+    //    public double[] useful_ratio = new double[1];
     public double[] index_time = new double[1];
     public int sum;
     long bid;//event sequence, shall be set by event sequencer.

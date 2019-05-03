@@ -153,12 +153,14 @@ public abstract class GSBolt extends TransactionalBolt {
     public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
 
 
-    //lock-ahead phase.
+    //lock_ratio-ahead phase.
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
         //ONLY USED BY LAL, LWM, and PAT.
     }
 
     protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {
+
+        int combo_bid_size = 1;//otherwise, there's a deadlock.
         //txn process phase.
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
@@ -192,7 +194,7 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
     //post stream processing phase..
-    protected void POST_PROCESS(long _bid, long timestamp) throws InterruptedException {
+    protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);

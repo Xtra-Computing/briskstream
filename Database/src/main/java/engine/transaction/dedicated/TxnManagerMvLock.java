@@ -165,7 +165,7 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
     protected boolean SelectRecordCC(TxnContext txn_context, String table_name, TableRecord t_record, SchemaRecordRef record_ref, MetaTypes.AccessType accessType) {
         SchemaRecord s_record = t_record.record_;
         if (accessType == READ_ONLY) {
-            // if cannot get Lock, then return immediately.
+            // if cannot get lock_ratio, then return immediately.
             if (!t_record.content_.TryReadLock()) {
                 this.AbortTransaction();
                 return false;
@@ -181,11 +181,11 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
             }
         } else if (accessType == READ_WRITE) {
             if (!t_record.content_.TryWriteLock()) {
-                LOG.trace(txn_context.getThisOpId() + " failed to get lock" + DateTime.now());
+                LOG.trace(txn_context.getThisOpId() + " failed to get lock_ratio" + DateTime.now());
                 this.AbortTransaction();
                 return false;
             } else {
-                LOG.trace(txn_context.getThisOpId() + " success to get lock" + DateTime.now());
+                LOG.trace(txn_context.getThisOpId() + " success to get lock_ratio" + DateTime.now());
 
                 /**
                  * 	 const RecordSchema *schema_ptr = t_record->record_->schema_ptr_;

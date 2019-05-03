@@ -176,25 +176,33 @@ public class TopologyContext {
     }
 
     public void Sequential_stopAll() {
-        for (int id : threadMap.keySet()) {//sequentially stop from spout.
+
+        //interrupt everyone.
+        for (int id : threadMap.keySet()) {
             if (id != getThisTaskId()) {
-                int cnt = 0;
                 threadMap.get(id).running = false;
-                while (threadMap.get(id).isAlive()) {
-                    threadMap.get(id).interrupt();
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        //e.printStackTrace();
-                    }
-                    cnt++;
-                    if (cnt > 100) {
-                        System.out.println("Failed to interrupt thread: " + threadMap.get(id).getName());
-                        threadMap.get(id).stop();
-                    }
-                }
+                threadMap.get(id).interrupt();
             }
         }
+
+//        for (int id : threadMap.keySet()) {//sequentially stop from spout.
+//            if (id != getThisTaskId()) {
+//                int cnt = 0;
+//                while (threadMap.get(id).isAlive()) {
+//                    try {
+//                        Thread.sleep(10);
+//                    } catch (InterruptedException e) {
+//                        //e.printStackTrace();
+//                    }
+//                    threadMap.get(id).interrupt();
+//                    cnt++;
+//                    if (cnt > 100) {
+//                        System.out.println("Failed to interrupt thread: " + threadMap.get(id).getName());
+////                        threadMap.get(id).stop();
+//                    }
+//                }
+//            }
+//        }
 
         //stop myself.
         threadMap.get(getThisTaskId()).running = false;

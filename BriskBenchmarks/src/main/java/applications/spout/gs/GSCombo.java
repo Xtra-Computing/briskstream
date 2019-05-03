@@ -97,6 +97,12 @@ public class GSCombo extends TransactionalSpout {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
 
+
+
+        double checkpoint = config.getDouble("checkpoint", 1);
+        batch_length = Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
+        LOG.info("batch_length (watermark events length)= " + batch_length * combo_bid_size);
+
     }
 
 
@@ -109,19 +115,20 @@ public class GSCombo extends TransactionalSpout {
                     forward_checkpoint(this.taskId, bid, null);
 
                 else {
-                    long current_bid = SOURCE_CONTROL.getInstance().Get();
                     if (checkpoint()) {
-//                        LOG.info("CHECKPOINT" + current_bid);
-                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), current_bid, myiteration)));
-                        success = true;
+                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), -1, myiteration)));
+//                        success = true;
                     }
                 }
             }
 
             long bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
+
             if (bid < NUM_EVENTS) {
                 bolt.execute(new Tuple(bid, this.taskId, context,
                         new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+            } else {
+
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             //e.printStackTrace();

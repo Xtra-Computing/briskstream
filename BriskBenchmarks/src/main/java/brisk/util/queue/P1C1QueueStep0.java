@@ -7,7 +7,7 @@ import java.util.Queue;
 
 /**
  * <ul>
- * <li>Lock free, observing partition writer principal.
+ * <li>lock_ratio free, observing partition writer principal.
  * </ul>
  */
 final class P1C1QueueStep0<E> implements Queue<E> {
