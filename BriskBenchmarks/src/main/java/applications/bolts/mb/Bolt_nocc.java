@@ -41,7 +41,7 @@ public class Bolt_nocc extends GSBolt {
         } else {//being aborted.
             txn_context[(int) (i - _bid)].is_retry_ = true;
             BEGIN_ABORT_TIME_MEASURE(thread_Id);
-            while (!write_request(event, txn_context[(int) (i - _bid)])) ;
+            while (!write_request(event, txn_context[(int) (i - _bid)]) && !Thread.currentThread().isInterrupted()) ;
             END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);

@@ -8,6 +8,8 @@ import static engine.Meta.MetaTypes.kMaxThreadNum;
 public class Metrics {
 
     private static Metrics ourInstance = new Metrics();
+
+    public static int COMPUTE_COMPLEXITY = 10;//default setting. 1, 10, 100
     public static int NUM_ACCESSES = 10;//10 as default setting. 2 for short transaction, 10 for long transaction.? --> this is the setting used in YingJun's work. 16 is the default value_list used in 1000core machine.
     public static int NUM_ITEMS = 1_000_000;//1. 1_000_000; 2. ? ; 3. 1_000  //1_000_000 YCSB has 16 million records, Ledger use 200 million records.
     public static int H2_SIZE;
@@ -400,7 +402,7 @@ public class Metrics {
                 long overall_processing_time_per_batch = current_time - stream_start[thread_id];
                 stream_start[thread_id] = current_time;
 
-                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_batch - tp_core[thread_id]) / combo_bid_size);
+                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_batch - txn_total[thread_id]) / combo_bid_size);
 
 //                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
@@ -418,9 +420,9 @@ public class Metrics {
         //needs to include requests construction time /* pre_txn_total */.
         public static void END_TRANSACTION_TIME_MEASURE_TS(int thread_id) {
             if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
-                txn_total[thread_id] = ((double) (System.nanoTime() - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);
+                txn_total[thread_id] = ((double) (System.nanoTime() - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);//note, post time of TStream is embedded.
 
-                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
+                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] - post_time[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
 //                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
@@ -442,7 +444,7 @@ public class Metrics {
                 long overall_processing_time_per_wm = current_time - stream_start[thread_id];
                 stream_start[thread_id] = current_time;
 
-                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_wm - tp_core[thread_id]) / txn_size);
+                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
 
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
 

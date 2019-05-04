@@ -105,7 +105,7 @@ function working_set_size_breakdown {
 function Read_Write_Mixture_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
-		arg_application="--number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
+		arg_application="--COMPUTE_COMPLEXITY $complexity --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
 		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
@@ -275,7 +275,7 @@ do
     checkpoint=0.25
     ratio_of_multi_partition=1
     number_partitions=-1 #no partitions.
-    NUM_ITEMS=1000 #smaller means higher contention! 100, 1000 or 10_000
+    NUM_ITEMS=10000 #smaller means higher contention! 100, 1000 or 10_000
         case "$benchmark" in
             "Read_Only")
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
@@ -382,6 +382,8 @@ do
             "Read_Write_Mixture") # GS
                 for hz in "${HZ[@]}"
                 do
+                    for complexity in 1 10 100
+                    do
                     for theta in 0.6
                     do
                         for tt in 1 5 10 15 20 25 30 35 39
@@ -397,7 +399,7 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
                                         done
                                     done
                                 done
@@ -413,12 +415,29 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+                                        done
+                                    done
+                                done
+                            done
+                            for CCOption in 4 # This is the best you can do.. perfect pre-partitioning.
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            ratio_of_multi_partition=0
+                                            number_partitions=1
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
                                         done
                                     done
                                 done
                             done
                         done # Threads/Cores
+                        done # complexity
                     done #Theta
                 done #Input Hz
                 ;;

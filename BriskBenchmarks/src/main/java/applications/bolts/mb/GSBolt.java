@@ -44,9 +44,11 @@ public abstract class GSBolt extends TransactionalBolt {
 
     protected void READ_POST(MicroEvent event) throws InterruptedException {
         int sum = 0;
-        for (int i = 0; i < NUM_ACCESSES; ++i) {
-            sum += event.result[i];
-        }
+
+        for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
+            for (int i = 0; i < NUM_ACCESSES; ++i) {
+                sum += event.result[i] + Math.random();
+            }
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.

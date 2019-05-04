@@ -50,6 +50,8 @@ public class TopologySubmitter {
             for (int i = 0; i < kMaxThreadNum; i++) {
                 metrics.initilize(i);
             }
+
+            Metrics.COMPUTE_COMPLEXITY=conf.getInt("COMPUTE_COMPLEXITY");
             Metrics.NUM_ACCESSES = conf.getInt("NUM_ACCESS");
             Metrics.NUM_ITEMS = conf.getInt("NUM_ITEMS");
             Metrics.H2_SIZE = Metrics.NUM_ITEMS / conf.getInt("tthread");
