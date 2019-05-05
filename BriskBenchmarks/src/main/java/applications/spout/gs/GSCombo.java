@@ -14,7 +14,6 @@ import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.SOURCE_CONTROL;
 
 import java.util.concurrent.BrokenBarrierException;
 
@@ -75,10 +74,12 @@ public class GSCombo extends TransactionalSpout {
             }
             case CCOption_OrderLOCK: {//LOB
                 bolt = new Bolt_olb(0);
+                _combo_bid_size = 1;
                 break;
             }
             case CCOption_LWM: {//LWM
                 bolt = new Bolt_lwm(0);
+                _combo_bid_size = 1;
                 break;
             }
             case CCOption_TStream: {//T-Stream
@@ -87,6 +88,7 @@ public class GSCombo extends TransactionalSpout {
             }
             case CCOption_SStore: {//SStore
                 bolt = new Bolt_sstore(0);
+                _combo_bid_size = 1;
                 break;
             }
         }
@@ -99,33 +101,45 @@ public class GSCombo extends TransactionalSpout {
 
         double checkpoint = config.getDouble("checkpoint", 1);
         batch_number_per_wm = (int) (200 * checkpoint);//Math.max(10, (int) (MIN_EVENTS_PER_THREAD * checkpoint));//only for TSTREAM.
-        LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
+        LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * _combo_bid_size);
+
+        num_batch = NUM_EVENTS / tthread / _combo_bid_size;
+
+        mybids = new long[num_batch];
+
+        for (int i = 0; i < num_batch; i++) {
+
+            mybids[i] = thisTaskId * (_combo_bid_size) + i * tthread * _combo_bid_size;
+        }
+        counter = 0;
     }
 
+    int num_batch;
+    private long[] mybids;
+    private int counter;
+
+    private int _combo_bid_size = combo_bid_size;
 
     @Override
     public void nextTuple() throws InterruptedException {
 
         try {
-            if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
-                if (!enable_app_combo)
-                    forward_checkpoint(this.taskId, bid, null);
-
-                else {
-                    if (checkpoint()) {
-                        bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), -1, myiteration)));
+            if (counter < num_batch) {
+                if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
+                    if (!enable_app_combo) {
+                        forward_checkpoint(this.taskId, bid, null);
+                    } else {
+                        if (checkpoint()) {
+                            bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), -1, myiteration)));
 //                        success = true;
+                        }
                     }
                 }
-            }
-
-            long bid = SOURCE_CONTROL.getInstance().GetAndUpdate();
-
-            if (bid < NUM_EVENTS) {
+                long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
                 bolt.execute(new Tuple(bid, this.taskId, context,
                         new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+                counter++;
             } else {
-
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             //e.printStackTrace();

@@ -139,7 +139,7 @@ public class Bolt_ts extends GSBolt {
                 final Marker marker = in.getMarker();
                 this.collector.ack(in, marker);//tell spout it has finished transaction processing.
             } else {
-                SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync_ratio for all threads to come to this line.
+                SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync for all threads to come to this line.
             }
 
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
@@ -169,10 +169,10 @@ public class Bolt_ts extends GSBolt {
 
             END_PREPARE_TIME_MEASURE(thread_Id);
 
-            long pre_txn_process = PRE_TXN_PROCESS(_bid, timestamp);
+            PRE_TXN_PROCESS(_bid, timestamp);
 
 //            if (enable_debug)
-//            LOG.info("CONSTRUCT FOR BID:" + _bid + " takes:" + pre_txn_process);
+//                LOG.info("Thread: " + thread_Id+ " CONSTRUCT FOR BID:" + _bid + " takes:" + pre_txn_process);
         }
     }
 

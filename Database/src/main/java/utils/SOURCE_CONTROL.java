@@ -27,14 +27,14 @@ public class SOURCE_CONTROL {
     private CyclicBarrier barrier;
 
     private HashMap<Integer, Integer> iteration;
-    private long _combo_bid_size;
+//    private long _combo_bid_size;
 
     public static SOURCE_CONTROL getInstance() {
         return ourInstance;
     }
 
 
-    public void config(int number_threads, int _combo_bid_size) {
+    public void config(int number_threads) {
 
 //        this.number_threads = number_threads;
         barrier = new CyclicBarrier(number_threads);
@@ -45,21 +45,21 @@ public class SOURCE_CONTROL {
         for (int i = 0; i < number_threads; i++) {
             iteration.put(i, 0);
         }
-        this._combo_bid_size = _combo_bid_size;
+//        this._combo_bid_size = _combo_bid_size;
 
     }
 
     //return the starting point of counter.
-    public long GetAndUpdate() {
-        counterLock.lock();
-        long rt = counter;
-
-        counter += _combo_bid_size;//increment counter by combo_bid_size times...
-
-        counterLock.unlock();
-
-        return rt;
-    }
+//    public long GetAndUpdate() {
+//        counterLock.lock();
+//        long rt = counter;
+//
+//        counter += _combo_bid_size;//increment counter by combo_bid_size times...
+//
+//        counterLock.unlock();
+//
+//        return rt;
+//    }
 
     //return counter.
     public long Get() {

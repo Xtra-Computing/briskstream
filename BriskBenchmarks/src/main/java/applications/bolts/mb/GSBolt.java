@@ -152,6 +152,7 @@ public abstract class GSBolt extends TransactionalBolt {
         return true;
     }
 
+
     public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
 
 
@@ -160,40 +161,7 @@ public abstract class GSBolt extends TransactionalBolt {
         //ONLY USED BY LAL, LWM, and PAT.
     }
 
-    protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {
 
-        int combo_bid_size = 1;//otherwise, there's a deadlock.
-        //txn process phase.
-        for (long i = _bid; i < _bid + combo_bid_size; i++) {
-
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
-
-            boolean flag = event.READ_EVENT();
-
-            if (flag) {//read
-
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                read_request_noLock(event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
-
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-                READ_CORE(event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
-
-            } else {
-
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                write_request_noLock(event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
-
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-                write_core(event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
-
-            }
-            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);
-        }
-    }
 
     //post stream processing phase..
     protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {

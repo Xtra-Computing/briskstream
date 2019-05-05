@@ -47,7 +47,7 @@ public abstract class abstractRunner {
 
 
     @Parameter(names = {"--COMPUTE_COMPLEXITY"}, description = "COMPUTE_COMPLEXITY per event")
-    public int COMPUTE_COMPLEXITY = 100;// 1, 10, 100
+    public int COMPUTE_COMPLEXITY = 1;// 1, 10, 100
 
     @Parameter(names = {"--NUM_ITEMS"}, description = "NUM_ITEMS in DB.")
     public int NUM_ITEMS = 100_000;//

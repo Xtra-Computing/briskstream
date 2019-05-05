@@ -4,6 +4,8 @@ import engine.common.SpinLock;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import static applications.CONTROL.sink_combo_bid_size;
+
 public class SINK_CONTROL {
 
     static ReentrantLock counterLock = new ReentrantLock(true); // enable fairness policy
@@ -33,8 +35,8 @@ public class SINK_CONTROL {
         lock.unlock();
     }
 
-    public void config(int _combo_bid_size) {
-        this._combo_bid_size = _combo_bid_size;//it must be one for LAL, LWM, and PAT.
+    public void config() {
+//        this._combo_bid_size = _combo_bid_size;//it must be one for LAL, LWM, and PAT.
     }
 
 
@@ -44,7 +46,7 @@ public class SINK_CONTROL {
         int rt = counter;
         // Always good practice to enclose locks in a try-finally block
         try {
-            counter += _combo_bid_size;//increment counter by combo_bid_size times...
+            counter += sink_combo_bid_size;//increment counter by combo_bid_size times...
         } finally {
             counterLock.unlock();
         }

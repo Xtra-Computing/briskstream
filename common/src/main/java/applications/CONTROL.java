@@ -14,6 +14,8 @@ public interface CONTROL {
 
     int combo_bid_size = 100;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
 
+    int sink_combo_bid_size = 1000;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
+
     int MIN_EVENTS_PER_THREAD = NUM_EVENTS / combo_bid_size / kMaxThreadNum;
 
 

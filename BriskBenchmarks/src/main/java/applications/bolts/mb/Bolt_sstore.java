@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_states_partition;
 import static engine.profiler.Metrics.MeasureTools.*;
 

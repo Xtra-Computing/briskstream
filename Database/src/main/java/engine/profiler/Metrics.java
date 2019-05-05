@@ -153,7 +153,6 @@ public class Metrics {
 
         static long[] tp_core_event = new long[kMaxThreadNum];
 
-
         static long[] measure_counts = new long[kMaxThreadNum];
 
         public static void BEGIN_TRANSACTION_TIME_MEASURE(int thread_id) {
@@ -163,13 +162,12 @@ public class Metrics {
         }
 
         public static void BEGIN_PREPARE_TIME_MEASURE(int thread_id) {
-            if (measure_counts[thread_id] == 0) {//first time measurement.
-                stream_start[thread_id] = System.nanoTime();
-            }
-
-
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound)
+            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 prepare_start[thread_id] = System.nanoTime();
+                if (stream_start[thread_id] == 0) {//first time measurement.
+                    stream_start[thread_id] = prepare_start[thread_id];
+                }
+            }
         }
 
         public static void END_PREPARE_TIME_MEASURE(int thread_id) {
@@ -402,7 +400,7 @@ public class Metrics {
                 long overall_processing_time_per_batch = current_time - stream_start[thread_id];
                 stream_start[thread_id] = current_time;
 
-                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_batch - txn_total[thread_id]) / combo_bid_size);
+                metrics.stream_total[thread_id].addValue((overall_processing_time_per_batch - txn_total[thread_id]) / combo_bid_size);
 
 //                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
@@ -417,10 +415,16 @@ public class Metrics {
             }
         }
 
+
+        static long end_time;
+
         //needs to include requests construction time /* pre_txn_total */.
+        // ! Thread.interrupted() will clear the interrupt flag!! be very careful!!
         public static void END_TRANSACTION_TIME_MEASURE_TS(int thread_id) {
-            if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
-                txn_total[thread_id] = ((double) (System.nanoTime() - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);//note, post time of TStream is embedded.
+            if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                end_time = System.nanoTime();
+
+                txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);//note, post time of TStream is embedded.
 
                 metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] - post_time[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
@@ -438,22 +442,17 @@ public class Metrics {
         //compute per event time spent.
         public static void END_TOTAL_TIME_MEASURE_TS(int thread_id, int txn_size) {
 
-            if (!Thread.interrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound && txn_size != 0) {
-
-                long current_time = System.nanoTime();
-                long overall_processing_time_per_wm = current_time - stream_start[thread_id];
-                stream_start[thread_id] = current_time;
-
-                metrics.stream_total[thread_id].addValue((double) (overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
-
+            if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
+                long overall_processing_time_per_wm = end_time - stream_start[thread_id];//time from receiving first event to finish last event in the current batch.
+                metrics.stream_total[thread_id].addValue((overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
-
-                metrics.average_tp_core[thread_id].addValue((double) tp_core[thread_id]);
-                metrics.average_tp_submit[thread_id].addValue((double) tp_submit[thread_id]);
+                metrics.average_tp_core[thread_id].addValue(tp_core[thread_id]);
+                metrics.average_tp_submit[thread_id].addValue(tp_submit[thread_id]);
                 metrics.average_txn_construct[thread_id].addValue((double) pre_txn_total[thread_id] / txn_size);
                 metrics.average_tp_w_syn[thread_id].addValue((double) tp[thread_id] / txn_size);
 
                 //clean;
+                stream_start[thread_id] = end_time;
                 compute_total[thread_id] = 0;
                 index_time[thread_id] = 0;
                 pre_txn_total[thread_id] = 0;

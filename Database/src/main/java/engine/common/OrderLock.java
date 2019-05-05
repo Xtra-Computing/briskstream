@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_debug;
 
 /**
@@ -117,7 +118,7 @@ public class OrderLock implements Serializable {
             //not ready for this batch to proceed! Wait for previous batch to finish execution.
 //            Thread.sleep(1);
             if (Thread.currentThread().isInterrupted()) {
-				 throw new InterruptedException();
+                throw new InterruptedException();
 //                return false;
             }
         }

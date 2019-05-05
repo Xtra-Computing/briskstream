@@ -382,38 +382,19 @@ do
             "Read_Write_Mixture") # GS
                 for hz in "${HZ[@]}"
                 do
-                    for complexity in 2 1
+                    for complexity in 1 5
                     do
                     for theta in 0.6
                     do
                         for tt in 1 5 10 15 20 25 30 35 39
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 3 #0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
                                         for checkpoint in 1
-                                        do
-                                            TP=$tt
-                                            ratio_of_multi_partition=0.5
-                                            number_partitions=4
-                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
-                                        done
-                                    done
-                                done
-                            done
-                        done
-                        for tt in 1 5 10 15 20 25 30 35 39
-                        do
-                            for CCOption in 3
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
-                                    do
-                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -443,6 +424,25 @@ do
                                 done
                             done
                         done # Threads/Cores
+                        for tt in 1 5 10 15 20 25 30 35 39
+                        do
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
+                                    do
+                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2
+                                        do
+                                            TP=$tt
+                                            ratio_of_multi_partition=0.5
+                                            number_partitions=4
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+                                        done
+                                    done
+                                done
+                            done
+                        done
                         done # complexity
                     done #Theta
                 done #Input Hz

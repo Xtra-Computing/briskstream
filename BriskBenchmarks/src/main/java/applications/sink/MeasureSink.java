@@ -19,7 +19,6 @@ import java.util.Map;
 
 import static applications.CONTROL.*;
 import static applications.Constants.STAT_Path;
-import static engine.content.Content.*;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
@@ -33,7 +32,7 @@ public class MeasureSink extends BaseSink {
     protected int ccOption;
     private boolean LAST = false;
 
-    int _combo_bid_size;
+//    int _combo_bid_size;
 
 
     public MeasureSink() {
@@ -99,17 +98,17 @@ public class MeasureSink extends BaseSink {
 //		store = new ArrayDeque<>((int) 1E11);
         LAST = thisTaskId == graph.getSink().getExecutorID();
 
-
-        switch (config.getInt("CCOption", 0)) {
-            case CCOption_OrderLOCK://Ordered lock_ratio
-            case CCOption_LWM://LWM
-            case CCOption_SStore://SStore
-                _combo_bid_size = 1;
-                break;
-            default:
-                _combo_bid_size = combo_bid_size;
-        }
-        SINK_CONTROL.getInstance().config(_combo_bid_size);
+//
+//        switch (config.getInt("CCOption", 0)) {
+//            case CCOption_OrderLOCK://Ordered lock_ratio
+//            case CCOption_LWM://LWM
+//            case CCOption_SStore://SStore
+//                _combo_bid_size = 1;
+//                break;
+//            default:
+//                _combo_bid_size = combo_bid_size;
+//        }
+        SINK_CONTROL.getInstance().config();
     }
 
     int cnt = 0;

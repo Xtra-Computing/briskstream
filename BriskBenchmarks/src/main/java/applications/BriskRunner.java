@@ -200,7 +200,7 @@ public class BriskRunner extends abstractRunner {
 
             //configure database.
 
-            int _combo_bid_size = 1;
+//            int _combo_bid_size = 1;
 
             switch (config.getInt("CCOption", 0)) {
                 case CCOption_LOCK://lock_ratio
@@ -229,17 +229,17 @@ public class BriskRunner extends abstractRunner {
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, tthread);
 
 
-                switch (config.getInt("CCOption", 0)) {
-
-                    case CCOption_OrderLOCK://Ordered lock_ratio
-                    case CCOption_LWM://LWM
-                    case CCOption_SStore://SStore
-                        _combo_bid_size = 1;
-                        break;
-                    default:
-                        _combo_bid_size = combo_bid_size;
-                }
-                SOURCE_CONTROL.getInstance().config(tthread, _combo_bid_size);
+//                switch (config.getInt("CCOption", 0)) {
+//
+//                    case CCOption_OrderLOCK://Ordered lock_ratio
+//                    case CCOption_LWM://LWM
+//                    case CCOption_SStore://SStore
+//                        _combo_bid_size = 1;
+//                        break;
+//                    default:
+//                        _combo_bid_size = combo_bid_size;
+//                }
+//                SOURCE_CONTROL.getInstance().config(tthread, _combo_bid_size);
 
             } else
                 config.put(BaseConstants.BaseConf.SPOUT_THREADS, sthread);
