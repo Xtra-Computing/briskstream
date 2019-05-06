@@ -478,7 +478,7 @@ public final class TxnProcessingEngine {
 //        if (!enable_app_combo)//otherwise, already synchronized at spout side.
 //            barrier.await();
 //        else
-        SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync_ratio for all threads to come to this line.
+        SOURCE_CONTROL.getInstance().Wait_Start(thread_Id);//sync for all threads to come to this line to ensure chains are constructed for the current batch.
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
@@ -490,13 +490,8 @@ public final class TxnProcessingEngine {
 
         END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
 
-//        SOURCE_CONTROL.getInstance().WaitWM();//sync_ratio for all threads to come to this line.
+//        SOURCE_CONTROL.getInstance().Wait_Start();//no sync here. sync later.
 
-
-//        if (!enable_app_combo)
-//        barrier.await();// Because the (operator) does not know if his stored event has been processed or not. Every thread must be synchronized at this point.
-//        else
-//            SOURCE_CONTROL.getInstance().WaitWM().await();//sync_ratio for all threads to come to this line.
     }
 
     /**

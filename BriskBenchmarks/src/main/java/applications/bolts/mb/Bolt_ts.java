@@ -139,7 +139,7 @@ public class Bolt_ts extends GSBolt {
                 final Marker marker = in.getMarker();
                 this.collector.ack(in, marker);//tell spout it has finished transaction processing.
             } else {
-                SOURCE_CONTROL.getInstance().WaitWM(thread_Id);//sync for all threads to come to this line.
+                SOURCE_CONTROL.getInstance().Wait_End(thread_Id);//sync for all threads to come to this line.
             }
 
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.

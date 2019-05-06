@@ -67,6 +67,8 @@ public class GSCombo extends TransactionalSpout {
         p_generator = new FastZipfGenerator(NUM_ITEMS, theta, 0);
 
 
+        _combo_bid_size = combo_bid_size;
+
         switch (config.getInt("CCOption", 0)) {
             case CCOption_LOCK: {//no-order
                 bolt = new Bolt_nocc(0);
@@ -118,26 +120,28 @@ public class GSCombo extends TransactionalSpout {
     private long[] mybids;
     private int counter;
 
-    private int _combo_bid_size = combo_bid_size;
+    private int _combo_bid_size;
 
     @Override
     public void nextTuple() throws InterruptedException {
 
         try {
             if (counter < num_batch) {
+                long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
+                bolt.execute(new Tuple(bid, this.taskId, context,
+                        new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+
                 if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
                     if (!enable_app_combo) {
                         forward_checkpoint(this.taskId, bid, null);
                     } else {
                         if (checkpoint()) {
-                            bolt.execute(new Tuple(-1, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), -1, myiteration)));
+                            bolt.execute(new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), bid, myiteration)));
 //                        success = true;
                         }
                     }
                 }
-                long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
-                bolt.execute(new Tuple(bid, this.taskId, context,
-                        new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+
                 counter++;
             } else {
             }

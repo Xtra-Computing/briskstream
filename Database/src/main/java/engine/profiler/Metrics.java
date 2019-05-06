@@ -372,7 +372,7 @@ public class Metrics {
 
         public static void END_TRANSACTION_TIME_MEASURE(int thread_id) {
 
-            if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
+            if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
 
                 txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
 
@@ -394,7 +394,7 @@ public class Metrics {
         public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id, int combo_bid_size) {
 
 
-            if (CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
+            if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
 
                 long current_time = System.nanoTime();
                 long overall_processing_time_per_batch = current_time - stream_start[thread_id];

@@ -54,7 +54,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public abstract void nextTuple() throws InterruptedException;
 
 
-    int bt = 0;
+    int bt = 1;
 
     /**
      * THIS IS USED ONLY WHEN "enable_app_combo" is true.
@@ -64,7 +64,7 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     @Override
     public boolean checkpoint() {
         boolean rt = false;
-        if (bt > 0 && bt % batch_number_per_wm == 0) {
+        if (bt % batch_number_per_wm == 0) {
 //            myiteration++;
 //            success = false;
             rt = true;
