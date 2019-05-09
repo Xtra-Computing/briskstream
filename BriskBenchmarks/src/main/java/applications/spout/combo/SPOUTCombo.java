@@ -13,6 +13,7 @@ import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import org.slf4j.Logger;
+import utils.SOURCE_CONTROL;
 
 import java.util.concurrent.BrokenBarrierException;
 
@@ -26,6 +27,8 @@ public class SPOUTCombo extends TransactionalSpout {
     private static Logger LOG;
     private static final long serialVersionUID = -2394340130331865581L;
     TransactionalBolt bolt;//compose the bolt here.
+    private int the_end;
+    private int global_cnt;
 
     public SPOUTCombo(Logger log, int i) {
         super(log, i);
@@ -35,7 +38,7 @@ public class SPOUTCombo extends TransactionalSpout {
     }
 
 
-    int num_batch;
+    int num_events_per_thread;
     long[] mybids;
     int counter;
     int _combo_bid_size;
@@ -48,10 +51,11 @@ public class SPOUTCombo extends TransactionalSpout {
             if (counter == 0)
                 bolt.sink.start();
 
-            if (counter < num_batch) {
+            if (counter < num_events_per_thread) {
                 long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
-                bolt.execute(new Tuple(bid, this.taskId, context,
-                        new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime())));  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
+                Tuple tuple = new Tuple(bid, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime()));
+
+                bolt.execute(tuple);  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
                 counter++;
 
                 if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
@@ -63,6 +67,14 @@ public class SPOUTCombo extends TransactionalSpout {
                         }
                     }
                 }
+
+                if (counter == the_end) {
+                    if (ccOption == CCOption_TStream) {
+                        SOURCE_CONTROL.getInstance().Final_END(taskId);//sync for all threads to come to this line.
+                    }
+                    bolt.sink.end(global_cnt);
+                }
+
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             //e.printStackTrace();
@@ -106,14 +118,18 @@ public class SPOUTCombo extends TransactionalSpout {
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 
 
-        num_batch = NUM_EVENTS / tthread / combo_bid_size;
+        num_events_per_thread = NUM_EVENTS / tthread / combo_bid_size;
 
-        mybids = new long[num_batch];//5000 batches.
+        mybids = new long[num_events_per_thread];//5000 batches.
 
-        for (int i = 0; i < num_batch; i++) {
+        for (int i = 0; i < num_events_per_thread; i++) {
             mybids[i] = thisTaskId * (combo_bid_size) + i * tthread * combo_bid_size;
         }
         counter = 0;
+
+        the_end = num_events_per_thread - num_events_per_thread % batch_number_per_wm;
+
+        global_cnt = the_end * tthread;
     }
 
 }

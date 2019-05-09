@@ -169,44 +169,41 @@ public class MeasureSink extends BaseSink {
      */
     protected void measure_end(double results) {
 
-        boolean proceed = SINK_CONTROL.getInstance().try_lock();
-        if (proceed) {
-            LOG.info(Thread.currentThread().getName() + " obtains lock");
-            if (enable_latency_measurement) {
-                for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
+        if (enable_latency_measurement) {
+            for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
 //                LOG.info("=====Process latency of msg====");
-                    //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
-                    latency.addValue((entry.getValue() / 1E6));
-                }
-                try {
+                //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
+                latency.addValue((entry.getValue() / 1E6));
+            }
+            try {
 //                Collections.sort(col_value);
 
-                    FileWriter f = null;
+                FileWriter f = null;
 
-                    f = new FileWriter(new File(directory + OsUtils.OS_wrapper(String.valueOf(ccOption + ".latency"))));
+                f = new FileWriter(new File(directory + OsUtils.OS_wrapper(String.valueOf(ccOption + ".latency"))));
 
-                    Writer w = new BufferedWriter(f);
+                Writer w = new BufferedWriter(f);
 
-                    for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
-                        w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
-                    }
-                    w.write("=======Details=======");
-                    w.write("\n" + latency.toString() + "\n");
-                    w.write("===90th===" + "\n");
-                    w.write(String.valueOf(latency.getPercentile(90) + "\n"));
-                    w.close();
-                    f.close();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
+                    w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
                 }
+                w.write("=======Details=======");
+                w.write("\n" + latency.toString() + "\n");
+                w.write("===90th===" + "\n");
+                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
+                w.close();
+                f.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            SINK_CONTROL.getInstance().throughput = results;
-            LOG.info("Thread:" + thisTaskId + " is going to stop all threads sequentially");
-//			context.stop_runningALL();
-            context.Sequential_stopAll();
-            SINK_CONTROL.getInstance().unlock();
         }
+        SINK_CONTROL.getInstance().throughput = results;
+        LOG.info("Thread:" + thisTaskId + " is going to stop all threads sequentially");
+//			context.stop_runningALL();
+        context.Sequential_stopAll();
+        SINK_CONTROL.getInstance().unlock();
+
     }
 
     @Override
