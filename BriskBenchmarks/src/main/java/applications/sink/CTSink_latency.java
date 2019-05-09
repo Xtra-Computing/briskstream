@@ -1,6 +1,6 @@
 package applications.sink;
 
-import applications.bolts.ct.TransactionResult;
+import applications.bolts.sl.TransactionResult;
 import applications.util.OsUtils;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Tuple;

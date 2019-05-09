@@ -1,7 +1,7 @@
 package applications.constants;
 
-public interface CrossTableConstants extends BaseConstants {
-    String PREFIX = "ct";
+public interface StreamLedgerConstants extends BaseConstants {
+    String PREFIX = "sl";
 
     interface Field {
         String TIME = "time";
@@ -15,17 +15,15 @@ public interface CrossTableConstants extends BaseConstants {
         String TEG_THREADS = "txn.generator.threads";
         String DT_THREADS = "deposit.transaction.threads";
         String TT_THREADS = "txn.transaction.threads";
-        String CT_THREADS = "ct.transaction.threads";
+        String SL_THREADS = "ct.transaction.threads";
     }
 
     interface Component extends BaseComponent {
         String DEG = "depositGenerator";
         String TEG = "txnGenerator";
-
         String DT = "depositTxn";
         String TT = "transferTxn";
-
-        String CT = "CTBolt";
+        String SL = "CTBolt";
     }
 
     interface Constant {

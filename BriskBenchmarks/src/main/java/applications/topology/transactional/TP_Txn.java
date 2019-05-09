@@ -2,8 +2,8 @@ package applications.topology.transactional;
 
 
 import applications.bolts.lr.DispatcherBolt;
-import applications.bolts.lr.txn.TPBolt_TStream;
 import applications.bolts.lr.txn.TPBolt_olb;
+import applications.bolts.lr.txn.TPBolt_ts;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;
@@ -18,10 +18,12 @@ import brisk.components.grouping.ShuffleGrouping;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.TransactionTopology;
+import engine.common.PartitionedOrderLock;
 import engine.common.SpinLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static applications.CONTROL.enable_app_combo;
 import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
 import static applications.constants.TP_TxnConstants.Component.EXECUTOR;
 import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
@@ -47,6 +49,8 @@ public class TP_Txn extends TransactionTopology {
         sink = loadSink();
     }
 
+
+    //TODO: Clean this method..
     @Override
     public TableInitilizer initializeDB(SpinLock[] spinlock_) {
         double scale_factor = config.getDouble("scale_factor", 1);
@@ -55,7 +59,23 @@ public class TP_Txn extends TransactionTopology {
         setPartition_interval((int) (Math.ceil(NUM_SEGMENTS / (double) tthread)), tthread);
         TableInitilizer ini = new TPInitializer(db, scale_factor, theta, tthread, config);
 
-        ini.creates_Table();
+        ini.creates_Table(config);
+
+
+        if (config.getBoolean("partition", false)) {
+
+            for (int i = 0; i < tthread; i++)
+                spinlock_[i] = new SpinLock();
+
+//            ini.loadDB(scale_factor, theta, getPartition_interval(), spinlock_);
+
+            //initilize order locks.
+            PartitionedOrderLock.getInstance().initilize(tthread);
+        } else {
+//            ini.loadDB(scale_factor, theta);
+        }
+        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
 
 //        ini.loadData_Central(scale_factor, theta); // load data by multiple threads.
 
@@ -69,13 +89,17 @@ public class TP_Txn extends TransactionTopology {
 
         try {
             spout.setFields(new Fields(Field.TEXT));//output of a spouts
-            builder.setSpout(LRTopologyControl.SPOUT, spout, 1);
+            builder.setSpout(LRTopologyControl.SPOUT, spout, spoutThreads);
 
-            builder.setBolt(LRTopologyControl.DISPATCHER,
-                    new DispatcherBolt(), 1,
-                    new ShuffleGrouping(LRTopologyControl.SPOUT));
+            if (enable_app_combo) {
+                //spout only.
 
-            switch (config.getInt("CCOption", 0)) {
+            } else {
+                builder.setBolt(LRTopologyControl.DISPATCHER,
+                        new DispatcherBolt(), 1,
+                        new ShuffleGrouping(LRTopologyControl.SPOUT));
+
+                switch (config.getInt("CCOption", 0)) {
 //                case CCOption_LOCK: {//no-order
 //                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TP_nocc(0)//not available
 //                            , config.getInt(Executor_Threads, 2)
@@ -83,49 +107,49 @@ public class TP_Txn extends TransactionTopology {
 //                    break;
 //                }
 
-                case CCOption_OrderLOCK: {//LOB
+                    case CCOption_OrderLOCK: {//LOB
 
-                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TPBolt_olb(0)//
-                            , config.getInt(Executor_Threads, 2),
-                            new FieldsGrouping(
-                                    LRTopologyControl.DISPATCHER,
-                                    LRTopologyControl.POSITION_REPORTS_STREAM_ID
-                                    , SegmentIdentifier.getSchema())
-                    );
-                    break;
-                }
+                        builder.setBolt(LinearRoadConstants.Component.EXECUTOR, new TPBolt_olb(0)//
+                                , config.getInt(Executor_Threads, 2),
+                                new FieldsGrouping(
+                                        LRTopologyControl.DISPATCHER,
+                                        LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                        , SegmentIdentifier.getSchema())
+                        );
+                        break;
+                    }
 //                case CCOption_LWM: {//LWM
 //
-//                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_lwm(0)//
+//                    builder.setBolt(GrepSumConstants.Component.EXECUTOR, new GSBolt_lwm(0)//
 //                            , config.getInt(Executor_Threads, 2)
-//                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
+//                            , new ShuffleGrouping(GrepSumConstants.Component.SPOUT));
 //                    break;
 //                }
-                case CCOption_TStream: {//T-Stream
-                    builder.setBolt(LinearRoadConstants.Component.EXECUTOR,
-                            new TPBolt_TStream(0)//
-                            , config.getInt(Executor_Threads, 2),
-                            new FieldsGrouping(
-                                    LRTopologyControl.DISPATCHER,
-                                    LRTopologyControl.POSITION_REPORTS_STREAM_ID
-                                    , SegmentIdentifier.getSchema())
-                    );
-                    break;
-                }
+                    case CCOption_TStream: {//T-Stream
+                        builder.setBolt(LinearRoadConstants.Component.EXECUTOR,
+                                new TPBolt_ts(0)//
+                                , config.getInt(Executor_Threads, 2),
+                                new FieldsGrouping(
+                                        LRTopologyControl.DISPATCHER,
+                                        LRTopologyControl.POSITION_REPORTS_STREAM_ID
+                                        , SegmentIdentifier.getSchema())
+                        );
+                        break;
+                    }
 //                case CCOption_SStore: {//SStore
 //
-//                    builder.setBolt(MicroBenchmarkConstants.Component.EXECUTOR, new Bolt_sstore(0)//
+//                    builder.setBolt(GrepSumConstants.Component.EXECUTOR, new GSBolt_sstore(0)//
 //                            , config.getInt(Executor_Threads, 2)
-//                            , new ShuffleGrouping(MicroBenchmarkConstants.Component.SPOUT));
+//                            , new ShuffleGrouping(GrepSumConstants.Component.SPOUT));
 //                    break;
 //                }
 
+                }
+
+                builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
+                        , new ShuffleGrouping(EXECUTOR)
+                );
             }
-
-            builder.setSink(LinearRoadConstants.Component.SINK, sink, sinkThreads
-                    , new ShuffleGrouping(EXECUTOR)
-            );
-
         } catch (InvalidIDException e) {
             e.printStackTrace();
         }

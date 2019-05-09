@@ -1,140 +1,103 @@
 package applications.bolts.ob;
 
+import applications.param.TxnEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
-import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
-import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public abstract class OBBolt_LA extends OBBolt {
+
+    int _combo_bid_size = 1;
+
 
     public OBBolt_LA(Logger log, int fid) {
         super(log, fid);
     }
 
-    @Override
-    protected void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
 
+    protected void LAL(Object event, long i, long _bid) throws DatabaseException {
+        if (event instanceof BuyingEvent) {
+            BUYING_REQUEST_LOCKAHEAD((BuyingEvent) event, txn_context[(int) (i - _bid)]);
+        } else if (event instanceof AlertEvent) {
+            ALERT_REQUEST_LOCKAHEAD((AlertEvent) event, txn_context[(int) (i - _bid)]);
+        } else if (event instanceof ToppingEvent) {
+            TOPPING_REQUEST_LOCKAHEAD((ToppingEvent) event, txn_context[(int) (i - _bid)]);
+        } else
+            throw new UnsupportedOperationException();
+    }
+
+
+    //lock_ratio-ahead phase.
+    @Override
+    protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
+        //ensures that locks are added in the event sequence order.
+        transactionManager.getOrderLock().blocking_wait(_bid);
 
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        Topping_REQUEST_LA(event);
-        long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+        long lock_time_measure = 0;
 
-        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
+        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
+            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+
+            Object event = db.eventManager.get((int) i);
+
+            BEGIN_LOCK_TIME_MEASURE(thread_Id);
+
+            LAL(event, i, _bid);
+
+            lock_time_measure += END_LOCK_TIME_MEASURE_ACC(thread_Id);
+        }
+        transactionManager.getOrderLock().advance();
         END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
-
-
-        BEGIN_TP_TIME_MEASURE(thread_Id);
-        Topping_REQUEST(event);
-        END_TP_TIME_MEASURE(thread_Id);
-
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-
-        Topping_CORE(event);
-
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-        transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
-
-    }
-    @Override
-    protected void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
-
-        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
-
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        Alert_REQUEST_LA(event);
-        long lock_time_measure =END_LOCK_TIME_MEASURE_ACC(thread_Id);
-
-        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
-
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
-
-
-        BEGIN_TP_TIME_MEASURE(thread_Id);
-        Alert_REQUEST(event);
-        END_TP_TIME_MEASURE(thread_Id);
-
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-
-        Alert_CORE(event);
-
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-        transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
-    }
-
-    @Override
-    protected void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
-
-        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
-
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        Buying_REQUEST_LA(event);
-        long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
-
-        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
-
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
-
-
-        BEGIN_TP_TIME_MEASURE(thread_Id);
-        Buying_REQUEST(event);
-        END_TP_TIME_MEASURE(thread_Id);
-
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-
-        Buying_CORE(event);
-
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-        transactionManager.CommitTransaction(txn_context);//always success..
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
     }
 
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException {
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+    protected void PostLAL_process(long _bid) throws DatabaseException {
 
-        long bid = in.getBID();
+        //txn process phase.
+        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
-        Object event = db.eventManager.get((int) bid);
+            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
 
-        Long timestamp;//in.getLong(1);
+            if (event instanceof BuyingEvent) {
 
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
+                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+                BUYING_REQUEST_NOLOCK((BuyingEvent) event, txn_context[(int) (i - _bid)]);
+                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-        auth(bid, timestamp);//do nothing for now..
+                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                BUYING_REQUEST_CORE((BuyingEvent) event);
+                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
-        END_PREPARE_TIME_MEASURE(thread_Id);
+            } else if (event instanceof AlertEvent) {
+                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+                ALERT_REQUEST_NOLOCK((AlertEvent) event, txn_context[(int) (i - _bid)]);
+                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-        dispatch_process(event, timestamp);
+                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                ALERT_REQUEST_CORE((AlertEvent) event);
+                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
+            } else {
+                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+                TOPPING_REQUEST_NOLOCK((ToppingEvent) event, txn_context[(int) (i - _bid)]);
+                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
+
+                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                TOPPING_REQUEST_CORE((ToppingEvent) event);
+                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+
+            }
+            transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);
+        }
     }
+
+
 }

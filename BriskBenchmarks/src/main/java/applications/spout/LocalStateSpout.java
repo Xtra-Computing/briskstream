@@ -1,7 +1,7 @@
 package applications.spout;
 
 import applications.constants.BaseConstants.BaseConf;
-import applications.constants.MicroBenchmarkConstants;
+import applications.constants.GrepSumConstants;
 import applications.spout.helper.DataSource;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
@@ -16,7 +16,7 @@ public class LocalStateSpout extends AbstractSpout {
 
     private LocalStateSpout() {
         super(LOG);
-        setFields(new Fields(MicroBenchmarkConstants.Field.TIME, MicroBenchmarkConstants.Field.TEXT, MicroBenchmarkConstants.Field.STATE));
+        setFields(new Fields(GrepSumConstants.Field.TIME, GrepSumConstants.Field.TEXT, GrepSumConstants.Field.STATE));
     }
 
     @Override

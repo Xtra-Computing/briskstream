@@ -1,4 +1,4 @@
-package applications.bolts.mb;
+package applications.bolts.gs;
 
 
 import applications.param.mb.MicroEvent;
@@ -11,24 +11,24 @@ import engine.transaction.dedicated.ordered.TxnManagerTStream;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utils.SOURCE_CONTROL;
 
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.Vector;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.*;
 import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.Metrics.NUM_ITEMS;
+public class GSBolt_ts extends GSBolt {
 
-public class Bolt_ts extends GSBolt {
 
-
-    private static final Logger LOG = LoggerFactory.getLogger(Bolt_ts.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GSBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private LinkedList<MicroEvent> EventsHolder = new LinkedList();
+    private Collection<MicroEvent> EventsHolder = new Vector<>();
     private int writeEvents;
     private double write_useful_time = 556;//write-compute time pre-measured.
 
-    public Bolt_ts(int fid) {
+    public GSBolt_ts(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }
@@ -38,7 +38,7 @@ public class Bolt_ts extends GSBolt {
      * THIS IS ONLY USED BY TSTREAM.
      * IT CONSTRUCTS and POSTPONES TXNS.
      */
-    private long PRE_TXN_PROCESS(long _bid, Long timestamp) throws DatabaseException, InterruptedException {
+    protected long PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
 
         BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
@@ -72,7 +72,7 @@ public class Bolt_ts extends GSBolt {
             //earlier emit
             //collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
         } else {
-            EventsHolder.offer(event);//mark the tuple as ``in-complete"
+            EventsHolder.add(event);//mark the tuple as ``in-complete"
         }
     }
 
@@ -94,24 +94,35 @@ public class Bolt_ts extends GSBolt {
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
-        transactionManager = new TxnManagerTStream(config, db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
+        transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_ITEMS, this.context.getThisComponent().getNumTasks());
     }
 
 
-    private void READ_CORE() throws InterruptedException {
+    private void READ_REQUEST_CORE() throws InterruptedException {
 
-        while (!EventsHolder.isEmpty() && !Thread.interrupted()) {
-            MicroEvent event = EventsHolder.remove();
-            if (!READ_CORE(event))
-                EventsHolder.offer(event);
-            else {
-                BEGIN_POST_TIME_MEASURE(thread_Id);
-                READ_POST(event);
-                END_POST_TIME_MEASURE_ACC(thread_Id);
-            }
+//        while (!EventsHolder.isEmpty() && !Thread.interrupted()) {
+//            MicroEvent event = EventsHolder.remove();
+//            if (!READ_REQUEST_CORE(event))
+//                EventsHolder.offer(event);
+//            else {
+//                BEGIN_POST_TIME_MEASURE(thread_Id);
+//                BUYING_REQUEST_POST(event);
+//                END_POST_TIME_MEASURE_ACC(thread_Id);
+//            }
+//        }
+
+        for (MicroEvent event : EventsHolder) {
+            READ_CORE(event);
         }
+
     }
 
+    private void READ_POST() throws InterruptedException {
+        for (MicroEvent event : EventsHolder) {
+            READ_POST(event);
+        }
+
+    }
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
@@ -130,49 +141,35 @@ public class Bolt_ts extends GSBolt {
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
-            READ_CORE();
+            READ_REQUEST_CORE();
 
             END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, writeEvents);//total compute time.
 
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+
+
+//            BEGIN_POST_TIME_MEASURE(thread_Id);
+            READ_POST();
+//            END_POST_TIME_MEASURE_ACC(thread_Id);
 
             if (!enable_app_combo) {
                 final Marker marker = in.getMarker();
                 this.collector.ack(in, marker);//tell spout it has finished transaction processing.
             } else {
-                SOURCE_CONTROL.getInstance().Wait_End(thread_Id);//sync for all threads to come to this line.
-            }
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+            }
 
             //post_process for events left-over.
 
             END_TOTAL_TIME_MEASURE_TS(thread_Id, readSize + writeEvents);
 
-
-//            EventsHolder.clear();//all tuples in the EventsHolder are finished.
+            EventsHolder.clear();//all tuples in the EventsHolder are finished.
             if (enable_profile)
                 writeEvents = 0;//all tuples in the holder are finished.
 
 
         } else {
-
-            //pre stream processing phase..
-
-            BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-            Long timestamp;//in.getLong(1);
-            if (enable_latency_measurement)
-                timestamp = in.getLong(0);
-            else
-                timestamp = 0L;//
-
-            long _bid = in.getBID();
-
-            END_PREPARE_TIME_MEASURE(thread_Id);
-
-            PRE_TXN_PROCESS(_bid, timestamp);
-
-//            if (enable_debug)
-//                LOG.info("Thread: " + thread_Id+ " CONSTRUCT FOR BID:" + _bid + " takes:" + pre_txn_process);
+            execute_ts_normal(in);
         }
     }
 

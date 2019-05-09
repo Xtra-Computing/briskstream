@@ -109,8 +109,12 @@ public class MeasureSink extends BaseSink {
 //                _combo_bid_size = combo_bid_size;
 //        }
         SINK_CONTROL.getInstance().config();
+
+        tthread = this.config.getInt("tthread");
+
     }
 
+   protected int tthread;
     int cnt = 0;
 
     @Override

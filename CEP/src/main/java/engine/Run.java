@@ -260,7 +260,7 @@ public class Run  implements Cloneable{
 		Run o = null;
 		o = (Run)super.clone();
 		o.setEventIds((ArrayList<Integer>)this.getEventIds().clone());
-		o.setState((int[])this.getState().clone());
+		o.setState(this.getState().clone());
 		o.setNfa(nfa);
 		return o;
 	}

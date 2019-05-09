@@ -29,8 +29,9 @@ import java.util.*;
 import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
-import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
+import static applications.constants.GrepSumConstants.Constant.VALUE_LEN;
 import static applications.param.mb.MicroEvent.GenerateValue;
+import static applications.topology.transactional.State.configure_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -39,7 +40,7 @@ import static xerial.jnuma.Numa.setLocalAlloc;
 
 public class MBInitializer extends TableInitilizer {
     private static final Logger LOG = LoggerFactory.getLogger(MBInitializer.class);
-    private final Configuration config;
+
 
     //different R-W ratio.
     //just enable one of the decision array
@@ -47,7 +48,6 @@ public class MBInitializer extends TableInitilizer {
 
     public MBInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
-        this.config = config;
         floor_interval = (int) Math.floor(NUM_ITEMS / (double) tthread);//NUM_ITEMS / tthread;
 
 
@@ -69,6 +69,9 @@ public class MBInitializer extends TableInitilizer {
 
 
         LOG.info("ratio_of_read: " + ratio_of_read + "\tREAD DECISIONS: " + Arrays.toString(read_decision));
+
+        configure_store(scale_factor, theta, tthread, NUM_ITEMS);
+
     }
 
     /**
@@ -363,8 +366,7 @@ public class MBInitializer extends TableInitilizer {
 
         randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES);
 
-        if (enable_states_partition)
-            assert verify(keys, partition_id, number_of_partitions);
+        assert !enable_states_partition || verify(keys, partition_id, number_of_partitions);
 
         return new MicroEvent(
                 param.keys(),
@@ -391,11 +393,11 @@ public class MBInitializer extends TableInitilizer {
         return new RecordSchema(fieldNames, dataBoxes);
     }
 
-    public void creates_Table() {
+    public void creates_Table(Configuration config) {
         RecordSchema s = MicroTableSchema();
         db.createTable(s, "MicroTable");
         try {
-            prepare_input_events("MB_events");
+            prepare_input_events("MB_events", false);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,27 +1,31 @@
 package applications.bolts.ob;
 
+import applications.param.TxnEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
 import brisk.components.operators.api.TransactionalBolt;
+import brisk.execution.runtime.tuple.impl.Tuple;
+import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import engine.DatabaseException;
 import engine.storage.datatype.DataBox;
+import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
 import java.util.List;
 
+import static applications.CONTROL.enable_app_combo;
+import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.OnlineBidingSystemConstants.Constant.NUM_ACCESSES_PER_BUY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE;
 
 public abstract class OBBolt extends TransactionalBolt {
 
     public OBBolt(Logger log, int fid) {
         super(log, fid);
     }
-
-
-
-    int random_integer;
 
     /**
      * Perform some dummy calculation to simulate authentication process..
@@ -35,69 +39,32 @@ public abstract class OBBolt extends TransactionalBolt {
     }
 
 
-    protected void Topping_REQUEST_LA(ToppingEvent event) throws DatabaseException {
-        for (int i = 0; i < event.getNum_access(); ++i)
-            transactionManager.lock_ahead(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-    }
-
-
-    protected void Topping_REQUEST(ToppingEvent event) throws DatabaseException {
-        for (int i = 0; i < event.getNum_access(); ++i) {
-            transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-            assert event.record_refs[i].getRecord() != null;
-        }
-    }
-
-
-    protected void Topping_CORE(ToppingEvent event) throws InterruptedException {
-
-        for (int i = 0; i < event.getNum_access(); ++i) {
-            List<DataBox> values = event.record_refs[i].getRecord().getValues();
-            long newQty = values.get(2).getLong() + event.getItemTopUp()[i];
-            values.get(2).setLong(newQty);
-        }
-        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
-    }
-
-    protected void Alert_REQUEST_LA(AlertEvent event) throws DatabaseException {
-        for (int i = 0; i < event.getNum_access(); ++i)
-            transactionManager.lock_ahead(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-    }
-
-    protected void Alert_REQUEST(AlertEvent event) throws DatabaseException {
-        for (int i = 0; i < event.getNum_access(); ++i) {
-            transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
-            assert event.record_refs[i].getRecord() != null;
-        }
-    }
-
-
-    protected void Alert_CORE(AlertEvent event) throws InterruptedException {
-        for (int i = 0; i < event.getNum_access(); ++i) {
-            List<DataBox> values = event.record_refs[i].getRecord().getValues();
-            long newPrice = event.getAsk_price()[i];
-            values.get(1).setLong(newPrice);
-        }
-        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
-
-    }
-
-    protected void Buying_REQUEST_LA(BuyingEvent event) throws DatabaseException {
+    protected void BUYING_REQUEST_LOCKAHEAD(BuyingEvent event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; ++i)
-            transactionManager.lock_ahead(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+            transactionManager.lock_ahead(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
     }
 
 
-    protected void Buying_REQUEST(BuyingEvent event) throws DatabaseException {
+    protected void ALERT_REQUEST_LOCKAHEAD(AlertEvent event, TxnContext txnContext) throws DatabaseException {
+        for (int i = 0; i < event.getNum_access(); ++i)
+            transactionManager.lock_ahead(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+    }
+
+
+    protected void TOPPING_REQUEST_LOCKAHEAD(ToppingEvent event, TxnContext txnContext) throws DatabaseException {
+        for (int i = 0; i < event.getNum_access(); ++i)
+            transactionManager.lock_ahead(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+    }
+
+    protected void BUYING_REQUEST_NOLOCK(BuyingEvent event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; ++i) {
-            transactionManager.SelectKeyRecord_noLock(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+            transactionManager.SelectKeyRecord_noLock(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
             assert event.record_refs[i].getRecord() != null;
         }
     }
 
-    protected void Buying_CORE(BuyingEvent event) throws InterruptedException {
 
-
+    protected void BUYING_REQUEST_CORE(BuyingEvent event) {
         //measure_end if any item is not able to buy.
 
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; ++i) {
@@ -110,7 +77,7 @@ public abstract class OBBolt extends TransactionalBolt {
             long left_qty = values.get(2).getLong();
             if (bidPrice < askPrice || qty > left_qty) {
                 //bid failed.
-                collector.force_emit(event.getBid(), new BidingResult(event, false), event.getTimestamp());
+                event.biding_result = new BidingResult(event, false);
                 return;
             }
         }
@@ -127,26 +94,87 @@ public abstract class OBBolt extends TransactionalBolt {
             //bid success
             values.get(2).setLong(left_qty - qty);//new quantity.
         }
-        collector.force_emit(event.getBid(), new BidingResult(event, true), event.getTimestamp());
+        event.biding_result = new BidingResult(event, true);
     }
 
 
-    protected void dispatch_process(Object event, Long timestamp) throws DatabaseException, InterruptedException {
-        if (event instanceof BuyingEvent) {
-                ((BuyingEvent) event).setTimestamp(timestamp);
-            buy_handle((BuyingEvent) event, timestamp);//buy item at certain price.
-        } else if (event instanceof AlertEvent) {
-            ((AlertEvent) event).setTimestamp(timestamp);
-            altert_handle((AlertEvent) event, timestamp);//alert price
-        } else if (event instanceof ToppingEvent) {
-            ((ToppingEvent) event).setTimestamp(timestamp);
-            topping_handle((ToppingEvent) event, timestamp);//topping qty
+    protected void TOPPING_REQUEST_NOLOCK(ToppingEvent event, TxnContext txnContext) throws DatabaseException {
+        for (int i = 0; i < event.getNum_access(); ++i) {
+            transactionManager.SelectKeyRecord_noLock(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+            assert event.record_refs[i].getRecord() != null;
         }
     }
 
-    protected abstract void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+    protected void TOPPING_REQUEST_CORE(ToppingEvent event) {
+        for (int i = 0; i < event.getNum_access(); ++i) {
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
+            long newQty = values.get(2).getLong() + event.getItemTopUp()[i];
+            values.get(2).setLong(newQty);
+        }
+        event.topping_result = true;
+//        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
+    }
 
-    protected abstract void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+    protected void ALERT_REQUEST_NOLOCK(AlertEvent event, TxnContext txnContext) throws DatabaseException {
+        for (int i = 0; i < event.getNum_access(); ++i) {
+            transactionManager.SelectKeyRecord_noLock(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.record_refs[i], READ_WRITE);
+            assert event.record_refs[i].getRecord() != null;
+        }
+    }
 
-    protected abstract void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException;
+
+    protected void ALERT_REQUEST_CORE(AlertEvent event) {
+        for (int i = 0; i < event.getNum_access(); ++i) {
+            List<DataBox> values = event.record_refs[i].getRecord().getValues();
+            long newPrice = event.getAsk_price()[i];
+            values.get(1).setLong(newPrice);
+        }
+        event.alert_result = true;
+//        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
+    }
+
+    protected void BUYING_REQUEST_POST(BuyingEvent event) throws InterruptedException {
+        if (!enable_app_combo) {
+            collector.emit(event.getBid(), event.biding_result, event.getTimestamp());//the tuple is finished finally.
+        } else {
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.biding_result)));//(long bid, int sourceId, TopologyContext context, Message message)
+        }
+    }
+
+
+    protected void ALERT_REQUEST_POST(AlertEvent event) throws InterruptedException {
+        if (!enable_app_combo) {
+            collector.emit(event.getBid(), event.alert_result, event.getTimestamp());//the tuple is finished finally.
+        } else {
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.alert_result)));//(long bid, int sourceId, TopologyContext context, Message message)
+        }
+    }
+
+    protected void TOPPING_REQUEST_POST(ToppingEvent event) throws InterruptedException {
+        if (!enable_app_combo) {
+            collector.emit(event.getBid(), event.topping_result, event.getTimestamp());//the tuple is finished finally.
+        } else {
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.topping_result)));//(long bid, int sourceId, TopologyContext context, Message message)
+        }
+    }
+
+    @Override
+    protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {
+        BEGIN_POST_TIME_MEASURE(thread_Id);
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            (event).setTimestamp(timestamp);
+            if (event instanceof BuyingEvent) {
+                BUYING_REQUEST_POST((BuyingEvent) event);
+            } else if (event instanceof AlertEvent) {
+                ALERT_REQUEST_POST((AlertEvent) event);
+            } else {
+                TOPPING_REQUEST_POST((ToppingEvent) event);
+            }
+        }
+        END_POST_TIME_MEASURE(thread_Id);
+
+
+    }
+
 }

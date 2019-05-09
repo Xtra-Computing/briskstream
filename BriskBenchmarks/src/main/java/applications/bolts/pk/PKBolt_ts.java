@@ -10,8 +10,6 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
-import engine.transaction.function.Mean;
-import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +20,7 @@ import java.util.concurrent.BrokenBarrierException;
 
 import static applications.constants.PositionKeepingConstants.Constant.*;
 import static engine.profiler.Metrics.MeasureTools.*;
-
+import static engine.profiler.Metrics.NUM_ITEMS;
 public class PKBolt_ts extends PKBolt {
 
 
@@ -42,7 +40,7 @@ public class PKBolt_ts extends PKBolt {
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
-        transactionManager = new TxnManagerTStream(config, db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
+        transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_MACHINES, this.context.getThisComponent().getNumTasks());
         OsUtils.configLOG(LOG);
 
         value = new double[SIZE_EVENT][];
@@ -54,42 +52,42 @@ public class PKBolt_ts extends PKBolt {
         }
     }
 
-
-    private void event_handle(long bid, Set<Integer> deviceID) throws DatabaseException {
-        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        PKEvent event = generatePKEvent(bid, deviceID, value);
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
-        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
-
-        PK_request(event, this.fid, bid);
-
-        PKEvents.add(event);
-
-        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
-
-    }
-
-    /**
-     * @param event
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void PK_request(PKEvent event, int fid, long bid) throws DatabaseException {
-
-        int i = 0;
-        for (Integer key : event.getKey()) {
-            transactionManager.Asy_ModifyRecord_Read(txn_context, "machine", String.valueOf(key),
-                    event.getMean_value_ref(i), new Mean(event.getValue(i)));// read and modify the mean value_list, and return.
-            i++;
-        }
-
-    }
+//
+//    private void event_handle(long bid, Set<Integer> deviceID) throws DatabaseException {
+//        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
+//
+//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//        PKEvent event = generatePKEvent(bid, deviceID, value);
+//        END_PREPARE_TIME_MEASURE(thread_Id);
+//
+//        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
+//
+//        PK_request(event, this.fid, bid);
+//
+//        PKEvents.add(event);
+//
+//        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
+//
+//    }
+//
+//    /**
+//     * @param event
+//     * @param bid
+//     * @throws DatabaseException
+//     */
+//    private void PK_request(PKEvent event, int fid, long bid) throws DatabaseException {
+//
+//        int i = 0;
+//        for (Integer key : event.getKey()) {
+//            transactionManager.Asy_ModifyRecord_Read(txn_context, "machine", String.valueOf(key),
+//                    event.getMean_value_ref(i), new Mean(event.getValue(i)));// read and modify the mean value_list, and return.
+//            i++;
+//        }
+//
+//    }
 
     @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void execute(Tuple in) throws InterruptedException, BrokenBarrierException {
         String componentId = context.getThisComponentId();
         long bid = in.getBID();
         if (in.isMarker()) {
@@ -129,7 +127,7 @@ public class PKBolt_ts extends PKBolt {
             PKEvents.clear();//all tuples in the holder is finished.
         } else {
             Set<Integer> deviceID = (Set<Integer>) in.getValue(0);
-            event_handle(bid, deviceID);//calculate moving average.
+//            event_handle(bid, deviceID);//calculate moving average.
         }
     }
 }

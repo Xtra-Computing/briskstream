@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.Random;
 
 import static applications.CONTROL.enable_admission_control;
-import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
+import static applications.constants.StreamLedgerConstants.Constant.NUM_ACCOUNTS;
 import static engine.content.Content.CCOption_SStore;
 import static engine.content.Content.CCOption_TStream;
 import static utils.PartitionHelper.key_to_partition;

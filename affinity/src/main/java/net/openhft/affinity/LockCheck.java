@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -101,7 +102,7 @@ enum LockCheck {
      */
     private synchronized static void storePid(long processID, File coreFile) throws IOException {
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(coreFile, false), "utf-8"))) {
+                new FileOutputStream(coreFile, false), StandardCharsets.UTF_8))) {
             String processIDStr = Long.toString(processID);
             writer.write(processIDStr + "\n" + df.format(new Date()));
         }
@@ -113,7 +114,7 @@ enum LockCheck {
 
     private static int getProcessForCpu(@NotNull File coreFile) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(coreFile), "utf-8"))) {
+                new FileInputStream(coreFile), StandardCharsets.UTF_8))) {
 
             final String firstLine = reader.readLine();
             if (firstLine == null) {

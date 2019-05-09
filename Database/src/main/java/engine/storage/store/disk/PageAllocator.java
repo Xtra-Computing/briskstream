@@ -248,9 +248,7 @@ public class PageAllocator implements Iterable<Page>, Closeable {
         }
 
         synchronized (PageAllocator.class) {
-            if (pageLRU.containsKey(translatePageNum(pageNum))) {
-                pageLRU.remove(translatePageNum(pageNum));
-            }
+            pageLRU.remove(translatePageNum(pageNum));
         }
 
         this.numPages -= 1;

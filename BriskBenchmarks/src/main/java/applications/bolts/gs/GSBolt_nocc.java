@@ -1,4 +1,4 @@
-package applications.bolts.mb;
+package applications.bolts.gs;
 
 
 import applications.param.mb.MicroEvent;
@@ -19,11 +19,11 @@ import static engine.profiler.Metrics.MeasureTools.*;
 /**
  * Combine Read-Write for nocc.
  */
-public class Bolt_nocc extends GSBolt {
-    private static final Logger LOG = LoggerFactory.getLogger(Bolt_nocc.class);
+public class GSBolt_nocc extends GSBolt {
+    private static final Logger LOG = LoggerFactory.getLogger(GSBolt_nocc.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
-    public Bolt_nocc(int fid) {
+    public GSBolt_nocc(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }
@@ -35,7 +35,7 @@ public class Bolt_nocc extends GSBolt {
 
         if (success) {
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            write_core(event);
+            WRITE_CORE(event);
             END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
@@ -45,7 +45,7 @@ public class Bolt_nocc extends GSBolt {
             END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            write_core(event);
+            WRITE_CORE(event);
             END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..

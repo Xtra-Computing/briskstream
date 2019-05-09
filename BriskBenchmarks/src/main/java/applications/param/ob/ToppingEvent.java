@@ -13,6 +13,7 @@ public class ToppingEvent extends TxnEvent {
 
     //place-rangeMap.
     public SchemaRecordRef[] record_refs;
+    public boolean topping_result;
 
     private int[] itemId;
     private long[] itemTopUp;
@@ -35,7 +36,6 @@ public class ToppingEvent extends TxnEvent {
         this.itemId = itemId;
         setValues(num_access, rnd);
     }
-
 
 
     /**

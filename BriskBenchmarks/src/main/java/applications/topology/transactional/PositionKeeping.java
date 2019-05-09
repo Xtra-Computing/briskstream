@@ -53,7 +53,7 @@ public class PositionKeeping extends TransactionTopology {
         int tthread = config.getInt("tthread");
 
         TableInitilizer ini = new PKInitializer(db, scale_factor, theta, tthread, config);
-        ini.creates_Table();
+        ini.creates_Table(config);
 
         setPartition_interval((int) (Math.ceil(NUM_MACHINES / (double) tthread)), tthread);
 

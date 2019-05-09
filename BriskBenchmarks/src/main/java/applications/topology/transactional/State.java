@@ -4,7 +4,7 @@ import applications.tools.FastZipfGenerator;
 import applications.util.Configuration;
 
 import static applications.CONTROL.enable_states_partition;
-import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
+import static applications.constants.StreamLedgerConstants.Constant.NUM_ACCOUNTS;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
 
@@ -12,31 +12,30 @@ public class State {
     public static FastZipfGenerator shared_store;
     public static FastZipfGenerator[] partioned_store;
 
-    public static void initilize(Configuration config) {
-        double scale_factor = config.getDouble("scale_factor", 1);
-        double theta = config.getDouble("theta", 0);
-        int tthread = config.getInt("tthread", 0);
-        int floor_interval;
-        switch (config.getString("application")) {
+//    public static void initilize(Configuration config) {
+//        double scale_factor = config.getDouble("scale_factor", 1);
+//        double theta = config.getDouble("theta", 0);
+//        int tthread = config.getInt("tthread", 0);
+//        int floor_interval;
+//        switch (config.getString("application")) {
+//
+//            case "OnlineBiding": {
+//                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
+//                break;
+//            }
+//            case "StreamLedger": {
+//                configure_store(scale_factor, theta, tthread, NUM_ACCOUNTS);
+//                break;
+//            }
+//            case "GrepSum": {
+//                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
+//                break;
+//            }
+//
+//        }
+//    }
 
-            case "OnlineBiding": {
-                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
-                break;
-            }
-            case "CrossTables": {
-                configure_store(scale_factor, theta, tthread, NUM_ACCOUNTS);
-                break;
-            }
-            case "MicroBenchmark": {
-
-                configure_store(scale_factor, theta, tthread, NUM_ITEMS);
-                break;
-            }
-
-        }
-    }
-
-    private static void configure_store(double scale_factor, double theta, int tthread, int numItems) {
+    public static void configure_store(double scale_factor, double theta, int tthread, int numItems) {
         int floor_interval;
         if (enable_states_partition) {
             floor_interval = (int) Math.floor(numItems / (double) tthread);//NUM_ITEMS / tthread;

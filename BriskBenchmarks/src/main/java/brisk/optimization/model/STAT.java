@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import static applications.Constants.STAT_Path;
@@ -431,7 +432,7 @@ public class STAT implements Serializable {
             }
 
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(file), "utf-8"))) {
+                    new FileOutputStream(file), StandardCharsets.UTF_8))) {
                 removeNAN();
 
                 for (int i = 0; i <= 1; i++) {

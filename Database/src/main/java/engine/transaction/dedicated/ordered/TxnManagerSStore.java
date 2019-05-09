@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 
-import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
+import static applications.constants.StreamLedgerConstants.Constant.NUM_ACCOUNTS;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;

@@ -1,12 +1,13 @@
-package applications.param.ct;
+package applications.param.sl;
 
+import applications.bolts.sl.TransactionResult;
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 
 import java.util.List;
 
-import static applications.constants.CrossTableConstants.Constant.MIN_BALANCE;
+import static applications.constants.StreamLedgerConstants.Constant.MIN_BALANCE;
 
 public class TransactionEvent extends TxnEvent {
 
@@ -15,7 +16,7 @@ public class TransactionEvent extends TxnEvent {
     public volatile SchemaRecordRef dst_account_value = new SchemaRecordRef();
     public volatile SchemaRecordRef src_asset_value = new SchemaRecordRef();
     public volatile SchemaRecordRef dst_asset_value = new SchemaRecordRef();
-
+    public TransactionResult transaction_result;
 
 
     private String sourceAccountId;

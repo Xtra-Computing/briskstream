@@ -187,10 +187,7 @@ public class Predicate {
 				evl.putVariable(operands[i], ""+currentEvent.getAttributeByName(attributeName));
 			}
 		}
-		if("1.0".equalsIgnoreCase( evl.evaluate(predicate)))
-		   return true;
-		else
-			return false;
+        return "1.0".equalsIgnoreCase(evl.evaluate(predicate));
 	}
 	
 
@@ -223,10 +220,7 @@ public class Predicate {
 								
 			}
 		}
-		if("1.0".equalsIgnoreCase( evl.evaluate(predicate)))
-		   return true;
-		else
-			return false;
+        return "1.0".equalsIgnoreCase(evl.evaluate(predicate));
 	}
 
 	/**

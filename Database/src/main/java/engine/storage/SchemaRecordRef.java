@@ -25,7 +25,7 @@ public class SchemaRecordRef {
                 throw new RejectedExecutionException();
             }
         } catch (RejectedExecutionException e) {
-            System.out.println("The record has not being assigned yet!" + this.record.GetPrimaryKey());
+            System.out.println("The record has not being assigned yet!");
             e.printStackTrace();
         }
         return record;

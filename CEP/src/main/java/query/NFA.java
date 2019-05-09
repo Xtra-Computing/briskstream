@@ -234,7 +234,7 @@ public class NFA {
 				stateTag = stateTag.substring(0, 1);
 			}else if(eventType.contains("!")){
 				isNegation = true;
-				eventType = eventType.substring(1, eventType.length());
+				eventType = eventType.substring(1);
 				
 			}
 			
@@ -409,11 +409,7 @@ public class NFA {
 		}
 		this.hasValueVector = new boolean[this.size];
 		for(int i = 0; i < this.size; i ++){
-			if(counter[i]>0){
-				this.hasValueVector[i] = true;
-			}else{
-				this.hasValueVector[i] = false;
-			}
+            this.hasValueVector[i] = counter[i] > 0;
 		}
 		
 		

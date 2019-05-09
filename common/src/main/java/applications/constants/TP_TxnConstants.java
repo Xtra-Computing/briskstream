@@ -25,7 +25,7 @@ public interface TP_TxnConstants extends BaseConstants {
 
 
     interface Constant {
-        int NUM_SEGMENTS = 1000_000;
+        int NUM_SEGMENTS = 100;
     }
 
     interface Field extends BaseField {

@@ -1,7 +1,6 @@
 package applications.param.lr;
 
 import applications.datatype.PositionReport;
-import applications.datatype.internal.AvgVehicleSpeedTuple;
 import engine.storage.SchemaRecordRef;
 
 /**
@@ -9,39 +8,54 @@ import engine.storage.SchemaRecordRef;
  */
 public class LREvent {
 
+    private final int tthread;
+    private final long bid;
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    private long timestamp;
+    public int count;
+    public double lav;
     private PositionReport posreport;//event associated meta data.
-    private final AvgVehicleSpeedTuple vsreport;//intermediate input.
+//    private final AvgVehicleSpeedTuple vsreport;//intermediate input.
 
 
     public SchemaRecordRef speed_value = new SchemaRecordRef();
     public SchemaRecordRef count_value = new SchemaRecordRef();
 
-    private final long bid;
-    public double[] enqueue_time = new double[1];
-
     /**
      * creating a new LREvent.
      *
      * @param posreport
-     * @param vehicleSpeedTuple
+     * @param tthread
      * @param bid
      */
-    public LREvent(PositionReport posreport, AvgVehicleSpeedTuple vehicleSpeedTuple, long bid) {
+    public LREvent(PositionReport posreport, int tthread, long bid) {
         this.posreport = posreport;
-        vsreport = vehicleSpeedTuple;
-
+        this.tthread = tthread;
+//        vsreport = vehicleSpeedTuple;
         this.bid = bid;
     }
 
-    public long getBid() {
-        return this.bid;
-    }
 
     public PositionReport getPOSReport() {
         return posreport;
     }
 
-    public AvgVehicleSpeedTuple getVSreport() {
-        return vsreport;
+
+    public int getPid() {
+        return posreport.getSegment() % tthread;//which partition does this event belongs to.
     }
+
+    public long getBid() {
+        return bid;
+    }
+
+
 }

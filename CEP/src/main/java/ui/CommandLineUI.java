@@ -67,11 +67,7 @@ public class CommandLineUI {
 		}
 		
 		if(args.length > 2){
-			if(Integer.parseInt(args[2])== 1){
-				ConfigFlags.printResults = true;
-			}else{
-				ConfigFlags.printResults = false;
-			}
+            ConfigFlags.printResults = Integer.parseInt(args[2]) == 1;
 		}
 		
 		if(args.length > 3){

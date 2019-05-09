@@ -39,44 +39,44 @@ public interface ValueVectorElement {
 	 * Gets the current value
 	 * @return the current value
 	 */
-	public int getValue();
+    int getValue();
 	
 	/**
 	 * Updates the value
 	 * @param e the newly selected event
 	 */
-	public void updateValue(Event e);
+    void updateValue(Event e);
 	
 	/**
 	 * 
 	 * @return the state number of the value
 	 */
-	public int getStateNumber();
+    int getStateNumber();
 	
 	/**
 	 * 
 	 * @return the opearation type, avg, max, min, set
 	 */
-	public String getType();
+    String getType();
 	
 	/**
 	 * 
 	 * @return the attribute name
 	 */
-	public String getAttribute();
+    String getAttribute();
 	
 	/**
 	 * 
 	 * @param a the attribute name to set
 	 */
-	public void setAttribute(String a);
+    void setAttribute(String a);
 	
 	/**
 	 * initializes the value by an eventg
 	 * @param e
 	 */
-	public void initializeValue(Event e);
+    void initializeValue(Event e);
 
-	public int getNeededByState();
-	public void setNeededByState(int n);
+	int getNeededByState();
+	void setNeededByState(int n);
 }

@@ -1,4 +1,4 @@
-package applications.bolts.mb;
+package applications.bolts.gs;
 
 import applications.param.mb.MicroEvent;
 import brisk.components.operators.api.TransactionalBolt;
@@ -16,7 +16,7 @@ import java.util.List;
 
 import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
-import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
+import static applications.constants.GrepSumConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
@@ -28,7 +28,7 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-    protected boolean READ_CORE(MicroEvent event) throws InterruptedException {
+    protected boolean READ_CORE(MicroEvent event) {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             SchemaRecordRef ref = event.getRecord_refs()[i];
 
@@ -73,7 +73,7 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-    protected void write_core(MicroEvent event) throws InterruptedException {
+    protected void WRITE_CORE(MicroEvent event) {
 //        long start = System.nanoTime();
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             List<DataBox> values = event.getValues()[i];
@@ -87,14 +87,14 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-    protected void read_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
+    protected void READ_LOCK_AHEAD(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txnContext, "MicroTable",
                     String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_ONLY);
     }
 
 
-    protected void write_lock_ahead(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
+    protected void WRITE_LOCK_AHEAD(MicroEvent Event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; ++i)
             transactionManager.lock_ahead(txnContext, "MicroTable",
                     String.valueOf(Event.getKeys()[i]), Event.getRecord_refs()[i], READ_WRITE);
@@ -128,32 +128,26 @@ public abstract class GSBolt extends TransactionalBolt {
 
     protected boolean read_request_noLock(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
-        if (process_request_noLock(event, txnContext, READ_ONLY)) return false;
-        return true;
+        return !process_request_noLock(event, txnContext, READ_ONLY);
     }
 
 
     protected boolean write_request_noLock(MicroEvent event, TxnContext txnContext) throws DatabaseException {
 
-        if (process_request_noLock(event, txnContext, READ_WRITE)) return false;
-        return true;
+        return !process_request_noLock(event, txnContext, READ_WRITE);
     }
 
     protected boolean read_request(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
 
-        if (process_request(event, txnContext, READ_ONLY)) return false;
-        return true;
+        return !process_request(event, txnContext, READ_ONLY);
     }
 
 
     protected boolean write_request(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
 
-        if (process_request(event, txnContext, READ_WRITE)) return false;
-        return true;
+        return !process_request(event, txnContext, READ_WRITE);
     }
 
-
-    public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
 
 
     //lock_ratio-ahead phase.

@@ -40,6 +40,9 @@ public abstract class TxnManagerDedicated implements TxnManager {
     private long thread_id_;
     protected long thread_count_;
 
+    protected int delta;//range of each partition. depends on the number of op in the stage.
+
+
     public TxnManagerDedicated(StorageManager storageManager, String thisComponentId, int thisTaskId, int thread_count) {
         this.storageManager_ = storageManager;
         this.thisComponentId = thisComponentId;

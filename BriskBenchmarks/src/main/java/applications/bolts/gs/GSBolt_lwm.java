@@ -1,4 +1,4 @@
-package applications.bolts.mb;
+package applications.bolts.gs;
 
 
 import brisk.execution.ExecutionGraph;
@@ -7,13 +7,13 @@ import engine.transaction.dedicated.ordered.TxnManagerLWM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Bolt_lwm extends Bolt_LA {
-    private static final Logger LOG = LoggerFactory.getLogger(Bolt_lwm.class);
+public class GSBolt_lwm extends GSBolt_LA {
+    private static final Logger LOG = LoggerFactory.getLogger(GSBolt_lwm.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
 
 
-    public Bolt_lwm(int fid) {
+    public GSBolt_lwm(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }

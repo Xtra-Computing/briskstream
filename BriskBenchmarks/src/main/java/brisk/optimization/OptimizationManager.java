@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
@@ -269,7 +270,7 @@ public class OptimizationManager extends executorThread {
         int JVM_size = conf.getInt("JVM", 0);
         File file = new File(conf.getString("metrics.output").concat(OsUtils.OS_wrapper("DUMP.txt")));
         try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(file, true), "utf-8"))) {
+                new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
             StringBuilder sb = new StringBuilder();
 //            sb.append(tuple_size).append("\t").append(window).append("\t").append(JVM_size).append("\t");
             for (ExecutionNode executionNode : g.getExecutionNodeArrayList()) {

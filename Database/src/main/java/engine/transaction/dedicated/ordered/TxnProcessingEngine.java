@@ -3,7 +3,6 @@ package engine.transaction.dedicated.ordered;
 import applications.util.OsUtils;
 import engine.common.Operation;
 import engine.content.T_StreamContent;
-
 import engine.profiler.Metrics;
 import engine.storage.SchemaRecord;
 import engine.storage.datatype.DataBox;
@@ -25,7 +24,6 @@ import static applications.constants.PositionKeepingConstants.Constant.MOVING_AV
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.profiler.Metrics.MeasureTools.*;
-import static xerial.jnuma.Numa.runOnNode;
 
 /**
  * There is one TxnProcessingEngine of each stage.
@@ -73,7 +71,7 @@ public final class TxnProcessingEngine {
 
 
         //make it flexible later.
-        if (app == 1)//CT
+        if (app == 1)//SL
         {
             holder_by_stage.put("accounts", new Holder_in_range(num_op));
             holder_by_stage.put("bookEntries", new Holder_in_range(num_op));
@@ -99,17 +97,35 @@ public final class TxnProcessingEngine {
         num_op = stage_size;
         barrier = new CyclicBarrier(stage_size);
 
-        if (!enable_work_stealing) {
-            if (island != -1)
-                for (int i = 0; i < island; i++) {
-                    multi_engine.put(i, new Instance(tp / island));
-                }
-            else {
+        if (enable_work_partition) {
+            if (island == -1) {//one engine one core.
                 for (int i = 0; i < tp; i++)
                     multi_engine.put(i, new Instance(1));
-            }
+            } else if (island == -2) {//one engine one socket.
+
+                int actual_island = tp / CORE_PER_SOCKET;
+                int i;
+                for (i = 0; i < actual_island; i++) {
+                    multi_engine.put(i, new Instance(CORE_PER_SOCKET));
+                }
+
+                if (tp % CORE_PER_SOCKET != 0) {
+                    multi_engine.put(i, new Instance(tp % CORE_PER_SOCKET));
+                }
+
+
+            } else
+                throw new UnsupportedOperationException();
+
+//            if (island != -1)
+//                for (int i = 0; i < island; i++) {
+//                    multi_engine.put(i, new Instance(tp / island));
+//                }
+//            else {
+//
+//            }
         } else {
-            //single box multi_engine.
+            //single box engine.
             standalone_engine = new Instance(tp);
 
         }
@@ -120,7 +136,7 @@ public final class TxnProcessingEngine {
 
     public void engine_shutdown() {
         LOG.info("Shutdown Engine!");
-        if (!enable_work_stealing) {
+        if (enable_work_partition) {
             for (Instance engine : multi_engine.values()) {
                 engine.close();
             }
@@ -133,7 +149,6 @@ public final class TxnProcessingEngine {
     private void CT_Transfer_Fun(Operation operation) {
 
         // read
-
         SchemaRecord preValues = operation.condition_records[0].content_.readPreValues(operation.bid);
         SchemaRecord preValues1 = operation.condition_records[1].content_.readPreValues(operation.bid);
 
@@ -215,7 +230,7 @@ public final class TxnProcessingEngine {
 
             SchemaRecord schemaRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);
 
-            operation.record_ref.setRecord(schemaRecord);//Note that, locking scheme allows directly modifying on original table d_record.
+            operation.record_ref.setRecord(new SchemaRecord(schemaRecord.getValues()));//Note that, locking scheme allows directly modifying on original table d_record.
 
             if (enable_debug)
                 if (operation.record_ref.cnt == 0) {
@@ -248,7 +263,7 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE) {//read, modify, write.
 
             if (app == 1) {
-                CT_Depo_Fun(operation);//used in CT
+                CT_Depo_Fun(operation);//used in SL
             } else {
                 SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
                 List<DataBox> values = srcRecord.getValues();
@@ -263,7 +278,7 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE_COND) {//read, modify (depends on condition), write( depends on condition).
             //TODO: pass function here in future instead of hard-code it. Seems not trivial in Java, consider callable interface?
 
-            if (app == 1) {//used in CT
+            if (app == 1) {//used in SL
                 CT_Transfer_Fun(operation);
             } else if (app == 2) {//used in OB
                 //check if any item is not able to buy.
@@ -286,7 +301,7 @@ public final class TxnProcessingEngine {
 
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
-            if (app == 1) {//used in CT
+            if (app == 1) {//used in SL
                 CT_Transfer_Fun(operation);
                 operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));//read the resulting tuple.
             } else
@@ -353,43 +368,58 @@ public final class TxnProcessingEngine {
 
     //TODO: actual evaluation on the operation_chain.
     private void process(MyList<Operation> operation_chain) {
+        while (true) {
+            Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
+            if (operation == null) return;
+            process(operation);
+        }//loop.
 
-        if (enable_work_stealing) {
-            while (true) {
-                Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
-                if (operation == null) return;
-                process(operation);
-//                operation.set_worker(Thread.currentThread().getName());
-            }//loop.
-        } else {
-//            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
-//                System.nanoTime();
-//            }
-            for (Operation operation : operation_chain) {
-                process(operation);
-//                if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11"))
-//                    LOG.info("finished process bid:" + operation.bid + " by " + Thread.currentThread().getName());
-            }//loop.
-        }
+//        if (enable_work_stealing) {
+//            while (true) {
+//                Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
+//                if (operation == null) return;
+//                process(operation);
+////                operation.set_worker(Thread.currentThread().getName());
+//            }//loop.
+//        } else {
+////            if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11")) {
+////                System.nanoTime();
+////            }
+//            for (Operation operation : operation_chain) {
+//                process(operation);
+////                if (operation_chain.getTable_name().equalsIgnoreCase("accounts") && operation_chain.getPrimaryKey().equalsIgnoreCase("11"))
+////                    LOG.info("finished process bid:" + operation.bid + " by " + Thread.currentThread().getName());
+//            }//loop.
+////            operation_chain.clear();
+//
+//        }
     }
 
 
-    private int ThreadToSocket(int thread_Id) {
-
-        return (thread_Id + 2) % CORE_PER_SOCKET;
-    }
+//    private int ThreadToSocket(int thread_Id) {
+//
+//        return (thread_Id + 2) % CORE_PER_SOCKET;
+//    }
 
     private int ThreadToEngine(int thread_Id) {
         int rt;
-        if (island != -1)
-            rt = (thread_Id) / (TOTAL_CORES / island);
-        else
+
+        if (island == -1) {
             rt = (thread_Id);
+        } else if (island == -2) {
+            rt = thread_Id / CORE_PER_SOCKET;
+        } else
+            throw new UnsupportedOperationException();
+
+//        if (island != -1)
+//            rt = (thread_Id) / (TOTAL_CORES / island);
+//        else
+//            rt = (thread_Id);
         // LOG.debug("submit to engine: "+ rt);
         return rt;
     }
 
-    private int submit_task(int thread_Id, Holder holder, Deque<Task> callables) {
+    private int submit_task(int thread_Id, Holder holder, Collection<Task> callables) {
 
         int sum = 0;
 
@@ -414,7 +444,7 @@ public final class TxnProcessingEngine {
                         if (enable_debug)
                             LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
-                        if (!enable_work_stealing) {
+                        if (enable_work_partition) {
                             multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
                         } else {
                             standalone_engine.executor.submit(task);
@@ -426,9 +456,9 @@ public final class TxnProcessingEngine {
                 }
             }
         }
-//        holder.holder_v1.clear();
         return sum;
     }
+
 
     private int evaluation(int thread_Id) throws InterruptedException {
 
@@ -436,7 +466,7 @@ public final class TxnProcessingEngine {
 
         //LOG.DEBUG(thread_Id + "\tall source marked checkpoint, starts TP evaluation for watermark bid\t" + bid);
 
-        Deque<Task> callables = new ArrayDeque<>();
+        Collection<Task> callables = new Vector<>();
 
         int task = 0;
 
@@ -451,7 +481,7 @@ public final class TxnProcessingEngine {
             LOG.info("submit task:" + task);
 
         if (enable_engine) {
-            if (!enable_work_stealing) {
+            if (enable_work_partition) {
                 multi_engine.get(ThreadToEngine(thread_Id)).executor.invokeAll(callables);
             } else
                 standalone_engine.executor.invokeAll(callables);
@@ -461,6 +491,9 @@ public final class TxnProcessingEngine {
         //TODO: For now, we don't know the relationship between operation_chain and transaction, otherwise, we can asynchronously return.
 //        for (Holder_in_range holder_in_range : holder_by_stage.values())
 //            holder_in_range.rangeMap.clear();
+
+//        callables.clear();
+
         return task;
     }
 
@@ -469,9 +502,8 @@ public final class TxnProcessingEngine {
      * @param thread_Id
      * @return time spend in tp evaluation.
      * @throws InterruptedException
-     * @throws BrokenBarrierException
      */
-    public void start_evaluation(int thread_Id) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluation(int thread_Id) throws InterruptedException {
 
 
         //It first needs to make sure checkpoints from all producers are received.
@@ -491,6 +523,8 @@ public final class TxnProcessingEngine {
         END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
 
 //        SOURCE_CONTROL.getInstance().Wait_Start();//no sync here. sync later.
+
+        SOURCE_CONTROL.getInstance().Wait_End(thread_Id);//sync for all threads to come to this line.
 
     }
 
@@ -531,35 +565,32 @@ public final class TxnProcessingEngine {
             this.range_min = range_min;
             this.range_max = range_max;
 
-            if (enable_work_stealing)
-                executor = Executors.newWorkStealingPool(tpInstance);
-            else {
-                if (island != -1)
-                    executor = Executors.newFixedThreadPool(TOTAL_CORES / island);
-                else
-                    executor = Executors.newSingleThreadExecutor();
+
+            if (enable_work_partition) {
+                if (island == -1) {//one core one engine. there's no meaning of stealing.
+                    executor = Executors.newSingleThreadExecutor();//one core one engine.
+                } else if (island == -2) {//one socket one engine.
+
+                    if (enable_work_stealing) {
+                        executor = Executors.newWorkStealingPool(tpInstance);//shared, stealing.
+                    } else
+                        executor = Executors.newFixedThreadPool(tpInstance);//shared, no stealing.
+                } else
+                    throw new UnsupportedOperationException();//TODO: support more in future.
+            } else {
+                if (enable_work_stealing) {
+                    executor = Executors.newWorkStealingPool(tpInstance);//shared, stealing.
+                } else
+                    executor = Executors.newFixedThreadPool(tpInstance);//shared, no stealing.
             }
         }
 
         /**
-         * Single box instance. Shared everything.
-         *
-         * @param tp
+         * @param tpInstance
          */
-        public Instance(int tp) {
-//            if (tp == 0) {
-//                executor = Executors.newCachedThreadPool();
-//            } else
-//                executor = Executors.newWorkStealingPool(tp);
+        public Instance(int tpInstance) {
 
-            if (enable_work_stealing)
-                executor = Executors.newWorkStealingPool(tp);
-            else {
-                if (island != -1)
-                    executor = Executors.newFixedThreadPool(TOTAL_CORES / island);
-                else
-                    executor = Executors.newSingleThreadExecutor();
-            }
+            this(tpInstance, 0, 0);
         }
 
         @Override
@@ -567,20 +598,20 @@ public final class TxnProcessingEngine {
             executor.shutdown();
         }
     }
-
-    class dummyTask implements Callable<Integer> {
-        int socket;
-
-        public dummyTask(int socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public Integer call() {
-            runOnNode(socket);
-            return null;
-        }
-    }
+//
+//    class dummyTask implements Callable<Integer> {
+//        int socket;
+//
+//        public dummyTask(int socket) {
+//            this.socket = socket;
+//        }
+//
+//        @Override
+//        public Integer call() {
+//            runOnNode(socket);
+//            return null;
+//        }
+//    }
 
 
     //the smallest unit of Task in TP.
@@ -592,16 +623,15 @@ public final class TxnProcessingEngine {
 //        private final long wid = 0;//watermark id.
 //        private boolean un_processed = true;
 
-        public Task(Set<Operation> operation_chain, int socket) {
-
-            this.operation_chain = operation_chain;
-//            wid = bid;
-
-//            this.socket = socket;
-            if (!enable_work_stealing) {
-                under_process = new AtomicBoolean(false);
-            }
-        }
+//        public Task(Set<Operation> operation_chain, int socket) {
+//
+//            this.operation_chain = operation_chain;
+////            wid = bid;
+////            this.socket = socket;
+//            if (!enable_work_stealing) {
+//                under_process = new AtomicBoolean(false);
+//            }
+//        }
 
         public Task(Set<Operation> operation_chain) {
 
@@ -631,7 +661,7 @@ public final class TxnProcessingEngine {
         @Override
         public Integer call() {
 
-            if (enable_work_stealing) {//may cooperatively work on the same chain, use mvcc to ensure correctness.
+            if (enable_work_stealing || island == -1) {// if island is not -1, it may cooperatively work on the same chain, use mvcc to ensure correctness.
                 if (operation_chain.size() == 0) {
 //                    if (enable_debug)
 //                        LOG.info("RE-ENTRY "

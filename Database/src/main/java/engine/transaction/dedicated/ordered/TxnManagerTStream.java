@@ -1,6 +1,5 @@
 package engine.transaction.dedicated.ordered;
 
-import applications.util.Configuration;
 import applications.util.OsUtils;
 import engine.DatabaseException;
 import engine.Meta.MetaTypes;
@@ -22,11 +21,7 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static applications.constants.CrossTableConstants.Constant.NUM_ACCOUNTS;
-import static applications.constants.PositionKeepingConstants.Constant.NUM_MACHINES;
-import static applications.constants.TP_TxnConstants.Constant.NUM_SEGMENTS;
 import static engine.Meta.MetaTypes.AccessType.INSERT_ONLY;
-import static engine.profiler.Metrics.NUM_ITEMS;
 import static engine.transaction.impl.TxnAccess.Access;
 
 
@@ -37,39 +32,39 @@ public class TxnManagerTStream extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerTStream.class);
     TxnProcessingEngine instance;
 
-    private int delta;//range of each partition. depends on the number of op in the stage.
 
-    public TxnManagerTStream(Configuration config, StorageManager storageManager, String thisComponentId, int thisTaskId, int thread_countw) {
+    public TxnManagerTStream(StorageManager storageManager, String thisComponentId, int thisTaskId, int NUM_RECORDS, int thread_countw) {
         super(storageManager, thisComponentId, thisTaskId, thread_countw);
         OsUtils.configLOG(LOG);
         instance = TxnProcessingEngine.getInstance();
 //        delta_long = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//range of each partition. depends on the number of op in the stage.
 
+        delta = (int) Math.ceil(NUM_RECORDS / (double) thread_countw);//NUM_ITEMS / tthread;
 
-        switch (config.getString("application")) {
-            case "CrossTables": {
-                delta = (int) Math.ceil(NUM_ACCOUNTS / (double) thread_countw);//NUM_ITEMS / tthread;
-                break;
-            }
-            case "OnlineBiding": {
-                delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//NUM_ITEMS / tthread;
-                break;
-            }
-
-            case "TP_Txn": {
-                delta = (int) Math.ceil(NUM_SEGMENTS / (double) thread_countw);//NUM_ITEMS / tthread;
-                break;
-            }
-
-            case "MicroBenchmark": {
-                delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//NUM_ITEMS / tthread;
-                break;
-            }
-            case "PositionKeeping": {
-                delta = (int) Math.ceil(NUM_MACHINES / (double) thread_countw);//NUM_ITEMS / tthread;
-                break;
-            }
-        }
+//        switch (config.getInt("app")) {
+//            case "StreamLedger": {
+//                delta = (int) Math.ceil(NUM_ACCOUNTS / (double) thread_countw);//NUM_ITEMS / tthread;
+//                break;
+//            }
+//            case "OnlineBiding": {
+//                delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//NUM_ITEMS / tthread;
+//                break;
+//            }
+//
+//            case "TP_Txn": {
+//                delta = (int) Math.ceil(NUM_SEGMENTS / (double) thread_countw);//NUM_ITEMS / tthread;
+//                break;
+//            }
+//
+//            case "MicroBenchmark": {
+//                delta = (int) Math.ceil(NUM_ITEMS / (double) thread_countw);//NUM_ITEMS / tthread;
+//                break;
+//            }
+//            case "PositionKeeping": {
+//                delta = (int) Math.ceil(NUM_MACHINES / (double) thread_countw);//NUM_ITEMS / tthread;
+//                break;
+//            }
+//        }
 
     }
 
@@ -145,7 +140,6 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 //        LOG.info(String.valueOf(OsUtils.Addresser.addressOf(record_ref)));
 
         myList.add(new Operation(table_name, txn_context, bid, accessType, record, record_ref));
-
 
 
 //        Integer key = Integer.valueOf(record.record_.GetPrimaryKey());

@@ -12,6 +12,7 @@ public class AlertEvent extends TxnEvent {
 
 
     private final int num_access;
+    public boolean alert_result;
 
     /**
      * Creates a new AlertEvent.

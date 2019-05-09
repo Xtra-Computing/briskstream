@@ -18,7 +18,7 @@ public class SchemaRecord {
     private RowID id;
     private volatile List<DataBox> values;//TODO: Note that, I'm not following the pointer based implementation in Cavalia (C++ based). This may or may not be suitable...
 
-    private final DataBox single_value;//TODO: Note that, I'm not following the pointer based implementation in Cavalia (C++ based). This may or may not be suitable...
+    private final DataBox single_value;//only used by TSTREAM.
 
     public SchemaRecord(DataBox values) {
         this.single_value = values;

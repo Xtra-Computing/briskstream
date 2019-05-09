@@ -36,64 +36,64 @@ public interface Event {
 	 * @param attributeName the required attribute name
 	 * @return the value of the attribute, integer
 	 */
-	public int getAttributeByName(String attributeName);
+    int getAttributeByName(String attributeName);
 	
 	/**
 	 * Returns the value of the attribute with the required name
 	 * @param attributeName the required attribute name
 	 * @return the value of the attribute, double
 	 */
-	public double getAttributeByNameDouble(String attributeName);
+    double getAttributeByNameDouble(String attributeName);
 	
 	/**
 	 * Returns the value of the attribute with the required name
 	 * @param attributeName the required attribute name
 	 * @return the value of the attribute, string
 	 */
-	public String getAttributeByNameString(String attributeName);
+    String getAttributeByNameString(String attributeName);
 	
 	/**
 	 * Returns the value type of the attribute
 	 * @param attributeName the required attribute name
 	 * @return the code representing the type, 0 for integer, 1 for double, 2 for string
 	 */
-	public int getAttributeValueType(String attributeName);
+    int getAttributeValueType(String attributeName);
 	
 	/**
 	 * 
 	 * @return the event id
 	 */
-	public int getId();
+    int getId();
 	
 	/**
 	 * 
 	 * @param Id the event id to set
 	 */
-	public void setId(int Id);
+    void setId(int Id);
 	
 	/**
 	 * 
 	 * @return self description
 	 */
-	public String toString();
+    String toString();
 	
 	/**
 	 * 
 	 * @return the timestamp of the event
 	 */
-	public int getTimestamp();
+    int getTimestamp();
 
 	/**
 	 * 
 	 * @return the event type
 	 */
-	public String getEventType();
+    String getEventType();
 	
 	/**
 	 * 
 	 * @return the cloned event
 	 */
-	public Object clone();
+    Object clone();
 
 
 

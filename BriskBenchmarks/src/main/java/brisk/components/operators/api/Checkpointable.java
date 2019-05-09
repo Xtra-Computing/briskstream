@@ -6,7 +6,7 @@ import java.util.concurrent.BrokenBarrierException;
 
 public interface Checkpointable {
 
-    boolean checkpoint() throws InterruptedException, BrokenBarrierException;
+    boolean checkpoint(int counter) throws InterruptedException, BrokenBarrierException;
 
     void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException;
 

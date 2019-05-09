@@ -1,6 +1,6 @@
 package applications.constants;
 
-public interface MicroBenchmarkConstants extends BaseConstants {
+public interface GrepSumConstants extends BaseConstants {
     String PREFIX = "mb";
 
     interface Field {

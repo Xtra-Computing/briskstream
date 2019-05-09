@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static applications.constants.MicroBenchmarkConstants.Constant.VALUE_LEN;
+import static applications.constants.GrepSumConstants.Constant.VALUE_LEN;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
 /**

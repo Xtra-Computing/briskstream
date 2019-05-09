@@ -71,12 +71,12 @@ public class PKInitializer extends TableInitilizer {
     }
 
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean load(String file) {
         return false;
     }
 
     @Override
-    protected void store(String file_path) throws IOException {
+    protected void store(String file_path) {
 
     }
 
@@ -110,7 +110,7 @@ public class PKInitializer extends TableInitilizer {
         return new RecordSchema(fieldNames, dataBoxes);
     }
 
-    public void creates_Table() {
+    public void creates_Table(Configuration config) {
         RecordSchema s = MachineTableSchema();
         db.createTable(s, "machine");
     }

@@ -1,4 +1,4 @@
-package applications.bolts.mb;
+package applications.bolts.gs;
 
 
 import applications.param.mb.MicroEvent;
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_states_partition;
 import static engine.profiler.Metrics.MeasureTools.*;
 
@@ -22,11 +21,11 @@ import static engine.profiler.Metrics.MeasureTools.*;
 /**
  * Different from OLB, each executor in SStore has an associated partition id.
  */
-public class Bolt_sstore extends Bolt_LA {
-    private static final Logger LOG = LoggerFactory.getLogger(Bolt_sstore.class);
+public class GSBolt_sstore extends GSBolt_LA {
+    private static final Logger LOG = LoggerFactory.getLogger(GSBolt_sstore.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
-    public Bolt_sstore(int fid) {
+    public GSBolt_sstore(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }
@@ -50,7 +49,9 @@ public class Bolt_sstore extends Bolt_LA {
     }
 
     @Override
-    protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
+    protected void LAL_PROCESS(long _bid) throws DatabaseException {
+
+
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
@@ -61,12 +62,8 @@ public class Bolt_sstore extends Bolt_LA {
             LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
-            boolean flag = event.READ_EVENT();
-            if (flag) {//read
-                read_lock_ahead(event, txn_context[(int) (i - _bid)]);
-            } else {
-                write_lock_ahead(event, txn_context[(int) (i - _bid)]);
-            }
+
+            LAL(event, i, _bid);
 
             long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
 

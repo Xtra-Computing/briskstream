@@ -9,8 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
-import static applications.CONTROL.enable_admission_control;
-import static applications.CONTROL.enable_debug;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -54,24 +53,27 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     public abstract void nextTuple() throws InterruptedException;
 
 
-    int bt = 1;
+//    int bt = 0;
 
     /**
      * THIS IS USED ONLY WHEN "enable_app_combo" is true.
      * <p>
      * Everytime, a thread emits "batch_size" batches, it emits a signal to trigger txn processing.
+     *
+     * @param counter
      */
     @Override
-    public boolean checkpoint() {
+    public boolean checkpoint(int counter) {
         boolean rt = false;
-        if (bt % batch_number_per_wm == 0) {
+        if (counter % batch_number_per_wm == 0) {
 //            myiteration++;
 //            success = false;
             rt = true;
         }
-        bt++;
         return rt;
     }
+
+
 
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {

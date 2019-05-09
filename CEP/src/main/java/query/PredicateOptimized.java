@@ -314,12 +314,9 @@ public class PredicateOptimized {
 				evl.putVariable(tempOperand.getOriginalRepresentation(), ""+currentEvent.getAttributeByName(tempAttributeName));
 			}
 		}
-		
 
-		if("1.0".equalsIgnoreCase( evl.evaluate(this.formatedPredicate)))
-		   return true;
-		else
-			return false;
+
+        return "1.0".equalsIgnoreCase(evl.evaluate(this.formatedPredicate));
 	}
 	/**
 	 * Evaluates an event against the predicate
@@ -353,14 +350,9 @@ public class PredicateOptimized {
 				evl.putVariable(tempOperand.getOriginalRepresentation(), ""+r.getNeededValueVector(stateNumber - 1, tempAttributeName, tempOperand.getAggregation()));
 			}
 			}
-		
-		
-		
 
-		if("1.0".equalsIgnoreCase( evl.evaluate(this.formatedPredicate)))
-		   return true;
-		else
-			return false;
+
+        return "1.0".equalsIgnoreCase(evl.evaluate(this.formatedPredicate));
 	}
 	/**
 	 * @return the predicateDescription

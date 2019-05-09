@@ -75,7 +75,7 @@ public class SOURCE_CONTROL {
         return Collections.min(iteration.values());
     }
 
-    public void Wait_Start(int thread_Id) throws InterruptedException {
+    public void Wait_Start(int thread_Id) {
 //        this.wm.incrementAndGet();
 //        //busy waiting
 //        while (!this.wm.compareAndSet(this.number_threads, 0)) {
@@ -102,7 +102,7 @@ public class SOURCE_CONTROL {
 //        assert barrier.getNumberWaiting() == 0;
     }
 
-    public void Wait_End(int thread_Id) throws InterruptedException {
+    public void Wait_End(int thread_Id) {
 //        this.wm.incrementAndGet();
 //        //busy waiting
 //        while (!this.wm.compareAndSet(this.number_threads, 0)) {

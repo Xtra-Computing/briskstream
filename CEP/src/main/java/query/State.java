@@ -170,7 +170,7 @@ public class State {
 	 */
 	public String replaceLeftStateNumber(String original){
 		int dotPosition = original.indexOf('.');
-		return original.substring(dotPosition + 1, original.length());
+		return original.substring(dotPosition + 1);
 	}
 	/**
 	 * Used to replace the state number of the right operand
@@ -301,12 +301,9 @@ public class State {
 			
 			return false;
 		}
-		if(this.edges[0].evaluatePredicate(e,e)){
-			return true;
-		}
-		return false;
-		
-	}
+        return this.edges[0].evaluatePredicate(e, e);
+
+    }
 
 	
 	

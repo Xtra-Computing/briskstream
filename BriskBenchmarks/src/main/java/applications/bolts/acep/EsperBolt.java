@@ -213,6 +213,8 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
         this.epService.getEPRuntime().sendEvent(tuplesper, tuple.getSourceComponent() + "_" + tuple.getSourceStreamId());
     }
 
+
+
     /**
      * {@inheritDoc}
      */
@@ -254,11 +256,6 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
         }
     }
 
-
-    @Override
-    public void prepareEvents() {
-
-    }
 
     class EsperBoltException extends Exception {
 

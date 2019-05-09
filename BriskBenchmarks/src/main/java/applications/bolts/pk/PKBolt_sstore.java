@@ -55,75 +55,75 @@ public class PKBolt_sstore extends PKBolt {
         }
 
     }
-
-    private void event_handle(long[] bid, Set<Integer> deviceID) throws DatabaseException, InterruptedException {
-
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-        txn_context = new TxnContext(thread_Id, this.fid, bid, -1);
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        PKEvent event = generatePKEvent(-1, deviceID, value);
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
-
-        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-
-        for (Integer key : event.getKey()) {
-            int p = key_to_partition(key);
-            transactionManager.getOrderLock(p).blocking_wait(bid[p]);//ensures that locks are added in the event sequence order.
-        }
-
-        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-        PK_request_lock_ahead(event, this.fid);
-        long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
-
-        for (Integer key : event.getKey()) {
-            int p = key_to_partition(key);
-            transactionManager.getOrderLock(p).advance();//ensures that locks are added in the event sequence order.
-        }
-
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
-
-        BEGIN_TP_TIME_MEASURE(thread_Id);
-        PK_request(event, this.fid);
-        END_TP_TIME_MEASURE(thread_Id);
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-        PK_core(event);
-        END_COMPUTE_TIME_MEASURE(thread_Id);
-
-        transactionManager.CommitTransaction(txn_context);//always success..
-
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
-
-    }
-
-
-    /**
-     * @param event
-     * @throws DatabaseException
-     */
-    private boolean PK_request_lock_ahead(@NotNull PKEvent event, int fid) throws DatabaseException {
-        boolean flag = true;
-        int i = 0;
-        for (Integer key : event.getKey()) {
-            flag &= transactionManager.lock_ahead(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i++), READ_WRITE);// read the list value_list, and return.
-        }
-        return flag;
-    }
-
-    /**
-     * @param event
-     * @throws DatabaseException
-     */
-    private boolean PK_request(@NotNull PKEvent event, int fid) throws DatabaseException {
-        boolean flag = true;
-        int i = 0;
-        for (Integer key : event.getKey())
-            flag &= transactionManager.SelectKeyRecord_noLock(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i++), READ_WRITE);// read the list value_list, and return.
-        return flag;
-    }
+//
+//    private void event_handle(long[] bid, Set<Integer> deviceID) throws DatabaseException, InterruptedException {
+//
+//        //begin transaction processing.
+//        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
+//        txn_context = new TxnContext(thread_Id, this.fid, bid, -1);
+//
+//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//        PKEvent event = generatePKEvent(-1, deviceID, value);
+//        END_PREPARE_TIME_MEASURE(thread_Id);
+//
+//
+//        BEGIN_WAIT_TIME_MEASURE(thread_Id);
+//
+//        for (Integer key : event.getKey()) {
+//            int p = key_to_partition(key);
+//            transactionManager.getOrderLock(p).blocking_wait(bid[p]);//ensures that locks are added in the event sequence order.
+//        }
+//
+//        BEGIN_LOCK_TIME_MEASURE(thread_Id);
+//        PK_request_lock_ahead(event, this.fid);
+//        long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
+//
+//        for (Integer key : event.getKey()) {
+//            int p = key_to_partition(key);
+//            transactionManager.getOrderLock(p).advance();//ensures that locks are added in the event sequence order.
+//        }
+//
+//        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+//
+//        BEGIN_TP_TIME_MEASURE(thread_Id);
+//        PK_request(event, this.fid);
+//        END_TP_TIME_MEASURE(thread_Id);
+//
+//        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+//        PK_core(event);
+//        END_COMPUTE_TIME_MEASURE(thread_Id);
+//
+//        transactionManager.CommitTransaction(txn_context);//always success..
+//
+//        END_TRANSACTION_TIME_MEASURE(thread_Id);
+//
+//    }
+//
+//
+//    /**
+//     * @param event
+//     * @throws DatabaseException
+//     */
+//    private boolean PK_request_lock_ahead(@NotNull PKEvent event, int fid) throws DatabaseException {
+//        boolean flag = true;
+//        int i = 0;
+//        for (Integer key : event.getKey()) {
+//            flag &= transactionManager.lock_ahead(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i++), READ_WRITE);// read the list value_list, and return.
+//        }
+//        return flag;
+//    }
+//
+//    /**
+//     * @param event
+//     * @throws DatabaseException
+//     */
+//    private boolean PK_request(@NotNull PKEvent event, int fid) throws DatabaseException {
+//        boolean flag = true;
+//        int i = 0;
+//        for (Integer key : event.getKey())
+//            flag &= transactionManager.SelectKeyRecord_noLock(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i++), READ_WRITE);// read the list value_list, and return.
+//        return flag;
+//    }
 
 
     @Override
@@ -131,7 +131,7 @@ public class PKBolt_sstore extends PKBolt {
         String componentId = context.getThisComponentId();
         long[] partitionBID = in.getPartitionBID();
         Set<Integer> deviceID = (Set<Integer>) in.getValue(0);
-        event_handle(partitionBID, deviceID);//calculate moving average.
+//        event_handle(partitionBID, deviceID);//calculate moving average.
     }
 
 }

@@ -2,7 +2,7 @@ package applications.topology.transactional;
 
 
 import applications.bolts.acep.EsperBolt;
-import applications.constants.MicroBenchmarkConstants.Component;
+import applications.constants.GrepSumConstants.Component;
 import applications.topology.transactional.initializer.MBInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;
 import applications.util.Configuration;
@@ -17,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-import static applications.constants.MicroBenchmarkConstants.Conf.INSERTOR_THREADS;
-import static applications.constants.MicroBenchmarkConstants.PREFIX;
+import static applications.constants.GrepSumConstants.Conf.INSERTOR_THREADS;
+import static applications.constants.GrepSumConstants.PREFIX;
 
 
 public class ACEP extends TransactionTopology {
@@ -50,7 +50,7 @@ public class ACEP extends TransactionTopology {
         int tthread = config.getInt("tthread");
 
         TableInitilizer ini = new MBInitializer(db, scale_factor, theta, tthread, config);
-        ini.creates_Table();
+        ini.creates_Table(config);
 
         ini.loadData_Central(scale_factor, theta);
         return ini;

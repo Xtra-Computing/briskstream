@@ -3,6 +3,7 @@ package applications.util.hash;
 import org.apache.hadoop.util.bloom.CountingBloomFilter;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -67,11 +68,7 @@ public class ODTDBloomFilter {
     // than performing further iterations of murmur.
     public static int[] getHashBuckets(String item, int hashCount, int max) {
         byte[] b;
-        try {
-            b = item.getBytes("UTF-16");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        b = item.getBytes(StandardCharsets.UTF_16);
         int[] result = new int[hashCount];
         int hash1 = hasher.hash(b, b.length, 0);
         int hash2 = hasher.hash(b, b.length, hash1);

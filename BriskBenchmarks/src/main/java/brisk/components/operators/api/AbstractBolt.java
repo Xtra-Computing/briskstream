@@ -61,9 +61,8 @@ public abstract class AbstractBolt extends Operator {
      * used for ordered execution.
      *
      * @param in
-     * @throws InterruptedException
      */
-    public void _execute(Tuple in) throws InterruptedException {
+    public void _execute(Tuple in) {
 
     }
 
@@ -71,9 +70,8 @@ public abstract class AbstractBolt extends Operator {
      * used for ordered execution.
      *
      * @param in
-     * @throws InterruptedException
      */
-    public void _execute(JumboTuple in) throws InterruptedException {
+    public void _execute(JumboTuple in) {
 
     }
 

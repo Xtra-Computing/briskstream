@@ -322,10 +322,9 @@ public class Engine {
 	 * This method will iterate all existing runs for the current event, for skip-till-any-match.
 	 * @param e The current event which is being evaluated.
 	 * @throws CloneNotSupportedException
-	 * @throws EvaluationException
-	 */
+     */
 		
-		public void evaluateRunsForSkipTillAny(Event e) throws CloneNotSupportedException, EvaluationException{
+		public void evaluateRunsForSkipTillAny(Event e) throws CloneNotSupportedException {
 			int size = this.activeRuns.size();
 			for(int i = 0; i < size; i ++){
 				Run r = this.activeRuns.get(i);
@@ -339,10 +338,9 @@ public class Engine {
 		 * This method will iterate all existing runs for the current event, for skip-till-next-match.
 		 * @param e The current event which is being evaluated.
 		 * @throws CloneNotSupportedException
-		 * @throws EvaluationException
-		 */
+         */
 			
-			public void evaluateRunsForSkipTillNext(Event e) throws CloneNotSupportedException, EvaluationException{
+			public void evaluateRunsForSkipTillNext(Event e) throws CloneNotSupportedException {
 				int size = this.activeRuns.size();
 				for(int i = 0; i < size; i ++){
 					Run r = this.activeRuns.get(i);
@@ -356,9 +354,8 @@ public class Engine {
 			 * This method will iterate all existing runs for the current event, for queries with a negation component.
 			 * @param e The current event which is being evaluated.
 			 * @throws CloneNotSupportedException
-			 * @throws EvaluationException
-			 */
-			public void evaluateRunsForNegation(Event e) throws CloneNotSupportedException, EvaluationException{
+             */
+			public void evaluateRunsForNegation(Event e) throws CloneNotSupportedException {
 				int size = this.activeRuns.size();
 				for(int i = 0; i < size; i ++){
 					Run r = this.activeRuns.get(i);
@@ -393,9 +390,8 @@ public class Engine {
 		/**
 		 * This method will iterate runs in the same partition for the current event, for skip-till-next-match
 		 * @param e The current event which is being evaluated.
-		 * @throws CloneNotSupportedException
-		 */
-			public void evaluateRunsByPartitionForSkipTillNext(Event e) throws CloneNotSupportedException{
+         */
+			public void evaluateRunsByPartitionForSkipTillNext(Event e) {
 				int key = e.getAttributeByName(ConfigFlags.partitionAttribute);
 				if(this.activeRunsByPartition.containsKey(key)){
 					ArrayList<Run> partitionedRuns = this.activeRunsByPartition.get(key);
@@ -530,9 +526,8 @@ public class Engine {
 	 * If the selection strategy is partition-contiguity, this method is called, and it evaluates the event for a given run
 	 * @param e The current event which is being evaluated
 	 * @param r The run against which the evaluation goes
-	 * @throws CloneNotSupportedException
-	 */
-	public void evaluateEventForPartitonContiguityOptimized(Event e, Run r) throws CloneNotSupportedException{
+     */
+	public void evaluateEventForPartitonContiguityOptimized(Event e, Run r) {
 		int checkResult = this.checkPredicateOptimized(e, r);
 		switch(checkResult){
 			case 0: 
@@ -882,9 +877,8 @@ public class Engine {
 	 * Creates a new run containing the input event and adds the new run to the corresponding partition
 	 * @param e The current event
 	 * @throws EvaluationException
-	 * @throws CloneNotSupportedException
-	 */
-	public void createNewRunByPartition(Event e) throws EvaluationException, CloneNotSupportedException{
+     */
+	public void createNewRunByPartition(Event e) throws EvaluationException {
 		if(this.nfa.getStates()[0].canStartWithEvent(e)){
 			this.buffer.bufferEvent(e);
 			Run newRun = this.engineRunController.getRun();
@@ -988,34 +982,24 @@ public class Engine {
 			boolean result;
 			//result = firstEdge.evaluatePredicate(e, r, buffer);
 			result = beginEdge.evaluatePredicate(e, r, buffer);//
-			if(result){
-				return true;
-			}
+            return result;
 		}else{
 			if(r.isKleeneClosureInitialized()){
 				Edge takeEdge = s.getEdges(1);
 				boolean result;
 				result = takeEdge.evaluatePredicate(e, r, buffer);
-				if(result){
-					return true;
-				}
+                return result;
 			}else{
 				Edge beginEdge = s.getEdges(0);
 				boolean result;
 				
 				result = beginEdge.evaluatePredicate(e, r, buffer);//
-				if(result){
-					return true;
-				}
+                return result;
 			}
 		}
-		
 
-		
-		return false;	
-		
-		
-	}
+
+    }
 	/**
 	 * Checks whether the event satisfies the partition of a run, only used under partition-contiguity selection strategy
 	 * @param e the current event
@@ -1023,12 +1007,9 @@ public class Engine {
 	 * @return the check result, boolean format
 	 */
 	public boolean checkPartition(Event e, Run r){
-		
-		if(r.getPartitonId() == e.getAttributeByName(this.nfa.getPartitionAttribute())){
-			return true;
-		}
-		return false;
-	}
+
+        return r.getPartitonId() == e.getAttributeByName(this.nfa.getPartitionAttribute());
+    }
 	
 	/**
 	 * Checks whether a kleene closure state can proceed to the next state
@@ -1048,20 +1029,13 @@ public class Engine {
 		Edge proceedEdge = s.getEdges(2);
 		boolean result;
 		result = proceedEdge.evaluatePredicate(previousEvent, r, buffer);//
-		if(result){
-			return true;
-		}
-		
-		return false;	
-		
-	}
+        return result;
+
+    }
 	
 	public boolean checkNegation(Event e) throws EvaluationException{
-		if(this.nfa.getNegationState().canStartWithEvent(e)){
-			return true;
-		}
-		return false;
-	}
+        return this.nfa.getNegationState().canStartWithEvent(e);
+    }
 
 	public void indexNegationByPartition(Event e){
 		int id = e.getAttributeByName(this.nfa.getPartitionAttribute());
@@ -1125,11 +1099,8 @@ public class Engine {
  */
 
 	public boolean checkTimeWindow(Event e, Run r){
-		if((e.getTimestamp() - r.getStartTimeStamp()) <= this.nfa.getTimeWindow()){
-			return true;
-		}
-		return false;
-	}
+        return (e.getTimestamp() - r.getStartTimeStamp()) <= this.nfa.getTimeWindow();
+    }
 
 	
 

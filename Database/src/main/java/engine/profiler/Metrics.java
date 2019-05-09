@@ -331,7 +331,7 @@ public class Metrics {
 
         public static void END_TP_SUBMIT_TIME_MEASURE(int thread_id, int size) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
-                tp_submit[thread_id] = (double) (System.nanoTime() - tp_submit_start[thread_id]) / size;
+                tp_submit[thread_id] = (double) (System.nanoTime() - tp_submit_start[thread_id]);
             }
         }
 
@@ -356,7 +356,7 @@ public class Metrics {
 
         public static void END_TP_CORE_TIME_MEASURE_TS(int thread_id, int size) {
             if (CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
-                tp_core[thread_id] = (System.nanoTime() - tp_core_start[thread_id] - tp_submit[thread_id]) / size;
+                tp_core[thread_id] = (System.nanoTime() - tp_core_start[thread_id] - tp_submit[thread_id]);
             }
         }
 
@@ -424,9 +424,12 @@ public class Metrics {
             if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 end_time = System.nanoTime();
 
-                txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]) - post_time[thread_id]);//note, post time of TStream is embedded.
 
-                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] - post_time[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
+                pre_txn_total[thread_id] -= post_time[thread_id];//need to exclude write-post time.
+
+                txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]));
+
+                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
 //                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
@@ -446,8 +449,8 @@ public class Metrics {
                 long overall_processing_time_per_wm = end_time - stream_start[thread_id];//time from receiving first event to finish last event in the current batch.
                 metrics.stream_total[thread_id].addValue((overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
-                metrics.average_tp_core[thread_id].addValue(tp_core[thread_id]);
-                metrics.average_tp_submit[thread_id].addValue(tp_submit[thread_id]);
+                metrics.average_tp_core[thread_id].addValue(tp_core[thread_id] / txn_size);
+                metrics.average_tp_submit[thread_id].addValue(tp_submit[thread_id] / txn_size);
                 metrics.average_txn_construct[thread_id].addValue((double) pre_txn_total[thread_id] / txn_size);
                 metrics.average_tp_w_syn[thread_id].addValue((double) tp[thread_id] / txn_size);
 

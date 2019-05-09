@@ -46,7 +46,7 @@ public class LeaderBoard extends TransactionTopology {
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
         TableInitilizer ini = new LBInitializer(db, scale_factor, theta, tthread, config);
-        ini.creates_Table();
+        ini.creates_Table(config);
         int numContestants = VoterSStoreExampleUtil.getScaledNumContestants(this.getScaleFactor());
         ini.loadDB(numContestants, VoterSStoreExampleConstants.CONTESTANT_NAMES_CSV);
         return ini;

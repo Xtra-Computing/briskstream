@@ -16,7 +16,7 @@ public class HashSetDataBox extends DataBox {
     }
 
     public HashSetDataBox(HashSet set) {
-        this.set = new HashSet(set);
+        this.set = set;
     }
 
 

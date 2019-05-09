@@ -31,6 +31,7 @@ import java.util.*;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
 import static applications.constants.OnlineBidingSystemConstants.Constant.*;
+import static applications.topology.transactional.State.configure_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
 import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
@@ -43,6 +44,7 @@ public class OBInitializer extends TableInitilizer {
 
     public OBInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
+        configure_store(scale_factor, theta, tthread, NUM_ITEMS);
     }
 
     @Override
@@ -228,8 +230,7 @@ public class OBInitializer extends TableInitilizer {
 
         randomkeys(pid, param, keys, access_per_partition, counter, NUM_ACCESSES_PER_BUY);
 
-        if (enable_states_partition)
-            assert verify(keys, partition_id, number_of_partitions);
+        assert !enable_states_partition || verify(keys, partition_id, number_of_partitions);
 
         return new BuyingEvent(param.keys(), rnd, partition_id, bid_array, bid, number_of_partitions);
     }
@@ -434,11 +435,11 @@ public class OBInitializer extends TableInitilizer {
         w.close();
     }
 
-    public void creates_Table() {
+    public void creates_Table(Configuration config) {
         RecordSchema s = Goods();
         db.createTable(s, "goods");
         try {
-            prepare_input_events("OB_events");
+            prepare_input_events("OB_events", false);
         } catch (IOException e) {
             e.printStackTrace();
         }

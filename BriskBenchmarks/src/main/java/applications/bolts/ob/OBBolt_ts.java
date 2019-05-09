@@ -1,12 +1,14 @@
 package applications.bolts.ob;
 
 
+import applications.param.TxnEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
+import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
@@ -22,17 +24,15 @@ import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.enable_latency_measurement;
-import static applications.CONTROL.enable_profile;
+import static applications.CONTROL.*;
 import static applications.constants.OnlineBidingSystemConstants.Constant.NUM_ACCESSES_PER_BUY;
 import static engine.profiler.Metrics.MeasureTools.*;
-
+import static engine.profiler.Metrics.NUM_ITEMS;
 public class OBBolt_ts extends OBBolt {
     private static final long serialVersionUID = -589295586738474236L;
     private static final Logger LOG = LoggerFactory.getLogger(OBBolt_ts.class);
     private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
 
-    boolean flag = true;
     private int thisTaskId;
     private final ArrayDeque<BuyingEvent> buyingEvents = new ArrayDeque<>();
     private int alertEvents = 0, toppingEvents = 0;
@@ -44,52 +44,10 @@ public class OBBolt_ts extends OBBolt {
     }
 
     @Override
-    protected void buy_handle(BuyingEvent event, Long timestamp) throws DatabaseException {
-
-        BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
-
-        buy_request(event, this.fid, event.getBid());
-
-        buyingEvents.add(event);
-
-        END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
-
-    }
-
-    @Override
-    protected void altert_handle(AlertEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-
-        alert_request(event, this.fid, event.getBid());
-
-        if (enable_profile) {
-            alertEvents++;//just for record purpose.
-        }
-
-        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
-
-
-        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
-    }
-
-    @Override
-    protected void topping_handle(ToppingEvent event, Long timestamp) throws DatabaseException, InterruptedException {
-        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
-
-        topping_request(event, this.fid, event.getBid());
-        if (enable_profile) {
-            toppingEvents++;//just for record purpose.
-        }
-        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
-
-        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
-    }
-
-    @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         this.thisTaskId = thread_Id;
         super.initialize(thread_Id, thisTaskId, graph);
-        transactionManager = new TxnManagerTStream(config, db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
+        transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_ITEMS, this.context.getThisComponent().getNumTasks());
 
 
     }
@@ -99,21 +57,33 @@ public class OBBolt_ts extends OBBolt {
         loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
 
+    private void TOPPING_REQUEST_CONSTRUCT(ToppingEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+        //it simply construct the operations and return.
+        for (int i = 0; i < event.getNum_access(); i++)
+            transactionManager.Asy_ModifyRecord(txnContext, "goods", String.valueOf(event.getItemId()[i]), new INC(event.getItemTopUp()[i]), 2);//asynchronously return.
+        BEGIN_POST_TIME_MEASURE(thread_Id);
+        TOPPING_REQUEST_POST(event);
+        END_POST_TIME_MEASURE_ACC(thread_Id);
+        toppingEvents++;
+    }
 
-    /**
-     * @param event
-     * @param fid
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void buy_request(BuyingEvent event, int fid, long bid) throws DatabaseException {
-        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
+    private void ALERT_REQUEST_CONSTRUCT(AlertEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+        //it simply construct the operations and return.
+        for (int i = 0; i < event.getNum_access(); i++)
+            transactionManager.Asy_WriteRecord(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.getAsk_price()[i], 1);//asynchronously return.
+        BEGIN_POST_TIME_MEASURE(thread_Id);
+        ALERT_REQUEST_POST(event);
+        END_POST_TIME_MEASURE_ACC(thread_Id);
+        alertEvents++;
+    }
+
+    private void BUYING_REQUEST_CONSTRUCT(BuyingEvent event, TxnContext txnContext) throws DatabaseException {
         //it simply construct the operations and return.
         for (int i = 0; i < NUM_ACCESSES_PER_BUY; i++) {
             //it simply constructs the operations and return.
             //condition on itself.
             transactionManager.Asy_ModifyRecord(//TODO: add atomicity preserving later.
-                    txn_context,
+                    txnContext,
                     "goods",
                     String.valueOf(event.getItemId()[i]),
                     new DEC(event.getBidQty(i)),
@@ -121,89 +91,106 @@ public class OBBolt_ts extends OBBolt {
                     event.success
             );
         }
-    }
 
-    /**
-     * alert price of an item.
-     *
-     * @param event
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void alert_request(AlertEvent event, int fid, long bid) throws DatabaseException {
-
-        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
-        //it simply construct the operations and return.
-        for (int i = 0; i < event.getNum_access(); i++)
-            transactionManager.Asy_WriteRecord(txn_context, "goods", String.valueOf(event.getItemId()[i]), event.getAsk_price()[i], 1);//asynchronously return.
-    }
-
-    /**
-     * No return is required.
-     *
-     * @param event
-     * @param bid
-     * @throws DatabaseException
-     */
-    private void topping_request(ToppingEvent event, int fid, long bid) throws DatabaseException {
-
-        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
-        //it simply construct the operations and return.
-        for (int i = 0; i < event.getNum_access(); i++)
-            transactionManager.Asy_ModifyRecord(txn_context, "goods", String.valueOf(event.getItemId()[i]), new INC(event.getItemTopUp()[i]), 2);//asynchronously return.
+        buyingEvents.add(event);
     }
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
-        long bid = in.getBID();
         if (in.isMarker()) {
+
+            int readSize = buyingEvents.size();
 
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
-            transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
-            END_TP_TIME_MEASURE(thread_Id);
 
-            this.collector.ack(in, null);//tell spout, please emit earlier!
+            transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
+
+            END_TP_TIME_MEASURE(thread_Id);// total TP time.
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
-            //Perform computation on each event and emit.
-            for (BuyingEvent event : buyingEvents) {
+            BUYING_REQUEST_CORE();
 
-                // measure_end the preconditions
-                if (event.success[0]) {
-                    collector.force_emit(event.getBid(), new BidingResult(event, true), event.getTimestamp());
-                } else {
-                    collector.force_emit(event.getBid(), new BidingResult(event, false), event.getTimestamp());
-                }
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, alertEvents + toppingEvents);//total compute time.
+
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+
+
+//            BEGIN_POST_TIME_MEASURE(thread_Id);
+            BUYING_REQUEST_POST();
+//            END_POST_TIME_MEASURE_ACC(thread_Id);
+
+            if (!enable_app_combo) {
+                final Marker marker = in.getMarker();
+                this.collector.ack(in, marker);//tell spout it has finished transaction processing.
+            } else {
+
             }
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, buyingEvents.size(), alertEvents + toppingEvents);
+            //post_process for events left-over.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+            END_TOTAL_TIME_MEASURE_TS(thread_Id, readSize + alertEvents + toppingEvents);
 
-            END_TOTAL_TIME_MEASURE_TS(thread_Id, buyingEvents.size() + alertEvents + toppingEvents);
-
-            buyingEvents.clear();//all tuples in the holder is finished.
-            if (enable_profile) {
-                alertEvents = 0;//all tuples in the holder is finished.
+            buyingEvents.clear();//all tuples in the EventsHolder are finished.
+            if (enable_profile) {//all tuples in the holder are finished.
+                alertEvents = 0;
                 toppingEvents = 0;
             }
 
         } else {
-
-            Long timestamp;//in.getLong(1);
-            if (enable_latency_measurement) {
-                timestamp = in.getLong(0);
-            } else {
-                timestamp = 0L;//
-            }
-
-            Object event = db.eventManager.get((int) bid);
-
-            auth(bid, timestamp);//do nothing for now..
-            dispatch_process(event, timestamp);
+            execute_ts_normal(in);
         }
+    }
+
+
+    protected long PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
+        BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
+
+        for (long i = _bid; i < _bid + combo_bid_size; i++) {
+
+            TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
+            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+
+            (event).setTimestamp(timestamp);
+
+            if (event instanceof BuyingEvent) {
+                BUYING_REQUEST_CONSTRUCT((BuyingEvent) event, txnContext);
+            } else if (event instanceof AlertEvent) {
+
+                ALERT_REQUEST_CONSTRUCT((AlertEvent) event, txnContext);
+
+            } else {
+                TOPPING_REQUEST_CONSTRUCT((ToppingEvent) event, txnContext);
+            }
+        }
+
+        return END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
+
+    }
+
+
+    private void BUYING_REQUEST_POST() throws InterruptedException {
+        for (BuyingEvent event : buyingEvents) {
+            BUYING_REQUEST_POST(event);
+        }
+    }
+
+    private void BUYING_REQUEST_CORE() {
+        for (BuyingEvent event : buyingEvents) {
+            BUYING_REQUEST_CORE(event);
+        }
+    }
+
+    /**
+     * Evaluation are pushed down..
+     *
+     * @param event
+     */
+    @Override
+    protected void BUYING_REQUEST_CORE(BuyingEvent event) {
+        //measure_end if any item is not able to buy.
+        event.biding_result = new BidingResult(event, event.success[0]);
     }
 }

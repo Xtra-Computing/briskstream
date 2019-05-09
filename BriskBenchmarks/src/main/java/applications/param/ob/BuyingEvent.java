@@ -1,5 +1,6 @@
 package applications.param.ob;
 
+import applications.bolts.ob.BidingResult;
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 
@@ -16,6 +17,7 @@ public class BuyingEvent extends TxnEvent {
 
     //updated state...to be written.
     public long newQty;
+    public BidingResult biding_result;
 
     //expected state.
     //long Item_value=0;

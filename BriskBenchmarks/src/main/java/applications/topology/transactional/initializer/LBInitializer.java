@@ -42,7 +42,7 @@ public class LBInitializer extends TableInitilizer {
             "AK", "AL", "AL", "AL", "AL", "AR", "AR", "AR", "AZ", "AZ", "AZ", "AZ", "AZ", "CA", "CA",
             "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA",
             "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA", "CA",
-            "CA", "CA", "CA", "CA", "CO", "CO", "CO", "CO", "CT", "CT", "CT", "CT", "DC", "DE", "FL",
+            "CA", "CA", "CA", "CA", "CO", "CO", "CO", "CO", "SL", "SL", "SL", "SL", "DC", "DE", "FL",
             "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL", "FL",
             "FL", "FL", "FL", "GA", "GA", "GA", "GA", "GA", "GA", "GA", "GA", "GA", "HI", "IA", "IA",
             "IA", "IA", "IA", "ID", "IL", "IL", "IL", "IL", "IL", "IL", "IL", "IL", "IL", "IL", "IL",
@@ -326,7 +326,7 @@ public class LBInitializer extends TableInitilizer {
         db.createTable(s, "votes_count");
     }
 
-    public void creates_Table() {
+    public void creates_Table(Configuration config) {
         votes_countTable();
         contestantsTable();
         area_code_stateTable();
@@ -354,12 +354,12 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean load(String file) {
         return false;
     }
 
     @Override
-    protected void store(String file_path) throws IOException {
+    protected void store(String file_path) {
 
     }
 

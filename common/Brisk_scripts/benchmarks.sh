@@ -23,8 +23,8 @@ function local_execution {
         #require: $argument $path $input $bt $Profile $arg_application $app $machine $num_socket $num_cpu $hz
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 #killall -9 java
-#clean_cache
-        JVM_args_local="-Xms25g -Xmx50g -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
+#clean_cache -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+        JVM_args_local="-Xms25g -Xmx50g" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
 			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application >> $path/$tt\_$TP.txt		&
@@ -170,7 +170,7 @@ function multi_partition_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
-function CrossTables_test {
+function StreamLedger_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
@@ -204,7 +204,7 @@ function OnlineBiding_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
-function CrossTables_breakdown {
+function StreamLedger_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --measure" #
@@ -245,11 +245,11 @@ function clean_cache {
 output=test.csv
 # Generate a timestamp
 timestamp=$(date +%Y%m%d-%H%M)
-FULL_SPEED_TEST=("TP" "PositionKeeping" "CrossTables" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
-FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Read_Write_Mixture"  #" # "Write_Intensive" "Read_Write_Mixture" #"CrossTables" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "CrossTablesBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+FULL_SPEED_TEST=("TP" "PositionKeeping" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
+FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
+for benchmark in "StreamLedger" "OnlineBiding" "TP_Txn"  #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
-    app="MicroBenchmark"
+    app="GrepSum"
     machine=3 #RTM.
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
@@ -277,15 +277,216 @@ do
     number_partitions=-1 #no partitions.
     NUM_ITEMS=10000 #smaller means higher contention! 1000 or 10_000 or 100_000
         case "$benchmark" in
+            "StreamLedger") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="StreamLedger"
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.6
+                    do
+                        for tt in 1 5 10 15 20 25 30 35 40 #30 35
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                         done
+                        for tt in 1 5 10 15 20 25 30 35 40
+                        do
+                            for CCOption in 1 2 4 #1 2 4
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done # Threads/Cores
+                        for tt in 40
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 1 2
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1 #2 1 0.1 0.01 0.001
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+#                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                         done
+                    done #Theta
+                done #Input Hz
+                ;;
+            "OnlineBiding") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="OnlineBiding"
+                NUM_ITEMS=10000
+                ratio_of_multi_partition=0.75
+                number_partitions=10
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.6 #biding is contented..?
+                    do
+                        for tt in 1 5 10 15 20 25 30 35 40 #1 5 10 15 20 25
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done
+                        for tt in 1 5 10 15 20 25 30 35 40 #1 5 10 15 20 25
+                        do
+                            for CCOption in 1 2 4
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        for checkpoint in 1
+                                        do
+                                             TP=$tt
+                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done # Threads/Cores
+                        for tt in 35
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        for checkpoint in 2 1 0.1 0.01 0.001
+                                        do
+                                            TP=$tt
+#                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done
+                    done #Theta
+                done #Input Hz
+                ;;
+            "TP_Txn") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="TP_Txn"
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.6
+                    do
+                        for tt in 1 5 10 15 20 25 30 35 40
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1
+                                        do
+                                            ratio_of_multi_partition=0.5
+                                            number_partitions=4
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done
+                        for tt in 1 5 10 15 20 25 30 35 40
+                        do
+                            for CCOption in 1 2 4
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 1
+                                        do
+                                            ratio_of_multi_partition=0.5
+                                            number_partitions=4
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done # Threads/Cores
+                        for tt in 35
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 1
+                                do
+                                    for ratio_of_read in 1
+                                    do
+                                        TP=$tt
+                                        for checkpoint in 2 1 0.1 0.01 0.001 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
+                                        do
+                                            ratio_of_multi_partition=1
+                                            number_partitions=4
+#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                        done
+                                    done
+                                done
+                            done
+                        done
+                    done #Theta
+                done #Input Hz
+                ;;
             "Read_Only")
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0
                     do
-                        for tt in 38 #32 24 16 8 2
+                        for tt in 1 5 10 15 20 25 30 35
                         do
-                            for CCOption in 0 1 2
+                            for CCOption in 1 2
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -382,30 +583,11 @@ do
             "Read_Write_Mixture") # GS
                 for hz in "${HZ[@]}"
                 do
-                    for complexity in 1 5
+                    for complexity in 5 ## fixed.
                     do
                     for theta in 0.6
                     do
-#                        for tt in 1 5 10 15 20 25 30 35 39 # This is the best you can do.. the case of perfect pre-partitioning.
-#                        do
-#                            for CCOption in 4
-#                            do
-#                                for NUM_ACCESS in 10 #8 6 4 2 1
-#                                do
-#                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
-#                                    do
-#                                        for checkpoint in 1
-#                                        do
-#                                            TP=$tt
-#                                            ratio_of_multi_partition=0
-#                                            number_partitions=1
-#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
-#                                        done
-#                                    done
-#                                done
-#                            done
-#                        done # Threads/Cores
-#                        for tt in 1 5 10 15 20 25 30 35 39
+#                        for tt in 1 5 10 15 20 25 30 35
 #                        do
 #                            for CCOption in 0 1 2 4
 #                            do
@@ -424,7 +606,7 @@ do
 #                                done
 #                            done
 #                        done
-                        for tt in 5 #1 5 10 15 20 25 30 35 39
+                        for tt in 1 5 10 15 20 25 30 35
                         do
                             for CCOption in 3
                             do
@@ -652,464 +834,9 @@ do
                     done #Input Hz
                 done #varying DB size.
                 ;;
-            "TP_Txn") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="TP_Txn"
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 1 38 #2 8 16 24 32
-                        do
-                            #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
-                            do
-                                for NUM_ACCESS in 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        TP=$tt
-                                        for checkpoint in 0.01 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
-                                        do
-                                            ratio_of_multi_partition=1
-                                            number_partitions=4
-                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                            for CCOption in 1 #2 #4
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        TP=$tt
-                                        for checkpoint in 1
-                                        do
-                                            ratio_of_multi_partition=1
-                                            number_partitions=4
-#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "CrossTables") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="CrossTables"
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 1 38 #2 8 16 24 32
-                        do
-                            #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        TP=$tt
-                                        for checkpoint in 0.1 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
-                                        do
-                                            ratio_of_multi_partition=1
-                                            number_partitions=4
-                                            CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                            for CCOption in 1 2 #4
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        TP=$tt
-                                        for checkpoint in 1
-                                        do
-                                            ratio_of_multi_partition=1
-                                            number_partitions=4
-#                                            CrossTables_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "OnlineBiding") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="OnlineBiding"
-                NUM_ITEMS=10000
-                ratio_of_multi_partition=0.75
-                number_partitions=10
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6 #biding is contented..?
-                    do
-                        for tt in 1 38 # 2 8 16 24 32
-                        do
-                            #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        for checkpoint in 0.1 #0.005 0.015 0.025 0.05 0.1 0.25 0.5
-                                        do
-                                            TP=$tt
-                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                            for CCOption in 1 2 #4
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        for checkpoint in 1
-                                        do
-                                             TP=$tt
-#                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "PositionKeeping") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="PositionKeeping"
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 38 32 24 16 8 2
-                        do
-    
-                            for CCOption in 1 2
-                            do
-                                for NUM_ACCESS in 1 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        TP=1
-                                       checkpoint=0.1
-                                        ratio_of_multi_partition=0
-                                        number_partitions=1
-    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                    done
-                                done
-                            done
-    
-                            CCOption=3
-                            for checkpoint in 1 #2 4 8 10 #default 1 seconds.
-                            do
-                               for x in 1 #25 50 75 100
-                               do
-                                  let "TP = $tt/$x"
-                                  for NUM_ACCESS in 1 #fixed to be 1.
-                                  do
-                                      for ratio_of_read in 0
-                                      do
-                                          number_partitions=1
-                                          ratio_of_multi_partition=0
-                                          PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                      done
-                                  done
-                               done
-                            done
-    
-                            for CCOption in 4 # * (3 + 2)
-                            do
-                                for NUM_ACCESS in 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        for ratio_of_multi_partition in 0
-                                        do
-                                            TP=1
-                                           checkpoint=0.1
-                                            number_partitions=1
-    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-    
-                    for theta in 0.2 0.4 0.6 0.8 1
-                    do
-                        for tt in 38
-                        do
-                            for CCOption in 1 2
-                            do
-                                for NUM_ACCESS in 1 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        TP=1
-                                       checkpoint=0.1
-                                        ratio_of_multi_partition=0
-                                        number_partitions=1
-    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                    done
-                                done
-                            done
-    
-                            CCOption=3
-                            for checkpoint in 1 #2 4 8 10 #default 1 seconds.
-                            do
-                               for x in 1 #25 50 75 100
-                               do
-                                  let "TP = $tt/$x"
-                                  for NUM_ACCESS in 1 #fixed to be 1.
-                                  do
-                                      for ratio_of_read in 0
-                                      do
-                                          number_partitions=1
-                                          ratio_of_multi_partition=0
-    #                                      PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                      done
-                                  done
-                               done
-                            done
-    
-                            for CCOption in 4 # * (3 + 2)
-                            do
-                                for NUM_ACCESS in 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        for ratio_of_multi_partition in 0
-                                        do
-                                            TP=1
-                                           checkpoint=0.1
-                                            number_partitions=1
-    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "Read_Only_Breakdown") #5 * 6 * 1 * 3 * (2 mins) = ~ 180 mins ~ 3 hours.
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0
-                    do
-                        for tt in 38 #32 24 16 8 2 # * 6
-                        do
-                            for CCOption in 3 # * (3 + 2)
-                            do
-                                for NUM_ACCESS in 10
-                                do
-                                    for ratio_of_read in 1
-                                    do
-                                        TP=$tt
-                                        read_only_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "Write_Intensive_Breakdown") # 5 * 6 * 2 * 3 * (2 mins) = 360 mins ~ 6 hours.
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6 0.8 # *2
-                    do
-                        for tt in 38 #32 24 16 8 2 # * 6
-                        do
-                            for CCOption in 0 #1 2 3 #0 1 2 # * (3 + 2)
-                            do
-                                for NUM_ACCESS in 10
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        TP=$tt
-                                        write_intensive_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "Working_Set_Size_Breakdown") # 6 * 5 * 6 * 1 * 2 * (2 mins) = 720 mins ~ 12 hours.
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 38 #32 24 16 8 2
-                        do
-                            for CCOption in 0 1 2
-                            do
-                                for NUM_ACCESS in 1 # 16
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        TP=1
-                                       checkpoint=0.1
-                                        working_set_size_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                    done
-                                done
-                            done
-                            CCOption=3
-                            for checkpoint in 1 #default 1 seconds.
-                            do
-                               for x in 1 #25 50 75 100
-                               do
-                                  let "TP = $tt/$x"
-                                  for NUM_ACCESS in 1 # 16
-                                  do
-                                      for ratio_of_read in 0
-                                      do
-                                          working_set_size_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                      done
-                                  done
-                               done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "Read_Write_Mixture_Breakdown") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 38 #32 24 16 8 2
-                        do
-                            for CCOption in 2 #0 1
-                            do
-                                for NUM_ACCESS in 10 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 0.5
-                                    do
-                                        TP=1
-#                                        Read_Write_Mixture_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                    done
-                                done
-                            done
-                            CCOption=3
-                            for x in 1 #25 50 75 100
-                            do
-                               let "TP = $tt/$x"
-                               for NUM_ACCESS in 10 #8 6 4 2 1
-                               do
-                                   for ratio_of_read in 0 0.25 0.5 0.75 1
-                                   do
-                                       Read_Write_Mixture_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                   done
-                               done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
-            "CrossTablesBreakdown") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-            app="CrossTables"
-            for hz in "${HZ[@]}"
-            do
-                for theta in 0.6 #0.8
-                do
-                    for tt in 38 32
-                    do
-                        for CCOption in 3
-                        do
-                            for NUM_ACCESS in 1 #8 6 4 2 1
-                            do
-                                for ratio_of_read in 0.5
-                                do
-                                    TP=$tt
-                                    ratio_of_multi_partition=0
-                                    number_partitions=4
-                                    CrossTables_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                done
-                            done
-                        done
-                    done # Threads/Cores
-                done #Theta
-            done #Input Hz
-            ;;
-            "PositionKeepingBreakdown") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
-                app="PositionKeeping"
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6
-                    do
-                        for tt in 38
-                        do
-                            for CCOption in 0 1 2
-                            do
-                                for NUM_ACCESS in 1 #8 6 4 2 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        TP=1
-                                       checkpoint=0.1
-                                        ratio_of_multi_partition=0
-                                        number_partitions=1
-                                        PositionKeeping_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                    done
-                                done
-                            done
-    
-                            CCOption=3
-                            for checkpoint in 1 #2 4 8 10 #default 1 seconds.
-                            do
-                               for x in 1 #25 50 75 100
-                               do
-                                  let "TP = $tt/$x"
-                                  for NUM_ACCESS in 1 #fixed to be 1.
-                                  do
-                                      for ratio_of_read in 0
-                                      do
-                                          number_partitions=1
-                                          ratio_of_multi_partition=0
-                                          PositionKeeping_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                      done
-                                  done
-                               done
-                            done
-    
-                            for CCOption in 4 # * (3 + 2)
-                            do
-                                for NUM_ACCESS in 1
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        for ratio_of_multi_partition in 0
-                                        do
-                                            TP=1
-                                           checkpoint=0.1
-                                            number_partitions=1
-                                            PositionKeeping_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
-                ;;
             *)
                 echo $"Usage: $0 {benchmark}"
                 exit 1
         esac
 done #varing benchmarks.
-cd $HOME/scripts
-./jobdone.py
+python $HOME/scripts/jobdone.py

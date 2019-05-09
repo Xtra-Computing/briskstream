@@ -1,13 +1,21 @@
 package applications.topology.transactional.initializer;
 
+import applications.constants.BaseConstants;
+import applications.datatype.AbstractLRBTuple;
+import applications.datatype.PositionReport;
+import applications.param.lr.LREvent;
 import applications.util.Configuration;
+import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import engine.Database;
 import engine.DatabaseException;
 import engine.common.SpinLock;
 import engine.storage.SchemaRecord;
 import engine.storage.TableRecord;
-import engine.storage.datatype.*;
+import engine.storage.datatype.DataBox;
+import engine.storage.datatype.DoubleDataBox;
+import engine.storage.datatype.HashSetDataBox;
+import engine.storage.datatype.StringDataBox;
 import engine.storage.table.RecordSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +33,27 @@ public class TPInitializer extends TableInitilizer {
 
     public TPInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
+    }
+
+    @Override
+    public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
+        int partition_interval = getPartition_interval();
+        int left_bound = thread_id * partition_interval;
+        int right_bound;
+        if (thread_id == context.getNUMTasks() - 1) {//last executor need to handle left-over
+            right_bound = NUM_SEGMENTS;
+        } else {
+            right_bound = (thread_id + 1) * partition_interval;
+        }
+
+        for (int key = left_bound; key < right_bound; key++) {
+            int pid = get_pid(partition_interval, key);
+            String _key = String.valueOf(key);
+            insertSpeedRecord(_key, 0, pid, spinlock);
+            insertCntRecord(_key, 0, pid, spinlock);
+        }
+
+        LOG.info("Thread:" + thread_id + " finished loading data from: " + left_bound + " to: " + right_bound);
     }
 
 
@@ -50,6 +79,37 @@ public class TPInitializer extends TableInitilizer {
 
     }
 
+
+    private void insertCntRecord(String key, int value, int pid, SpinLock[] spinlock) {
+
+        List<DataBox> values = new ArrayList<>();
+        values.add(new StringDataBox(key, key.length()));
+        values.add(new HashSetDataBox());
+        SchemaRecord schemaRecord = new SchemaRecord(values);
+        try {
+            db.InsertRecord("segment_cnt", new TableRecord(schemaRecord, pid, spinlock));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void insertSpeedRecord(String key, int value, int pid, SpinLock[] spinlock) {
+
+        List<DataBox> values = new ArrayList<>();
+        values.add(new StringDataBox(key, key.length()));
+        values.add(new DoubleDataBox(value));
+        SchemaRecord schemaRecord = new SchemaRecord(values);
+        try {
+            db.InsertRecord("segment_speed", new TableRecord(schemaRecord, pid, spinlock));
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
     private void insertCntRecord(String key) {
         List<DataBox> values = new ArrayList<>();
         values.add(new StringDataBox(key, key.length()));
@@ -72,11 +132,6 @@ public class TPInitializer extends TableInitilizer {
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
-        //used only for S_Store.
     }
 
 
@@ -128,13 +183,14 @@ public class TPInitializer extends TableInitilizer {
 
 
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean load(String file) {
+
 
         return true;
     }
 
     @Override
-    protected void store(String file_name) throws IOException {
+    protected void store(String file_name) {
 
     }
 
@@ -145,11 +201,69 @@ public class TPInitializer extends TableInitilizer {
     }
 
 
-    public void creates_Table() {
+    protected String getConfigKey(String template) {
+        return String.format(template, "tptxn");//TODO: make it flexible in future.
+    }
+
+
+    protected Object create_new_event(String record, int bid) {
+
+        String[] token = record.split(" ");
+
+        short type = Short.parseShort(token[0]);
+        Short time = Short.parseShort(token[1]);
+        Integer vid = Integer.parseInt(token[2]);
+
+        if (type == AbstractLRBTuple.position_report) {
+            return
+                    new LREvent(new PositionReport(//
+                            time,//
+                            vid,//
+                            Integer.parseInt(token[3]), // speed
+                            Integer.parseInt(token[4]), // xway
+                            Short.parseShort(token[5]), // lane
+                            Short.parseShort(token[6]), // direction
+                            Short.parseShort(token[7]), // segment
+                            Integer.parseInt(token[8])),
+                            tthread,
+                            bid)
+
+                    ;
+        } else {
+            //ignore, not used in this experiment.
+            return null;
+        }
+    }
+
+    public void creates_Table(Configuration config) {
         RecordSchema s = SpeedScheme();
         db.createTable(s, "segment_speed");
 
         RecordSchema b = CntScheme();
         db.createTable(b, "segment_cnt");
+
+        String OS_prefix = null;
+
+        if (OsUtils.isWindows()) {
+            OS_prefix = "win.";
+        } else {
+            OS_prefix = "unix.";
+        }
+        String path;
+
+        if (OsUtils.isMac()) {
+            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_TEST_PATH)));
+        } else {
+            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_PATH)));
+        }
+
+        String file = System.getProperty("user.home").concat("/data/app/").concat(path);
+
+        try {
+            prepare_input_events(file, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

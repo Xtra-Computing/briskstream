@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import static applications.Constants.*;
@@ -266,7 +267,7 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
                 file = new File(directory + OsUtils.OS_wrapper(topo.getId() + ".txt"));
 
                 try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                        new FileOutputStream(file), "utf-8"))) {
+                        new FileOutputStream(file), StandardCharsets.UTF_8))) {
 
                     writer.write("Parallelism\t" + topo.getNumTasks() + "\n");
                     for (ExecutionNode e : topo.getExecutorList()) {
@@ -280,7 +281,7 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
             file = new File(directory
                     + OsUtils.OS_wrapper("stat"));
             Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(file), "utf-8"));
+                    new FileOutputStream(file), StandardCharsets.UTF_8));
             writer.write("output_rate\t" + outputrate + "\n");
             writer.flush();
             writer.close();

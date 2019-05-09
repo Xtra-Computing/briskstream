@@ -1,4 +1,4 @@
-package applications.bolts.ct;
+package applications.bolts.sl;
 
 
 import brisk.components.context.TopologyContext;
@@ -15,12 +15,12 @@ import java.util.Map;
 /**
  * Combine Read-Write for nocc.
  */
-public class CTBolt_lwm extends CTBolt_LA {
-    private static final Logger LOG = LoggerFactory.getLogger(CTBolt_lwm.class);
+public class SLBolt_lwm extends SLBolt_LA {
+    private static final Logger LOG = LoggerFactory.getLogger(SLBolt_lwm.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
 
-    public CTBolt_lwm(int fid) {
+    public SLBolt_lwm(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }

@@ -25,6 +25,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_app_combo;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.BaseConstants.BaseField.TEXT;
@@ -60,7 +61,8 @@ public abstract class Operator implements IOperator {
     public Clock clock;
     public State state = null;
     public transient Database db;//this is only used if the bolt is transactional bolt. DB is shared by all operators.
-    public transient TxnContext txn_context;
+    //    public transient TxnContext txn_context;
+    public transient TxnContext[] txn_context = new TxnContext[combo_bid_size];
     public boolean forceStop;
     public int fid = -1;//if fid is -1 it means it does not participate
     public OrderLock lock;//used for lock_ratio-based ordering constraint.
@@ -290,9 +292,7 @@ public abstract class Operator implements IOperator {
 
     }
 
-    public void prepareEvents() {
 
-    }
 
     public void loadDB(int thread_Id, int thisTaskId, ExecutionGraph graph) {
 

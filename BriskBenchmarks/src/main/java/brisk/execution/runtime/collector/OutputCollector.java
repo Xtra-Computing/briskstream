@@ -601,7 +601,7 @@ public class OutputCollector<T> {
         sc.create_marker_boardcast(meta, boardcast_time, streamId, bid, myiteration);
     }
 
-    public void create_marker_single(long boardcast_time, String streamId, long bid, int myiteration) throws InterruptedException {
+    public void create_marker_single(long boardcast_time, String streamId, long bid, int myiteration) {
         sc.create_marker_single(meta, boardcast_time, streamId, bid, myiteration);
     }
 

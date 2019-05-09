@@ -53,9 +53,5 @@ public abstract class PKBolt extends TransactionalBolt {
     }
 
 
-    @Override
-    public void prepareEvents() {
-
-    }
 
 }

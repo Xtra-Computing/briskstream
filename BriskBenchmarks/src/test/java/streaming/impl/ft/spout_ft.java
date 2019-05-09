@@ -53,17 +53,17 @@ public class spout_ft extends AbstractSpout implements Checkpointable {
 //		}
     }
     @Override
-    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) throws InterruptedException {
+    public void forward_checkpoint_single(int sourceId, long bid, Marker marker) {
 
     }
 
     @Override
-    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) throws InterruptedException {
+    public void forward_checkpoint_single(int sourceTask, String streamId, long bid, Marker marker) {
 
     }
 
     @Override
-    public boolean checkpoint() throws InterruptedException {
+    public boolean checkpoint(int counter) {
         return false;
     }
 

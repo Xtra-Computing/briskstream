@@ -33,7 +33,7 @@ public class TxnManagerMvLock extends TxnManagerDedicated {
     }
 
     @Override
-    public boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) throws DatabaseException {
+    public boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) {
 //
 //        record.is_visible_ = false;
 //        TableRecord tb_record = new TableRecord(record);

@@ -22,18 +22,18 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.SINK_CONTROL;
-import utils.SOURCE_CONTROL;
 
 import java.io.*;
 import java.util.Properties;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_profile;
 import static applications.Constants.System_Plan_Path;
-import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
 import static applications.constants.LinearRoadConstants.Conf.Executor_Threads;
 import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
 import static applications.constants.PositionKeepingConstants.Conf.PK_THREADS;
 import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
+import static applications.constants.StreamLedgerConstants.Conf.SL_THREADS;
 import static engine.content.Content.*;
 import static engine.content.LWMContentImpl.LWM_CONTENT;
 import static engine.content.LockContentImpl.LOCK_CONTENT;
@@ -70,18 +70,19 @@ public class BriskRunner extends abstractRunner {
         driver.addApp("WordCount_FT", WordCount_FT.class);//
 
         //Transactional Application
+        driver.addApp("GrepSum", GrepSum.class);//GS
+        driver.addApp("StreamLedger", StreamLedger.class);//SL
+        driver.addApp("OnlineBiding", OnlineBiding.class);//OB
+        driver.addApp("TP_Txn", TP_Txn.class);//TP
 
-        driver.addApp("OnlineBiding", OnlineBiding.class);//
+
+        //special
+        driver.addApp("TP", TP.class);//TP w/o shared states.
+
+        //unfinished.
         driver.addApp("LeaderBoard", LeaderBoard.class);//
-        driver.addApp("MicroBenchmark", MicroBenchmark.class);
-        driver.addApp("CrossTables", CrossTables.class);
         driver.addApp("PositionKeeping", PositionKeeping.class);
 
-
-        //Special Application
-
-        driver.addApp("TP", TP.class);//
-        driver.addApp("TP_Txn", TP_Txn.class);//
 
     }
 
@@ -249,14 +250,26 @@ public class BriskRunner extends abstractRunner {
             config.put(BaseConstants.BaseConf.PARSER_THREADS, pthread);
             //set total parallelism, equally parallelism
             switch (application) {
-                case "CrossTables": {
+                case "GrepSum": {
+                    config.put("app", 0);
+                    int threads = Math.max(1, (int) Math.floor((tthread)));
+                    config.put(GrepSumConstants.Conf.Executor_Threads, threads);
+//                    double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+//                    int r_threads = (int) (threads * ratio_of_read);
+//                    int w_threads = threads - r_threads;
+//
+//                    config.put(GrepSumConstants.Conf.SELECTOR_THREADS, r_threads);
+//                    config.put(GrepSumConstants.Conf.INSERTOR_THREADS, w_threads);
+                    break;
+                }
+                case "StreamLedger": {
                     config.put("app", 1);
                     int threads = Math.max(1, (int) Math.floor((tthread)));
 //                    config.put(DEG_THREADS, threads);
 //                    config.put(TEG_THREADS, threads);
 //                    config.put(DT_THREADS, threads);
 //                    config.put(TT_THREADS, threads);
-                    config.put(CT_THREADS, threads);
+                    config.put(SL_THREADS, threads);
                     break;
                 }
                 case "OnlineBiding": {
@@ -299,18 +312,7 @@ public class BriskRunner extends abstractRunner {
                     break;
                 }
 
-                case "MicroBenchmark": {
-                    config.put("app", 0);
-                    int threads = Math.max(1, (int) Math.floor((tthread)));
-                    config.put(MicroBenchmarkConstants.Conf.Executor_Threads, threads);
-//                    double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
-//                    int r_threads = (int) (threads * ratio_of_read);
-//                    int w_threads = threads - r_threads;
-//
-//                    config.put(MicroBenchmarkConstants.Conf.SELECTOR_THREADS, r_threads);
-//                    config.put(MicroBenchmarkConstants.Conf.INSERTOR_THREADS, w_threads);
-                    break;
-                }
+
                 case "StreamingAnalysis": {
                     int threads = (int) Math.floor(tthread / 5.0);
                     config.put(BaseConstants.BaseConf.PARSER_THREADS, threads);
@@ -483,22 +485,37 @@ public class BriskRunner extends abstractRunner {
             double wait_time = 0;
             double lock_time = 0;
             double compute_time = 0;
-            double sum = 0;
+//            double sum = 0;
 
             for (int i = 0; i < tthread; i++) {
 
-                useful_time += metrics.useful_ratio[i].getSum();
-                abort_time += metrics.abort_ratio[i].getSum();
-                ts_alloc_time += metrics.ts_allocation[i].getSum();
-                index_time += metrics.index_time[i].getSum();
-                wait_time += metrics.sync_ratio[i].getSum();
-                lock_time += metrics.lock_ratio[i].getSum();
-                compute_time += metrics.exe_time[i].getSum();
-                sum += metrics.useful_ratio[i].getN();
+                useful_time += metrics.useful_ratio[i].getPercentile(50);
+                abort_time += metrics.abort_ratio[i].getPercentile(50);
+                ts_alloc_time += metrics.ts_allocation[i].getPercentile(50);
+                index_time += metrics.index_time[i].getPercentile(50);
+                wait_time += metrics.sync_ratio[i].getPercentile(50);
+                lock_time += metrics.lock_ratio[i].getPercentile(50);
+                compute_time += metrics.exe_time[i].getPercentile(50);
+//                sum += metrics.useful_ratio[i].getN();
 
-                stream_processing += metrics.stream_total[i].getSum();
-                txn_processing += metrics.txn_total[i].getSum();
+                stream_processing += metrics.stream_total[i].getPercentile(50);
+                txn_processing += metrics.txn_total[i].getPercentile(50);
             }
+
+
+            //get average per thread.
+
+            useful_time = useful_time / tthread;
+            abort_time = abort_time / tthread;
+            ts_alloc_time = ts_alloc_time / tthread;
+            index_time = index_time / tthread;
+            wait_time = wait_time / tthread;
+            lock_time = lock_time / tthread;
+            compute_time = compute_time / tthread;
+
+            stream_processing = stream_processing / tthread;
+            txn_processing = txn_processing / tthread;
+
 
             //used in TSTREAM.
 
@@ -506,8 +523,7 @@ public class BriskRunner extends abstractRunner {
                     + OsUtils.OS_wrapper("BriskStream")
                     + OsUtils.OS_wrapper(topology.getPrefix())
                     + OsUtils.OS_wrapper("COMPUTE_COMPLEXITY=" + String.valueOf(config.getInt("COMPUTE_COMPLEXITY", 0)))
-                    + OsUtils.OS_wrapper("CCOption=" + String.valueOf(config.getInt("CCOption", 0)))
-                    ;
+                    + OsUtils.OS_wrapper("CCOption=" + String.valueOf(config.getInt("CCOption", 0)));
 
 
             File file = new File(directory);
@@ -523,23 +539,23 @@ public class BriskRunner extends abstractRunner {
 
                 w.write(String.valueOf(tthread));
                 w.write(",");
-                w.write(String.format("%.2f", stream_processing / sum));//average stream processing.
+                w.write(String.format("%.2f", stream_processing));//average stream processing.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing * (useful_time / sum) / sum));//average txn processing * useful = state access.
+                w.write(String.format("%.2f", txn_processing * (useful_time)));//average txn processing * useful = state access.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing * (1 - (useful_time / sum)) / sum));//state access overhead.
+                w.write(String.format("%.2f", txn_processing * (1 - (useful_time)) ));//state access overhead.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing / sum));//average txn processing time.
+                w.write(String.format("%.2f", txn_processing ));//average txn processing time.
                 w.write(",");
-                w.write(String.format("%.2f", useful_time / sum));//useful ratio.
+                w.write(String.format("%.2f", useful_time ));//useful ratio.
                 w.write(",");
-                w.write(String.format("%.2f", abort_time / sum));//abort ratio.
+                w.write(String.format("%.2f", abort_time));//abort ratio.
                 w.write(",");
-                w.write(String.format("%.2f", wait_time / sum));//sync ratio.
+                w.write(String.format("%.2f", wait_time ));//sync ratio.
                 w.write(",");
-                w.write(String.format("%.2f", lock_time / sum));//lock ratio.
+                w.write(String.format("%.2f", lock_time));//lock ratio.
                 w.write(",");
-                w.write(String.format("%.2f", 1 - (useful_time + abort_time + wait_time + lock_time) / sum));//others ratio.
+                w.write(String.format("%.2f", 1 - (useful_time + abort_time + wait_time + lock_time)));//others ratio.
                 w.write(",");
                 w.write(String.format("%.2f", rt));//throughput
                 w.write("\n");
@@ -558,13 +574,13 @@ public class BriskRunner extends abstractRunner {
                         sb.append(",");
                         sb.append(String.format("%d", metrics.useful_ratio[i].getN()));//number of txns processed by the thread.
                         sb.append(",");
-                        sb.append(String.format("%.2f", metrics.average_txn_construct[i].getMean()));//average construction time.
+                        sb.append(String.format("%.2f", metrics.average_txn_construct[i].getPercentile(50)));//average construction time.
                         sb.append(",");
-                        sb.append(String.format("%.2f", metrics.average_tp_submit[i].getMean()));//average submit time.
+                        sb.append(String.format("%.2f", metrics.average_tp_submit[i].getPercentile(50)));//average submit time.
                         sb.append(",");
-                        sb.append(String.format("%.2f", metrics.average_tp_w_syn[i].getMean() - metrics.average_tp_core[i].getMean()));//average sync time.
+                        sb.append(String.format("%.2f", metrics.average_tp_w_syn[i].getPercentile(50) - metrics.average_tp_core[i].getPercentile(50)));//average sync time.
                         sb.append(",");
-                        sb.append(String.format("%.2f", metrics.average_tp_core[i].getMean()));//average core tp time.
+                        sb.append(String.format("%.2f", metrics.average_tp_core[i].getPercentile(50)));//average core tp time.
                         sb.append("\n");
                     }
 
@@ -578,16 +594,16 @@ public class BriskRunner extends abstractRunner {
             }
 
             LOG.info("===OVERALL===");
-            LOG.info("Stream Processing time on one event:" + String.format("%.2f", stream_processing / sum));
-            LOG.info("TXN Processing on one event:" + String.format("%.2f", txn_processing / sum));
+            LOG.info("Stream Processing time on one event:" + String.format("%.2f", stream_processing ));
+            LOG.info("TXN Processing on one event:" + String.format("%.2f", txn_processing ));
 
             LOG.info("===BREAKDOWN TXN===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_time / sum));
-            LOG.info("Abort time:\t" + String.format("%.2f", abort_time / sum));
-            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time / sum));
-            LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum));
-            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time / sum));
+            LOG.info("Useful time:\t" + String.format("%.2f", useful_time ));
+            LOG.info("Abort time:\t" + String.format("%.2f", abort_time));
+            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time ));
+            LOG.info("Index_time time:\t" + String.format("%.2f", index_time));
+            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time ));
+            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time));
 
             LOG.info("====Details ====");
             LOG.info("\n" + sb.toString());

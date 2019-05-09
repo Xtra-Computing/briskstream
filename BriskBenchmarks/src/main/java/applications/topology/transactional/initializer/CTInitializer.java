@@ -1,7 +1,8 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.ct.DepositEvent;
-import applications.param.ct.TransactionEvent;
+import applications.param.sl.DepositEvent;
+import applications.param.sl.TransactionEvent;
+import applications.topology.transactional.State;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -30,10 +31,12 @@ import java.util.*;
 import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_states_partition;
 import static applications.Constants.Event_Path;
-import static applications.constants.CrossTableConstants.Constant.*;
+import static applications.constants.StreamLedgerConstants.Constant.*;
+import static applications.topology.transactional.State.configure_store;
 import static applications.topology.transactional.State.partioned_store;
 import static applications.topology.transactional.State.shared_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
+import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
 import static xerial.jnuma.Numa.setLocalAlloc;
 
@@ -43,6 +46,7 @@ public class CTInitializer extends TableInitilizer {
 
     public CTInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
+        configure_store(scale_factor, theta, tthread, NUM_ACCOUNTS);
     }
 
 
@@ -277,7 +281,9 @@ public class CTInitializer extends TableInitilizer {
     protected boolean load(String file) throws IOException {
         String event_path = Event_Path
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS));
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
+                + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(config.getDouble("ratio_of_multi_partition", 1)))
+                + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
@@ -329,7 +335,9 @@ public class CTInitializer extends TableInitilizer {
     protected void store(String file_name) throws IOException {
         String event_path = Event_Path
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
-                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS));
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
+                + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(config.getDouble("ratio_of_multi_partition", 1)))
+                + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions));
 
 
         File file = new File(event_path);
@@ -523,7 +531,7 @@ public class CTInitializer extends TableInitilizer {
     }
 
 
-    public void creates_Table() {
+    public void creates_Table(Configuration config) {
         RecordSchema s = AccountsScheme();
         db.createTable(s, "accounts");
 
@@ -531,7 +539,7 @@ public class CTInitializer extends TableInitilizer {
         db.createTable(b, "bookEntries");
 
         try {
-            prepare_input_events("CT_Events");
+            prepare_input_events("CT_Events", false);
         } catch (IOException e) {
             e.printStackTrace();
         }

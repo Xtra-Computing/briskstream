@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
+import static applications.CONTROL.enable_app_combo;
 import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
 import static applications.constants.OnlineBidingSystemConstants.PREFIX;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -53,7 +54,7 @@ public class OnlineBiding extends TransactionTopology {
 
         TableInitilizer ini = new OBInitializer(db, scale_factor, theta, tthread, config);
 
-        ini.creates_Table();
+        ini.creates_Table(config);
 
         if (config.getBoolean("partition", false)) {
 
@@ -81,41 +82,45 @@ public class OnlineBiding extends TransactionTopology {
             //Transfers atomically move values between accounts and book entries, under a precondition
             builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
-            switch (config.getInt("CCOption", 0)) {
+            if (enable_app_combo) {
+                //spout only.
+
+            } else {
+                switch (config.getInt("CCOption", 0)) {
 
 
-                case 1: {//LOB
-                    builder.setBolt(Component.OB, new OBBolt_olb(0)//
-                            , config.getInt(OB_THREADS, 1)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
+                    case 1: {//LOB
+                        builder.setBolt(Component.OB, new OBBolt_olb(0)//
+                                , config.getInt(OB_THREADS, 1)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
 
-                case 2: {//LWM
-                    builder.setBolt(Component.OB, new OBBolt_lwm(0)//
-                            , config.getInt(OB_THREADS, 1)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
+                    case 2: {//LWM
+                        builder.setBolt(Component.OB, new OBBolt_lwm(0)//
+                                , config.getInt(OB_THREADS, 1)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
 //
-                case 3: {//T-Stream
-                    builder.setBolt(Component.OB, new OBBolt_ts(0)//
-                            , config.getInt(OB_THREADS, 1)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
+                    case 3: {//T-Stream
+                        builder.setBolt(Component.OB, new OBBolt_ts(0)//
+                                , config.getInt(OB_THREADS, 1)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+                    case 4: {//SStore
+                        builder.setBolt(Component.OB, new OBBolt_sstore(0)//
+                                , config.getInt(OB_THREADS, 1)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
                 }
-                case 4: {//SStore
-                    builder.setBolt(Component.OB, new OBBolt_sstore(0)//
-                            , config.getInt(OB_THREADS, 1)
-                            , new ShuffleGrouping(Component.SPOUT));
-                    break;
-                }
+
+                builder.setSink(Component.SINK, sink, sinkThreads
+                        , new ShuffleGrouping(Component.OB)
+                );
             }
-
-            builder.setSink(Component.SINK, sink, sinkThreads
-                    , new ShuffleGrouping(Component.OB)
-            );
-
         } catch (InvalidIDException e) {
             e.printStackTrace();
         }
