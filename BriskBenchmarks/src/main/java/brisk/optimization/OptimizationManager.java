@@ -389,9 +389,9 @@ public class OptimizationManager extends executorThread {
         }
         //initialize queue set.
 
-        if (conf.getBoolean("Fault_tolerance", false) || enable_shared_state) {
-            ExecutionManager.clock.start();
-        }
+//        if (conf.getBoolean("Fault_tolerance", false) || enable_shared_state) {
+//            ExecutionManager.clock.start();
+//        }
 
 
         if (profile) {

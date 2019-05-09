@@ -27,8 +27,6 @@ public class SINKCombo extends MeasureSink {
     public void execute(Tuple input) throws InterruptedException {
         cnt++;
 
-
-
         if (cnt == sink_combo_bid_size) {
             cnt = 0;//clear.
             int global_cnt = SINK_CONTROL.getInstance().GetAndUpdate();

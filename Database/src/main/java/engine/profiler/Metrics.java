@@ -378,7 +378,7 @@ public class Metrics {
 
                 metrics.useful_ratio[thread_id].addValue((tp_core[thread_id] + compute_total[thread_id]) / txn_total[thread_id]);
 
-//                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
+                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
                 metrics.lock_ratio[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
 
@@ -431,7 +431,7 @@ public class Metrics {
 
                 metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
-//                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
+                metrics.index_time[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
                 metrics.lock_ratio[thread_id].addValue(0);
 
