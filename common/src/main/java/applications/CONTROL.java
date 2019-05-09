@@ -34,7 +34,7 @@ public interface CONTROL {
     //latency related.
 
     boolean enable_latency_measurement = false;//
-    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
+//    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
     boolean enable_profile = true;//enable this only when we want to test for breakdown.
@@ -52,8 +52,9 @@ public interface CONTROL {
 
     //single engine with work-stealing.
     boolean enable_work_stealing = true; // 3. this is a sub-option, only useful when engine is enabled. enable by default -- should be enabled for island=-1.
-    boolean enable_mvcc = enable_work_stealing;//
+    boolean enable_mvcc = false;//only required when partition is disabled.
 
     boolean enable_speculative = false;//work in future!
+
 
 }

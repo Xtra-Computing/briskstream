@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static applications.CONTROL.*;
-import static applications.constants.StreamLedgerConstants.Constant.NUM_ACCOUNTS;
 import static engine.content.Content.*;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class SLCombo extends Combo {
+public class SLCombo extends SPOUTCombo {
     private static final Logger LOG = LoggerFactory.getLogger(SLCombo.class);
     private static final long serialVersionUID = -2394340130331865581L;
 

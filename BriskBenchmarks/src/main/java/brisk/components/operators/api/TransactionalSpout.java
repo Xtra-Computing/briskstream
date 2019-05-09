@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_debug;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.profiler.Metrics.NUM_ACCESSES;
 
@@ -74,7 +74,6 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
     }
 
 
-
     @Override
     public void forward_checkpoint(int sourceId, long bid, Marker marker) throws InterruptedException {
         forward_checkpoint(sourceId, DEFAULT_STREAM_ID, bid, marker);
@@ -126,10 +125,10 @@ public abstract class TransactionalSpout extends AbstractSpout implements Checkp
         double actual_system_throughput = epoch_size * 1E9 / elapsed_time;//events/ s
 //        if (epoch_size != 0)
 //            LOG.info("finished measurement (k events/s):" + actual_system_throughput / 1E3);
-        if (enable_admission_control) {
+//        if (enable_admission_control) {
 //            target_Hz = actual_system_throughput * checkpoint_interval_sec;//target Hz.
-            control = 0;
-        }
+//            control = 0;
+//        }
 
     }
 

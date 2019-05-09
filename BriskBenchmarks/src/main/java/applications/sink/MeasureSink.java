@@ -31,6 +31,8 @@ public class MeasureSink extends BaseSink {
     protected stable_sink_helper helper;
     protected int ccOption;
     private boolean LAST = false;
+    private int batch_number_per_wm;
+    private int exe;
 
 //    int _combo_bid_size;
 
@@ -75,10 +77,10 @@ public class MeasureSink extends BaseSink {
 
         directory = STAT_Path + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(configPrefix)
-                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket"))
-                + OsUtils.OS_wrapper(String.valueOf(ccOption)))
-                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
-                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("theta")))
+//                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket")))
+//                + OsUtils.OS_wrapper(String.valueOf(ccOption))
+//                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
+//                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("theta")))
         ;
 
         File file = new File(directory);
@@ -112,9 +114,18 @@ public class MeasureSink extends BaseSink {
 
         tthread = this.config.getInt("tthread");
 
+        double checkpoint = config.getDouble("checkpoint", 1);
+
+        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
+
+        exe = NUM_EVENTS - NUM_EVENTS % batch_number_per_wm;
+
+        LOG.info("expected last events = " + exe);
+
+
     }
 
-   protected int tthread;
+    protected int tthread;
     int cnt = 0;
 
     @Override
@@ -124,10 +135,22 @@ public class MeasureSink extends BaseSink {
         cnt++;
     }
 
+
+    protected void latency_measure(Tuple input) {
+        if (enable_latency_measurement) {
+            long msgId = input.getBID();
+            final long end = System.nanoTime();
+            final long start = input.getLong(1);
+            final long process_latency = end - start;//ns
+            latency_map.put(msgId, process_latency);
+        }
+    }
+
+
     protected void check(int cnt, Tuple input) {
         if (cnt == 0) {
             helper.StartMeasurement();
-        } else if (cnt == (NUM_EVENTS - 40 * 10 - 1)) {
+        } else if (cnt == (exe - 40 * 10 - 1)) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
             if (!enable_engine)//performance measure for TStream is different.
@@ -136,16 +159,7 @@ public class MeasureSink extends BaseSink {
                 measure_end(results);
             }
         }
-        if (enable_latency_measurement)
-            if (isSINK) {// && cnt % 1E3 == 0
-                long msgId = input.getBID();
-                if (msgId < max_num_msg) {
-                    final long end = System.nanoTime();
-                    final long start = input.getLong(1);
-                    final long process_latency = end - start;//ns
-                    latency_map.put(msgId, process_latency);
-                }
-            }
+
     }
 
     /**
@@ -155,58 +169,38 @@ public class MeasureSink extends BaseSink {
      */
     protected void measure_end(double results) {
 
-        if (enable_latency_measurement) {
-            for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
-//                LOG.info("=====Process latency of msg====");
-                //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
-                latency.addValue((entry.getValue() / 1E6));
-            }
-            try {
-//                Collections.sort(col_value);
-
-                FileWriter f = null;
-                switch (algorithm) {
-                    case "random": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("random.latency")));
-                        break;
-                    }
-                    case "toff": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("toff.latency")));
-                        break;
-                    }
-                    case "roundrobin": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("roundrobin.latency")));
-                        break;
-                    }
-                    case "worst": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("worst.latency")));
-                        break;
-                    }
-                    case "opt": {
-                        f = new FileWriter(new File(directory + OsUtils.OS_wrapper("opt.latency")));
-                        break;
-                    }
-                }
-
-                Writer w = new BufferedWriter(f);
-
-                for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
-                    w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
-                }
-                w.write("=======Details=======");
-                w.write(latency.toString() + "\n");
-                w.write("===90th===" + "\n");
-                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
-                w.close();
-                f.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         boolean proceed = SINK_CONTROL.getInstance().try_lock();
         if (proceed) {
+            LOG.info(Thread.currentThread().getName() + " obtains lock");
+            if (enable_latency_measurement) {
+                for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
+//                LOG.info("=====Process latency of msg====");
+                    //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
+                    latency.addValue((entry.getValue() / 1E6));
+                }
+                try {
+//                Collections.sort(col_value);
+
+                    FileWriter f = null;
+
+                    f = new FileWriter(new File(directory + OsUtils.OS_wrapper(String.valueOf(ccOption + ".latency"))));
+
+                    Writer w = new BufferedWriter(f);
+
+                    for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
+                        w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
+                    }
+                    w.write("=======Details=======");
+                    w.write("\n" + latency.toString() + "\n");
+                    w.write("===90th===" + "\n");
+                    w.write(String.valueOf(latency.getPercentile(90) + "\n"));
+                    w.close();
+                    f.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             SINK_CONTROL.getInstance().throughput = results;
             LOG.info("Thread:" + thisTaskId + " is going to stop all threads sequentially");
 //			context.stop_runningALL();

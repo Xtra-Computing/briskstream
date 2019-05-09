@@ -2,8 +2,8 @@ package applications.topology.transactional;
 
 
 import applications.bolts.lr.DispatcherBolt;
-import applications.bolts.lr.txn.TPBolt_olb;
-import applications.bolts.lr.txn.TPBolt_ts;
+import applications.bolts.tp.TPBolt_olb;
+import applications.bolts.tp.TPBolt_ts;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;

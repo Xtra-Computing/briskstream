@@ -72,6 +72,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
             txnManager.getOrderLock(k).advance();
         }
     }
+
     public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, int tthread) {
         for (int k = 0; k < num_P; k++) {
             txnManager.getOrderLock(_pid).advance();
@@ -90,8 +91,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         NUM_ACCESSES = Metrics.NUM_ACCESSES;
         COMPUTE_COMPLEXITY = Metrics.COMPUTE_COMPLEXITY;
         //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
+        sink.configPrefix = this.getConfigPrefix();
         sink.prepare(config, context, collector);
-
         SOURCE_CONTROL.getInstance().config(tthread);
 
     }
@@ -146,17 +147,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         //pre stream processing phase..
 
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        Long timestamp;//in.getLong(1);
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
-
-        long _bid = in.getBID();
-
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
+        PRE_EXECUTE(in);
 
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.

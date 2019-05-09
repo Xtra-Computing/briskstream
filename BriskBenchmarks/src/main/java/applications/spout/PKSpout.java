@@ -28,7 +28,7 @@ import static engine.content.Content.CCOption_TStream;
 import static utils.PartitionHelper.key_to_partition;
 
 public class PKSpout extends TransactionalSpout {
-    private static final Logger LOG = LoggerFactory.getLogger(MicroBenchmarkSpout.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PKSpout.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
     /**

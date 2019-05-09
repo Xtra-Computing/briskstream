@@ -22,12 +22,12 @@ import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class Combo extends TransactionalSpout {
+public class SPOUTCombo extends TransactionalSpout {
     private static Logger LOG;
     private static final long serialVersionUID = -2394340130331865581L;
     TransactionalBolt bolt;//compose the bolt here.
 
-    public Combo(Logger log, int i) {
+    public SPOUTCombo(Logger log, int i) {
         super(log, i);
         LOG = log;
         this.scalable = false;
@@ -59,22 +59,10 @@ public class Combo extends TransactionalSpout {
                         forward_checkpoint(this.taskId, bid, null);
                     } else {
                         if (checkpoint(counter)) {
-                            bolt.execute(new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), bid, myiteration)));
-//                        success = true;
+                            bolt.execute(new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, -1, bid, myiteration)));
                         }
                     }
                 }
-            } else if (counter == num_batch) {//the last one need to force emit a watermark.
-
-                if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
-                    if (!enable_app_combo) {
-                        forward_checkpoint(this.taskId, bid, null);
-                    } else {
-                        bolt.execute(new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, System.nanoTime(), bid, myiteration)));
-//                        success = true;
-                    }
-                }
-
             }
         } catch (DatabaseException | BrokenBarrierException e) {
             //e.printStackTrace();
@@ -113,7 +101,7 @@ public class Combo extends TransactionalSpout {
 
         double checkpoint = config.getDouble("checkpoint", 1);
 
-        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
+        batch_number_per_wm = (int) (1000 * checkpoint);//10K, 1K, 100.
 
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 

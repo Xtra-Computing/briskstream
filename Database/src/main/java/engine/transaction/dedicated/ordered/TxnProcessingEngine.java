@@ -24,6 +24,7 @@ import static applications.constants.PositionKeepingConstants.Constant.MOVING_AV
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.profiler.Metrics.MeasureTools.*;
+import static utils.PartitionHelper.key_to_partition;
 
 /**
  * There is one TxnProcessingEngine of each stage.
@@ -419,6 +420,24 @@ public final class TxnProcessingEngine {
         return rt;
     }
 
+    private int TaskToEngine(int key) {
+        int rt;
+
+        if (island == -1) {
+            rt = (key);
+        } else if (island == -2) {
+            rt = key / CORE_PER_SOCKET;
+        } else
+            throw new UnsupportedOperationException();
+
+//        if (island != -1)
+//            rt = (thread_Id) / (TOTAL_CORES / island);
+//        else
+//            rt = (thread_Id);
+        // LOG.debug("submit to engine: "+ rt);
+        return rt;
+    }
+
     private int submit_task(int thread_Id, Holder holder, Collection<Task> callables) {
 
         int sum = 0;
@@ -445,7 +464,11 @@ public final class TxnProcessingEngine {
                             LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
                         if (enable_work_partition) {
-                            multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
+
+//                            String key = operation_chain.getPrimaryKey();
+//                            int p = key_to_partition(key); p == thread_id.
+
+                            multi_engine.get(TaskToEngine(thread_Id)).executor.submit(task);
                         } else {
                             standalone_engine.executor.submit(task);
                         }

@@ -284,7 +284,7 @@ do
                     do
                     for theta in 0.6
                     do
-                        for tt in 35
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             for CCOption in 3
                             do
@@ -292,7 +292,7 @@ do
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 1 0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -313,7 +313,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 35
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -323,7 +323,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1 0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
@@ -364,7 +364,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 35 #1 5 10 15 20 25
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -373,7 +373,7 @@ do
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 1 0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             TP=$tt
                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
@@ -408,7 +408,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 35
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 3
@@ -418,7 +418,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1 0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4

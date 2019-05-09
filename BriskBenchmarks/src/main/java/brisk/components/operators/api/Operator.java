@@ -67,7 +67,7 @@ public abstract class Operator implements IOperator {
     public int fid = -1;//if fid is -1 it means it does not participate
     public OrderLock lock;//used for lock_ratio-based ordering constraint.
     public OrderValidate orderValidate;
-    protected String configPrefix = BaseConstants.BASE_PREFIX;
+    public String configPrefix = BaseConstants.BASE_PREFIX;
     protected OutputCollector collector;
     protected Configuration config;
     protected ExecutionNode executor;//who owns this Spout

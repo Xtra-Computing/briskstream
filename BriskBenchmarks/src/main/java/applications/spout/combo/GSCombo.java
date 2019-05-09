@@ -10,7 +10,7 @@ import static applications.CONTROL.*;
 import static engine.content.Content.*;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class GSCombo extends Combo {
+public class GSCombo extends SPOUTCombo {
     private static final Logger LOG = LoggerFactory.getLogger(GSCombo.class);
     private static final long serialVersionUID = -2394340130331865581L;
 

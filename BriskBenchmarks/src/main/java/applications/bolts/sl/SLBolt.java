@@ -22,6 +22,7 @@ public abstract class SLBolt extends TransactionalBolt {
 
     public SLBolt(Logger log, int fid) {
         super(log, fid);
+        this.configPrefix = "sl";
     }
 
 

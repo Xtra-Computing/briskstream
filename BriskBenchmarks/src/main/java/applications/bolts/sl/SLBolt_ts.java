@@ -182,8 +182,14 @@ public class SLBolt_ts extends SLBolt {
 
 
     protected void TRANSFER_REQUEST_CORE(TransactionEvent event) {
-        event.transaction_result = new TransactionResult(event, event.success[0],
-                event.src_account_value.getRecord().getValues().get(1).getLong(), event.dst_account_value.getRecord().getValues().get(1).getLong());
+
+        try {
+            event.transaction_result = new TransactionResult(event, event.success[0],
+                    event.src_account_value.getRecord().getValues().get(1).getLong(), event.dst_account_value.getRecord().getValues().get(1).getLong());
+
+        } catch (Exception e) {
+            LOG.info("still at bid: " + String.valueOf(event.getBid()));
+        }
     }
 
 

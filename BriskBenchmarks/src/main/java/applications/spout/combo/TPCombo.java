@@ -1,9 +1,9 @@
 package applications.spout.combo;
 
-import applications.bolts.lr.txn.TPBolt_SSTORE;
-import applications.bolts.lr.txn.TPBolt_lwm;
-import applications.bolts.lr.txn.TPBolt_olb;
-import applications.bolts.lr.txn.TPBolt_ts;
+import applications.bolts.tp.TPBolt_SSTORE;
+import applications.bolts.tp.TPBolt_lwm;
+import applications.bolts.tp.TPBolt_olb;
+import applications.bolts.tp.TPBolt_ts;
 import brisk.execution.ExecutionGraph;
 import brisk.faulttolerance.impl.ValueState;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import static applications.CONTROL.*;
 import static engine.content.Content.*;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class TPCombo extends Combo {
+public class TPCombo extends SPOUTCombo {
     private static final Logger LOG = LoggerFactory.getLogger(TPCombo.class);
     private static final long serialVersionUID = -2394340130331865581L;
 

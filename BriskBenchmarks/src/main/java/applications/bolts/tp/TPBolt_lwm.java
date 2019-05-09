@@ -1,4 +1,4 @@
-package applications.bolts.lr.txn;
+package applications.bolts.tp;
 
 
 import brisk.components.context.TopologyContext;
@@ -6,7 +6,6 @@ import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.faulttolerance.impl.ValueState;
 import engine.transaction.dedicated.ordered.TxnManagerLWM;
-import engine.transaction.dedicated.ordered.TxnManagerOrderLockBlocking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -26,7 +26,7 @@ public class SchemaRecordRef {
             }
         } catch (RejectedExecutionException e) {
             System.out.println("The record has not being assigned yet!");
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return record;
     }

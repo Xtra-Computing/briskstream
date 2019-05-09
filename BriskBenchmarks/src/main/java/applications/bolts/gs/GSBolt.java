@@ -14,17 +14,20 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
-import static applications.CONTROL.*;
+import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_speculative;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.GrepSumConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE;
 
 public abstract class GSBolt extends TransactionalBolt {
 
     public GSBolt(Logger log, int fid) {
         super(log, fid);
+        this.configPrefix = "gs";
     }
 
 
@@ -58,7 +61,7 @@ public abstract class GSBolt extends TransactionalBolt {
             if (!enable_app_combo) {
                 collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
             } else {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum)));//(long bid, int sourceId, TopologyContext context, Message message)
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
             }
         }
 
@@ -68,7 +71,7 @@ public abstract class GSBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true)));//(long bid, int sourceId, TopologyContext context, Message message)
+            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
         }
     }
 
@@ -149,12 +152,10 @@ public abstract class GSBolt extends TransactionalBolt {
     }
 
 
-
     //lock_ratio-ahead phase.
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
         //ONLY USED BY LAL, LWM, and PAT.
     }
-
 
 
     //post stream processing phase..

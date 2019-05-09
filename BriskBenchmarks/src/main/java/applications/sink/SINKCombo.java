@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import utils.SINK_CONTROL;
 
 import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_latency_measurement;
 import static applications.CONTROL.sink_combo_bid_size;
 
 public class SINKCombo extends MeasureSink {
@@ -35,14 +36,15 @@ public class SINKCombo extends MeasureSink {
 //            LOG.info("global_cnt:" + global_cnt);
 //            }
 
+            latency_measure(input);
+
+
             if (global_cnt >= (NUM_EVENTS - tthread * sink_combo_bid_size)) {
                 double results = helper.EndMeasurement(global_cnt);
 //                    LOG.info("Received:" + global_cnt + " throughput:" + results);
                 measure_end(results);
                 throw new InterruptedException();
             }
-        } else {//left over
-
         }
 
     }
