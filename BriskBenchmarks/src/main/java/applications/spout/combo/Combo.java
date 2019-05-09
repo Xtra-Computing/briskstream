@@ -45,15 +45,8 @@ public class Combo extends TransactionalSpout {
 
         try {
 
-
-//            if (!start_measure) {//only once.
-//                helper.StartMeasurement();
-//                start_measure = true;
-//            }
-
             if (counter == 0)
                 bolt.sink.start();
-
 
             if (counter < num_batch) {
                 long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
