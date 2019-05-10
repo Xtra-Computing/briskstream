@@ -46,6 +46,8 @@ public class GSBolt_sstore extends GSBolt_LA {
 //        prepareEvents();
 //        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().GetAndUpdate(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
         context.getGraph().topology.tableinitilizer.loadDB(thread_Id, context.getGraph().topology.spinlock, this.context);
+
+
     }
 
     @Override

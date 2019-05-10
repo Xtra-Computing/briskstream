@@ -234,7 +234,7 @@ public class spoutThread extends executorThread {
     }
 
     /**
-     * Given a desired load figure out how many elements to generate in each timeslice
+     * Given a desired Prepared figure out how many elements to generate in each timeslice
      * before yielding for the rest of that timeslice
      */
     private int loadPerTimeslice() {

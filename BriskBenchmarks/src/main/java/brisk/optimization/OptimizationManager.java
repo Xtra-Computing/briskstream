@@ -135,7 +135,7 @@ public class OptimizationManager extends executorThread {
         boolean nav = conf.getBoolean("NAV", true);
         boolean benchmark = conf.getBoolean("benchmark", false);
         boolean manual = conf.getBoolean("manual", false);
-        boolean load = conf.getBoolean("load", false);
+        boolean load = conf.getBoolean("Prepared", false);
         boolean parallelism_tune = conf.getBoolean("parallelism_tune", false);
 
 //		read_meta();
@@ -154,7 +154,7 @@ public class OptimizationManager extends executorThread {
 
         EM = new ExecutionManager(g, conf, this, db, p);
 
-        //load only
+        //Prepared only
         latch = new CountDownLatch(g.getExecutionNodeArrayList().size() + 1 - 1);//+1:OM -1:virtual
 
         try {
@@ -177,7 +177,7 @@ public class OptimizationManager extends executorThread {
                 EM.distributeTasks(conf, executionPlan, latch, false, false, db, p);
 //                return executionPlan;
             } else if (benchmark) {
-                //manually load the desired benchmark plan.
+                //manually Prepared the desired benchmark plan.
                 SchedulingPlan schedulingPlan = so.benchmark_plan(conf.getInt("plan"), prefix);
                 executionPlan = new ExecutionPlan(schedulingPlan, null);
                 EM.distributeTasks(conf, executionPlan, latch, true, false, db, p);

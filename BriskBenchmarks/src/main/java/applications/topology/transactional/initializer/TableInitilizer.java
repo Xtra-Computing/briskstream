@@ -170,64 +170,18 @@ public abstract class TableInitilizer {
     }
 
 
-    HashMap<Short, Integer> keys = new HashMap();
-
-    DescriptiveStatistics stats = new DescriptiveStatistics();
-
-    protected void show_stats() {
-
-        for (Object input_event : db.eventManager.input_events) {
-            Short segment = ((LREvent) input_event).getPOSReport().getSegment();
-
-            stats.addValue(segment);
-
-            boolean containsKey = keys.containsKey(segment);
-            if (containsKey) {
-                keys.put(segment, keys.get(segment) + 1);
-            } else {
-                keys.put(segment, 1);
-            }
-        }
 
 
-        for (Map.Entry<Short, Integer> entry : keys.entrySet()) {
-            LOG.info("SEGMENT:" + entry.getKey() + " " + "Counter:" + entry.getValue());
-        }
-        LOG.info(stats.toString());
-
-    }
-
-    protected abstract boolean load(String file) throws IOException;
+    protected abstract boolean Prepared(String file) throws IOException;
 
     void prepare_input_events(String file_path, boolean fixed) throws IOException {
 
-        if (fixed) {
-            db.eventManager.ini(NUM_EVENTS);//should be made fix.
-            int bid = 0;
 
-            Scanner sc = new Scanner(new File(file_path));
-
-            while (sc.hasNextLine() && bid < NUM_EVENTS) {
-
-                String record = sc.nextLine();
-
-                Object event = create_new_event(record, bid);
-                if (event == null) {
-                } else {
-                    db.eventManager.put(event, bid++);
-                }
-            }
-
-            if (enable_debug)
-                show_stats();
-
-        } else {
             db.eventManager.ini(NUM_EVENTS);
-
             int _number_partitions = number_partitions;
 
             //try to read from file.
-            if (!load(file_path + tthread)) {
+            if (!Prepared(file_path + tthread)) {
                 //if failed, create new one.
                 Object event;
                 for (int i = 0; i < NUM_EVENTS; i++) {
@@ -263,7 +217,8 @@ public abstract class TableInitilizer {
                 }
                 store(file_path + tthread);
             }
-        }
+            db.eventManager = null;//clear it.
+
     }
 
     protected abstract void store(String file_path) throws IOException;

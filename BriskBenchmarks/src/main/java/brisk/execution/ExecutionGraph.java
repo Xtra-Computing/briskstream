@@ -179,7 +179,7 @@ public class ExecutionGraph extends RawExecutionGraph {
 //			executionNode.prepareProfilingStruct(conf, null, null, p);
 //			if (!conf.getBoolean("profile", true)) {
 //				for (int srcId : executionNode.profiling.keySet()) {
-//					executionNode.profiling.GetAndUpdate(srcId).load();
+//					executionNode.profiling.GetAndUpdate(srcId).Prepared();
 //				}
 //			}
 //		});

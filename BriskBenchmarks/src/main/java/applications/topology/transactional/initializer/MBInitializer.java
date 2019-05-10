@@ -1,7 +1,7 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.mb.MicroEvent;
 import applications.param.MicroParam;
+import applications.param.mb.MicroEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -150,7 +150,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     /**
-     * Centrally load data.
+     * Centrally Prepared data.
      *
      * @param scale_factor
      * @param theta
@@ -195,7 +195,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     /**
-     * Centrally load data.
+     * Centrally Prepared data.
      *
      * @param scale_factor
      * @param theta
@@ -233,7 +233,7 @@ public class MBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean Prepared(String file) throws IOException {
 
         double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
         this.number_partitions = Math.min(tthread, config.getInt("number_partitions"));
@@ -247,32 +247,10 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS))
-                ;
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
-
-        Scanner sc;
-        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
-
-        Object event = null;
-        while (sc.hasNextLine()) {
-            String read = sc.nextLine();
-            String[] split = read.split(split_exp);
-
-
-            event = new MicroEvent(
-                    Integer.parseInt(split[0]), //bid
-                    Integer.parseInt(split[1]), //pid
-                    split[2], //bid_array
-                    Integer.parseInt(split[3]),//num_of_partition
-                    split[5],//key_array
-                    Boolean.parseBoolean(split[6])//flag
-            );
-
-            db.eventManager.put(event, Integer.parseInt(split[0]));
-        }
         return true;
     }
 
@@ -292,8 +270,7 @@ public class MBInitializer extends TableInitilizer {
                 + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
                 + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
                 + OsUtils.OS_wrapper("theta=" + String.valueOf(theta))
-                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS))
-                ;
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
 
         File file = new File(event_path);
         file.mkdirs(); // If the directory containing the file and/or its parent(s) does not exist

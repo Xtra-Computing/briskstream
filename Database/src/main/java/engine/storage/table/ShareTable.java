@@ -1,6 +1,8 @@
 package engine.storage.table;
 
-import engine.index.*;
+import engine.index.BaseUnorderedIndex;
+import engine.index.HashTableIndex;
+import engine.index.StdUnorderedIndex;
 import engine.storage.SchemaRecord;
 import engine.storage.TableRecord;
 import engine.storage.TableRecords;
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class ShareTable extends BaseTable {
 
-    private final BaseOrderedIndex[] secondary_indexes_;
+    //    private final BaseOrderedIndex[] secondary_indexes_;
     private final BaseUnorderedIndex primary_index_;
 
     public ShareTable(RecordSchema schema, String tableName, boolean is_thread_safe) {
@@ -27,16 +29,16 @@ public class ShareTable extends BaseTable {
 //#endif
 
             primary_index_ = new HashTableIndex();//here, we decide which index to use.
-            secondary_indexes_ = new BaseOrderedIndex[secondary_count_];
-            for (int i = 0; i < secondary_count_; ++i) {
-                secondary_indexes_[i] = new StdOrderedIndexMT();
-            }
+//            secondary_indexes_ = new BaseOrderedIndex[secondary_count_];
+//            for (int i = 0; i < secondary_count_; ++i) {
+//                secondary_indexes_[i] = new StdOrderedIndexMT();
+//            }
         } else {
             primary_index_ = new StdUnorderedIndex();
-            secondary_indexes_ = new BaseOrderedIndex[secondary_count_];
-            for (int i = 0; i < secondary_count_; ++i) {
-                secondary_indexes_[i] = new StdOrderedIndex();
-            }
+//            secondary_indexes_ = new BaseOrderedIndex[secondary_count_];
+//            for (int i = 0; i < secondary_count_; ++i) {
+//                secondary_indexes_[i] = new StdOrderedIndex();
+//            }
         }
 
     }
@@ -48,7 +50,8 @@ public class ShareTable extends BaseTable {
 
     @Override
     public void SelectRecords(int idx_id, String secondary_key, TableRecords records) {
-        secondary_indexes_[idx_id].SearchRecords(secondary_key, records);
+//        secondary_indexes_[idx_id].SearchRecords(secondary_key, records);
+        throw new UnsupportedOperationException();
     }
 
     ///////////////////INSERT//////////////////

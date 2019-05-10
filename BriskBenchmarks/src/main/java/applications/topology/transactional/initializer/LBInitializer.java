@@ -354,7 +354,7 @@ public class LBInitializer extends TableInitilizer {
     }
 
     @Override
-    protected boolean load(String file) {
+    protected boolean Prepared(String file) {
         return false;
     }
 

@@ -156,7 +156,7 @@ public class BriskRunner extends abstractRunner {
     private void run() throws InterruptedException {
         // Loads the configuration file set by the user or the default
         // configuration
-        // load default configuration
+        // Prepared default configuration
         if (configStr == null) {
 
             String cfg = String.format(CFG_PATH, application);

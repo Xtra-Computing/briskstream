@@ -38,7 +38,7 @@ public class VehicleInfo implements Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(VehicleInfo.class);
     /**
-     * TODO load toll history of vehicle keeps toll history as DAy,XWAY,Tolls
+     * TODO Prepared toll history of vehicle keeps toll history as DAy,XWAY,Tolls
      */
     private final MultiKeyMap tollHistory = new MultiKeyMap();
     private Integer vid;

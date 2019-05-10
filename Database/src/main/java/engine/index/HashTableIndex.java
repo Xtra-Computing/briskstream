@@ -3,13 +3,14 @@ package engine.index;
 
 import engine.storage.TableRecord;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class HashTableIndex extends BaseUnorderedIndex {
 
 
-    private ConcurrentHashMap<String, TableRecord> hash_index_ = new ConcurrentHashMap<>();
+    private HashMap<String, TableRecord> hash_index_ = new HashMap<>();
 
     @Override
     public TableRecord SearchRecord(String primary_key) {

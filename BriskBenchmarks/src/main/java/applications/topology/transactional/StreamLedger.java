@@ -6,7 +6,7 @@ import applications.bolts.sl.SLBolt_olb;
 import applications.bolts.sl.SLBolt_sstore;
 import applications.bolts.sl.SLBolt_ts;
 import applications.constants.StreamLedgerConstants.Component;
-import applications.topology.transactional.initializer.CTInitializer;
+import applications.topology.transactional.initializer.SLInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;
 import applications.util.Configuration;
 import brisk.components.Topology;
@@ -52,7 +52,7 @@ public class StreamLedger extends TransactionTopology {
         double theta = config.getDouble("theta", 1);
         int tthread = config.getInt("tthread");
         setPartition_interval((int) (Math.ceil(NUM_ACCOUNTS / (double) tthread)), tthread);
-        TableInitilizer ini = new CTInitializer(db, scale_factor, theta, tthread, config);
+        TableInitilizer ini = new SLInitializer(db, scale_factor, theta, tthread, config);
 
         ini.creates_Table(config);
 

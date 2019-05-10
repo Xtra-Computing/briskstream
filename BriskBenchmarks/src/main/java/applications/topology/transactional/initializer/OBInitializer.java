@@ -311,55 +311,12 @@ public class OBInitializer extends TableInitilizer {
 
 
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean Prepared(String file) throws IOException {
         String event_path = Event_Path
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
-
-        Scanner sc;
-        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
-
-        Object event;
-        while (sc.hasNextLine()) {
-            String read = sc.nextLine();
-            String[] split = read.split(split_exp);
-
-            if (split[4].endsWith("BuyingEvent")) {//BuyingEvent
-                event = new BuyingEvent(
-                        Integer.parseInt(split[0]), //bid
-                        split[2], //bid_array
-                        Integer.parseInt(split[1]),//pid
-                        Integer.parseInt(split[3]),//num_of_partition
-                        split[5],//key_array
-                        split[6],//price_array
-                        split[7]  //qty_array
-                );
-            } else if (split[4].endsWith("AlertEvent")) {//AlertEvent
-                event = new AlertEvent(
-                        Integer.parseInt(split[0]), //bid
-                        split[2], // bid_array
-                        Integer.parseInt(split[1]),//pid
-                        Integer.parseInt(split[3]),//num_of_partition
-                        Integer.parseInt(split[5]), //num_access
-                        split[6],//key_array
-                        split[7]//price_array
-                );
-            } else {
-                event = new ToppingEvent(
-                        Integer.parseInt(split[0]), //bid
-                        split[2], Integer.parseInt(split[1]), //pid
-                        //bid_array
-                        Integer.parseInt(split[3]),//num_of_partition
-                        Integer.parseInt(split[5]), //num_access
-                        split[6],//key_array
-                        split[7]  //top_array
-                );
-            }
-            db.eventManager.put(event, Integer.parseInt(split[0]));
-
-        }
 
         return true;
     }

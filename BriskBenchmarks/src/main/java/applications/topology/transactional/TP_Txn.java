@@ -77,7 +77,7 @@ public class TP_Txn extends TransactionTopology {
         double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
 
 
-//        ini.loadData_Central(scale_factor, theta); // load data by multiple threads.
+//        ini.loadData_Central(scale_factor, theta); // Prepared data by multiple threads.
 
 //        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
 

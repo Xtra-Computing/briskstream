@@ -2,9 +2,12 @@ package brisk.components.operators.api;
 
 import applications.param.PKEvent;
 import applications.sink.SINKCombo;
+import applications.util.Configuration;
 import applications.util.OsUtils;
+import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
+import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
@@ -83,19 +86,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     }
 
 
-    @Override
-    public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-        OsUtils.configLOG(LOG);
-        this.thread_Id = thread_Id;
-        tthread = config.getInt("tthread", 0);
-        NUM_ACCESSES = Metrics.NUM_ACCESSES;
-        COMPUTE_COMPLEXITY = Metrics.COMPUTE_COMPLEXITY;
-        //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
-        sink.configPrefix = this.getConfigPrefix();
-        sink.prepare(config, context, collector);
-        SOURCE_CONTROL.getInstance().config(tthread);
 
-    }
 
     protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {
         return new PKEvent(bid, deviceID, value);
@@ -204,4 +195,19 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     protected void POST_PROCESS(long bid, long timestamp, int i) throws InterruptedException {
 
     }
+
+    @Override
+    public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
+        OsUtils.configLOG(LOG);
+        this.thread_Id = thread_Id;
+        tthread = config.getInt("tthread", 0);
+        NUM_ACCESSES = Metrics.NUM_ACCESSES;
+        COMPUTE_COMPLEXITY = Metrics.COMPUTE_COMPLEXITY;
+        //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
+
+        sink.configPrefix = this.getConfigPrefix();
+        sink.prepare(config, context, collector);
+        SOURCE_CONTROL.getInstance().config(tthread);
+    }
+
 }

@@ -2,7 +2,6 @@ package applications.topology.transactional.initializer;
 
 import applications.param.sl.DepositEvent;
 import applications.param.sl.TransactionEvent;
-import applications.topology.transactional.State;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -36,15 +35,14 @@ import static applications.topology.transactional.State.configure_store;
 import static applications.topology.transactional.State.partioned_store;
 import static applications.topology.transactional.State.shared_store;
 import static brisk.controller.affinity.SequentialBinding.next_cpu_for_db;
-import static engine.profiler.Metrics.NUM_ITEMS;
 import static utils.PartitionHelper.getPartition_interval;
 import static xerial.jnuma.Numa.setLocalAlloc;
 
-public class CTInitializer extends TableInitilizer {
-    private static final Logger LOG = LoggerFactory.getLogger(CTInitializer.class);
+public class SLInitializer extends TableInitilizer {
+    private static final Logger LOG = LoggerFactory.getLogger(SLInitializer.class);
 
 
-    public CTInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
+    public SLInitializer(Database db, double scale_factor, double theta, int tthread, Configuration config) {
         super(db, scale_factor, theta, tthread, config);
         configure_store(scale_factor, theta, tthread, NUM_ACCOUNTS);
     }
@@ -69,9 +67,17 @@ public class CTInitializer extends TableInitilizer {
             insertAssetRecord(_key, 0);
         }
 
-        LOG.info("Thread:" + thread_id + " finished loading data from: " + left_bound + " to: " + right_bound);
 
+
+
+
+        LOG.info("Thread:" + thread_id + " finished loading data from: " + left_bound + " to: " + right_bound);
     }
+
+
+
+
+
 
     @Override
     public void loadDB(int thread_id, SpinLock[] spinlock, TopologyContext context) {
@@ -277,8 +283,11 @@ public class CTInitializer extends TableInitilizer {
     }
 
 
+
+
+
     @Override
-    protected boolean load(String file) throws IOException {
+    protected boolean Prepared(String file) throws IOException {
         String event_path = Event_Path
                 + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
                 + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
@@ -288,46 +297,6 @@ public class CTInitializer extends TableInitilizer {
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file))))
             return false;
 
-        Scanner sc;
-        sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file)));
-
-        Object event = null;
-        while (sc.hasNextLine()) {
-            String read = sc.nextLine();
-            String[] split = read.split(split_exp);
-
-            if (split.length < 4) {
-                LOG.info("Loading wrong file!" + Arrays.toString(split));
-                System.exit(-1);
-            }
-
-            if (split[4].endsWith("DepositEvent")) {//DepositEvent
-                event = new DepositEvent(
-                        Integer.parseInt(split[0]), //bid
-                        Integer.parseInt(split[1]), //pid
-                        split[2], //bid_array
-                        Integer.parseInt(split[3]),//num_of_partition
-                        split[5],//getAccountId
-                        split[6],//getBookEntryId
-                        Integer.parseInt(split[7]),  //getAccountTransfer
-                        Integer.parseInt(split[8])  //getBookEntryTransfer
-                );
-            } else if (split[4].endsWith("TransactionEvent")) {//TransactionEvent
-                event = new TransactionEvent(
-                        Integer.parseInt(split[0]), //bid
-                        Integer.parseInt(split[1]), //pid
-                        split[2], //bid_array
-                        Integer.parseInt(split[3]),//num_of_partition
-                        split[5],//getSourceAccountId
-                        split[6],//getSourceBookEntryId
-                        split[7],//getTargetAccountId
-                        split[8],//getTargetBookEntryId
-                        Integer.parseInt(split[9]),  //getAccountTransfer
-                        Integer.parseInt(split[10])  //getBookEntryTransfer
-                );
-            }
-            db.eventManager.put(event, Integer.parseInt(split[0]));
-        }
         return true;
     }
 

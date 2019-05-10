@@ -55,7 +55,7 @@ import java.util.Map;
  * charged to the vehi- cle’s account). Reads from {@link LRTopologyControl#DAILY_EXPEDITURE_REQUESTS_STREAM_ID} and emits
  * tuple on {@link }.
  *
- * @TODO either use external distributed database to keep historic data or load it into memory
+ * @TODO either use external distributed database to keep historic data or Prepared it into memory
  */
 public class DailyExpenditureBolt extends filterBolt {
 

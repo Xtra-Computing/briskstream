@@ -183,9 +183,7 @@ public class TPInitializer extends TableInitilizer {
 
 
     @Override
-    protected boolean load(String file) {
-
-
+    protected boolean Prepared(String file) {
         return true;
     }
 
@@ -206,34 +204,7 @@ public class TPInitializer extends TableInitilizer {
     }
 
 
-    protected Object create_new_event(String record, int bid) {
 
-        String[] token = record.split(" ");
-
-        short type = Short.parseShort(token[0]);
-        Short time = Short.parseShort(token[1]);
-        Integer vid = Integer.parseInt(token[2]);
-
-        if (type == AbstractLRBTuple.position_report) {
-            return
-                    new LREvent(new PositionReport(//
-                            time,//
-                            vid,//
-                            Integer.parseInt(token[3]), // speed
-                            Integer.parseInt(token[4]), // xway
-                            Short.parseShort(token[5]), // lane
-                            Short.parseShort(token[6]), // direction
-                            Short.parseShort(token[7]), // segment
-                            Integer.parseInt(token[8])),
-                            tthread,
-                            bid)
-
-                    ;
-        } else {
-            //ignore, not used in this experiment.
-            return null;
-        }
-    }
 
     public void creates_Table(Configuration config) {
         RecordSchema s = SpeedScheme();
@@ -257,13 +228,13 @@ public class TPInitializer extends TableInitilizer {
             path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_PATH)));
         }
 
-        String file = System.getProperty("user.home").concat("/data/app/").concat(path);
+//        String file = System.getProperty("user.home").concat("/data/app/").concat(path);
 
-        try {
-            prepare_input_events(file, true);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            prepare_input_events(file, true);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
     }
 }

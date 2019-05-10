@@ -78,6 +78,9 @@ public abstract class Operator implements IOperator {
     private double window = 1;//by default window fieldSize is 1, means per-tuple execution
     private double results = 0;
 
+
+
+
     /**
      * @param log
      * @param output_selectivity
@@ -237,8 +240,14 @@ public abstract class Operator implements IOperator {
 //		txn_context = new TxnContext(thisTaskId, fid, bid);
     }
 
+
     public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
         loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
+    }
+    public void loadDB(int thread_Id, int thisTaskId, ExecutionGraph graph) {
+
+
+        graph.topology.tableinitilizer.loadDB(thread_Id, this.context);
     }
 
     /**
@@ -294,11 +303,6 @@ public abstract class Operator implements IOperator {
 
 
 
-    public void loadDB(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-
-
-        graph.topology.tableinitilizer.loadDB(thread_Id, this.context);
-    }
 
     public void setExecutionNode(ExecutionNode e) {
         this.executor = e;

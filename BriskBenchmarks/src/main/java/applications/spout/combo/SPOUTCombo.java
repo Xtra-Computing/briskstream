@@ -7,6 +7,7 @@ import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.components.operators.api.TransactionalSpout;
 import brisk.execution.ExecutionGraph;
+import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
@@ -23,13 +24,13 @@ import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class SPOUTCombo extends TransactionalSpout {
+public abstract class SPOUTCombo extends TransactionalSpout {
     private static Logger LOG;
     private static final long serialVersionUID = -2394340130331865581L;
     TransactionalBolt bolt;//compose the bolt here.
     private int the_end;
     private int global_cnt;
-
+    protected final String split_exp = ";";
     public SPOUTCombo(Logger log, int i) {
         super(log, i);
         LOG = log;
@@ -40,11 +41,14 @@ public class SPOUTCombo extends TransactionalSpout {
 
     int num_events_per_thread;
     long[] mybids;
+    Object[] myevents;
+
     int counter;
     int _combo_bid_size;
 
     Tuple tuple;
     Tuple marker;
+    GeneralMsg generalMsg;
 
     @Override
     public void nextTuple() throws InterruptedException {
@@ -55,8 +59,15 @@ public class SPOUTCombo extends TransactionalSpout {
                 bolt.sink.start();
 
             if (counter < num_events_per_thread) {
-                long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
-                tuple = new Tuple(bid, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime()));
+                long bid = mybids[counter];
+
+                if (enable_latency_measurement)
+                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter], System.nanoTime());
+                else {
+                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter]);
+                }
+
+                tuple = new Tuple(bid, this.taskId, context, generalMsg);
 
                 bolt.execute(tuple);  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
                 counter++;
@@ -89,6 +100,9 @@ public class SPOUTCombo extends TransactionalSpout {
     public Integer default_scale(Configuration conf) {
         return 1;//4 for 7 sockets
     }
+
+
+    public abstract void loadEvent(String file_name, Configuration config, TopologyContext context, OutputCollector collector);
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
@@ -125,8 +139,11 @@ public class SPOUTCombo extends TransactionalSpout {
 
         mybids = new long[num_events_per_thread];//5000 batches.
 
+        myevents = new Object[num_events_per_thread];
+
         for (int i = 0; i < num_events_per_thread; i++) {
             mybids[i] = thisTaskId * (combo_bid_size) + i * tthread * combo_bid_size;
+
         }
         counter = 0;
 

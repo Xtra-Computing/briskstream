@@ -4,10 +4,23 @@ import applications.bolts.tp.TPBolt_SSTORE;
 import applications.bolts.tp.TPBolt_lwm;
 import applications.bolts.tp.TPBolt_olb;
 import applications.bolts.tp.TPBolt_ts;
+import applications.datatype.AbstractLRBTuple;
+import applications.datatype.PositionReport;
+import applications.param.lr.LREvent;
+import applications.util.Configuration;
+import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
+import brisk.execution.runtime.collector.OutputCollector;
 import brisk.faulttolerance.impl.ValueState;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 import static applications.CONTROL.*;
 import static engine.content.Content.*;
@@ -23,6 +36,99 @@ public class TPCombo extends SPOUTCombo {
         state = new ValueState();
     }
 
+    HashMap<Short, Integer> keys = new HashMap();
+
+    DescriptiveStatistics stats = new DescriptiveStatistics();
+
+    protected void show_stats() {
+
+        for (Object input_event : db.eventManager.input_events) {
+            Short segment = ((LREvent) input_event).getPOSReport().getSegment();
+
+            stats.addValue(segment);
+
+            boolean containsKey = keys.containsKey(segment);
+            if (containsKey) {
+                keys.put(segment, keys.get(segment) + 1);
+            } else {
+                keys.put(segment, 1);
+            }
+        }
+
+
+        for (Map.Entry<Short, Integer> entry : keys.entrySet()) {
+            LOG.info("SEGMENT:" + entry.getKey() + " " + "Counter:" + entry.getValue());
+        }
+        LOG.info(stats.toString());
+
+    }
+
+    protected Object create_new_event(String record, int bid) {
+
+        String[] token = record.split(" ");
+
+        short type = Short.parseShort(token[0]);
+        Short time = Short.parseShort(token[1]);
+        Integer vid = Integer.parseInt(token[2]);
+
+        if (type == AbstractLRBTuple.position_report) {
+            return
+                    new LREvent(new PositionReport(//
+                            time,//
+                            vid,//
+                            Integer.parseInt(token[3]), // speed
+                            Integer.parseInt(token[4]), // xway
+                            Short.parseShort(token[5]), // lane
+                            Short.parseShort(token[6]), // direction
+                            Short.parseShort(token[7]), // segment
+                            Integer.parseInt(token[8])),
+                            tthread,
+                            bid)
+
+                    ;
+        } else {
+            //ignore, not used in this experiment.
+            return null;
+        }
+    }
+
+
+    @Override
+    public void loadEvent(String file_name, Configuration config, TopologyContext context, OutputCollector collector) {
+
+
+        int i = 0;
+        int bid = 0;
+        Scanner sc = null;
+        try {
+            sc = new Scanner(new File(file_name));
+
+
+            for (int j = 0; j < taskId * num_events_per_thread; j++) {
+                sc.nextLine();//skip un-related.
+                bid++;
+            }
+
+
+            while (sc.hasNextLine() && bid < NUM_EVENTS) {
+
+                String record = sc.nextLine();
+
+                Object event = create_new_event(record, bid);
+                if (event == null) {
+                } else {
+                    myevents[i++] = event;
+                    bid++;
+                    // db.eventManager.put(event, bid++);
+                }
+            }
+
+            if (enable_debug)
+                show_stats();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
