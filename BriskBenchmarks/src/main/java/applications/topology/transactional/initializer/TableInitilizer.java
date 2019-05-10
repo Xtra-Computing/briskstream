@@ -1,26 +1,23 @@
 package applications.topology.transactional.initializer;
 
+import applications.param.lr.LREvent;
 import applications.param.sl.DepositEvent;
 import applications.param.sl.TransactionEvent;
 import applications.tools.FastZipfGenerator;
-import applications.topology.transactional.State;
 import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import engine.Database;
 import engine.benchmark.TxnParam;
 import engine.common.SpinLock;
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.SplittableRandom;
+import java.util.*;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.enable_states_partition;
+import static applications.CONTROL.*;
 import static applications.topology.transactional.State.partioned_store;
 import static applications.topology.transactional.State.shared_store;
 import static engine.profiler.Metrics.NUM_ITEMS;
@@ -172,6 +169,34 @@ public abstract class TableInitilizer {
         }
     }
 
+
+    HashMap<Short, Integer> keys = new HashMap();
+
+    DescriptiveStatistics stats = new DescriptiveStatistics();
+
+    protected void show_stats() {
+
+        for (Object input_event : db.eventManager.input_events) {
+            Short segment = ((LREvent) input_event).getPOSReport().getSegment();
+
+            stats.addValue(segment);
+
+            boolean containsKey = keys.containsKey(segment);
+            if (containsKey) {
+                keys.put(segment, keys.get(segment) + 1);
+            } else {
+                keys.put(segment, 1);
+            }
+        }
+
+
+        for (Map.Entry<Short, Integer> entry : keys.entrySet()) {
+            LOG.info("SEGMENT:" + entry.getKey() + " " + "Counter:" + entry.getValue());
+        }
+        LOG.info(stats.toString());
+
+    }
+
     protected abstract boolean load(String file) throws IOException;
 
     void prepare_input_events(String file_path, boolean fixed) throws IOException {
@@ -192,6 +217,10 @@ public abstract class TableInitilizer {
                     db.eventManager.put(event, bid++);
                 }
             }
+
+            if (enable_debug)
+                show_stats();
+
         } else {
             db.eventManager.ini(NUM_EVENTS);
 

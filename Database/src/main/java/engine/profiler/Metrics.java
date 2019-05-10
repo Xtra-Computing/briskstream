@@ -424,7 +424,6 @@ public class Metrics {
             if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id] < CONTROL.MeasureBound) {
                 end_time = System.nanoTime();
 
-
                 pre_txn_total[thread_id] -= post_time[thread_id];//need to exclude write-post time.
 
                 txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]));
@@ -446,7 +445,10 @@ public class Metrics {
         public static void END_TOTAL_TIME_MEASURE_TS(int thread_id, int txn_size) {
 
             if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && measure_counts[thread_id]++ < CONTROL.MeasureBound) {
-                long overall_processing_time_per_wm = end_time - stream_start[thread_id];//time from receiving first event to finish last event in the current batch.
+
+                long current_time = System.nanoTime();
+
+                long overall_processing_time_per_wm = current_time - stream_start[thread_id];//time from receiving first event to finish last event in the current batch.
                 metrics.stream_total[thread_id].addValue((overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
                 metrics.average_tp_core[thread_id].addValue(tp_core[thread_id] / txn_size);
@@ -455,7 +457,7 @@ public class Metrics {
                 metrics.average_tp_w_syn[thread_id].addValue((double) tp[thread_id] / txn_size);
 
                 //clean;
-                stream_start[thread_id] = end_time;
+                stream_start[thread_id] = current_time;
                 compute_total[thread_id] = 0;
                 index_time[thread_id] = 0;
                 pre_txn_total[thread_id] = 0;

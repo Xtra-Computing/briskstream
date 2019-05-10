@@ -364,12 +364,12 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      * This is the API: SP-Layer inform the arrival of checkpoint, which informs the TP-Layer to start evaluation.
      *
      * @param thread_Id
-     * @param fid
+     * @param mark_ID
      * @return time spend in tp evaluation.
      */
     @Override
-    public void start_evaluate(int thread_Id, int fid) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluate(int thread_Id, long mark_ID) throws InterruptedException, BrokenBarrierException {
 
-        instance.start_evaluation(thread_Id);
+        instance.start_evaluation(thread_Id,mark_ID);
     }
 }

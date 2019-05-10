@@ -13,21 +13,22 @@ public class T_StreamContentImpl extends T_StreamContent {
 
     @Override
     public SchemaRecord ReadAccess(TxnContext context, MetaTypes.AccessType accessType) {
-        return readValues(context.getBID());
+        return readValues(context.getBID(), -1, false);
     }
 
     @Override
-    public SchemaRecord ReadAccess(long ts, MetaTypes.AccessType accessType) {
-        return readValues(ts);
+    public SchemaRecord ReadAccess(long ts, long previous_mark_ID, boolean clean, MetaTypes.AccessType accessType) {
+        SchemaRecord rt = readValues(ts, previous_mark_ID, clean);
+        return rt;
     }
 
 
     @Override
-    public void WriteAccess(long ts, SchemaRecord local_record_) {
+    public void WriteAccess(long ts, long previous_mark_ID, boolean clean, SchemaRecord local_record_) {
 //        version.updateValues(local_record_.getValues());
 //        versions.put(ts, local_record_);
 //        CollectGarbage(wid);///BUGS.... Fix it.
-        updateValues(ts, local_record_);//mvcc, value_list @ts=0
+        updateValues(ts, previous_mark_ID, clean, local_record_);//mvcc, value_list @ts=0
     }
 
     /**

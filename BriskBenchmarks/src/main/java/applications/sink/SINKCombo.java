@@ -20,9 +20,9 @@ public class SINKCombo extends MeasureSink {
     }
 
     public void end(int global_cnt) {
+        double results = helper.EndMeasurement(global_cnt);
         boolean proceed = SINK_CONTROL.getInstance().try_lock();
         if (proceed) {
-            double results = helper.EndMeasurement(global_cnt);
             LOG.info(Thread.currentThread().getName() + " obtains lock");
             measure_end(results);
         }

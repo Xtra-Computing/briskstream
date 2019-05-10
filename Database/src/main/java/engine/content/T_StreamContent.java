@@ -7,7 +7,6 @@ import engine.transaction.impl.TxnContext;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import static applications.CONTROL.enable_mvcc;
@@ -106,12 +105,12 @@ public abstract class T_StreamContent implements Content {
             SchemaRecord record_at_ts = null;
 //            while (record_at_ts == null) {//polling for correct entry.
 
-                Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
+            Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
 
-                if (entry != null) {
-                    record_at_ts = entry.getValue();
-                } else
-                    record_at_ts = versions.get(ts);//not modified in last round
+            if (entry != null) {
+                record_at_ts = entry.getValue();
+            } else
+                record_at_ts = versions.get(ts);//not modified in last round
 //            }
 //            spinlock_.unlock();
 //            if (record_at_ts.getValues() == null) {
@@ -122,7 +121,7 @@ public abstract class T_StreamContent implements Content {
             return record;
     }
 
-    public SchemaRecord readValues(long ts) {
+    public SchemaRecord readValues(long ts, long previous_mark_ID, boolean clean) {
 
         if (enable_mvcc) {
 //            spinlock_.lock_ratio();
@@ -132,6 +131,8 @@ public abstract class T_StreamContent implements Content {
                 rt = versions.lowerEntry(ts).getValue();
             }
 
+            if (clean)
+                clean_map(previous_mark_ID);
 //            spinlock_.unlock();
             return rt;
         } else
@@ -139,12 +140,21 @@ public abstract class T_StreamContent implements Content {
     }
 
     @Override
-    public void updateValues(long ts, SchemaRecord record) {
+    public void clean_map(long previous_mark_ID) {
+//        versions = (ConcurrentSkipListMap<Long, SchemaRecord>) versions.tailMap(versions.lastKey());
+        versions.headMap(versions.lastKey(), false).clear();
+    }
+
+    @Override
+    public void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
 
         if (enable_mvcc) {
 //            spinlock_.lock_ratio();
             versions.put(ts, record);
 //            spinlock_.unlock();
+
+            if (clean)
+                clean_map(previous_mark_ID);
         } else
             this.record = record;
     }

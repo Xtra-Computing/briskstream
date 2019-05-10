@@ -24,7 +24,6 @@ import static applications.constants.PositionKeepingConstants.Constant.MOVING_AV
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.profiler.Metrics.MeasureTools.*;
-import static utils.PartitionHelper.key_to_partition;
 
 /**
  * There is one TxnProcessingEngine of each stage.
@@ -46,6 +45,7 @@ public final class TxnProcessingEngine {
     private int app;
 
     private int TOTAL_CORES;
+    private long previous_ID = 0;
 
     private TxnProcessingEngine() {
         OsUtils.configLOG(LOG);
@@ -147,7 +147,7 @@ public final class TxnProcessingEngine {
         }
     }
 
-    private void CT_Transfer_Fun(Operation operation) {
+    private void CT_Transfer_Fun(Operation operation, long previous_mark_ID, boolean clean) {
 
         // read
         SchemaRecord preValues = operation.condition_records[0].content_.readPreValues(operation.bid);
@@ -159,7 +159,7 @@ public final class TxnProcessingEngine {
             for (Map.Entry<Long, SchemaRecord> schemaRecord : ((T_StreamContent) operation.condition_records[0].content_).versions.entrySet()) {
                 LOG.info("Its contents:" + schemaRecord.getKey() + " value:" + schemaRecord.getValue() + " current bid:" + operation.bid);
             }
-            LOG.info("TRY reading:" + ((T_StreamContent) operation.condition_records[1].content_).versions.get(operation.bid));//not modified in last round);
+            LOG.info("TRY reading:" + ((T_StreamContent) operation.condition_records[0].content_).readPreValues(operation.bid));//not modified in last round);
         }
         if (preValues1 == null) {
             LOG.info("Failed to read condition records[1]" + operation.condition_records[1].record_.GetPrimaryKey());
@@ -198,7 +198,7 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
 
-            operation.d_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+            operation.d_record.content_.WriteAccess(operation.bid, previous_mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
             //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
             operation.success[0] = true;
 //            if (operation.table_name.equalsIgnoreCase("accounts") && operation.d_record.record_.GetPrimaryKey().equalsIgnoreCase("11")) {
@@ -211,17 +211,17 @@ public final class TxnProcessingEngine {
         }
     }
 
-    private void CT_Depo_Fun(Operation operation) {
+    private void CT_Depo_Fun(Operation operation, long mark_ID, boolean clean) {
         SchemaRecord srcRecord = operation.s_record.content_.readPreValues(operation.bid);
         List<DataBox> values = srcRecord.getValues();
         //apply function to modify..
         SchemaRecord tempo_record;
         tempo_record = new SchemaRecord(values);//tempo record
         tempo_record.getValues().get(operation.column_id).incLong(operation.function.delta_long);//compute.
-        operation.s_record.content_.WriteAccess(operation.bid, tempo_record);//it may reduce NUMA-traffic.
+        operation.s_record.content_.WriteAccess(operation.bid, mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
     }
 
-    private void process(Operation operation) {
+    private void process(Operation operation, long mark_ID, boolean clean) {
 
         if (operation.accessType == READ_ONLY) {//used in MB.
 //            operation.record_ref.inc(Thread.currentThread().getName());
@@ -229,7 +229,7 @@ public final class TxnProcessingEngine {
             //read source.
 //            List<DataBox> dstRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
 
-            SchemaRecord schemaRecord = operation.d_record.content_.ReadAccess(operation.bid, operation.accessType);
+            SchemaRecord schemaRecord = operation.d_record.content_.ReadAccess(operation.bid, mark_ID, clean, operation.accessType);
 
             operation.record_ref.setRecord(new SchemaRecord(schemaRecord.getValues()));//Note that, locking scheme allows directly modifying on original table d_record.
 
@@ -255,7 +255,7 @@ public final class TxnProcessingEngine {
 
 //                operation.d_record.record_.s.get(1).setString(values.get(1).getString(), VALUE_LEN);
 
-                operation.d_record.content_.WriteAccess(operation.bid, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
+                operation.d_record.content_.WriteAccess(operation.bid, mark_ID, clean, new SchemaRecord(operation.value_list));//it may reduce NUMA-traffic.
 
             } else { //update by column_id.
                 operation.d_record.record_.getValues().get(operation.column_id).setLong(operation.value);
@@ -264,9 +264,9 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE) {//read, modify, write.
 
             if (app == 1) {
-                CT_Depo_Fun(operation);//used in SL
+                CT_Depo_Fun(operation, mark_ID, clean);//used in SL
             } else {
-                SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType);
+                SchemaRecord srcRecord = operation.s_record.content_.ReadAccess(operation.bid, mark_ID, clean, operation.accessType);
                 List<DataBox> values = srcRecord.getValues();
 
                 //apply function to modify..
@@ -280,11 +280,11 @@ public final class TxnProcessingEngine {
             //TODO: pass function here in future instead of hard-code it. Seems not trivial in Java, consider callable interface?
 
             if (app == 1) {//used in SL
-                CT_Transfer_Fun(operation);
+                CT_Transfer_Fun(operation, mark_ID, clean);
             } else if (app == 2) {//used in OB
                 //check if any item is not able to buy.
                 List<DataBox> d_record = operation.condition_records[0].content_
-                        .ReadAccess(operation.bid, operation.accessType).getValues();
+                        .ReadAccess(operation.bid, mark_ID, clean, operation.accessType).getValues();
 
                 long askPrice = d_record.get(1).getLong();//price
                 long left_qty = d_record.get(2).getLong();//available qty;
@@ -303,8 +303,8 @@ public final class TxnProcessingEngine {
         } else if (operation.accessType == READ_WRITE_COND_READ) {
             assert operation.record_ref != null;
             if (app == 1) {//used in SL
-                CT_Transfer_Fun(operation);
-                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid));//read the resulting tuple.
+                CT_Transfer_Fun(operation, mark_ID, clean);
+                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid, mark_ID, clean));//read the resulting tuple.
             } else
                 throw new UnsupportedOperationException();
 
@@ -316,7 +316,7 @@ public final class TxnProcessingEngine {
             assert operation.record_ref != null;
 
             //read source.
-            List<DataBox> srcRecord = operation.s_record.content_.ReadAccess(operation.bid, operation.accessType).getValues();
+            List<DataBox> srcRecord = operation.s_record.content_.ReadAccess(operation.bid, mark_ID, clean, operation.accessType).getValues();
 
             //apply function.
             if (operation.function instanceof Mean) {
@@ -368,11 +368,16 @@ public final class TxnProcessingEngine {
 
 
     //TODO: actual evaluation on the operation_chain.
-    private void process(MyList<Operation> operation_chain) {
+    private void process(MyList<Operation> operation_chain, long mark_ID) {
         while (true) {
             Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
             if (operation == null) return;
-            process(operation);
+
+            if (operation_chain.size() == 0)// TODO: THIS ONLY WORKS FOR GS because there's no cross-state access.
+                process(operation, mark_ID, true);
+            else
+                process(operation, mark_ID, false);
+
         }//loop.
 
 //        if (enable_work_stealing) {
@@ -438,7 +443,8 @@ public final class TxnProcessingEngine {
         return rt;
     }
 
-    private int submit_task(int thread_Id, Holder holder, Collection<Task> callables) {
+
+    private int submit_task(int thread_Id, Holder holder, Collection<Task> callables, long mark_ID) {
 
         int sum = 0;
 
@@ -458,7 +464,7 @@ public final class TxnProcessingEngine {
 //                Instance instance = standalone_engine;//multi_engine.get(key);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
-                        Task task = new Task(operation_chain);
+                        Task task = new Task(operation_chain, mark_ID);
 
                         if (enable_debug)
                             LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
@@ -474,16 +480,18 @@ public final class TxnProcessingEngine {
                         }
                         callables.add(task);
                     } else {
-                        process(operation_chain);//directly apply the computation.
+                        process(operation_chain, mark_ID);//directly apply the computation.
                     }
                 }
             }
         }
+
+
         return sum;
     }
 
 
-    private int evaluation(int thread_Id) throws InterruptedException {
+    private int evaluation(int thread_Id, long mark_ID) throws InterruptedException {
 
         BEGIN_TP_SUBMIT_TIME_MEASURE(thread_Id);
 
@@ -495,7 +503,7 @@ public final class TxnProcessingEngine {
 
         for (Holder_in_range holder_in_range : holder_by_stage.values()) {
             Holder holder = holder_in_range.rangeMap.get(thread_Id);
-            task += submit_task(thread_Id, holder, callables);
+            task += submit_task(thread_Id, holder, callables, mark_ID);
         }
 
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
@@ -523,10 +531,11 @@ public final class TxnProcessingEngine {
 
     /**
      * @param thread_Id
+     * @param mark_ID
      * @return time spend in tp evaluation.
      * @throws InterruptedException
      */
-    public void start_evaluation(int thread_Id) throws InterruptedException {
+    public void start_evaluation(int thread_Id, long mark_ID) throws InterruptedException {
 
 
         //It first needs to make sure checkpoints from all producers are received.
@@ -537,7 +546,7 @@ public final class TxnProcessingEngine {
 
         BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
-        int size = evaluation(thread_Id);
+        int size = evaluation(thread_Id, previous_ID - kMaxThreadNum);
 
 
 //        SOURCE_CONTROL.getInstance().CLEARWM();//sync_ratio for all threads to come to this line.
@@ -546,6 +555,8 @@ public final class TxnProcessingEngine {
         END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
 
 //        SOURCE_CONTROL.getInstance().Wait_Start();//no sync here. sync later.
+
+        previous_ID = mark_ID;
 
         SOURCE_CONTROL.getInstance().Wait_End(thread_Id);//sync for all threads to come to this line.
 
@@ -642,6 +653,7 @@ public final class TxnProcessingEngine {
     class Task implements Callable<Integer> {
         private AtomicBoolean under_process;
         private final Set<Operation> operation_chain;
+        private final long mark_ID;
 //        private int socket;
 //        private final long wid = 0;//watermark id.
 //        private boolean un_processed = true;
@@ -656,11 +668,12 @@ public final class TxnProcessingEngine {
 //            }
 //        }
 
-        public Task(Set<Operation> operation_chain) {
+        public Task(Set<Operation> operation_chain, long mark_ID) {
 
             this.operation_chain = operation_chain;
+            this.mark_ID = mark_ID;
 
-            if (!enable_work_stealing) {
+            if (!(enable_work_stealing || island == -1)) {
                 under_process = new AtomicBoolean(false);
             }
 
@@ -693,7 +706,7 @@ public final class TxnProcessingEngine {
                     return 0;
                 }
                 try {
-                    process((MyList<Operation>) operation_chain);
+                    process((MyList<Operation>) operation_chain, mark_ID);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -716,7 +729,7 @@ public final class TxnProcessingEngine {
 //                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
 //                            + " with size of:" + operation_chain.size());
 
-                    process((MyList<Operation>) operation_chain);
+                    process((MyList<Operation>) operation_chain, mark_ID);
                     if (enable_debug)
                         LOG.trace("Thread:\t" + Thread.currentThread().getName()
                                 + "reset task:" + OsUtils.Addresser.addressOf(this));

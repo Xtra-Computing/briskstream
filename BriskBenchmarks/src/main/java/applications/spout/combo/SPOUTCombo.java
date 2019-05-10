@@ -43,6 +43,9 @@ public class SPOUTCombo extends TransactionalSpout {
     int counter;
     int _combo_bid_size;
 
+    Tuple tuple;
+    Tuple marker;
+
     @Override
     public void nextTuple() throws InterruptedException {
 
@@ -53,25 +56,25 @@ public class SPOUTCombo extends TransactionalSpout {
 
             if (counter < num_events_per_thread) {
                 long bid = mybids[counter];//SOURCE_CONTROL.getInstance().GetAndUpdate();
-                Tuple tuple = new Tuple(bid, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime()));
+                tuple = new Tuple(bid, this.taskId, context, new GeneralMsg<>(DEFAULT_STREAM_ID, System.nanoTime()));
 
                 bolt.execute(tuple);  // public Tuple(long bid, int sourceId, TopologyContext context, Message message)
                 counter++;
 
+//                LOG.info("COUNTER:" + counter);
                 if (ccOption == CCOption_TStream) {// This is only required by T-Stream.
                     if (!enable_app_combo) {
                         forward_checkpoint(this.taskId, bid, null);
                     } else {
                         if (checkpoint(counter)) {
-                            bolt.execute(new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, -1, bid, myiteration)));
+                            marker = new Tuple(bid, this.taskId, context, new Marker(DEFAULT_STREAM_ID, -1, bid, myiteration));
+                            bolt.execute(marker);
                         }
                     }
                 }
 
                 if (counter == the_end) {
-                    if (ccOption == CCOption_TStream) {
-                        SOURCE_CONTROL.getInstance().Final_END(taskId);//sync for all threads to come to this line.
-                    }
+                    SOURCE_CONTROL.getInstance().Final_END(taskId);//sync for all threads to come to this line.
                     bolt.sink.end(global_cnt);
                 }
 
@@ -113,7 +116,7 @@ public class SPOUTCombo extends TransactionalSpout {
 
         double checkpoint = config.getDouble("checkpoint", 1);
 
-        batch_number_per_wm = (int) (1000 * checkpoint);//10K, 1K, 100.
+        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
 
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 

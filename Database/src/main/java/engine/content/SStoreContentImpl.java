@@ -33,13 +33,18 @@ public class SStoreContentImpl extends SStoreContent {
     }
 
     @Override
-    public SchemaRecord ReadAccess(long ts, MetaTypes.AccessType accessType) {
+    public SchemaRecord ReadAccess(long ts, long mark_ID, boolean clean, MetaTypes.AccessType accessType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public SchemaRecord readPreValues(long ts) {
         return null;
+    }
+
+    @Override
+    public void clean_map(long mark_ID) {
+
     }
 
     public boolean TryLockPartitions() {

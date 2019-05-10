@@ -84,10 +84,7 @@ public class TPBolt_ts extends TPBolt {
                 , event.count_value//holder to be filled up.
                 , new CNT(event.getPOSReport().getVid())
         );          //asynchronously return.
-
-
         LREvents.add(event);
-
     }
 
 

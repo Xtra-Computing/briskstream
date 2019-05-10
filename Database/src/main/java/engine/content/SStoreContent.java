@@ -50,12 +50,12 @@ public abstract class SStoreContent implements Content {
     }
 
     @Override
-    public SchemaRecord readValues(long ts) {
+    public SchemaRecord readValues(long ts, long previous_mark_ID, boolean clean) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void updateValues(long ts, SchemaRecord value) {
+    public void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
         throw new UnsupportedOperationException();
     }
 
@@ -66,7 +66,7 @@ public abstract class SStoreContent implements Content {
     }
 
     @Override
-    public void WriteAccess(long commit_timestamp, SchemaRecord local_record_) {
+    public void WriteAccess(long commit_timestamp, long mark_ID, boolean clean, SchemaRecord local_record_) {
         throw new UnsupportedOperationException();
     }
 

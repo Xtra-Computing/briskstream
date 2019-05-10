@@ -104,8 +104,8 @@ public class MicroEvent extends TxnEvent {
 
     private void set_values(int access_id, int key) {
         List<DataBox> values = new ArrayList<>();
-        values.add(new IntDataBox(key));//key
-        values.add(new StringDataBox(GenerateValue(key), VALUE_LEN));//value_list
+        values.add(new IntDataBox(key));//key  4 bytes
+        values.add(new StringDataBox(GenerateValue(key), VALUE_LEN));//value_list   32 bytes..
         value[access_id] = values;
     }
 

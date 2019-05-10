@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import java.util.List;
 
 import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
@@ -137,7 +138,9 @@ public abstract class SLBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.transaction_result, event.getTimestamp())));
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.transaction_result, event.getTimestamp())));
+            }
         }
 
 
@@ -147,7 +150,9 @@ public abstract class SLBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.getTimestamp())));
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.getTimestamp())));
+            }
         }
     }
 

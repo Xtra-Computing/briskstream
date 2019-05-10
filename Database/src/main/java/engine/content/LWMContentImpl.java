@@ -107,14 +107,14 @@ public class LWMContentImpl extends LWMContent {
         }
         //TODO: there is a null pointer error at this line.
 //        BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
-        SchemaRecord record = readValues(bid);
+        SchemaRecord record = readValues(bid, -1, false);
 //        END_TP_CORE_TIME_MEASURE_TS(txn_context.thread_Id, 1);
         return record;
 
     }
 
     @Override
-    public SchemaRecord ReadAccess(long ts, MetaTypes.AccessType accessType) {
+    public SchemaRecord ReadAccess(long ts, long mark_ID, boolean clean, MetaTypes.AccessType accessType) {
         throw new UnsupportedOperationException();
     }
 
@@ -122,6 +122,8 @@ public class LWMContentImpl extends LWMContent {
     public SchemaRecord readPreValues(long ts) {
         return null;
     }
+
+
 
     //However, once T is ready to commit, it must obtain a certify lock_ratio on all items that it currently holds write locks on before it can commit.
     @Override
@@ -141,9 +143,9 @@ public class LWMContentImpl extends LWMContent {
     }
 
     @Override
-    public void WriteAccess(long commit_timestamp, SchemaRecord local_record_) {
+    public void WriteAccess(long commit_timestamp, long mark_ID, boolean clean, SchemaRecord local_record_) {
         rw_lock_.AcquireWriteLock();
-        updateValues(commit_timestamp, local_record_);
+        updateValues(commit_timestamp, mark_ID, clean, local_record_);
         CollectGarbage();
         rw_lock_.ReleaseWriteLock();
     }

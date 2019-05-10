@@ -23,6 +23,7 @@ import java.util.concurrent.BrokenBarrierException;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
 import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -353,7 +354,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
     }
 
 
-    public void start_evaluate(int taskId, int fid) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluate(int taskId, long mark_ID) throws InterruptedException, BrokenBarrierException {
         throw new UnsupportedOperationException();
     }
 
@@ -372,7 +373,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-        END_INDEX_TIME_MEASURE(txn_context.thread_Id, txn_context.is_retry_);
+        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 //
         if (t_record != null) {
 //			BEGIN_PHASE_MEASURE(thread_id_, SELECT_PHASE);
@@ -404,9 +405,9 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
     public boolean SelectKeyRecord_noLock(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException {
 
-//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
-//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
+        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
 

@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import java.util.List;
 
 import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.OnlineBidingSystemConstants.Constant.NUM_ACCESSES_PER_BUY;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
@@ -138,7 +139,9 @@ public abstract class OBBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), event.biding_result, event.getTimestamp());//the tuple is finished finally.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.biding_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.biding_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            }
         }
     }
 
@@ -147,7 +150,9 @@ public abstract class OBBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), event.alert_result, event.getTimestamp());//the tuple is finished finally.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.alert_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.alert_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            }
         }
     }
 
@@ -155,7 +160,9 @@ public abstract class OBBolt extends TransactionalBolt {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), event.topping_result, event.getTimestamp());//the tuple is finished finally.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.topping_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.topping_result, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            }
         }
     }
 

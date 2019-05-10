@@ -14,8 +14,7 @@ import org.slf4j.Logger;
 
 import java.util.List;
 
-import static applications.CONTROL.enable_app_combo;
-import static applications.CONTROL.enable_speculative;
+import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static applications.constants.GrepSumConstants.Constant.VALUE_LEN;
 import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
@@ -45,13 +44,17 @@ public abstract class GSBolt extends TransactionalBolt {
         return true;
     }
 
+
+    int sum = 0;
+
     protected void READ_POST(MicroEvent event) throws InterruptedException {
-        int sum = 0;
 
         for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
             for (int i = 0; i < NUM_ACCESSES; ++i) {
                 sum += event.result[i] + Math.random();
             }
+
+
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
             //now we assume it's all correct for testing its upper bond.
@@ -61,17 +64,22 @@ public abstract class GSBolt extends TransactionalBolt {
             if (!enable_app_combo) {
                 collector.emit(event.getBid(), sum, event.getTimestamp());//the tuple is finished finally.
             } else {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+                if (enable_latency_measurement) {
+                    sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, sum, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+                }
             }
         }
-
+        sum = 0;
     }
 
     protected void WRITE_POST(MicroEvent event) throws InterruptedException {
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+
+            if (enable_latency_measurement) {
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true, event.getTimestamp())));//(long bid, int sourceId, TopologyContext context, Message message)
+            }
         }
     }
 

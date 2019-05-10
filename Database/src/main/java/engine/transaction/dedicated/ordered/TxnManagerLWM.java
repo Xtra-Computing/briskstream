@@ -200,7 +200,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
                 Access access_ptr = access_list_.GetAccess(i);
                 if (access_ptr.access_type_ == READ_WRITE) {
                     // install from local copy.
-                    access_ptr.access_record_.content_.WriteAccess(commit_timestamp, access_ptr.local_record_);
+                    access_ptr.access_record_.content_.WriteAccess(commit_timestamp, commit_timestamp, true, access_ptr.local_record_);
                 }
             }
         }

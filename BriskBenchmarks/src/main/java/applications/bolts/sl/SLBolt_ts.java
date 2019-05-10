@@ -22,8 +22,7 @@ import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.combo_bid_size;
-import static applications.CONTROL.enable_profile;
+import static applications.CONTROL.*;
 import static applications.constants.StreamLedgerConstants.Constant.NUM_ACCOUNTS;
 import static engine.profiler.Metrics.MeasureTools.*;
 
@@ -64,7 +63,7 @@ public class SLBolt_ts extends SLBolt {
             BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
-            transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
+            transactionManager.start_evaluate(thread_Id, in.getBID());//start lazy evaluation in transaction manager.
             END_TP_TIME_MEASURE(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
@@ -98,7 +97,8 @@ public class SLBolt_ts extends SLBolt {
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
             TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
 
-            (event).setTimestamp(timestamp);
+            if (enable_latency_measurement)
+                (event).setTimestamp(timestamp);
 
             if (event instanceof DepositEvent) {
                 DEPOSIT_REQUEST_CONSTRUCT((DepositEvent) event, txnContext);

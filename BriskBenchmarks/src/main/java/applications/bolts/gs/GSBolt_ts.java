@@ -12,6 +12,7 @@ import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.BrokenBarrierException;
@@ -19,12 +20,13 @@ import java.util.concurrent.BrokenBarrierException;
 import static applications.CONTROL.*;
 import static engine.profiler.Metrics.MeasureTools.*;
 import static engine.profiler.Metrics.NUM_ITEMS;
+
 public class GSBolt_ts extends GSBolt {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(GSBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private Collection<MicroEvent> EventsHolder = new Vector<>();
+    private Collection<MicroEvent> EventsHolder = new ArrayDeque<>();
     private int writeEvents;
     private double write_useful_time = 556;//write-compute time pre-measured.
 
@@ -46,7 +48,9 @@ public class GSBolt_ts extends GSBolt {
 
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
             MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
-            (event).setTimestamp(timestamp);
+
+            if (enable_latency_measurement)
+                (event).setTimestamp(timestamp);
 
             boolean flag = event.READ_EVENT();
 
@@ -135,7 +139,7 @@ public class GSBolt_ts extends GSBolt {
 
             BEGIN_TP_TIME_MEASURE(thread_Id);
 
-            transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
+            transactionManager.start_evaluate(thread_Id, in.getBID());//start lazy evaluation in transaction manager.
 
             END_TP_TIME_MEASURE(thread_Id);// total TP time.
 
@@ -147,10 +151,7 @@ public class GSBolt_ts extends GSBolt {
 
             END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
 
-
-//            BEGIN_POST_TIME_MEASURE(thread_Id);
             READ_POST();
-//            END_POST_TIME_MEASURE_ACC(thread_Id);
 
             if (!enable_app_combo) {
                 final Marker marker = in.getMarker();

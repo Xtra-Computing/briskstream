@@ -52,7 +52,7 @@ public interface CONTROL {
 
     //single engine with work-stealing.
     boolean enable_work_stealing = true; // 3. this is a sub-option, only useful when engine is enabled. enable by default -- should be enabled for island=-1.
-    boolean enable_mvcc = false;//only required when partition is disabled.
+    boolean enable_mvcc = (!enable_work_partition || island != -1) && enable_work_stealing;//true only when partition is false and island is not -1
 
     boolean enable_speculative = false;//work in future!
 

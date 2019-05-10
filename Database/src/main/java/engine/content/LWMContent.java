@@ -98,14 +98,14 @@ RWLock rw_lock_ = new RWLock();
     }
 
     @Override
-    public SchemaRecord readValues(long ts) {
+    public SchemaRecord readValues(long ts, long previous_mark_ID, boolean clean) {
         SchemaRecord record = versions.get(ts);
         return record == null ? versions.lastEntry().getValue() : record;
     }
 
     @Override
-    public void updateValues(long ts, SchemaRecord value) {
-        versions.putIfAbsent(ts, value);
+    public void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
+        versions.putIfAbsent(ts, record);
     }
 
     //used in SStore
@@ -123,5 +123,8 @@ RWLock rw_lock_ = new RWLock();
     public void UnlockPartitions() {
 
     }
+    @Override
+    public void clean_map(long mark_ID) {
 
+    }
 }

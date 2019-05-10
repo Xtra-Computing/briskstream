@@ -31,7 +31,7 @@ public class MeasureSink extends BaseSink {
     protected stable_sink_helper helper;
     protected int ccOption;
     private boolean LAST = false;
-    private int batch_number_per_wm;
+    //    private int batch_number_per_wm;
     private int exe;
 
 //    int _combo_bid_size;
@@ -116,9 +116,9 @@ public class MeasureSink extends BaseSink {
 
         double checkpoint = config.getDouble("checkpoint", 1);
 
-        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
+//        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
 
-        exe = NUM_EVENTS - NUM_EVENTS % batch_number_per_wm;
+        exe = NUM_EVENTS;
 
         LOG.info("expected last events = " + exe);
 

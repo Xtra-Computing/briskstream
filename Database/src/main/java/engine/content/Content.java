@@ -59,18 +59,21 @@ public interface Content {
 
     SchemaRecord ReadAccess(TxnContext context, MetaTypes.AccessType accessType);
 
-    SchemaRecord ReadAccess(long ts, MetaTypes.AccessType accessType);
-
 
     SchemaRecord readPreValues(long ts);
 
-    SchemaRecord readValues(long ts);
+    SchemaRecord readValues(long ts, long previous_mark_ID, boolean clean);
 
-    void updateValues(long ts, SchemaRecord value);
+    void clean_map(long mark_ID);
+
+    void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record);
 
     boolean AcquireCertifyLock();
 
-    void WriteAccess(long commit_timestamp, SchemaRecord local_record_);
+    SchemaRecord ReadAccess(long ts, long mark_ID, boolean clean, MetaTypes.AccessType accessType);
+
+
+    void WriteAccess(long commit_timestamp, long mark_ID, boolean clean, SchemaRecord local_record_);
 
     void ReleaseCertifyLock();
 
