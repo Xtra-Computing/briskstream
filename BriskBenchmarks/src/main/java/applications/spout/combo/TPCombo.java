@@ -4,10 +4,12 @@ import applications.bolts.tp.TPBolt_SSTORE;
 import applications.bolts.tp.TPBolt_lwm;
 import applications.bolts.tp.TPBolt_olb;
 import applications.bolts.tp.TPBolt_ts;
+import applications.constants.BaseConstants;
 import applications.datatype.AbstractLRBTuple;
 import applications.datatype.PositionReport;
 import applications.param.lr.LREvent;
 import applications.util.Configuration;
+import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
@@ -42,8 +44,9 @@ public class TPCombo extends SPOUTCombo {
 
     protected void show_stats() {
 
-        for (Object input_event : db.eventManager.input_events) {
-            Short segment = ((LREvent) input_event).getPOSReport().getSegment();
+        for (Object myevent : myevents) {
+
+            Short segment = ((LREvent) myevent).getPOSReport().getSegment();
 
             stats.addValue(segment);
 
@@ -104,11 +107,9 @@ public class TPCombo extends SPOUTCombo {
             sc = new Scanner(new File(file_name));
 
 
-            for (int j = 0; j < taskId * num_events_per_thread; j++) {
-                sc.nextLine();//skip un-related.
-                bid++;
+            for (int j = 0; j < taskId; j++) {
+                sc.nextLine();
             }
-
 
             while (sc.hasNextLine() && bid < NUM_EVENTS) {
 
@@ -119,7 +120,12 @@ public class TPCombo extends SPOUTCombo {
                 } else {
                     myevents[i++] = event;
                     bid++;
-                    // db.eventManager.put(event, bid++);
+                    if (i == num_events_per_thread) break;
+
+                    for (int j = 0; j < (tthread - 1) * combo_bid_size; j++) {
+                        if (sc.hasNextLine())
+                            sc.nextLine();//skip un-related.
+                    }
                 }
             }
 
@@ -168,5 +174,24 @@ public class TPCombo extends SPOUTCombo {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
 
+
+        String OS_prefix = null;
+
+        if (OsUtils.isWindows()) {
+            OS_prefix = "win.";
+        } else {
+            OS_prefix = "unix.";
+        }
+        String path;
+
+        if (OsUtils.isMac()) {
+            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_TEST_PATH)));
+        } else {
+            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_PATH)));
+        }
+
+        String file = System.getProperty("user.home").concat("/data/app/").concat(path);
+
+        loadEvent(file, config, context, collector);
     }
 }

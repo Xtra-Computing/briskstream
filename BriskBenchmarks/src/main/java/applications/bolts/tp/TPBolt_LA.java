@@ -26,7 +26,7 @@ public abstract class TPBolt_LA extends TPBolt {
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        //ensures that locks are added in the event sequence order.
+        //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);
 
         long lock_time_measure = 0;
@@ -34,7 +34,7 @@ public abstract class TPBolt_LA extends TPBolt {
 
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
 
-            LREvent event = (LREvent) db.eventManager.get((int) i);
+            LREvent event = (LREvent) input_event;
 
             LAL(event, i, _bid);
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
@@ -51,7 +51,7 @@ public abstract class TPBolt_LA extends TPBolt {
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
-            LREvent event = (LREvent) db.eventManager.get((int) i);
+            LREvent event = (LREvent) input_event;
 
             BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
             REQUEST_NOLOCK(event, txn_context[(int) (i - _bid)]);
@@ -81,30 +81,30 @@ public abstract class TPBolt_LA extends TPBolt {
 
 
 //    @Override
-//    protected void write_handle(LREvent event, Long timestamp) throws DatabaseException, InterruptedException {
+//    protected void write_handle(LREvent input_event, Long timestamp) throws DatabaseException, InterruptedException {
 //        //begin transaction processing.
 //        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
-//        txn_context = new TxnContext(thread_Id, this.fid, event.getBid());
+//        txn_context = new TxnContext(thread_Id, this.fid, input_event.getBid());
 //
 //        BEGIN_WAIT_TIME_MEASURE(thread_Id);
-//        transactionManager.getOrderLock().blocking_wait(event.getBid());//ensures that locks are added in the event sequence order.
+//        transactionManager.getOrderLock().blocking_wait(input_event.getBid());//ensures that locks are added in the input_event sequence order.
 //
 //        BEGIN_LOCK_TIME_MEASURE(thread_Id);
-//        write_request_LA(event);
+//        write_request_LA(input_event);
 //        long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 //
-//        transactionManager.getOrderLock().advance();//ensures that locks are added in the event sequence order.
+//        transactionManager.getOrderLock().advance();//ensures that locks are added in the input_event sequence order.
 //
 //        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
 //
 //        BEGIN_TP_TIME_MEASURE(thread_Id);
-//        write_request(event);
+//        write_request(input_event);
 //        END_TP_TIME_MEASURE(thread_Id);
 //
 //
 //        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 //
-//        REQUEST_CORE(event);
+//        REQUEST_CORE(input_event);
 //
 //        END_COMPUTE_TIME_MEASURE(thread_Id);
 //        transactionManager.CommitTransaction(txn_context);//always success..
@@ -113,11 +113,11 @@ public abstract class TPBolt_LA extends TPBolt {
 //    }
 //
 //    @Override
-//    protected void REQUEST_CORE(LREvent event) throws InterruptedException {
-//        Integer vid = event.getVSreport().getVid();
+//    protected void REQUEST_CORE(LREvent input_event) throws InterruptedException {
+//        Integer vid = input_event.getVSreport().getVid();
 //
-//        DataBox speed_value_box = event.speed_value.getRecord().getValues().get(1);
-//        DataBox cnt_value_box = event.count_value.getRecord().getValues().get(1);
+//        DataBox speed_value_box = input_event.speed_value.getRecord().getValues().get(1);
+//        DataBox cnt_value_box = input_event.count_value.getRecord().getValues().get(1);
 //
 //        HashSet cnt_segment = cnt_value_box.getHashSet();
 //        double latestAvgSpeeds = speed_value_box.getDouble();
@@ -128,37 +128,37 @@ public abstract class TPBolt_LA extends TPBolt {
 //
 //        double lav;
 //        if (latestAvgSpeeds == 0) {//not initialized
-//            lav = event.getVSreport().getAvgSpeed();
+//            lav = input_event.getVSreport().getAvgSpeed();
 //        } else
-//            lav = (latestAvgSpeeds + event.getVSreport().getAvgSpeed()) / 2;
+//            lav = (latestAvgSpeeds + input_event.getVSreport().getAvgSpeed()) / 2;
 //
 //        speed_value_box.setDouble(lav);//write to state.
 //
-//        toll_process(event.getBid(), vid, count, lav, event.getPOSReport().getTime());
+//        toll_process(input_event.getBid(), vid, count, lav, input_event.getPOSReport().getTime());
 //    }
 
 
-//    protected void write_request_LA(LREvent event) throws DatabaseException {
+//    protected void write_request_LA(LREvent input_event) throws DatabaseException {
 //
 //        transactionManager.lock_ahead(txn_context, "segment_speed"
-//                , String.valueOf(event.getVSreport().getSegment()), event.speed_value, READ_WRITE);
+//                , String.valueOf(input_event.getVSreport().getSegment()), input_event.speed_value, READ_WRITE);
 //        transactionManager.lock_ahead(txn_context, "segment_cnt"
-//                , String.valueOf(event.getVSreport().getSegment()), event.count_value, READ_WRITE);
+//                , String.valueOf(input_event.getVSreport().getSegment()), input_event.count_value, READ_WRITE);
 //    }
 //
-//    protected void write_request(LREvent event) throws DatabaseException {
+//    protected void write_request(LREvent input_event) throws DatabaseException {
 //        //it simply construct the operations and return.
 //        transactionManager.SelectKeyRecord_noLock(txn_context
 //                , "segment_speed"
-//                , String.valueOf(event.getVSreport().getSegment())
-//                , event.speed_value//holder to be filled up.
+//                , String.valueOf(input_event.getVSreport().getSegment())
+//                , input_event.speed_value//holder to be filled up.
 //                , READ_WRITE
 //        );
 //
 //        transactionManager.SelectKeyRecord_noLock(txn_context
 //                , "segment_cnt"
-//                , String.valueOf(event.getVSreport().getSegment())
-//                , event.count_value//holder to be filled up.
+//                , String.valueOf(input_event.getVSreport().getSegment())
+//                , input_event.count_value//holder to be filled up.
 //                , READ_WRITE
 //        );
 //

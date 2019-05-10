@@ -21,7 +21,7 @@ public class TransactionResult {
     /**
      * Creates a new transaction result.
      *
-     * @param transaction             The original transaction event.
+     * @param transaction             The original transaction input_event.
      * @param success                 True, if the transaction was successful, false if not.
      * @param newSourceAccountBalance The resulting balance of the source account.
      * @param newTargetAccountBalance The resulting balance of the target account.

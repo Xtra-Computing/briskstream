@@ -151,7 +151,7 @@ public class OBBolt_ts extends OBBolt {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
-            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            TxnEvent event = (TxnEvent) input_event;
 
             (event).setTimestamp(timestamp);
 

@@ -58,7 +58,7 @@ public class TPBolt_ts extends TPBolt {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
-            LREvent event = (LREvent) db.eventManager.get((int) i);
+            LREvent event = (LREvent) input_event;
             (event).setTimestamp(timestamp);
 
             REQUEST_CONSTRUCT(event, txnContext);

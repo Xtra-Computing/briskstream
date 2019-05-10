@@ -37,7 +37,7 @@ public abstract class OBBolt_LA extends OBBolt {
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        //ensures that locks are added in the event sequence order.
+        //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);
 
         long lock_time_measure = 0;
@@ -46,11 +46,10 @@ public abstract class OBBolt_LA extends OBBolt {
 
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
 
-            Object event = db.eventManager.get((int) i);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            LAL(event, i, _bid);
+            LAL(input_event, i, _bid);
 
             lock_time_measure += END_LOCK_TIME_MEASURE_ACC(thread_Id);
         }
@@ -64,7 +63,7 @@ public abstract class OBBolt_LA extends OBBolt {
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
-            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            TxnEvent event = (TxnEvent) input_event;
 
             if (event instanceof BuyingEvent) {
 

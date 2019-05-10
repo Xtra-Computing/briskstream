@@ -3,9 +3,9 @@ package brisk.components.windowing;
 public interface TriggerPolicy<T, S> {
 
     /**
-     * Tracks the event and could use this to invoke the trigger.
+     * Tracks the input_event and could use this to invoke the trigger.
      *
-     * @param event the input event
+     * @param event the input input_event
      */
     void track(Event<T> event);
 

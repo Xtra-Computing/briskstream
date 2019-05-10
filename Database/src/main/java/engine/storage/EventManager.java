@@ -24,4 +24,8 @@ public class EventManager {
         input_events[i] = event;
         insert_num_events++;
     }
+
+    public void clear() {
+        input_events = null;
+    }
 }

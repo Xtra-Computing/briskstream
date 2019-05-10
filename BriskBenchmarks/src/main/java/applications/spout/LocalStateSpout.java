@@ -39,8 +39,8 @@ public class LocalStateSpout extends AbstractSpout {
     @Override
     public void nextTuple() {
 
-//        final MicroEvent event = dataSource.generateEvent();
-//        final String msg = event.getEvent();
+//        final MicroEvent input_event = dataSource.generateEvent();
+//        final String msg = input_event.getEvent();
 //        List<StreamValues> tuples = parser.parse(msg);
 //        for (StreamValues values : tuples) {
 //            collector.emit(values.getStreamId(), values);

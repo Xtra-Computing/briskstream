@@ -138,6 +138,7 @@ public class spoutThread extends executorThread {
             //do Loading
 
 
+
             sp.prepare(conf, context, collector);
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 //            Thread.currentThread().setDaemon(true);
@@ -149,8 +150,6 @@ public class spoutThread extends executorThread {
                 );
             }
 
-            this.Ready(LOG);//Tell executor thread to proceed.
-
             LOG.info("Operator:\t" + executor.getOP_full() + " is ready");
 
             //pre-loading input tuples.
@@ -159,6 +158,7 @@ public class spoutThread extends executorThread {
 
 
 //            cnt += preload_size;
+            this.Ready(LOG);//Tell executor thread to proceed.
 
             System.gc();
             latch.countDown();          //tells others I'm really ready.
@@ -201,7 +201,7 @@ public class spoutThread extends executorThread {
             }
 
             LOG.info(this.executor.getOP_full()
-                            + "\tfinished execution and exit with throughput (k event/s) of:\t"
+                            + "\tfinished execution and exit with throughput (k input_event/s) of:\t"
                             + actual_throughput + "(" + actual_throughput / expected_throughput + ")"
                             + " on node: " + node
 //					+ " ( " + Arrays.show(cpu) + ")"

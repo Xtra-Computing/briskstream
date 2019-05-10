@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static applications.CONTROL.NUM_EVENTS;
+
 public class PartitionedOrderLock implements Serializable {
     private static final Logger LOG = LoggerFactory.getLogger(PartitionedOrderLock.class);
     private static final long serialVersionUID = 1347267778748318967L;
@@ -46,12 +48,12 @@ public class PartitionedOrderLock implements Serializable {
     public class LOCK {
         volatile AtomicLong bid = new AtomicLong();
 
-        public boolean blocking_wait(final long bid) {
+        public boolean blocking_wait(final long bid, long _bid) {
 //            if (!this.counter.compareAndSet(counter, counter))
 //                LOG.info("not ready for this batch to proceed:" + counter + " lock_ratio @" + this);
 
-
             while (!this.bid.compareAndSet(bid, bid)) {
+
                 //not ready for this batch to proceed! Wait for previous batch to finish execution.
                 if (Thread.currentThread().isInterrupted()) {
 //				 throw new InterruptedException();
@@ -63,6 +65,11 @@ public class PartitionedOrderLock implements Serializable {
 
         public void advance() {
             bid.incrementAndGet();//allow next batch to proceed.
+
+        }
+
+        public void reset() {
+            bid.set(0);
         }
     }
 }

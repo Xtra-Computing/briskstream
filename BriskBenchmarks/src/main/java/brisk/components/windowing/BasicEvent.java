@@ -27,7 +27,7 @@ public class BasicEvent<T> implements Event {
     @Override
     public String toString() {
         return "BasicEvent{" +
-                "event=" + event +
+                "input_event=" + event +
                 ", ts=" + ts +
                 '}';
     }

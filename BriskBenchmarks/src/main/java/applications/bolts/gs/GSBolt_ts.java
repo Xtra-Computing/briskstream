@@ -47,7 +47,7 @@ public class GSBolt_ts extends GSBolt {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+            MicroEvent event = (MicroEvent) input_event;
 
             if (enable_latency_measurement)
                 (event).setTimestamp(timestamp);
@@ -74,7 +74,7 @@ public class GSBolt_ts extends GSBolt {
 
         if (enable_speculative) {//TODO: future work.
             //earlier emit
-            //collector.emit(event.getBid(), 1, event.getTimestamp());//the tuple is finished.
+            //collector.emit(input_event.getBid(), 1, input_event.getTimestamp());//the tuple is finished.
         } else {
             EventsHolder.add(event);//mark the tuple as ``in-complete"
         }
@@ -105,12 +105,12 @@ public class GSBolt_ts extends GSBolt {
     private void READ_REQUEST_CORE() throws InterruptedException {
 
 //        while (!EventsHolder.isEmpty() && !Thread.interrupted()) {
-//            MicroEvent event = EventsHolder.remove();
-//            if (!READ_REQUEST_CORE(event))
-//                EventsHolder.offer(event);
+//            MicroEvent input_event = EventsHolder.remove();
+//            if (!READ_REQUEST_CORE(input_event))
+//                EventsHolder.offer(input_event);
 //            else {
 //                BEGIN_POST_TIME_MEASURE(thread_Id);
-//                BUYING_REQUEST_POST(event);
+//                BUYING_REQUEST_POST(input_event);
 //                END_POST_TIME_MEASURE_ACC(thread_Id);
 //            }
 //        }

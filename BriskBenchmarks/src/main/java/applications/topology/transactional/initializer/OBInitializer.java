@@ -332,7 +332,7 @@ public class OBInitializer extends TableInitilizer {
         BufferedWriter w;
         w = new BufferedWriter(new FileWriter(new File(event_path + OsUtils.OS_wrapper(file_name))));
 
-        for (Object event : db.eventManager.input_events) {
+        for (Object event : db.getEventManager().input_events) {
 
             StringBuilder sb = new StringBuilder();
             if (event instanceof BuyingEvent) {
@@ -344,7 +344,7 @@ public class OBInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(((BuyingEvent) event).num_p());//3
                 sb.append(split_exp);
-                sb.append("BuyingEvent");//event types.
+                sb.append("BuyingEvent");//input_event types.
                 sb.append(split_exp);
                 sb.append(Arrays.toString(((BuyingEvent) event).getItemId()));//5
                 sb.append(split_exp);
@@ -361,7 +361,7 @@ public class OBInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(((AlertEvent) event).num_p());
                 sb.append(split_exp);
-                sb.append("AlertEvent");//event types.
+                sb.append("AlertEvent");//input_event types.
                 sb.append(split_exp);
                 sb.append(((AlertEvent) event).getNum_access());//5
                 sb.append(split_exp);
@@ -378,7 +378,7 @@ public class OBInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(((ToppingEvent) event).num_p());
                 sb.append(split_exp);
-                sb.append("ToppingEvent");//event types.
+                sb.append("ToppingEvent");//input_event types.
                 sb.append(split_exp);
                 sb.append(((ToppingEvent) event).getNum_access());//5
                 sb.append(split_exp);

@@ -37,7 +37,7 @@ public class BidingResult {
     @Override
     public String toString() {
         return "TransactionResult {"
-                + "event=" + event
+                + "input_event=" + event
                 + ", success=" + success
                 + '}';
     }

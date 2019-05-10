@@ -58,8 +58,9 @@ public class SLCombo extends SPOUTCombo {
             int i = 0;
             Object event = null;
 
-            for (int j = 0; j < taskId * num_events_per_thread; j++) {
-                sc.nextLine();//skip un-related.
+
+            for (int j = 0; j < taskId; j++) {
+                sc.nextLine();
             }
 
             while (sc.hasNextLine()) {
@@ -96,8 +97,13 @@ public class SLCombo extends SPOUTCombo {
                             Integer.parseInt(split[10])  //getBookEntryTransfer
                     );
                 }
-//                db.eventManager.put(event, Integer.parseInt(split[0]));
+//                db.eventManager.put(input_event, Integer.parseInt(split[0]));
                 myevents[i++] = event;
+                if (i == num_events_per_thread) break;
+                for (int j = 0; j < (tthread - 1) * combo_bid_size; j++) {
+                    if (sc.hasNextLine())
+                        sc.nextLine();//skip un-related.
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -141,6 +147,7 @@ public class SLCombo extends SPOUTCombo {
         bolt.prepare(config, context, collector);
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
+        loadEvent("SL_events" + tthread, config, context, collector);
 
     }
 }

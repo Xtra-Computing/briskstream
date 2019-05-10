@@ -114,7 +114,7 @@ public abstract class OBBolt extends TransactionalBolt {
             values.get(2).setLong(newQty);
         }
         event.topping_result = true;
-//        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
+//        collector.force_emit(input_event.getBid(), true, input_event.getTimestamp());//the tuple is immediately finished.
     }
 
     protected void ALERT_REQUEST_NOLOCK(AlertEvent event, TxnContext txnContext) throws DatabaseException {
@@ -132,7 +132,7 @@ public abstract class OBBolt extends TransactionalBolt {
             values.get(1).setLong(newPrice);
         }
         event.alert_result = true;
-//        collector.force_emit(event.getBid(), true, event.getTimestamp());//the tuple is immediately finished.
+//        collector.force_emit(input_event.getBid(), true, input_event.getTimestamp());//the tuple is immediately finished.
     }
 
     protected void BUYING_REQUEST_POST(BuyingEvent event) throws InterruptedException {
@@ -170,7 +170,7 @@ public abstract class OBBolt extends TransactionalBolt {
     protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            TxnEvent event = (TxnEvent) input_event;
             (event).setTimestamp(timestamp);
             if (event instanceof BuyingEvent) {
                 BUYING_REQUEST_POST((BuyingEvent) event);

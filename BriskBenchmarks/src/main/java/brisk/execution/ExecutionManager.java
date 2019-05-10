@@ -65,10 +65,10 @@ public class ExecutionManager {
      * <p>
      * Definition: Reference cycles when core is not halted.
      * <p>
-     * Description: This event counts the number of reference cycles that the core is not in a halt state. The core enters the halt state when it is running the HLT instruction.
-     * In mobile systems the core frequency may change from time. This event is not affected by core frequency changes but counts as if the core is running at the maximum frequency all the time. This event has a constant ratio with the CPU_CLK_UNHALTED.BUS event.
-     * Divide this event count by core frequency to determine the elapsed time while the core was not in halt state.
-     * Note: The event CPU_CLK_UNHALTED.REF is counted by a designated fixed timestamp_counter, leaving the two programmable counters available for other events.
+     * Description: This input_event counts the number of reference cycles that the core is not in a halt state. The core enters the halt state when it is running the HLT instruction.
+     * In mobile systems the core frequency may change from time. This input_event is not affected by core frequency changes but counts as if the core is running at the maximum frequency all the time. This input_event has a constant ratio with the CPU_CLK_UNHALTED.BUS input_event.
+     * Divide this input_event count by core frequency to determine the elapsed time while the core was not in halt state.
+     * Note: The input_event CPU_CLK_UNHALTED.REF is counted by a designated fixed timestamp_counter, leaving the two programmable counters available for other events.
      */
 
 
@@ -80,7 +80,7 @@ public class ExecutionManager {
                     System.out.println("ERROR: unable to init OverHpc");
                 }
 
-                // Init event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
+                // Init input_event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
                 if (!HPCMonotor.initEvents(
                         LLC_MISSES
                                 + "," + LLC_REFERENCES
@@ -88,7 +88,7 @@ public class ExecutionManager {
 //								+ "," + L1_ICACHE_LOAD_MISSES
 //								+ "," + L1_DCACHE_LOAD_MISSES
                 )) {
-                    LOG.error("ERROR: invalid event");
+                    LOG.error("ERROR: invalid input_event");
                 }
             } catch (java.lang.UnsatisfiedLinkError e) {
                 System.out.println("ERROR: unable to init OverHpc. " + e.getMessage());

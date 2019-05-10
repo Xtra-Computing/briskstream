@@ -489,21 +489,25 @@ public class BriskRunner extends abstractRunner {
 
             for (int i = 0; i < tthread; i++) {
 
-                useful_time += metrics.useful_ratio[i].getPercentile(50);
-                abort_time += metrics.abort_ratio[i].getPercentile(50);
-                ts_alloc_time += metrics.ts_allocation[i].getPercentile(50);
-                index_time += metrics.index_time[i].getPercentile(50);
-                wait_time += metrics.sync_ratio[i].getPercentile(50);
-                lock_time += metrics.lock_ratio[i].getPercentile(50);
-                compute_time += metrics.exe_time[i].getPercentile(50);
+                useful_time += metrics.useful_ratio[i].getMean();
+//                abort_time += metrics.abort_ratio[i].getPercentile(50);
+//                ts_alloc_time += metrics.ts_allocation[i].getPercentile(50);
+                index_time += metrics.index_ratio[i].getMean();
+                wait_time += metrics.sync_ratio[i].getMean();
+
+
+                if (config.getInt("CCOption", 0) != CCOption_TStream)
+                    lock_time += metrics.lock_ratio[i].getMean();
+
+                compute_time += metrics.exe_ratio[i].getMean();
 //                sum += metrics.useful_ratio[i].getN();
 
-                stream_processing += metrics.stream_total[i].getPercentile(50);
-                txn_processing += metrics.txn_total[i].getPercentile(50);
+                stream_processing += metrics.stream_total[i].getMean();
+                txn_processing += metrics.txn_total[i].getMean();
             }
 
 
-            //get average per thread.
+            //get average ratio per thread.
 
             useful_time = useful_time / tthread;
             abort_time = abort_time / tthread;
@@ -543,15 +547,15 @@ public class BriskRunner extends abstractRunner {
                 w.write(",");
                 w.write(String.format("%.2f", txn_processing * (useful_time)));//average txn processing * useful = state access.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing * (1 - (useful_time)) ));//state access overhead.
+                w.write(String.format("%.2f", txn_processing * (1 - (useful_time))));//state access overhead.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing ));//average txn processing time.
+                w.write(String.format("%.2f", txn_processing));//average txn processing time.
                 w.write(",");
-                w.write(String.format("%.2f", useful_time ));//useful ratio.
+                w.write(String.format("%.2f", useful_time));//useful ratio.
                 w.write(",");
                 w.write(String.format("%.2f", abort_time));//abort ratio.
                 w.write(",");
-                w.write(String.format("%.2f", wait_time ));//sync ratio.
+                w.write(String.format("%.2f", wait_time));//sync ratio.
                 w.write(",");
                 w.write(String.format("%.2f", lock_time));//lock ratio.
                 w.write(",");
@@ -594,15 +598,15 @@ public class BriskRunner extends abstractRunner {
             }
 
             LOG.info("===OVERALL===");
-            LOG.info("Stream Processing time on one event:" + String.format("%.2f", stream_processing ));
-            LOG.info("TXN Processing on one event:" + String.format("%.2f", txn_processing ));
+            LOG.info("Stream Processing time on one input_event:" + String.format("%.2f", stream_processing));
+            LOG.info("TXN Processing on one input_event:" + String.format("%.2f", txn_processing));
 
             LOG.info("===BREAKDOWN TXN===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_time ));
-            LOG.info("Abort time:\t" + String.format("%.2f", abort_time));
-            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time ));
+            LOG.info("Useful time:\t" + String.format("%.2f", useful_time));
+//            LOG.info("Abort time:\t" + String.format("%.2f", abort_time));
+//            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time ));
             LOG.info("Index_time time:\t" + String.format("%.2f", index_time));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time ));
+            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time));
             LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time));
 
             LOG.info("====Details ====");

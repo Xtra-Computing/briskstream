@@ -186,7 +186,7 @@ public abstract class BaseWindowedBolt extends AbstractWindowedBolt {
     }
 
     /**
-     * Specify the watermark event generation interval. For tuple based timestamps, watermark events
+     * Specify the watermark input_event generation interval. For tuple based timestamps, watermark events
      * are used to track the progress of time
      *
      * @param interval the interval at which watermark events are generated

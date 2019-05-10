@@ -56,20 +56,20 @@ public class GSBolt_sstore extends GSBolt_LA {
 
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+            MicroEvent event = (MicroEvent) input_event;
             int _pid = event.getPid();
 
             BEGIN_WAIT_TIME_MEASURE(thread_Id);
-            //ensures that locks are added in the event sequence order.
-            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
+            //ensures that locks are added in the input_event sequence order.
+            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
             LAL(event, i, _bid);
 
-            long lock_time_measure =  END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
-            LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
+            LA_UNLOCK(_pid, event.num_p(), transactionManager, _bid, tthread);
 
             END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
         }

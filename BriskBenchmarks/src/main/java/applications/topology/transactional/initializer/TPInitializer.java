@@ -213,22 +213,6 @@ public class TPInitializer extends TableInitilizer {
         RecordSchema b = CntScheme();
         db.createTable(b, "segment_cnt");
 
-        String OS_prefix = null;
-
-        if (OsUtils.isWindows()) {
-            OS_prefix = "win.";
-        } else {
-            OS_prefix = "unix.";
-        }
-        String path;
-
-        if (OsUtils.isMac()) {
-            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_TEST_PATH)));
-        } else {
-            path = config.getString(getConfigKey(OS_prefix.concat(BaseConstants.BaseConf.SPOUT_PATH)));
-        }
-
-//        String file = System.getProperty("user.home").concat("/data/app/").concat(path);
 
 //        try {
 //            prepare_input_events(file, true);

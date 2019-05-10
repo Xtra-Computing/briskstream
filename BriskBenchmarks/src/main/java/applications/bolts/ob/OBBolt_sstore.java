@@ -53,21 +53,21 @@ public class OBBolt_sstore extends OBBolt_LA {
 
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            TxnEvent event = (TxnEvent) input_event;
 
             int _pid = event.getPid();
 
             BEGIN_WAIT_TIME_MEASURE(thread_Id);
-            //ensures that locks are added in the event sequence order.
-            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), tthread);
+            //ensures that locks are added in the input_event sequence order.
+            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
             LAL(event, i, _bid);
 
-            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            LA_UNLOCK(_pid, event.num_p(), transactionManager, _bid, tthread);
 
-            LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
+            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
             END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
         }

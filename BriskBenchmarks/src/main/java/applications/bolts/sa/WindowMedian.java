@@ -92,7 +92,7 @@ public class WindowMedian extends MapBolt {
         final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {
             //        if (stat != null) stat.start_measure();
-            final Long time = in.getLong(0, i);//event time based window. not in discuss this time.
+            final Long time = in.getLong(0, i);//input_event time based window. not in discuss this time.
             final String key = in.getString(1, i);
             final String value = in.getString(2, i);
             update_window(time, value);

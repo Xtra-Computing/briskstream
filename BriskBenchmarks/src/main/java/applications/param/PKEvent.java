@@ -9,7 +9,7 @@ import static applications.constants.PositionKeepingConstants.Constant.SIZE_EVEN
 
 public class PKEvent {
     static final Random r = new Random();
-    private final Set<Integer> key;//single key event, work on each device.
+    private final Set<Integer> key;//single key input_event, work on each device.
     private double[][] value;//Note, it should be arraylist instead of linkedlist as there's no add/remove later.
 
 
@@ -20,7 +20,7 @@ public class PKEvent {
     //    public double[] useful_ratio = new double[1];
     public double[] index_time = new double[1];
     public int sum;
-    long bid;//event sequence, shall be set by event sequencer.
+    long bid;//input_event sequence, shall be set by input_event sequencer.
     long emit_timestamp = 0;
 
     public PKEvent(long bid, Set<Integer> deviceID, double[][] value) {

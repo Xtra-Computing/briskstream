@@ -22,7 +22,7 @@ public class LREvent {
     private long timestamp;
     public int count;
     public double lav;
-    private PositionReport posreport;//event associated meta data.
+    private PositionReport posreport;//input_event associated meta data.
 //    private final AvgVehicleSpeedTuple vsreport;//intermediate input.
 
 
@@ -50,7 +50,7 @@ public class LREvent {
 
 
     public int getPid() {
-        return posreport.getSegment() % tthread;//which partition does this event belongs to.
+        return posreport.getSegment() % tthread;//which partition does this input_event belongs to.
     }
 
     public long getBid() {

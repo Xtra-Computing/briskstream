@@ -165,8 +165,8 @@ public class PKSpout extends TransactionalSpout {
     Random r = new Random();
 
     /**
-     * There is no idea which key shall the event touch.
-     * Each event contains 10 different keys.
+     * There is no idea which key shall the input_event touch.
+     * Each input_event contains 10 different keys.
      *
      * @throws InterruptedException
      */

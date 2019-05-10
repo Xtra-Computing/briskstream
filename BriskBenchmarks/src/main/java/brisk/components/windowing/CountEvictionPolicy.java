@@ -3,10 +3,10 @@ package brisk.components.windowing;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * An eviction policy that tracks event counts and can
+ * An eviction policy that tracks input_event counts and can
  * evict based on a threshold count.
  *
- * @param <T> the type of event tracked by this policy.
+ * @param <T> the type of input_event tracked by this policy.
  */
 public class CountEvictionPolicy<T> implements EvictionPolicy<T, Long> {
     private final int threshold;
@@ -22,7 +22,7 @@ public class CountEvictionPolicy<T> implements EvictionPolicy<T, Long> {
     public Action evict(Event<T> event) {
         /*
          * atomically decrement the count if its greater than threshold and
-         * return if the event should be evicted
+         * return if the input_event should be evicted
          */
         while (true) {
             long curVal = currentCount.get();

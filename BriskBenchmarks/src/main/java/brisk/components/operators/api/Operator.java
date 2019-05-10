@@ -46,7 +46,7 @@ public abstract class Operator implements IOperator {
     public final Map<String, Double> input_selectivity;//input_selectivity used to capture multi-stream effect.
     public final Map<String, Double> output_selectivity;//output_selectivity can be > 1
     public final double branch_selectivity;
-    private final boolean ByP;//Time by processing? or by event.
+    private final boolean ByP;//Time by processing? or by input_event.
     private final double Event_frequency;
 
     public Map<String, Fields> getOutputFields() {
@@ -239,6 +239,9 @@ public abstract class Operator implements IOperator {
         base_initialize(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
 //		txn_context = new TxnContext(thisTaskId, fid, bid);
     }
+
+
+
 
 
     public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {

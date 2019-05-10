@@ -24,7 +24,7 @@ function local_execution {
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 #killall -9 java
 #clean_cache -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
-        JVM_args_local="-Xms25g -Xmx50g" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
+        JVM_args_local="-Xms25g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
 			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application >> $path/$tt\_$TP.txt		&
@@ -247,7 +247,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "GrepSum" #"StreamLedger" "OnlineBiding" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -280,13 +280,13 @@ do
             "GrepSum") # GS
                 for hz in "${HZ[@]}"
                 do
-                    for complexity in 5 ## fixed.
+                    for complexity in 1 5 10 ##
                     do
-                    for theta in 0.0
+                    for theta in 0.6
                     do
-                        for tt in 39 40
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
-                            for CCOption in 4
+                            for CCOption in 0 1 2 3 #TODO 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -297,21 +297,21 @@ do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
                                             number_partitions=10
-#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39 40
                         do
-                            for CCOption in 0
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -330,12 +330,12 @@ do
                 app="StreamLedger"
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.0
+                    for theta in 0.6
                     do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
+                            for CCOption in 0 1 2 3 # TODO 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -352,16 +352,16 @@ do
                                 done
                             done
                          done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39 40
                         do
-                            for CCOption in 4
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1
+                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
@@ -381,12 +381,12 @@ do
                 number_partitions=10
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.0 #biding is contented..?
+                    for theta in 0.6 #biding is contented..?
                     do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
+                            for CCOption in 1 2 3 # TODO: 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -395,21 +395,21 @@ do
                                         for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             TP=$tt
-#                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39 40
                         do
-                            for CCOption in 4
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 1
+                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                              TP=$tt
                                              OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
@@ -425,12 +425,12 @@ do
                 app="TP_Txn"
                 for hz in "${HZ[@]}"
                 do
-                    for theta in 0.0 ##spout has fixed theta..
+                    for theta in 0.6 ##spout has fixed theta..
                     do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
+                            for CCOption in 1 2 3 # TODO 4
                             do
                                 for NUM_ACCESS in 1
                                 do
@@ -441,22 +441,22 @@ do
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39 40
                         do
-                            for CCOption in 4
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1
+                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4

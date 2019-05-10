@@ -57,30 +57,30 @@ public class PKBolt_ts extends PKBolt {
 //        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 //
 //        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-//        PKEvent event = generatePKEvent(bid, deviceID, value);
+//        PKEvent input_event = generatePKEvent(bid, deviceID, value);
 //        END_PREPARE_TIME_MEASURE(thread_Id);
 //
-//        txn_context = new TxnContext(thread_Id, this.fid, bid, event.index_time);//create a new txn_context for this new transaction.
+//        txn_context = new TxnContext(thread_Id, this.fid, bid, input_event.index_ratio);//create a new txn_context for this new transaction.
 //
-//        PK_request(event, this.fid, bid);
+//        PK_request(input_event, this.fid, bid);
 //
-//        PKEvents.add(event);
+//        PKEvents.add(input_event);
 //
 //        END_WRITE_HANDLE_TIME_MEASURE_TS(thread_Id);
 //
 //    }
 //
 //    /**
-//     * @param event
+//     * @param input_event
 //     * @param bid
 //     * @throws DatabaseException
 //     */
-//    private void PK_request(PKEvent event, int fid, long bid) throws DatabaseException {
+//    private void PK_request(PKEvent input_event, int fid, long bid) throws DatabaseException {
 //
 //        int i = 0;
-//        for (Integer key : event.getKey()) {
+//        for (Integer key : input_event.getKey()) {
 //            transactionManager.Asy_ModifyRecord_Read(txn_context, "machine", String.valueOf(key),
-//                    event.getMean_value_ref(i), new Mean(event.getValue(i)));// read and modify the mean value_list, and return.
+//                    input_event.getMean_value_ref(i), new Mean(input_event.getValue(i)));// read and modify the mean value_list, and return.
 //            i++;
 //        }
 //
@@ -99,7 +99,7 @@ public class PKBolt_ts extends PKBolt {
             END_TP_TIME_MEASURE(thread_Id);
 
             //LOG.DEBUG("Task:" + thread_Id + " start to evaluate @" + DateTime.now());
-            //Perform computation on each event and emit.
+            //Perform computation on each input_event and emit.
 
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);

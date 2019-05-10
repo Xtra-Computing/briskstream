@@ -10,7 +10,7 @@ public class TxnContext {
     private final String thisOpId;
 
     public long[] partition_bid;
-    //    public long lock_time;
+    //    public long lock_ratio;
     public long index_time;
     public long ts_allocation;
     public boolean is_retry_;

@@ -31,7 +31,7 @@ public class GSBolt_nocc extends GSBolt_Locks {
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
         WRITE_CORE(event);
         END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
-        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
+//        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
 
     }
     @Override
@@ -42,7 +42,7 @@ public class GSBolt_nocc extends GSBolt_Locks {
         BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
         READ_CORE(event);
         END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
-        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
+//        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
     }
 
     @Override

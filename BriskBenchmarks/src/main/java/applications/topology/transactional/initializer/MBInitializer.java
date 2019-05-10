@@ -278,7 +278,7 @@ public class MBInitializer extends TableInitilizer {
         BufferedWriter w;
         w = new BufferedWriter(new FileWriter(new File(event_path + OsUtils.OS_wrapper(file_name))));
 
-        for (Object event : db.eventManager.input_events) {
+        for (Object event : db.getEventManager().input_events) {
             MicroEvent microEvent = (MicroEvent) event;
             String sb =
                     String.valueOf(microEvent.getBid()) +//0 -- bid
@@ -289,7 +289,7 @@ public class MBInitializer extends TableInitilizer {
                             split_exp +
                             microEvent.num_p() +//3 num of p
                             split_exp +
-                            "MicroEvent" +//4 event types.
+                            "MicroEvent" +//4 input_event types.
                             split_exp +
                             Arrays.toString(microEvent.getKeys()) +//5 keys
                             split_exp +

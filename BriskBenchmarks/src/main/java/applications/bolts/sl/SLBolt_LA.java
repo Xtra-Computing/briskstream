@@ -22,26 +22,24 @@ public class SLBolt_LA extends SLBolt {
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
-            Object event = db.eventManager.get((int) i);
-
-            if (event instanceof DepositEvent) {
+            if (input_event instanceof DepositEvent) {
 
                 BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                DEPOSITE_REQUEST_NOLOCK((DepositEvent) event, txn_context[(int) (i - _bid)]);
+                DEPOSITE_REQUEST_NOLOCK((DepositEvent) input_event, txn_context[(int) (i - _bid)]);
                 END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
                 BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-                DEPOSITE_REQUEST_CORE((DepositEvent) event);
+                DEPOSITE_REQUEST_CORE((DepositEvent) input_event);
                 END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             } else {
 
                 BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                TRANSFER_REQUEST_NOLOCK((TransactionEvent) event, txn_context[(int) (i - _bid)]);
+                TRANSFER_REQUEST_NOLOCK((TransactionEvent) input_event, txn_context[(int) (i - _bid)]);
                 END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
                 BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-                TRANSFER_REQUEST_CORE((TransactionEvent) event);
+                TRANSFER_REQUEST_CORE((TransactionEvent) input_event);
                 END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
             }
@@ -54,7 +52,7 @@ public class SLBolt_LA extends SLBolt {
     @Override
     protected void LAL_PROCESS(long _bid) throws InterruptedException, DatabaseException {
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
-        //ensures that locks are added in the event sequence order.
+        //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);
 
         long lock_time_measure = 0;
@@ -62,14 +60,13 @@ public class SLBolt_LA extends SLBolt {
 
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
 
-            Object event = db.eventManager.get((int) i);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            if (event instanceof DepositEvent) {
-                DEPOSITE_LOCK_AHEAD((DepositEvent) event, txn_context[(int) (i - _bid)]);
-            } else if (event instanceof TransactionEvent) {
-                TRANSFER_LOCK_AHEAD((TransactionEvent) event, txn_context[(int) (i - _bid)]);
+            if (input_event instanceof DepositEvent) {
+                DEPOSITE_LOCK_AHEAD((DepositEvent) input_event, txn_context[(int) (i - _bid)]);
+            } else if (input_event instanceof TransactionEvent) {
+                TRANSFER_LOCK_AHEAD((TransactionEvent) input_event, txn_context[(int) (i - _bid)]);
             } else {
                 throw new UnsupportedOperationException();
             }

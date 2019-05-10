@@ -48,7 +48,7 @@ public abstract class PKBolt extends TransactionalBolt {
 //
 //            boolean spike = Math.abs(nextDouble[SIZE_VALUE - 1] - movingAverageInstant) > SpikeThreshold * movingAverageInstant;
 //            // measure_end the preconditions
-//            collector.force_emit(event.getBid(), spike);
+//            collector.force_emit(input_event.getBid(), spike);
         }
     }
 

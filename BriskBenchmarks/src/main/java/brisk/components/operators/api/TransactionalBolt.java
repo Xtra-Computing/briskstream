@@ -2,17 +2,15 @@ package brisk.components.operators.api;
 
 import applications.param.PKEvent;
 import applications.sink.SINKCombo;
-import applications.util.Configuration;
 import applications.util.OsUtils;
-import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
-import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import engine.DatabaseException;
 import engine.profiler.Metrics;
 import engine.transaction.TxnManager;
+import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.SOURCE_CONTROL;
@@ -20,6 +18,7 @@ import utils.SOURCE_CONTROL;
 import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
+import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
@@ -27,7 +26,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     protected static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
     private static final long serialVersionUID = -3899457584889441657L;
 
-    protected TxnManager transactionManager;
+    public TxnManager transactionManager;
     protected int thread_Id;
     protected int tthread;
     protected int NUM_ACCESSES;
@@ -53,7 +52,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
     public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long _bid, int tthread) {
         for (int k = 0; k < num_P; k++) {
-            txnManager.getOrderLock(_pid).blocking_wait(_bid);
+            txnManager.getOrderLock(_pid).blocking_wait(_bid, _bid);
             _pid++;
             if (_pid == tthread)
                 _pid = 0;
@@ -61,12 +60,19 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     }
 
 
-    public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long[] bid_array, int tthread) {
+    public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long[] bid_array, long _bid, int tthread) {
+
         for (int k = 0; k < num_P; k++) {
-            txnManager.getOrderLock(_pid).blocking_wait(bid_array[_pid]);
+            txnManager.getOrderLock(_pid).blocking_wait(bid_array[_pid], _bid);
             _pid++;
             if (_pid == tthread)
                 _pid = 0;
+        }
+    }
+
+    public static void LA_RESETALL(TxnManager txnManager, int tthread) {
+        for (int k = 0; k < tthread; k++) {
+            txnManager.getOrderLock(k).reset();
         }
     }
 
@@ -76,7 +82,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         }
     }
 
-    public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, int tthread) {
+    public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, long _bid, int tthread) {
+
         for (int k = 0; k < num_P; k++) {
             txnManager.getOrderLock(_pid).advance();
             _pid++;
@@ -84,8 +91,6 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
                 _pid = 0;
         }
     }
-
-
 
 
     protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {
@@ -157,18 +162,22 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
     protected long timestamp;
     protected long _bid;
+    protected Object input_event;
 
     protected void PRE_EXECUTE(Tuple in) {
 
         BEGIN_PREPARE_TIME_MEASURE(thread_Id);
 
         if (enable_latency_measurement)
-            timestamp = in.getLong(0);
+            timestamp = in.getLong(1);
         else
             timestamp = 0L;//
 
         _bid = in.getBID();
 
+        input_event = in.getValue(0);
+
+        txn_context[0] = new TxnContext(thread_Id, this.fid, i);
 
         END_PREPARE_TIME_MEASURE(thread_Id);
     }

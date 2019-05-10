@@ -3,26 +3,26 @@ package brisk.components.windowing;
 
 /**
  * Eviction policy tracks events and decides whether
- * an event should be evicted from the window or not.
+ * an input_event should be evicted from the window or not.
  *
- * @param <T> the type of event that is tracked.
+ * @param <T> the type of input_event that is tracked.
  */
 public interface EvictionPolicy<T, S> {
 
     /**
-     * Decides if an event should be expired from the window, processed in the current
+     * Decides if an input_event should be expired from the window, processed in the current
      * window or kept for later processing.
      *
-     * @param event the input event
-     * @return the {@link org.apache.storm.windowing.EvictionPolicy.Action} to be taken based on the input event
+     * @param event the input input_event
+     * @return the {@link org.apache.storm.windowing.EvictionPolicy.Action} to be taken based on the input input_event
      */
     Action evict(Event<T> event);
 
     /**
-     * Tracks the event to later decide whether
+     * Tracks the input_event to later decide whether
      * {@link EvictionPolicy#evict(Event)} should evict it or not.
      *
-     * @param event the input event to be tracked
+     * @param event the input input_event to be tracked
      */
     void track(Event<T> event);
 
@@ -66,15 +66,15 @@ public interface EvictionPolicy<T, S> {
      */
     enum Action {
         /**
-         * expire the event and remove it from the queue.
+         * expire the input_event and remove it from the queue.
          */
         EXPIRE,
         /**
-         * process the event in the current window of events.
+         * process the input_event in the current window of events.
          */
         PROCESS,
         /**
-         * don't include in the current window but keep the event
+         * don't include in the current window but keep the input_event
          * in the queue for evaluating as a part of future windows.
          */
         KEEP,

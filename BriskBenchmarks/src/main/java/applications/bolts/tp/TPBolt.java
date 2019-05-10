@@ -84,7 +84,7 @@ public abstract class TPBolt extends TransactionalBolt {
     protected void POST_PROCESS(long bid, long timestamp, int combo_bid_size) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-            LREvent event = (LREvent) db.eventManager.get((int) i);
+            LREvent event = (LREvent) input_event;
             REQUEST_POST(event);
         }
         END_POST_TIME_MEASURE(thread_Id);

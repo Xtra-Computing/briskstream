@@ -126,8 +126,7 @@ public abstract class GSBolt extends TransactionalBolt {
 
     private boolean process_request(MicroEvent event, TxnContext txnContext, MetaTypes.AccessType accessType) throws DatabaseException, InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
-            boolean rt = transactionManager.SelectKeyRecord(txnContext, "MicroTable",
-                    String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
+            boolean rt = transactionManager.SelectKeyRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], accessType);
             if (rt) {
                 assert event.getRecord_refs()[i].getRecord() != null;
             } else {
@@ -170,7 +169,8 @@ public abstract class GSBolt extends TransactionalBolt {
     protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+
+            MicroEvent event = (MicroEvent) input_event;
             (event).setTimestamp(timestamp);
             boolean flag = event.READ_EVENT();
             if (flag) {//read

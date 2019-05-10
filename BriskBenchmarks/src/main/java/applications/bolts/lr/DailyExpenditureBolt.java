@@ -158,7 +158,7 @@ public class DailyExpenditureBolt extends filterBolt {
         }
 
         //log.info(Utilities.getTimeStamp() + " : Done Loading history data");
-        //Just notfy this to the input event injector so that it can start the data emission process
+        //Just notfy this to the input input_event injector so that it can start the data emission process
 //        try {
 //            PrintWriter writer = new PrintWriter("done.txt", "UTF-8");
 //            writer.println("\n");

@@ -90,9 +90,9 @@ public class WindowManager<T> implements TriggerHandler {
     }
 
     /**
-     * Add an event into the window, with the given ts as the tracking ts.
+     * Add an input_event into the window, with the given ts as the tracking ts.
      *
-     * @param event the event to track
+     * @param event the input_event to track
      * @param ts    the timestamp
      */
     private void add(T event, long ts) {
@@ -100,16 +100,16 @@ public class WindowManager<T> implements TriggerHandler {
     }
 
     /**
-     * Tracks a window event
+     * Tracks a window input_event
      *
-     * @param windowEvent the window event to track
+     * @param windowEvent the window input_event to track
      */
     private void add(Event<T> windowEvent) {
         // watermark events are not added to the queue.
         if (!windowEvent.isWatermark()) {
             queue.add(windowEvent);
         } else {
-            //LOG.DEBUG("Got watermark event with ts {}", windowEvent.getTimestamp());
+            //LOG.DEBUG("Got watermark input_event with ts {}", windowEvent.getTimestamp());
         }
         track(windowEvent);
         compactWindow();
@@ -117,7 +117,7 @@ public class WindowManager<T> implements TriggerHandler {
 
 
     /**
-     * feed the event to the eviction and trigger policies
+     * feed the input_event to the eviction and trigger policies
      * for bookkeeping and optionally firing the trigger.
      */
     private void track(Event<T> windowEvent) {
@@ -139,10 +139,10 @@ public class WindowManager<T> implements TriggerHandler {
 
     /**
      * Scan events in the queue, using the expiration policy to measure_end
-     * if the event should be evicted or not.
+     * if the input_event should be evicted or not.
      *
      * @param fullScan if set, will scan the entire queue; if not set, will stop
-     *                 as soon as an event not satisfying the expiration policy is found
+     *                 as soon as an input_event not satisfying the expiration policy is found
      * @return the list of events to be processed as a part of the current window
      */
     private List<Event<T>> scanEvents(boolean fullScan) {

@@ -113,22 +113,20 @@ public abstract class SLBolt extends TransactionalBolt {
 
         asset_values.get(1).setLong(newAssetValue);
 
-//        collector.force_emit(event.getBid(), null, event.getTimestamp());
+//        collector.force_emit(input_event.getBid(), null, input_event.getTimestamp());
     }
 
     //post stream processing phase..
     protected void POST_PROCESS(long _bid, long timestamp, int combo_bid_size) throws InterruptedException {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-            Object event = db.eventManager.get((int) i);
 
-
-            if (event instanceof DepositEvent) {
-                ((DepositEvent) event).setTimestamp(timestamp);
-                DEPOSITE_REQUEST_POST((DepositEvent) event);
+            if (input_event instanceof DepositEvent) {
+                ((DepositEvent) input_event).setTimestamp(timestamp);
+                DEPOSITE_REQUEST_POST((DepositEvent) input_event);
             } else {
-                ((TransactionEvent) event).setTimestamp(timestamp);
-                TRANSFER_REQUEST_POST((TransactionEvent) event);
+                ((TransactionEvent) input_event).setTimestamp(timestamp);
+                TRANSFER_REQUEST_POST((TransactionEvent) input_event);
             }
         }
         END_POST_TIME_MEASURE(thread_Id);

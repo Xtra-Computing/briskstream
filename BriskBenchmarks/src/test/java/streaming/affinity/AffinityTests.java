@@ -50,9 +50,9 @@ public class AffinityTests {
                 System.out.println("ERROR: unable to init OverHpc");
             }
 
-            // Init event: cycles, TODO: LLC miss for memory fetch.
+            // Init input_event: cycles, TODO: LLC miss for memory fetch.
             if (!HPCMonotor.initEvents(PERF_COUNT_HW_CPU_CYCLES)) {
-                LOG.error("ERROR: invalid event");
+                LOG.error("ERROR: invalid input_event");
             }
         }
         AC = new AffinityController(conf, new applications.HUAWEI_Machine());

@@ -57,14 +57,14 @@ public class PKBolt_nocc extends PKBolt {
 //        txn_context = new TxnContext(thread_Id, this.fid, bid);
 //
 //        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-//        PKEvent event = generatePKEvent(bid, deviceID, value);
+//        PKEvent input_event = generatePKEvent(bid, deviceID, value);
 //        END_PREPARE_TIME_MEASURE(thread_Id);
 //
 //
-//        if (PK_request(event, this.fid, bid)) {
+//        if (PK_request(input_event, this.fid, bid)) {
 //
 //            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-//            PK_core(event);
+//            PK_core(input_event);
 //            END_COMPUTE_TIME_MEASURE(thread_Id);
 //
 //            CLEAN_ABORT_TIME_MEASURE(thread_Id);
@@ -75,7 +75,7 @@ public class PKBolt_nocc extends PKBolt {
 //        } else {
 //
 //            BEGIN_ABORT_TIME_MEASURE(thread_Id);
-//            while (!PK_request(event, this.fid, bid)) {
+//            while (!PK_request(input_event, this.fid, bid)) {
 //                if (Thread.currentThread().isInterrupted()) {
 //                    return;
 //                }
@@ -83,7 +83,7 @@ public class PKBolt_nocc extends PKBolt {
 //            END_ABORT_TIME_MEASURE_ACC(thread_Id);
 //
 //            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-//            PK_core(event);
+//            PK_core(input_event);
 //            END_COMPUTE_TIME_MEASURE(thread_Id);
 //
 //            transactionManager.CommitTransaction(txn_context);//always success..
@@ -94,17 +94,17 @@ public class PKBolt_nocc extends PKBolt {
 //    }
 //
 //    /**
-//     * @param event
+//     * @param input_event
 //     * @param bid
 //     * @throws DatabaseException
 //     */
-//    private boolean PK_request(PKEvent event, int fid, long bid) throws DatabaseException, InterruptedException {
+//    private boolean PK_request(PKEvent input_event, int fid, long bid) throws DatabaseException, InterruptedException {
 //
 //        int i = 0;
-//        for (Integer key : event.getKey()) {
-//            boolean rt = transactionManager.SelectKeyRecord(txn_context, "machine", String.valueOf(key), event.getList_value_ref(i), READ_WRITE);// read the list value_list, and return.
+//        for (Integer key : input_event.getKey()) {
+//            boolean rt = transactionManager.SelectKeyRecord(txn_context, "machine", String.valueOf(key), input_event.getList_value_ref(i), READ_WRITE);// read the list value_list, and return.
 //            if (rt) {
-//                assert event.getList_value_ref(i).getRecord() != null;
+//                assert input_event.getList_value_ref(i).getRecord() != null;
 //            } else {
 //                return false;
 //            }

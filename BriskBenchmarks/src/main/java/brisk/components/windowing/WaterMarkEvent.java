@@ -2,8 +2,8 @@ package brisk.components.windowing;
 
 
 /**
- * Watermark event used for tracking progress of time when
- * processing event based ts.
+ * Watermark input_event used for tracking progress of time when
+ * processing input_event based ts.
  */
 public class WaterMarkEvent<T> extends BasicEvent<T> {
     public WaterMarkEvent(long ts) {

@@ -9,7 +9,7 @@ import static applications.util.Constants.default_sourceRate;
  */
 public class Variables implements Serializable {
     private static final long serialVersionUID = 40L;
-    public double SOURCE_RATE = default_sourceRate / 1.0E+09;//event/ns
+    public double SOURCE_RATE = default_sourceRate / 1.0E+09;//input_event/ns
 
     public Variables(Variables variables) {
         this.SOURCE_RATE = variables.SOURCE_RATE;

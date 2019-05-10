@@ -95,7 +95,7 @@ public class SLBolt_ts extends SLBolt {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
 
             TxnContext txnContext = new TxnContext(thread_Id, this.fid, i);
-            TxnEvent event = (TxnEvent) db.eventManager.get((int) i);
+            TxnEvent event = (TxnEvent) input_event;
 
             if (enable_latency_measurement)
                 (event).setTimestamp(timestamp);

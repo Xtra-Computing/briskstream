@@ -4,10 +4,16 @@ public interface CONTROL {
 
     //global settings.
     int kMaxThreadNum = 40;
-    int MeasureBound = 100_000;
+
+    int MeasureStart = 500_000;//server needs at least 10,000 to compile, so skip them.
+
+    int MeasureBound = 1_000_000;
 
     //application related.
-    int NUM_EVENTS = 1_000_000; //for fast test.
+    int NUM_EVENTS = 100_000; //different input events..
+
+    int TEST_NUM_EVENTS = 1_000_000;// to repeat.
+
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.

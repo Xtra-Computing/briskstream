@@ -3,10 +3,10 @@ package brisk.components.windowing;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A trigger that tracks event counts and calls back {@link TriggerHandler#onTrigger()}
+ * A trigger that tracks input_event counts and calls back {@link TriggerHandler#onTrigger()}
  * when the count threshold is hit.
  *
- * @param <T> the type of event tracked by this policy.
+ * @param <T> the type of input_event tracked by this policy.
  */
 public class CountTriggerPolicy<T> implements TriggerPolicy<T, Integer> {
     private final int count;

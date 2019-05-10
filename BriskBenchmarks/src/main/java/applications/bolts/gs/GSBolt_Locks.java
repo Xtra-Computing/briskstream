@@ -7,13 +7,10 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.TxnManagerLock;
-import engine.transaction.dedicated.TxnManagerNoLock;
-import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static applications.CONTROL.combo_bid_size;
-import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
@@ -78,10 +75,8 @@ public class GSBolt_Locks extends GSBolt {
 
     private void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-            MicroEvent event = (MicroEvent) db.eventManager.get((int) i);
+            MicroEvent event = (MicroEvent) input_event;
             boolean flag = event.READ_EVENT();
-
             if (flag) {
                 read_txn_process(event, i, _bid);
             } else {
@@ -100,16 +95,9 @@ public class GSBolt_Locks extends GSBolt {
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException {
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
-        Long timestamp;//in.getLong(1);
-        if (enable_latency_measurement)
-            timestamp = in.getLong(0);
-        else
-            timestamp = 0L;//
+        //pre stream processing phase..
 
-        long _bid = in.getBID();
-        END_PREPARE_TIME_MEASURE(thread_Id);
-
+        PRE_EXECUTE(in);
 
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.

@@ -53,16 +53,20 @@ public class GSCombo extends SPOUTCombo {
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file_name))))
             throw new UnsupportedOperationException();
 
+
+        long start = System.nanoTime();
         Scanner sc;
         try {
             sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file_name)));
             int i = 0;
             Object event = null;
-            for (int j = 0; j < taskId * num_events_per_thread; j++) {
-                sc.nextLine();//skip un-related.
-            }
-            while (sc.hasNextLine()) {
 
+
+            for (int j = 0; j < taskId; j++) {
+                sc.nextLine();
+            }
+
+            while (sc.hasNextLine()) {
                 String read = sc.nextLine();
                 String[] split = read.split(split_exp);
 
@@ -76,11 +80,21 @@ public class GSCombo extends SPOUTCombo {
                 );
 
                 myevents[i++] = event;
-                //db.eventManager.put(event, Integer.parseInt(split[0]));
+                if (i == num_events_per_thread) break;
+
+                for (int j = 0; j < (tthread-1) * combo_bid_size; j++) {
+                    if (sc.hasNextLine())
+                        sc.nextLine();//skip un-related.
+                }
+                //db.eventManager.put(input_event, Integer.parseInt(split[0]));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
+        LOG.info("Thread:" + taskId + " finished loading events (" + test_num_events_per_thread + ") in " + (System.nanoTime() - start) / 1E6 + " ms");
+
 
     }
 
@@ -117,7 +131,7 @@ public class GSCombo extends SPOUTCombo {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
 
-        loadEvent("MB_events", config, context, collector);
+        loadEvent("MB_events" + tthread, config, context, collector);
 
     }
 }

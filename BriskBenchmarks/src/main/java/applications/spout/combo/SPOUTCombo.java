@@ -31,15 +31,9 @@ public abstract class SPOUTCombo extends TransactionalSpout {
     private int the_end;
     private int global_cnt;
     protected final String split_exp = ";";
-    public SPOUTCombo(Logger log, int i) {
-        super(log, i);
-        LOG = log;
-        this.scalable = false;
-        state = new ValueState();
-    }
-
-
     int num_events_per_thread;
+
+    int test_num_events_per_thread;
     long[] mybids;
     Object[] myevents;
 
@@ -50,21 +44,31 @@ public abstract class SPOUTCombo extends TransactionalSpout {
     Tuple marker;
     GeneralMsg generalMsg;
 
+
+    public SPOUTCombo(Logger log, int i) {
+        super(log, i);
+        LOG = log;
+        this.scalable = false;
+        state = new ValueState();
+    }
+
+
     @Override
     public void nextTuple() throws InterruptedException {
 
         try {
 
-            if (counter == 0)
-                bolt.sink.start();
+            if (counter == MeasureStart)
+                if (taskId == 0)
+                    bolt.sink.start();
 
-            if (counter < num_events_per_thread) {
+            if (counter < test_num_events_per_thread) {
                 long bid = mybids[counter];
 
                 if (enable_latency_measurement)
-                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter], System.nanoTime());
+                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter % num_events_per_thread], System.nanoTime());
                 else {
-                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter]);
+                    generalMsg = new GeneralMsg(DEFAULT_STREAM_ID, myevents[counter % num_events_per_thread]);
                 }
 
                 tuple = new Tuple(bid, this.taskId, context, generalMsg);
@@ -86,7 +90,8 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
                 if (counter == the_end) {
                     SOURCE_CONTROL.getInstance().Final_END(taskId);//sync for all threads to come to this line.
-                    bolt.sink.end(global_cnt);
+                    if (taskId == 0)
+                        bolt.sink.end(global_cnt);
                 }
 
             }
@@ -135,21 +140,24 @@ public abstract class SPOUTCombo extends TransactionalSpout {
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 
 
+        test_num_events_per_thread = TEST_NUM_EVENTS / combo_bid_size;
+
         num_events_per_thread = NUM_EVENTS / tthread / combo_bid_size;
 
-        mybids = new long[num_events_per_thread];//5000 batches.
+
+        mybids = new long[test_num_events_per_thread];//5000 batches.
 
         myevents = new Object[num_events_per_thread];
 
-        for (int i = 0; i < num_events_per_thread; i++) {
+        for (int i = 0; i < test_num_events_per_thread; i++) {
             mybids[i] = thisTaskId * (combo_bid_size) + i * tthread * combo_bid_size;
 
         }
         counter = 0;
 
-        the_end = num_events_per_thread - num_events_per_thread % batch_number_per_wm;
+        the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
 
-        global_cnt = the_end * tthread;
+        global_cnt = (the_end - MeasureStart) * tthread;
     }
 
 }

@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * A view of events in a sliding window.
  *
- * @param <T> the type of event that this window contains. E.g. {@link org.apache.storm.tuple.Tuple}
+ * @param <T> the type of input_event that this window contains. E.g. {@link org.apache.storm.tuple.Tuple}
  */
 interface Window<T> {
     /**
@@ -57,7 +57,7 @@ interface Window<T> {
     List<T> getExpired();
 
     /**
-     * If processing based on event time, returns the window end time based on watermark otherwise
+     * If processing based on input_event time, returns the window end time based on watermark otherwise
      * returns the window end time based on processing time.
      *
      * @return the window end timestamp

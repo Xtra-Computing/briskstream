@@ -66,11 +66,6 @@ public class SLInitializer extends TableInitilizer {
             _key = GenerateKey(BOOK_ENTRY_ID_PREFIX, key);
             insertAssetRecord(_key, 0);
         }
-
-
-
-
-
         LOG.info("Thread:" + thread_id + " finished loading data from: " + left_bound + " to: " + right_bound);
     }
 
@@ -318,7 +313,7 @@ public class SLInitializer extends TableInitilizer {
                         + OsUtils.OS_wrapper(file_name)
         )));
 
-        for (Object event : db.eventManager.input_events) {
+        for (Object event : db.getEventManager().input_events) {
 
             StringBuilder sb = new StringBuilder();
             if (event instanceof DepositEvent) {
@@ -330,7 +325,7 @@ public class SLInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(((DepositEvent) event).num_p());////3 num of p
                 sb.append(split_exp);
-                sb.append("DepositEvent");//event types.
+                sb.append("DepositEvent");//input_event types.
                 sb.append(split_exp);
                 sb.append(((DepositEvent) event).getAccountId());//5
                 sb.append(split_exp);
@@ -349,7 +344,7 @@ public class SLInitializer extends TableInitilizer {
                 sb.append(split_exp);
                 sb.append(((TransactionEvent) event).num_p());//3 num of p
                 sb.append(split_exp);
-                sb.append("TransactionEvent");//event types.
+                sb.append("TransactionEvent");//input_event types.
                 sb.append(split_exp);
                 sb.append(((TransactionEvent) event).getSourceAccountId());//5
                 sb.append(split_exp);
@@ -508,7 +503,7 @@ public class SLInitializer extends TableInitilizer {
         db.createTable(b, "bookEntries");
 
         try {
-            prepare_input_events("CT_Events", false);
+            prepare_input_events("SL_Events", false);
         } catch (IOException e) {
             e.printStackTrace();
         }

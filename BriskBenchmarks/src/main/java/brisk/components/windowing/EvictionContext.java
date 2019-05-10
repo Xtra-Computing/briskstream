@@ -6,7 +6,7 @@ package brisk.components.windowing;
 public interface EvictionContext {
     /**
      * Returns the reference time that the eviction policy could use to
-     * evict the events. In the case of event time processing, this would be
+     * evict the events. In the case of input_event time processing, this would be
      * the watermark time.
      *
      * @return the reference time in millis

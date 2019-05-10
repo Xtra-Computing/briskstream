@@ -237,7 +237,7 @@ public class BranchAndBound extends PlanScheduler {
         } else {
             LOG.info("=============BnB plans:===============");
 //			solution_node.plan.planToString(false);
-            LOG.info("BnB output rate (event/ms):" + solution_node.plan.getOutput_rate(true) * 1E6 + " initialScheduler output rate (event/ms):" + initialOutputRate * 1E6);
+            LOG.info("BnB output rate (input_event/ms):" + solution_node.plan.getOutput_rate(true) * 1E6 + " initialScheduler output rate (input_event/ms):" + initialOutputRate * 1E6);
 //			LOG.info("CPU Relax:" + cons.relax_cpu + "\tMemory Relax:" + cons.relax_memory + "\tQPI Relax:" + cons.relax_qpi + "\tCores Relax:" + cons.relax_cores);
         }
         final SchedulingPlan decompression_plan = new SchedulingPlan(plan, original_graph);//convert graph back.
