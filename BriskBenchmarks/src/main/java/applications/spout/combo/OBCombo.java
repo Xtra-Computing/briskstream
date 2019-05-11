@@ -1,9 +1,6 @@
 package applications.spout.combo;
 
-import applications.bolts.ob.OBBolt_lwm;
-import applications.bolts.ob.OBBolt_olb;
-import applications.bolts.ob.OBBolt_sstore;
-import applications.bolts.ob.OBBolt_ts;
+import applications.bolts.ob.*;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
@@ -112,10 +109,10 @@ public class OBCombo extends SPOUTCombo {
         _combo_bid_size = combo_bid_size;
 
         switch (config.getInt("CCOption", 0)) {
-//            case CCOption_LOCK: {//no-order
-//                bolt = new SL(0);
-//                break;
-//            }
+            case CCOption_LOCK: {//no-order
+                bolt = new OBBolt_nocc(0);
+                break;
+            }
             case CCOption_OrderLOCK: {//LOB
                 bolt = new OBBolt_olb(0);
                 _combo_bid_size = 1;

@@ -1,9 +1,6 @@
 package applications.spout.combo;
 
-import applications.bolts.tp.TPBolt_SSTORE;
-import applications.bolts.tp.TPBolt_lwm;
-import applications.bolts.tp.TPBolt_olb;
-import applications.bolts.tp.TPBolt_ts;
+import applications.bolts.tp.*;
 import applications.constants.BaseConstants;
 import applications.datatype.AbstractLRBTuple;
 import applications.datatype.PositionReport;
@@ -144,10 +141,10 @@ public class TPCombo extends SPOUTCombo {
         _combo_bid_size = combo_bid_size;
 
         switch (config.getInt("CCOption", 0)) {
-//            case CCOption_LOCK: {//no-order
-//                bolt = new SL(0);
-//                break;
-//            }
+            case CCOption_LOCK: {//no-order
+                bolt = new TPBolt_nocc(0);
+                break;
+            }
             case CCOption_OrderLOCK: {//LOB
                 bolt = new TPBolt_olb(0);
                 _combo_bid_size = 1;

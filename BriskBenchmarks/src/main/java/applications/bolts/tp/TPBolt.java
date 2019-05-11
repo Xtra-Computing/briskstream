@@ -40,7 +40,30 @@ public abstract class TPBolt extends TransactionalBolt {
         this.configPrefix = "tptxn";
     }
 
+    protected void TXN_REQUEST_NOLOCK(LREvent event, TxnContext txnContext) throws DatabaseException {
+        transactionManager.SelectKeyRecord_noLock(txnContext, "segment_speed"
+                , String.valueOf(event.getPOSReport().getSegment())
+                , event.speed_value//holder to be filled up.
+                , READ_WRITE);
 
+        transactionManager.SelectKeyRecord_noLock(txnContext, "segment_cnt"
+                , String.valueOf(event.getPOSReport().getSegment())
+                , event.count_value//holder to be filled up.
+                , READ_WRITE);
+
+    }
+    protected void TXN_REQUEST(LREvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+        transactionManager.SelectKeyRecord(txnContext, "segment_speed"
+                , String.valueOf(event.getPOSReport().getSegment())
+                , event.speed_value//holder to be filled up.
+                , READ_WRITE);
+
+        transactionManager.SelectKeyRecord(txnContext, "segment_cnt"
+                , String.valueOf(event.getPOSReport().getSegment())
+                , event.count_value//holder to be filled up.
+                , READ_WRITE);
+
+    }
     protected void REQUEST_LOCK_AHEAD(LREvent event, TxnContext txnContext) throws DatabaseException {
 
         transactionManager.lock_ahead(txnContext, "segment_speed", String.valueOf(event.getPOSReport().getSegment()), event.speed_value, READ_WRITE);
@@ -90,7 +113,7 @@ public abstract class TPBolt extends TransactionalBolt {
         END_POST_TIME_MEASURE(thread_Id);
     }
 
-    protected void REQUEST_CORE(LREvent event) {
+    protected void TXN_REQUEST_CORE(LREvent event) {
 
         if (event.count_value.getRecord().getValue() != null) {// TSTREAM
             event.count = event.count_value.getRecord().getValue().getInt();

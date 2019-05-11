@@ -5,7 +5,6 @@ import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
-import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public abstract class TPBolt_LA extends TPBolt {
@@ -54,11 +53,11 @@ public abstract class TPBolt_LA extends TPBolt {
             LREvent event = (LREvent) input_event;
 
             BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-            REQUEST_NOLOCK(event, txn_context[(int) (i - _bid)]);
+            TXN_REQUEST_NOLOCK(event, txn_context[(int) (i - _bid)]);
             END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-            REQUEST_CORE(event);
+            TXN_REQUEST_CORE(event);
             END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
 
 
@@ -66,18 +65,6 @@ public abstract class TPBolt_LA extends TPBolt {
         }
     }
 
-    private void REQUEST_NOLOCK(LREvent event, TxnContext txnContext) throws DatabaseException {
-        transactionManager.SelectKeyRecord_noLock(txnContext, "segment_speed"
-                , String.valueOf(event.getPOSReport().getSegment())
-                , event.speed_value//holder to be filled up.
-                , READ_WRITE);
-
-        transactionManager.SelectKeyRecord_noLock(txnContext, "segment_cnt"
-                , String.valueOf(event.getPOSReport().getSegment())
-                , event.count_value//holder to be filled up.
-                , READ_WRITE);
-
-    }
 
 
 //    @Override
@@ -104,7 +91,7 @@ public abstract class TPBolt_LA extends TPBolt {
 //
 //        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 //
-//        REQUEST_CORE(input_event);
+//        TXN_REQUEST_CORE(input_event);
 //
 //        END_COMPUTE_TIME_MEASURE(thread_Id);
 //        transactionManager.CommitTransaction(txn_context);//always success..
@@ -113,7 +100,7 @@ public abstract class TPBolt_LA extends TPBolt {
 //    }
 //
 //    @Override
-//    protected void REQUEST_CORE(LREvent input_event) throws InterruptedException {
+//    protected void TXN_REQUEST_CORE(LREvent input_event) throws InterruptedException {
 //        Integer vid = input_event.getVSreport().getVid();
 //
 //        DataBox speed_value_box = input_event.speed_value.getRecord().getValues().get(1);

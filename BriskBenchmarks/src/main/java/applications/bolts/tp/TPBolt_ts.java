@@ -147,7 +147,7 @@ public class TPBolt_ts extends TPBolt {
     private void REQUEST_REQUEST_CORE() {
 
         for (LREvent event : LREvents) {
-            REQUEST_CORE(event);
+            TXN_REQUEST_CORE(event);
         }
     }
 }
