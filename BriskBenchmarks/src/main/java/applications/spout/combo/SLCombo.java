@@ -1,9 +1,6 @@
 package applications.spout.combo;
 
-import applications.bolts.sl.SLBolt_lwm;
-import applications.bolts.sl.SLBolt_olb;
-import applications.bolts.sl.SLBolt_sstore;
-import applications.bolts.sl.SLBolt_ts;
+import applications.bolts.sl.*;
 import applications.param.sl.DepositEvent;
 import applications.param.sl.TransactionEvent;
 import applications.util.Configuration;
@@ -118,10 +115,10 @@ public class SLCombo extends SPOUTCombo {
         _combo_bid_size = combo_bid_size;
 
         switch (config.getInt("CCOption", 0)) {
-//            case CCOption_LOCK: {//no-order
-//                bolt = new SL(0);
-//                break;
-//            }
+            case CCOption_LOCK: {//no-order
+                bolt = new SLBolt_nocc(0);
+                break;
+            }
             case CCOption_OrderLOCK: {//LOB
                 bolt = new SLBolt_olb(0);
                 _combo_bid_size = 1;

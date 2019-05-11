@@ -26,6 +26,35 @@ public abstract class SLBolt extends TransactionalBolt {
         this.configPrefix = "sl";
     }
 
+    protected void DEPOSITE_REQUEST_NOLOCK(DepositEvent event, TxnContext txnContext) throws DatabaseException {
+        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+
+        assert event.account_value.getRecord() != null && event.asset_value.getRecord() != null;
+    }
+
+    protected void TRANSFER_REQUEST_NOLOCK(TransactionEvent event, TxnContext txnContext) throws DatabaseException {
+        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
+        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
+        assert event.src_account_value.getRecord() != null && event.dst_account_value.getRecord() != null && event.src_asset_value.getRecord() != null && event.dst_asset_value.getRecord() != null;
+    }
+
+    protected void DEPOSITE_REQUEST(DepositEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+        transactionManager.SelectKeyRecord(txnContext, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord(txnContext, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
+
+        assert event.account_value.getRecord() != null && event.asset_value.getRecord() != null;
+    }
+
+    protected void TRANSFER_REQUEST(TransactionEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+        transactionManager.SelectKeyRecord(txnContext, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord(txnContext, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
+        transactionManager.SelectKeyRecord(txnContext, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
+        transactionManager.SelectKeyRecord(txnContext, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
+        assert event.src_account_value.getRecord() != null && event.dst_account_value.getRecord() != null && event.src_asset_value.getRecord() != null && event.dst_asset_value.getRecord() != null;
+    }
 
     protected void TRANSFER_LOCK_AHEAD(TransactionEvent event, TxnContext txnContext) throws DatabaseException {
         transactionManager.lock_ahead(txnContext, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
@@ -40,15 +69,6 @@ public abstract class SLBolt extends TransactionalBolt {
 
     }
 
-
-    protected void DEPOSITE_REQUEST_NOLOCK(DepositEvent event, TxnContext txnContext) throws DatabaseException {
-        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
-
-        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
-
-        assert event.account_value.getRecord() != null && event.asset_value.getRecord() != null;
-
-    }
 
     protected void TRANSFER_REQUEST_CORE(TransactionEvent event) throws InterruptedException {
         // measure_end the preconditions
@@ -92,13 +112,6 @@ public abstract class SLBolt extends TransactionalBolt {
         }
     }
 
-    protected void TRANSFER_REQUEST_NOLOCK(TransactionEvent event, TxnContext txnContext) throws DatabaseException {
-        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getSourceAccountId(), event.src_account_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getTargetAccountId(), event.dst_account_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getSourceBookEntryId(), event.src_asset_value, READ_WRITE);
-        transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getTargetBookEntryId(), event.dst_asset_value, READ_WRITE);
-        assert event.src_account_value.getRecord() != null && event.dst_account_value.getRecord() != null && event.src_asset_value.getRecord() != null && event.dst_asset_value.getRecord() != null;
-    }
 
     protected void DEPOSITE_REQUEST_CORE(DepositEvent event) {
         List<DataBox> values = event.account_value.getRecord().getValues();

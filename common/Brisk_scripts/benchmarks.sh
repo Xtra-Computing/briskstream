@@ -247,7 +247,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "GrepSum" #"StreamLedger" "OnlineBiding" "TP_Txn" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "StreamLedger" #"OnlineBiding" "TP_Txn" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -335,7 +335,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 1 2 3 #4
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -386,7 +386,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 1 2 3 #4
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -430,7 +430,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 1 2 3 #4
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 1
                                 do

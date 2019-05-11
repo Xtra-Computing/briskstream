@@ -165,9 +165,11 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         }
 
-
-        the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
-
+        if (config.getInt("CCOption", 0) == CCOption_TStream) {
+            the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
+        }else {
+            the_end = test_num_events_per_thread;
+        }
 
         if (config.getInt("CCOption", 0) == CCOption_SStore) {
             global_cnt = (the_end) * tthread;
