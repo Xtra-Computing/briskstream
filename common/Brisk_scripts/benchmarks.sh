@@ -247,7 +247,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Interval" "Partition" "MultiPartition") # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
+for benchmark in "GrepSum" #"StreamLedger" "OnlineBiding" "TP_Txn" #" # "Write_Intensive" "Read_Write_Mixture" #"StreamLedger" "OnlineBiding" #"Partition" "MultiPartition" #"Interval" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Working_Set_Size_Breakdown" "Read_Write_Mixture_Breakdown"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -280,13 +280,13 @@ do
             "GrepSum") # GS
                 for hz in "${HZ[@]}"
                 do
-                    for complexity in 1 5 10 ##
+                    for complexity in 1 #5 10 ##
                     do
                     for theta in 0.6
                     do
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 15 20 25 30 35 39 40
                         do
-                            for CCOption in 0 1 2 3 #TODO 4
+                            for CCOption in 4 #4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -303,7 +303,7 @@ do
                                 done
                             done
                         done
-                        for tt in 35 39 40
+                        for tt in 1 5 10 15 20 25 30 #35 39 40
                         do
                             for CCOption in 3
                             do
@@ -311,7 +311,7 @@ do
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.5
@@ -335,7 +335,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 1 2 3 # TODO 4
+                            for CCOption in 0 1 2 3 #4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -352,7 +352,7 @@ do
                                 done
                             done
                          done
-                        for tt in 35 39 40
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             for CCOption in 3
                             do
@@ -361,7 +361,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=1
                                             number_partitions=4
@@ -386,7 +386,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 1 2 3 # TODO: 4
+                            for CCOption in 1 2 3 #4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -401,7 +401,7 @@ do
                                 done
                             done
                         done
-                        for tt in 35 39 40
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             for CCOption in 3
                             do
@@ -409,7 +409,7 @@ do
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                              TP=$tt
                                              OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
@@ -430,7 +430,7 @@ do
                         for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 1 2 3 # TODO 4
+                            for CCOption in 1 2 3 #4
                             do
                                 for NUM_ACCESS in 1
                                 do
@@ -447,7 +447,7 @@ do
                                 done
                             done
                         done
-                        for tt in 35 39 40
+                        for tt in 1 5 10 15 20 25 30 35 39 40
                         do
                             for CCOption in 3
                             do
@@ -456,7 +456,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 10 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4

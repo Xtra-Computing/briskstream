@@ -12,8 +12,6 @@ public interface CONTROL {
     //application related.
     int NUM_EVENTS = 100_000; //different input events..
 
-    int TEST_NUM_EVENTS = 1_000_000;// to repeat.
-
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.

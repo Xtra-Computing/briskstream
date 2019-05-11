@@ -34,7 +34,8 @@ public class SequentialBinding {
 
         if (OsUtils.isMac()) {
             if (cpu == 6) {
-                throw new UnsupportedOperationException("out of cores!");
+//                throw new UnsupportedOperationException("out of cores!");
+                cpu=0;
             }
 
             ArrayList[] mapping_node = Platform.getNodes(4);

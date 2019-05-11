@@ -13,6 +13,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
+import engine.profiler.Metrics;
 import org.slf4j.Logger;
 import utils.SOURCE_CONTROL;
 
@@ -20,6 +21,7 @@ import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.*;
 import static applications.Constants.DEFAULT_STREAM_ID;
+import static engine.content.Content.CCOption_SStore;
 import static engine.content.Content.CCOption_TStream;
 import static engine.profiler.Metrics.NUM_ITEMS;
 
@@ -58,7 +60,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         try {
 
-            if (counter == MeasureStart)
+            if (counter == start_measure)
                 if (taskId == 0)
                     bolt.sink.start();
 
@@ -109,6 +111,8 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
     public abstract void loadEvent(String file_name, Configuration config, TopologyContext context, OutputCollector collector);
 
+    int start_measure;
+
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         LOG.info("Spout initialize is being called");
@@ -140,11 +144,18 @@ public abstract class SPOUTCombo extends TransactionalSpout {
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 
 
-        test_num_events_per_thread = TEST_NUM_EVENTS / combo_bid_size;
-
         num_events_per_thread = NUM_EVENTS / tthread / combo_bid_size;
 
 
+        if (config.getInt("CCOption", 0) == CCOption_SStore) {
+            test_num_events_per_thread = num_events_per_thread;//otherwise deadlock.. TODO: fix it later.
+            Metrics.MeasureTools.measure_counts[thisTaskId] = MeasureStart;//skip warm-up phase.
+            start_measure = 0;
+        } else {
+            test_num_events_per_thread = 1_000_000 / combo_bid_size;
+            start_measure = MeasureStart;
+        }
+        counter = 0;
         mybids = new long[test_num_events_per_thread];//5000 batches.
 
         myevents = new Object[num_events_per_thread];
@@ -153,11 +164,20 @@ public abstract class SPOUTCombo extends TransactionalSpout {
             mybids[i] = thisTaskId * (combo_bid_size) + i * tthread * combo_bid_size;
 
         }
-        counter = 0;
+
 
         the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
 
-        global_cnt = (the_end - MeasureStart) * tthread;
+
+        if (config.getInt("CCOption", 0) == CCOption_SStore) {
+            global_cnt = (the_end) * tthread;
+
+        } else {
+            global_cnt = (the_end - MeasureStart) * tthread;
+
+        }
+
+
     }
 
 }

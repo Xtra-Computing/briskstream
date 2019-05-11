@@ -153,7 +153,7 @@ public class Metrics {
 
         static long[] tp_core_event = new long[kMaxThreadNum];
 
-        static long[] measure_counts = new long[kMaxThreadNum];
+        public static long[] measure_counts = new long[kMaxThreadNum];
 
         public static void BEGIN_TRANSACTION_TIME_MEASURE(int thread_id) {
 
