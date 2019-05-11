@@ -374,7 +374,7 @@ public class MBInitializer extends TableInitilizer {
         RecordSchema s = MicroTableSchema();
         db.createTable(s, "MicroTable");
         try {
-            prepare_input_events("MB_events", false);
+            prepare_input_events("MB_Events", false);
         } catch (IOException e) {
             e.printStackTrace();
         }

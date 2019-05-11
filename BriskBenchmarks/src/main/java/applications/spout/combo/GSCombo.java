@@ -131,7 +131,7 @@ public class GSCombo extends SPOUTCombo {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
 
-        loadEvent("MB_events" + tthread, config, context, collector);
+        loadEvent("MB_Events" + tthread, config, context, collector);
 
     }
 }

@@ -144,7 +144,7 @@ public class SLCombo extends SPOUTCombo {
         bolt.prepare(config, context, collector);
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
-        loadEvent("SL_events" + tthread, config, context, collector);
+        loadEvent("SL_Events" + tthread, config, context, collector);
 
     }
 }

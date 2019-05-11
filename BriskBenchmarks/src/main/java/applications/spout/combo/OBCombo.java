@@ -141,7 +141,7 @@ public class OBCombo extends SPOUTCombo {
         bolt.prepare(config, context, collector);
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
-        loadEvent("OB_events" + tthread, config, context, collector);
+        loadEvent("OB_Events" + tthread, config, context, collector);
 
     }
 }
