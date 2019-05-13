@@ -526,7 +526,6 @@ public class BriskRunner extends abstractRunner {
             String directory = System_Plan_Path
                     + OsUtils.OS_wrapper("BriskStream")
                     + OsUtils.OS_wrapper(topology.getPrefix())
-                    + OsUtils.OS_wrapper("COMPUTE_COMPLEXITY=" + String.valueOf(config.getInt("COMPUTE_COMPLEXITY", 0)))
                     + OsUtils.OS_wrapper("CCOption=" + String.valueOf(config.getInt("CCOption", 0)));
 
 

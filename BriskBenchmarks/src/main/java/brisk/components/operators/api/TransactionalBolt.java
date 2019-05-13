@@ -18,7 +18,6 @@ import utils.SOURCE_CONTROL;
 import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
-import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.Metrics.MeasureTools.*;
 
@@ -31,7 +30,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     protected int tthread;
     protected int NUM_ACCESSES;
     protected int COMPUTE_COMPLEXITY;
-
+    protected int POST_COMPUTE_COMPLEXITY;
     //    int interval;
 
 //    private transient FastZipfGenerator shared_store;
@@ -164,6 +163,16 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     protected long _bid;
     protected Object input_event;
 
+
+    int sum = 0;
+
+    private int dummy_compute() {
+
+        for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
+            sum += j;
+        return sum;
+    }
+
     protected void PRE_EXECUTE(Tuple in) {
 
         BEGIN_PREPARE_TIME_MEASURE(thread_Id);
@@ -177,7 +186,12 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         input_event = in.getValue(0);
 
-        txn_context[0] = new TxnContext(thread_Id, this.fid, i);
+
+        int rt = dummy_compute();
+
+        txn_context[0] = new TxnContext(thread_Id, rt, this.i);
+
+        sum = 0;
 
         END_PREPARE_TIME_MEASURE(thread_Id);
     }
@@ -212,6 +226,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         tthread = config.getInt("tthread", 0);
         NUM_ACCESSES = Metrics.NUM_ACCESSES;
         COMPUTE_COMPLEXITY = Metrics.COMPUTE_COMPLEXITY;
+        POST_COMPUTE_COMPLEXITY = Metrics.POST_COMPUTE_COMPLEXITY;
         //LOG.DEBUG("NUM_ACCESSES: " + NUM_ACCESSES + " theta:" + theta);
 
         sink.configPrefix = this.getConfigPrefix();

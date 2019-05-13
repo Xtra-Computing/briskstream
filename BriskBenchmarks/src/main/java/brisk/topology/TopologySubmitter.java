@@ -17,6 +17,7 @@ import java.util.Collection;
 import static applications.CONTROL.enable_shared_state;
 import static applications.CONTROL.kMaxThreadNum;
 import static brisk.controller.affinity.SequentialBinding.SequentialBindingInitilize;
+import static engine.profiler.Metrics.POST_COMPUTE_COMPLEXITY;
 
 /**
  * Created by shuhaozhang on 10/7/16.
@@ -51,7 +52,8 @@ public class TopologySubmitter {
                 metrics.initilize(i);
             }
 
-            Metrics.COMPUTE_COMPLEXITY=conf.getInt("COMPUTE_COMPLEXITY");
+            Metrics.COMPUTE_COMPLEXITY = conf.getInt("COMPUTE_COMPLEXITY");
+            POST_COMPUTE_COMPLEXITY = conf.getInt("POST_COMPUTE");
             Metrics.NUM_ACCESSES = conf.getInt("NUM_ACCESS");
             Metrics.NUM_ITEMS = conf.getInt("NUM_ITEMS");
             Metrics.H2_SIZE = Metrics.NUM_ITEMS / conf.getInt("tthread");

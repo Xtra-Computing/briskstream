@@ -47,7 +47,10 @@ public abstract class abstractRunner {
 
 
     @Parameter(names = {"--COMPUTE_COMPLEXITY"}, description = "COMPUTE_COMPLEXITY per event")
-    public int COMPUTE_COMPLEXITY = 1;// 1, 10, 100
+    public int COMPUTE_COMPLEXITY = 0;// 1, 10, 100
+
+    @Parameter(names = {"--POST_COMPUTE"}, description = "POST COMPUTE_COMPLEXITY per event")
+    public int POST_COMPUTE = 0;// 1, 10, 100
 
     @Parameter(names = {"--NUM_ITEMS"}, description = "NUM_ITEMS in DB.")
     public int NUM_ITEMS = 100_000;//
@@ -314,6 +317,7 @@ public abstract class abstractRunner {
         else
             config.put("TP", tthread);
         config.put("COMPUTE_COMPLEXITY", COMPUTE_COMPLEXITY);
+        config.put("POST_COMPUTE", POST_COMPUTE);
         config.put("NUM_ACCESS", NUM_ACCESS);
         config.put("NUM_ITEMS", NUM_ITEMS);
         config.put("CCOption", CCOption);
