@@ -44,17 +44,18 @@ public abstract class GSBolt extends TransactionalBolt {
         return true;
     }
 
-
-    int sum = 0;
 //    volatile int com_result = 0;
 
     protected void READ_POST(MicroEvent event) throws InterruptedException {
-
-        for (int j = 0; j < POST_COMPUTE_COMPLEXITY; ++j)
+        int sum = 0;
+        if (enable_post_compute) {
             for (int i = 0; i < NUM_ACCESSES; ++i) {
                 sum += event.result[i];
             }
+            for (int j = 0; j < POST_COMPUTE_COMPLEXITY; ++j)
+                sum += System.nanoTime();
 
+        }
 //        com_result = sum;
 
         if (enable_speculative) {

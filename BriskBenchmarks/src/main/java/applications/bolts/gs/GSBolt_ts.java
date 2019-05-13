@@ -26,7 +26,7 @@ public class GSBolt_ts extends GSBolt {
 
     private static final Logger LOG = LoggerFactory.getLogger(GSBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private Collection<MicroEvent> EventsHolder = new ArrayDeque<>();
+    private Collection<MicroEvent> EventsHolder;
     private int writeEvents;
     private double write_useful_time = 556;//write-compute time pre-measured.
 
@@ -99,6 +99,7 @@ public class GSBolt_ts extends GSBolt {
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
         transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_ITEMS, this.context.getThisComponent().getNumTasks());
+        EventsHolder = new ArrayDeque<>();
     }
 
 

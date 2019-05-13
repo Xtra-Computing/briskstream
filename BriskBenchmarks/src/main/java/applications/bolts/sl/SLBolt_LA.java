@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 public class SLBolt_LA extends SLBolt {
-    int _combo_bid_size = 1;
+
 
 
     public SLBolt_LA(Logger log, int fid) {
@@ -18,7 +18,7 @@ public class SLBolt_LA extends SLBolt {
 
 
     protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {
-
+        int _combo_bid_size = 1;
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 
@@ -51,6 +51,7 @@ public class SLBolt_LA extends SLBolt {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws InterruptedException, DatabaseException {
+        int _combo_bid_size = 1;
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);

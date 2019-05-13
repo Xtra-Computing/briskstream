@@ -13,7 +13,7 @@ public abstract class TPBolt_LA extends TPBolt {
         super(log, fid);
     }
 
-    int _combo_bid_size = 1;
+
 
     protected void LAL(LREvent event, long i, long _bid) throws DatabaseException {
         REQUEST_LOCK_AHEAD(event, txn_context[(int) (i - _bid)]);
@@ -23,6 +23,7 @@ public abstract class TPBolt_LA extends TPBolt {
     //lock_ratio-ahead phase.
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException, InterruptedException {
+        int _combo_bid_size = 1;
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //ensures that locks are added in the input_event sequence order.
@@ -46,7 +47,7 @@ public abstract class TPBolt_LA extends TPBolt {
 
 
     protected void PostLAL_process(long _bid) throws DatabaseException {
-
+        int _combo_bid_size = 1;
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
 

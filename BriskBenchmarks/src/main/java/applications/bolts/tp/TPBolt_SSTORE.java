@@ -47,7 +47,7 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
-
+        int _combo_bid_size=1;
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
             LREvent event = (LREvent) input_event;

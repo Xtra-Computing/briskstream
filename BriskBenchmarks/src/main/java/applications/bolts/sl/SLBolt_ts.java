@@ -32,7 +32,7 @@ public class SLBolt_ts extends SLBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SLBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
     private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
-    private final ArrayDeque<TransactionEvent> transactionEvents = new ArrayDeque<>();
+    private ArrayDeque<TransactionEvent> transactionEvents;
     private int depositeEvents;
 
     public SLBolt_ts(int fid) {
@@ -45,7 +45,7 @@ public class SLBolt_ts extends SLBolt {
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
         transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_ACCOUNTS, this.context.getThisComponent().getNumTasks());
-
+        transactionEvents = new ArrayDeque<>();
     }
 
     public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {

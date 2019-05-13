@@ -247,7 +247,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in  "Read_Write_Mixture" "Write_Intensive" "Read_Only" "MultiPartition" "GrepSum"#
+for benchmark in  "Read_Only" "MultiPartition"  "GrepSum" #
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -273,7 +273,7 @@ do
     let "gc_factor = 0"
     let "iteration = 1"
     checkpoint=0.1
-    ratio_of_multi_partition=0.5
+    ratio_of_multi_partition=0.25
     number_partitions=4 #no partitions.
     NUM_ITEMS=10000 #smaller means higher contention! 1000 or 10_000 or 100_000
     complexity=0 ##default for GS.
@@ -286,7 +286,7 @@ do
                     do
                         for tt in 1 5 10
                         do
-                            for CCOption in 4 #4
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -509,54 +509,30 @@ do
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
                 for hz in "${HZ[@]}"
                 do
-                    for complexity in 0 5000 10000 15000 20000
-                        do
-                        for theta in 0
-                        do
-                            for tt in 10
-                            do
-                                for CCOption in 0 1 2 3 4
-                                do
-                                    for NUM_ACCESS in 10 #8 6 4 2 1
-                                    do
-                                        for ratio_of_read in 1
-                                        do
-                                            for checkpoint in 0.1
-                                            do
-                                                TP=$tt
-                                                post_complexity=0 #disable post.
-                                                read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
-                                            done
-                                        done
-                                    done
-                                done
-                            done # Threads/Cores
-                        done #Theta
-                    done # complexity
-                    for post_complexity in 0 5000 10000 15000 20000
-                        do
-                        for theta in 0
-                        do
-                            for tt in 10
-                            do
-                                for CCOption in 0 1 2 3 4
-                                do
-                                    for NUM_ACCESS in 10 #8 6 4 2 1
-                                    do
-                                        for ratio_of_read in 1
-                                        do
-                                            for checkpoint in 0.1
-                                            do
-                                                TP=$tt
-                                                complexity=0 #disable pre.
-                                                read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
-                                            done
-                                        done
-                                    done
-                                done
-                            done # Threads/Cores
-                        done #Theta
-                    done # complexity
+                     for theta in 0
+                     do
+                         for tt in 10
+                         do
+                             for CCOption in 0 1 2 3 4
+                             do
+                                 for NUM_ACCESS in 10 #8 6 4 2 1
+                                 do
+                                     for ratio_of_read in 1
+                                     do
+                                         for checkpoint in 0.1
+                                         do
+                                             for post_complexity in 0 200 400 600 800 1000
+                                             do
+                                                 TP=$tt
+                                                 complexity=0 #disable pre.
+                                                 read_only_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
+                                             done
+                                         done
+                                     done
+                                 done
+                             done
+                         done # Threads/Cores
+                     done #Theta
                 done #Input Hz
                 ;;
             "Working_Set_Size") # NUM_ACCESS, study state access complexity
@@ -570,7 +546,7 @@ do
                             do
                                 for NUM_ACCESS in 1 2 4 6 8 10 12 14 16
                                 do
-                                    for ratio_of_read in 0
+                                    for ratio_of_read in 0 #write-only
                                     do
                                         let "TP = $tt"
                                         complexity=0 # disable compute.

@@ -152,7 +152,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
             Metrics.MeasureTools.measure_counts[thisTaskId] = MeasureStart;//skip warm-up phase.
             start_measure = 0;
         } else {
-            test_num_events_per_thread = 1_000_000 / combo_bid_size;
+            test_num_events_per_thread = TEST_NUM_EVENST / combo_bid_size;
             start_measure = MeasureStart;
         }
         counter = 0;

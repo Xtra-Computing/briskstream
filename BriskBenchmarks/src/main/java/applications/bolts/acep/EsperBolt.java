@@ -38,7 +38,7 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
     private static final long serialVersionUID = 1L;
     private static final Logger LOG = LoggerFactory.getLogger(EsperBolt.class);
 
-    private transient EPServiceProvider epService;
+    private EPServiceProvider epService;
     private Map<String, List<String>> outputTypes;
     private Map<String, Object> eventTypes;
     private Set<String> statements;
@@ -212,7 +212,6 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
         }
         this.epService.getEPRuntime().sendEvent(tuplesper, tuple.getSourceComponent() + "_" + tuple.getSourceStreamId());
     }
-
 
 
     /**

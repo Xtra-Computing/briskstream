@@ -165,13 +165,13 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
 
     int sum = 0;
-
-    private int dummy_compute() {
-
-        for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
-            sum += j;
-        return sum;
-    }
+//
+//    private int dummy_compute() {
+//
+//        for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
+//            sum += System.nanoTime();
+//        return sum;
+//    }
 
     protected void PRE_EXECUTE(Tuple in) {
 
@@ -186,10 +186,11 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         input_event = in.getValue(0);
 
+//        int rt = 0;
+//        if (enable_pre_compute)
+//            rt = dummy_compute();
 
-        int rt = dummy_compute();
-
-        txn_context[0] = new TxnContext(thread_Id, rt, this.i);
+        txn_context[0] = new TxnContext(thread_Id, this.fid, this.i);
 
         sum = 0;
 

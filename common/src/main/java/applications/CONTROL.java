@@ -5,13 +5,14 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
 
-    int MeasureStart = 500_000;//server needs at least 10,000 to compile, so skip them.
+    int MeasureStart = 100_000;//server needs at least 10,000 to compile, so skip them.
 
-    int MeasureBound = 1_000_000;
+    int MeasureBound = 300_000;
 
     //application related.
     int NUM_EVENTS = 100_000; //different input events..
 
+    int TEST_NUM_EVENST = 300_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
@@ -34,6 +35,11 @@ public interface CONTROL {
 
     boolean enable_TSTREAM = false;
 
+
+    //pre- and post -compute
+
+    boolean enable_pre_compute = false;//not in use.
+    boolean enable_post_compute = true;
 
     //latency related.
 
