@@ -378,15 +378,15 @@ public class Metrics {
 
                 txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
 
-                metrics.useful_ratio[thread_id].addValue((tp_core[thread_id] + compute_total[thread_id])/txn_total[thread_id]);
+                metrics.useful_ratio[thread_id].addValue((tp_core[thread_id] + compute_total[thread_id]) / txn_total[thread_id]);
 
-                metrics.index_ratio[thread_id].addValue(index_time[thread_id]/txn_total[thread_id]);
+                metrics.index_ratio[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
-                metrics.lock_ratio[thread_id].addValue((txn_lock[thread_id])/txn_total[thread_id]);
+                metrics.lock_ratio[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
 
-                metrics.sync_ratio[thread_id].addValue((txn_wait[thread_id])/txn_total[thread_id]);
+                metrics.sync_ratio[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
 
-                metrics.abort_ratio[thread_id].addValue(abort_time[thread_id]/txn_total[thread_id]);
+                metrics.abort_ratio[thread_id].addValue(abort_time[thread_id] / txn_total[thread_id]);
 
 
             }
@@ -431,16 +431,15 @@ public class Metrics {
 
                 txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]));
 
-                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id])/txn_total[thread_id]);
+                metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
-                metrics.index_ratio[thread_id].addValue(index_time[thread_id]/txn_total[thread_id]);
+                metrics.index_ratio[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
                 metrics.lock_ratio[thread_id].addValue(0);
 
                 metrics.abort_ratio[thread_id].addValue(0);
 
-                metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id])/txn_total[thread_id]);
-
+                metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id]) / txn_total[thread_id]);
 
 
             }

@@ -46,6 +46,7 @@ public abstract class GSBolt extends TransactionalBolt {
 
 
     int sum = 0;
+//    volatile int com_result = 0;
 
     protected void READ_POST(MicroEvent event) throws InterruptedException {
 
@@ -54,6 +55,7 @@ public abstract class GSBolt extends TransactionalBolt {
                 sum += event.result[i] + Math.random();
             }
 
+//        com_result = sum;
 
         if (enable_speculative) {
             //measure_end if the previous send sum is wrong. if yes, send a signal to correct it. otherwise don't send.
