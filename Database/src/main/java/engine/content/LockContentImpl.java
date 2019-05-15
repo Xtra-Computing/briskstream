@@ -63,6 +63,11 @@ public class LockContentImpl extends LockContent {
 
     }
 
+    @Override
+    public void updateMultiValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
+
+    }
+
 
     @Override
     public boolean TryReadLock() {

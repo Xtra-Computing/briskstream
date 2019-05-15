@@ -47,6 +47,11 @@ public class SStoreContentImpl extends SStoreContent {
 
     }
 
+    @Override
+    public void updateMultiValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
+
+    }
+
     public boolean TryLockPartitions() {
         return spinlock_.Try_Lock();
     }

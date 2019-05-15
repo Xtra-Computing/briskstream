@@ -31,7 +31,7 @@ public class SchemaRecordRef {
         }
 
 //        while (record == null) {
-//            System.out.println("The record has not being assigned yet!"+cnt);
+//            System.out.println("The record has not being assigned yet!" + cnt);
 //        }
 
         return record;

@@ -287,7 +287,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" #"TP_Txn" #
+for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" #"TP_Txn" #
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -324,7 +324,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 35 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             for CCOption in 0 1 2 4
                             do
@@ -342,7 +342,7 @@ do
                                     done
                                 done
                             done
-                            for CCOption in 3
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -355,7 +355,6 @@ do
                                             number_partitions=4
                                             Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
 #                                            Read_Write_Mixture_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
-
                                         done
                                     done
                                 done
@@ -370,7 +369,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 0 1 2 4
@@ -390,9 +389,9 @@ do
                                 done
                             done
                          done
-                        for tt in 35 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
-                            for CCOption in 3
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -422,7 +421,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 0 1 2 4
@@ -440,9 +439,9 @@ do
                                 done
                             done
                         done
-                        for tt in 35 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
-                            for CCOption in 3
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -467,7 +466,7 @@ do
                 do
                     for theta in 0.6 ##spout has fixed theta..
                     do
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 0 1 2 4
@@ -487,9 +486,9 @@ do
                                 done
                             done
                         done
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
-                            for CCOption in 3
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do

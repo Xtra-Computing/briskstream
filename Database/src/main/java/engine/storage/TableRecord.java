@@ -30,10 +30,12 @@ public class TableRecord implements Comparable<TableRecord> {
             case LWM_CONTENT:
                 content_ = new LWMContentImpl();
                 content_.updateValues(0, 0, false, record);//mvcc, value_list @ts=0
+                content_.updateMultiValues(0, 0, false, record);//mvcc, value_list @ts=0
                 break;
             case T_STREAMCONTENT:
                 content_ = new T_StreamContentImpl();
                 content_.updateValues(0, 0, false, record);//mvcc, value_list @ts=0
+                content_.updateMultiValues(0, 0, false, record);//mvcc, value_list @ts=0
                 break;
             default:
                 throw new UnsupportedOperationException();

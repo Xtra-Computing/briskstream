@@ -165,6 +165,11 @@ public class ToContentImpl extends ToContent {
 
     }
 
+    @Override
+    public void updateMultiValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
+
+    }
+
 
     // this function is always called after write has been installed or aborted.
     void UpdateBuffer() {

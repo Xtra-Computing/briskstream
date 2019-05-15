@@ -68,6 +68,8 @@ public interface Content {
 
     void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record);
 
+    void updateMultiValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record);
+
     boolean AcquireCertifyLock();
 
     SchemaRecord ReadAccess(long ts, long mark_ID, boolean clean, MetaTypes.AccessType accessType);

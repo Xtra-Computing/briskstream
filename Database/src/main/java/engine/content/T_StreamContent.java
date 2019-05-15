@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static applications.CONTROL.enable_mvcc;
-
 public abstract class T_StreamContent implements Content {
     public final static String T_STREAMCONTENT = "T_STREAMCONTENT";
     public ConcurrentSkipListMap<Long, SchemaRecord> versions = new ConcurrentSkipListMap<>();//TODO: In fact... there can be at most only one write to the d_record concurrently. It is safe to just use sorted hashmap.
@@ -98,45 +96,45 @@ public abstract class T_StreamContent implements Content {
      */
     @Override
     public SchemaRecord readPreValues(long ts) {
-
-        if (enable_mvcc) {
-
 //            spinlock_.lock_ratio();
-            SchemaRecord record_at_ts = null;
+        SchemaRecord record_at_ts = null;
 //            while (record_at_ts == null) {//polling for correct entry.
 
-            Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
+        Map.Entry<Long, SchemaRecord> entry = versions.lowerEntry(ts);//always get the original (previous) version.
 
-            if (entry != null) {
-                record_at_ts = entry.getValue();
-            } else
-                record_at_ts = versions.get(ts);//not modified in last round
+        if (entry != null) {
+            record_at_ts = entry.getValue();
+        } else
+            record_at_ts = versions.get(ts);//not modified in last round
 //            }
 //            spinlock_.unlock();
 //            if (record_at_ts.getValues() == null) {
 //                System.out.println("Read a null value??");
 //            }
-            return record_at_ts;
-        } else
-            return record;
+        return record_at_ts;
+    }
+
+    @Override
+    public void updateMultiValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
+        versions.put(ts, record);
     }
 
     public SchemaRecord readValues(long ts, long previous_mark_ID, boolean clean) {
 
-        if (enable_mvcc) {
-//            spinlock_.lock_ratio();
-            SchemaRecord rt = versions.get(ts);//return exact record.
-
-            if (rt == null) {
-                rt = versions.lowerEntry(ts).getValue();
-            }
-
-            if (clean)
-                clean_map(previous_mark_ID);
-//            spinlock_.unlock();
-            return rt;
-        } else
-            return record;
+//        if (enable_mvcc) {
+////            spinlock_.lock_ratio();
+//            SchemaRecord rt = versions.get(ts);//return exact record.
+//
+//            if (rt == null) {
+//                rt = versions.lowerEntry(ts).getValue();
+//            }
+//
+//            if (clean)
+//                clean_map(previous_mark_ID);
+////            spinlock_.unlock();
+//            return rt;
+//        } else
+        return record;
     }
 
     @Override
@@ -147,17 +145,9 @@ public abstract class T_StreamContent implements Content {
 
     @Override
     public void updateValues(long ts, long previous_mark_ID, boolean clean, SchemaRecord record) {
-
-        if (enable_mvcc) {
-//            spinlock_.lock_ratio();
-            versions.put(ts, record);
-//            spinlock_.unlock();
-
-            if (clean)
-                clean_map(previous_mark_ID);
-        } else
-            this.record = record;
+        this.record = record;
     }
+
 
     @Override
     public boolean AcquireCertifyLock() {

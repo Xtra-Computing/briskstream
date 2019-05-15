@@ -197,7 +197,7 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
 
-            operation.d_record.content_.WriteAccess(operation.bid, previous_mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
+            operation.d_record.content_.updateMultiValues(operation.bid, previous_mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
             //Operation.d_record.content_.WriteAccess(Operation.bid, new SchemaRecord(values), wid);//does this even needed?
             operation.success[0] = true;
 //            if (operation.table_name.equalsIgnoreCase("accounts") && operation.d_record.record_.GetPrimaryKey().equalsIgnoreCase("11")) {
@@ -217,7 +217,7 @@ public final class TxnProcessingEngine {
         SchemaRecord tempo_record;
         tempo_record = new SchemaRecord(values);//tempo record
         tempo_record.getValues().get(operation.column_id).incLong(operation.function.delta_long);//compute.
-        operation.s_record.content_.WriteAccess(operation.bid, mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
+        operation.s_record.content_.updateMultiValues(operation.bid, mark_ID, clean, tempo_record);//it may reduce NUMA-traffic.
     }
 
     private void process(Operation operation, long mark_ID, boolean clean) {
@@ -302,7 +302,7 @@ public final class TxnProcessingEngine {
             assert operation.record_ref != null;
             if (app == 1) {//used in SL
                 CT_Transfer_Fun(operation, mark_ID, clean);
-                operation.record_ref.setRecord(operation.d_record.content_.readValues(operation.bid, mark_ID, clean));//read the resulting tuple.
+                operation.record_ref.setRecord(operation.d_record.content_.readPreValues(operation.bid));//read the resulting tuple.
             } else
                 throw new UnsupportedOperationException();
 
@@ -344,7 +344,6 @@ public final class TxnProcessingEngine {
 //                    System.out.println("Not assigning");
 //                    System.exit(-1);
 //                }
-
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
             } else if (operation.function instanceof AVG) {//used by TP
                 //                double lav = (latestAvgSpeeds + speed) / 2;//compute the average.
@@ -765,6 +764,9 @@ public final class TxnProcessingEngine {
         public Integer call() {
 
             process((MyList<Operation>) operation_chain, -1);
+
+//            LOG.info("Working on chain:" + ((MyList<Operation>) operation_chain).getPrimaryKey() + " by:" + Thread.currentThread().getName());
+
 //
 //            if (enable_work_stealing || island == -1) {// if island is not -1, it may cooperatively work on the same chain, use mvcc to ensure correctness.
 //                if (operation_chain.size() == 0) {

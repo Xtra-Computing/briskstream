@@ -5,9 +5,9 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
 
-    int MeasureStart = 50_000;//server needs at least 10,000 to compile, so skip them.
+    int MeasureStart = 10_000;//server needs at least 10,000 to compile, so skip them.
 
-    int MeasureBound = 100_000;
+    int MeasureBound = 300_000;
 
     //application related.
     int NUM_EVENTS = 100_000; //different input events..
@@ -47,7 +47,7 @@ public interface CONTROL {
 //    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
-    boolean enable_profile = true;//enable this only when we want to test for breakdown.
+    boolean enable_profile = false;//enable this only when we want to test for breakdown.
 
     boolean enable_debug = false;//some critical debug section.
 
@@ -56,14 +56,15 @@ public interface CONTROL {
     boolean enable_numa_placement = true;//thread placement. always on.
 
     //used for NUMA-aware partition engine
-    boolean enable_work_partition = false; // 2. this is a sub-option, only useful when engine is enabled.
+    boolean enable_work_partition = true; // 2. this is a sub-option, only useful when engine is enabled.
     int island = -1;//-1 stands for one engine per core; -2 stands for one engine per socket.
     int CORE_PER_SOCKET = 10;//configure this for NUMA placement please.
     int NUM_OF_SOCKETS = 4;//configure this for NUMA placement please.
 
     //single engine with work-stealing.
-    boolean enable_work_stealing = true; // 3. this is a sub-option, only useful when engine is enabled. enable by default -- should be enabled for island=-1.
-    boolean enable_mvcc = (!enable_work_partition || island != -1) && enable_work_stealing;//true only when partition is false and island is not -1
+    boolean enable_work_stealing = true; // won't affect is island=-1 under partition.
+
+    boolean enable_mvcc = false;//  never use. mvcc is only required in CT for cross-dependency reading.
 
     boolean enable_speculative = false;//work in future!
 
