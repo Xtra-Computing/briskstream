@@ -5,14 +5,14 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
 
-    int MeasureStart = 100_000;//server needs at least 10,000 to compile, so skip them.
+    int MeasureStart = 50_000;//server needs at least 10,000 to compile, so skip them.
 
-    int MeasureBound = 300_000;
+    int MeasureBound = 100_000;
 
     //application related.
     int NUM_EVENTS = 100_000; //different input events..
 
-    int TEST_NUM_EVENST = 300_000;//total runs per thread.
+    int TEST_NUM_EVENST = 100_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
@@ -48,6 +48,7 @@ public interface CONTROL {
 
     //profile related.
     boolean enable_profile = true;//enable this only when we want to test for breakdown.
+
     boolean enable_debug = false;//some critical debug section.
 
     //engine related.
@@ -55,7 +56,7 @@ public interface CONTROL {
     boolean enable_numa_placement = true;//thread placement. always on.
 
     //used for NUMA-aware partition engine
-    boolean enable_work_partition = true; // 2. this is a sub-option, only useful when engine is enabled.
+    boolean enable_work_partition = false; // 2. this is a sub-option, only useful when engine is enabled.
     int island = -1;//-1 stands for one engine per core; -2 stands for one engine per socket.
     int CORE_PER_SOCKET = 10;//configure this for NUMA placement please.
     int NUM_OF_SOCKETS = 4;//configure this for NUMA placement please.
@@ -66,5 +67,7 @@ public interface CONTROL {
 
     boolean enable_speculative = false;//work in future!
 
+
+//    boolean enable_pushdown = false;//enabled by default.
 
 }

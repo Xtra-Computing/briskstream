@@ -162,7 +162,7 @@ public abstract class SLBolt extends TransactionalBolt {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
             if (enable_latency_measurement) {
-                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, event.getTimestamp())));
+                sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, true, event.getTimestamp())));
             }
         }
     }

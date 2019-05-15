@@ -26,8 +26,8 @@ public class LREvent {
 //    private final AvgVehicleSpeedTuple vsreport;//intermediate input.
 
 
-    public SchemaRecordRef speed_value = new SchemaRecordRef();
-    public SchemaRecordRef count_value = new SchemaRecordRef();
+    public SchemaRecordRef speed_value;
+    public SchemaRecordRef count_value;
 
     /**
      * creating a new LREvent.
@@ -41,6 +41,8 @@ public class LREvent {
         this.tthread = tthread;
 //        vsreport = vehicleSpeedTuple;
         this.bid = bid;
+        speed_value = new SchemaRecordRef();
+        count_value = new SchemaRecordRef();
     }
 
 

@@ -27,10 +27,10 @@ function local_execution {
         JVM_args_local="-Xms25g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
-			 numactl -N 3 --localalloc --strict java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt		&
+			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt		&
 			 profile $profile_type $path
 		else
-			 numactl -N 3 --localalloc --strict java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
+			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
 		fi
 
         cat $path/$tt\_$TP.txt | grep "finished measurement (k events/s)"
@@ -113,6 +113,18 @@ function Read_Write_Mixture_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
+
+function Read_Write_Mixture_test_nopush {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application="--disable_pushdown --POST_COMPUTE $post_complexity --COMPUTE_COMPLEXITY $complexity --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
+
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
+
 function DB_SIZE_TEST {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
@@ -170,6 +182,16 @@ function multi_partition_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
+function StreamLedger_test_nopush {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$theta
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application="--disable_pushdown --POST_COMPUTE $post_complexity --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
+
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
 function StreamLedger_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
@@ -191,7 +213,16 @@ function TP_Txn_test {
 		mkdir -p $path
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
+function TP_Txn_test_nopush {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$theta
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application="--disable_pushdown --POST_COMPUTE $post_complexity --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
 
 function OnlineBiding_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
@@ -203,7 +234,16 @@ function OnlineBiding_test {
 		mkdir -p $path
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
+function OnlineBiding_test_nopush {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$theta
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application="--disable_pushdown --POST_COMPUTE $post_complexity --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
 function StreamLedger_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
@@ -247,7 +287,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in  "Read_Only" "MultiPartition"  "GrepSum" #
+for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" #"TP_Txn" #
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -284,20 +324,38 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1 5 10
+                        for tt in 35 39
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 0.1 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1
+                                        do
+                                            TP=$tt
+                                            ratio_of_multi_partition=0.25
+                                            number_partitions=4
+#                                            Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+                                        done
+                                    done
+                                done
+                            done
+                            for CCOption in 3
+                            do
+                                for NUM_ACCESS in 10 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
+                                    do
+                                        for checkpoint in 500
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.25
                                             number_partitions=4
                                             Read_Write_Mixture_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+#                                            Read_Write_Mixture_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity
+
                                         done
                                     done
                                 done
@@ -312,27 +370,27 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 4 # 0 1 2 3
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 1
                                         do
                                             ratio_of_multi_partition=0.25
                                             number_partitions=4
-                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                          done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39
                         do
                             for CCOption in 3
                             do
@@ -341,11 +399,12 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 500
                                         do
-                                            ratio_of_multi_partition=1
+                                            ratio_of_multi_partition=0.25
                                             number_partitions=4
-#                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            StreamLedger_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -363,25 +422,25 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 10
+                        for tt in 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 1 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1
                                         do
                                             TP=$tt
-                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 35 39
                         do
                             for CCOption in 3
                             do
@@ -389,10 +448,11 @@ do
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 500
                                         do
                                              TP=$tt
-#                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                             OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                             OnlineBiding_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -407,27 +467,27 @@ do
                 do
                     for theta in 0.6 ##spout has fixed theta..
                     do
-                        for tt in 10 #1 5 10 15 20 25 30 35
+                        for tt in 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 3
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 0.1 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 0.1
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39 40
+                        for tt in 39
                         do
                             for CCOption in 3
                             do
@@ -436,11 +496,12 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 0.1 0.01 #0.8 0.6 0.4 0.2 0.1
+                                        for checkpoint in 500
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            TP_Txn_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -724,5 +785,6 @@ do
                 exit 1
         esac
 done #varing benchmarks.
+
 cd $HOME/scripts
 ./jobdone.py

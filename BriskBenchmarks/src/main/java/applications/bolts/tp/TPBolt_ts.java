@@ -32,7 +32,7 @@ import static engine.profiler.Metrics.MeasureTools.*;
 public class TPBolt_ts extends TPBolt {
     private static final Logger LOG = LoggerFactory.getLogger(TPBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private ArrayDeque<LREvent> LREvents = new ArrayDeque<>();
+    ArrayDeque<LREvent> LREvents = new ArrayDeque<>();
 
 
     public TPBolt_ts(int fid) {
@@ -69,7 +69,7 @@ public class TPBolt_ts extends TPBolt {
 
     }
 
-    private void REQUEST_CONSTRUCT(LREvent event, TxnContext txnContext) throws DatabaseException {
+    protected void REQUEST_CONSTRUCT(LREvent event, TxnContext txnContext) throws DatabaseException {
         //it simply construct the operations and return.
         transactionManager.Asy_ModifyRecord_Read(txnContext
                 , "segment_speed"
@@ -137,17 +137,22 @@ public class TPBolt_ts extends TPBolt {
     }
 
 
-    private void REQUEST_POST() throws InterruptedException {
+    protected void REQUEST_POST() throws InterruptedException {
         for (LREvent event : LREvents) {
             REQUEST_POST(event);
         }
     }
 
 
-    private void REQUEST_REQUEST_CORE() {
+    protected void REQUEST_REQUEST_CORE() {
 
         for (LREvent event : LREvents) {
-            TXN_REQUEST_CORE(event);
+            TXN_REQUEST_CORE_TS(event);
         }
+    }
+
+    private void TXN_REQUEST_CORE_TS(LREvent event) {
+        event.count = event.count_value.getRecord().getValue().getInt();
+        event.lav = event.speed_value.getRecord().getValue().getDouble();
     }
 }

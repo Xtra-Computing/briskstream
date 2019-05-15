@@ -28,6 +28,9 @@ public abstract class abstractRunner {
     @Parameter(names = {"--Fault_tolerance"}, description = "Fault_tolerance enable")
     public boolean Fault_tolerance = false;
 
+    @Parameter(names = {"--disable_pushdown"}, description = "disable_pushdown, default is on")
+    public boolean disable_pushdown = false;
+
     @Parameter(names = {"--partition"}, description = "partition database enable")
     public boolean partition = false;
 
@@ -263,6 +266,7 @@ public abstract class abstractRunner {
     }
 
     public void configuration(HashMap<String, Object> config) {
+        config.put("disable_pushdown", disable_pushdown);
         config.put("application", application);
         config.put("ratio_of_multi_partition", ratio_of_multi_partition);
         config.put("number_partitions", number_partitions);

@@ -17,7 +17,6 @@ import utils.SOURCE_CONTROL;
 import java.io.Closeable;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static applications.CONTROL.*;
 import static applications.constants.PositionKeepingConstants.Constant.MOVING_AVERAGE_WINDOW;
@@ -233,11 +232,10 @@ public final class TxnProcessingEngine {
 
             operation.record_ref.setRecord(new SchemaRecord(schemaRecord.getValues()));//Note that, locking scheme allows directly modifying on original table d_record.
 
-            if (enable_debug)
-                if (operation.record_ref.cnt == 0) {
-                    System.out.println("Not assigning");
-                    System.exit(-1);
-                }
+//            if (operation.record_ref.cnt == 0) {
+//                System.out.println("Not assigning");
+//                System.exit(-1);
+//            }
 
         } else if (operation.accessType == WRITE_ONLY) {//push evaluation down. //used in MB.
 
@@ -308,10 +306,10 @@ public final class TxnProcessingEngine {
             } else
                 throw new UnsupportedOperationException();
 
-            if (operation.record_ref.cnt == 0) {
-                System.out.println("Not assigning");
-                System.exit(-1);
-            }
+//            if (operation.record_ref.cnt == 0) {
+//                System.out.println("Not assigning");
+//                System.exit(-1);
+//            }
         } else if (operation.accessType == READ_WRITE_READ) {//used in PK, TP.
             assert operation.record_ref != null;
 
@@ -341,6 +339,12 @@ public final class TxnProcessingEngine {
                 } else {
                     operation.record_ref.setRecord(new SchemaRecord(new DoubleDataBox(sum / MOVING_AVERAGE_WINDOW)));
                 }
+
+//                if (operation.record_ref.cnt == 0) {
+//                    System.out.println("Not assigning");
+//                    System.exit(-1);
+//                }
+
 //                            LOG.info("BID:" + Operation.bid + " is set @" + DateTime.now());
             } else if (operation.function instanceof AVG) {//used by TP
                 //                double lav = (latestAvgSpeeds + speed) / 2;//compute the average.
@@ -373,10 +377,7 @@ public final class TxnProcessingEngine {
             Operation operation = operation_chain.pollFirst();//multiple threads may work on the same operation chain, use MVCC to preserve the correctness.
             if (operation == null) return;
 
-            if (operation_chain.size() == 0)// TODO: THIS ONLY WORKS FOR GS because there's no cross-state access.
-                process(operation, mark_ID, true);
-            else
-                process(operation, mark_ID, false);
+            process(operation, mark_ID, false);
 
         }//loop.
 
@@ -444,7 +445,7 @@ public final class TxnProcessingEngine {
     }
 
 
-    private int submit_task(int thread_Id, Holder holder, Collection<Task> callables, long mark_ID) {
+    private int submit_task(int thread_Id, Holder holder, Collection<Callable<Object>> callables, long mark_ID) {
 
         int sum = 0;
 
@@ -464,20 +465,20 @@ public final class TxnProcessingEngine {
 //                Instance instance = standalone_engine;//multi_engine.get(key);
                 if (!Thread.currentThread().isInterrupted()) {
                     if (enable_engine) {
-                        Task task = new Task(operation_chain, mark_ID);
+                        Task task = new Task(operation_chain);
 
                         if (enable_debug)
                             LOG.trace("Submit operation_chain:" + OsUtils.Addresser.addressOf(operation_chain) + " with size:" + operation_chain.size());
 
-                        if (enable_work_partition) {
-
-//                            String key = operation_chain.getPrimaryKey();
-//                            int p = key_to_partition(key); p == thread_id.
-
-                            multi_engine.get(TaskToEngine(thread_Id)).executor.submit(task);
-                        } else {
-                            standalone_engine.executor.submit(task);
-                        }
+//                        if (enable_work_partition) {
+//
+////                            String key = operation_chain.getPrimaryKey();
+////                            int p = key_to_partition(key); p == thread_id.
+//
+////                            multi_engine.get(ThreadToEngine(thread_Id)).executor.submit(task);
+//                        } else {
+////                            standalone_engine.executor.submit(task);
+//                        }
                         callables.add(task);
                     } else {
                         process(operation_chain, mark_ID);//directly apply the computation.
@@ -497,7 +498,7 @@ public final class TxnProcessingEngine {
 
         //LOG.DEBUG(thread_Id + "\tall source marked checkpoint, starts TP evaluation for watermark bid\t" + bid);
 
-        Collection<Task> callables = new Vector<>();
+        Collection<Callable<Object>> callables = new Vector<>();
 
         int task = 0;
 
@@ -508,8 +509,13 @@ public final class TxnProcessingEngine {
 
         END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
 
-        if (enable_debug)
-            LOG.info("submit task:" + task);
+//
+//        for (Callable<Object> callable : callables) {
+//
+//            LOG.info("Thread:" + thread_Id + " is submitting:" + ((MyList<Operation>) ((Task) callable).operation_chain).getPrimaryKey());
+//
+//
+//        }
 
         if (enable_engine) {
             if (enable_work_partition) {
@@ -556,7 +562,7 @@ public final class TxnProcessingEngine {
 
 //        SOURCE_CONTROL.getInstance().Wait_Start();//no sync here. sync later.
 
-        previous_ID = mark_ID;
+//        previous_ID = mark_ID;
 
         SOURCE_CONTROL.getInstance().Wait_End(thread_Id);//sync for all threads to come to this line.
 
@@ -650,10 +656,10 @@ public final class TxnProcessingEngine {
 
     //the smallest unit of Task in TP.
     //Every Task will be assigned with one operation chain.
-    class Task implements Callable<Integer> {
-        private AtomicBoolean under_process;
+    class Task implements Callable {
+        //        private AtomicBoolean under_process;
         private final Set<Operation> operation_chain;
-        private final long mark_ID;
+//        private final long mark_ID;
 //        private int socket;
 //        private final long wid = 0;//watermark id.
 //        private boolean un_processed = true;
@@ -668,14 +674,14 @@ public final class TxnProcessingEngine {
 //            }
 //        }
 
-        public Task(Set<Operation> operation_chain, long mark_ID) {
+        public Task(Set<Operation> operation_chain) {
 
             this.operation_chain = operation_chain;
-            this.mark_ID = mark_ID;
+//            this.mark_ID = mark_ID;
 
-            if (!(enable_work_stealing || island == -1)) {
-                under_process = new AtomicBoolean(false);
-            }
+//            if (!(enable_work_stealing || island == -1)) {
+//                under_process = new AtomicBoolean(false);
+//            }
 
         }
 
@@ -692,61 +698,138 @@ public final class TxnProcessingEngine {
 //            }
         }
 
-        //evaluate the operation_chain
-        //TODO: paralleling this process.
+//        //evaluate the operation_chain
+//        //TODO: paralleling this process.
+//        @Override
+//        public Integer call() {
+//
+//            if (enable_work_stealing || island == -1) {// if island is not -1, it may cooperatively work on the same chain, use mvcc to ensure correctness.
+//                if (operation_chain.size() == 0) {
+////                    if (enable_debug)
+////                        LOG.info("RE-ENTRY "
+////                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+////                                " by:" + Thread.currentThread().getName());
+//                    return 0;
+//                }
+//                try {
+//                    process((MyList<Operation>) operation_chain, -1);
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    System.exit(-1);
+//                }
+//                return 0;
+//            } else {
+//                LOG.info(
+//                        "Working on chain:" + ((MyList<Operation>) operation_chain).getPrimaryKey() + " by:" + Thread.currentThread().getName());
+//
+////                if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
+////                    if (operation_chain.size() == 0) {
+////                        if (enable_debug)
+////                            LOG.info("RE-ENTRY "
+////                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+////                                    " by:" + Thread.currentThread().getName());
+////                        return 0;
+////                    }
+////
+//////                int i = 0;
+//////                if (enable_debug)
+//////                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+//////                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
+//////                            + " with size of:" + operation_chain.size());
+////
+////                    try {
+////                        process((MyList<Operation>) operation_chain, -1);
+////                    } catch (Exception e) {
+////                        LOG.info("ENGINE Exception:" + e.getMessage());
+////                    }
+////
+////                    if (enable_debug)
+////                        LOG.trace("Thread:\t" + Thread.currentThread().getName()
+////                                + "reset task:" + OsUtils.Addresser.addressOf(this));
+////
+////                    operation_chain.clear();
+////                    this.under_process.set(false);//reset
+////                    return 0;
+////                }
+//////            if (enable_debug)
+//////                LOG.info("Thread:\t" + Thread.currentThread().getName()
+//////                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+//////                        + " with size of:" + operation_chain.size());
+//////            while (!this.under_process.compareAndSet(false, true)) ;
+//                return 0;
+//            }
+//        }
+
         @Override
         public Integer call() {
 
-            if (enable_work_stealing || island == -1) {// if island is not -1, it may cooperatively work on the same chain, use mvcc to ensure correctness.
-                if (operation_chain.size() == 0) {
-//                    if (enable_debug)
-//                        LOG.info("RE-ENTRY "
-//                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-//                                " by:" + Thread.currentThread().getName());
-                    return 0;
-                }
-                try {
-                    process((MyList<Operation>) operation_chain, mark_ID);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
-                return 0;
-            } else {
-                if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
-                    if (operation_chain.size() == 0) {
-//                        if (enable_debug)
-//                            LOG.info("RE-ENTRY "
-//                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
-//                                    " by:" + Thread.currentThread().getName());
-                        return 0;
-                    }
-
-//                int i = 0;
-//                if (enable_debug)
-//                    LOG.info("Thread:\t" + Thread.currentThread().getName()
-//                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
-//                            + " with size of:" + operation_chain.size());
-
-                    process((MyList<Operation>) operation_chain, mark_ID);
-                    if (enable_debug)
-                        LOG.trace("Thread:\t" + Thread.currentThread().getName()
-                                + "reset task:" + OsUtils.Addresser.addressOf(this));
-
-                    operation_chain.clear();
-                    this.under_process.set(false);//reset
-                    return 0;
-                }
-//            if (enable_debug)
-//                LOG.info("Thread:\t" + Thread.currentThread().getName()
-//                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
-//                        + " with size of:" + operation_chain.size());
-//            while (!this.under_process.compareAndSet(false, true)) ;
-                return 0;
-            }
+            process((MyList<Operation>) operation_chain, -1);
+//
+//            if (enable_work_stealing || island == -1) {// if island is not -1, it may cooperatively work on the same chain, use mvcc to ensure correctness.
+//                if (operation_chain.size() == 0) {
+////                    if (enable_debug)
+////                        LOG.info("RE-ENTRY "
+////                                + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+////                                " by:" + Thread.currentThread().getName());
+//
+//                }
+////                try {
+//                process((MyList<Operation>) operation_chain, -1);
+////                } catch (Exception e) {
+////                    e.printStackTrace();
+////                    System.exit(-1);
+////                }
+//
+//            } else {
+//
+////                try {
+//                process((MyList<Operation>) operation_chain, -1);
+////                    } catch (Exception e) {
+////                        LOG.info("ENGINE Exception:" + e.getMessage());
+////                    }
+//
+////                LOG.info(
+////                        "Working on chain:" + ((MyList<Operation>) operation_chain).getPrimaryKey() + " by:" + Thread.currentThread().getName());
+//
+////                if (this.under_process.compareAndSet(false, true)) {//ensure one task is processed only once.
+////                    if (operation_chain.size() == 0) {
+////                        if (enable_debug)
+////                            LOG.info("RE-ENTRY "
+////                                    + "\t working on task:" + OsUtils.Addresser.addressOf(this) +
+////                                    " by:" + Thread.currentThread().getName());
+////                        return 0;
+////                    }
+////
+//////                int i = 0;
+//////                if (enable_debug)
+//////                    LOG.info("Thread:\t" + Thread.currentThread().getName()
+//////                            + "\t working on task:" + OsUtils.Addresser.addressOf(this)
+//////                            + " with size of:" + operation_chain.size());
+////
+////                    try {
+////                        process((MyList<Operation>) operation_chain, -1);
+////                    } catch (Exception e) {
+////                        LOG.info("ENGINE Exception:" + e.getMessage());
+////                    }
+////
+////                    if (enable_debug)
+////                        LOG.trace("Thread:\t" + Thread.currentThread().getName()
+////                                + "reset task:" + OsUtils.Addresser.addressOf(this));
+////
+////                    operation_chain.clear();
+////                    this.under_process.set(false);//reset
+////                    return 0;
+////                }
+//////            if (enable_debug)
+//////                LOG.info("Thread:\t" + Thread.currentThread().getName()
+//////                        + "\t exit on task:" + OsUtils.Addresser.addressOf(this)
+//////                        + " with size of:" + operation_chain.size());
+//////            while (!this.under_process.compareAndSet(false, true)) ;
+//
+//            }
+            return null;
         }
-
     }
 
 }

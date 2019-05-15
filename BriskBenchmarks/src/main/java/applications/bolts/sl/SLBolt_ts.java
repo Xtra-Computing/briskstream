@@ -32,7 +32,7 @@ public class SLBolt_ts extends SLBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SLBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
     private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
-    private ArrayDeque<TransactionEvent> transactionEvents;
+    ArrayDeque<TransactionEvent> transactionEvents;
     private int depositeEvents;
 
     public SLBolt_ts(int fid) {
@@ -101,7 +101,7 @@ public class SLBolt_ts extends SLBolt {
                 (event).setTimestamp(timestamp);
 
             if (event instanceof DepositEvent) {
-                DEPOSIT_REQUEST_CONSTRUCT((DepositEvent) event, txnContext);
+                DEPOSITE_REQUEST_CONSTRUCT((DepositEvent) event, txnContext);
             } else {
                 TRANSFER_REQUEST_CONSTRUCT((TransactionEvent) event, txnContext);
             }
@@ -112,7 +112,7 @@ public class SLBolt_ts extends SLBolt {
     }
 
 
-    private void TRANSFER_REQUEST_CONSTRUCT(TransactionEvent event, TxnContext txnContext) throws DatabaseException {
+    protected void TRANSFER_REQUEST_CONSTRUCT(TransactionEvent event, TxnContext txnContext) throws DatabaseException {
         String[] srcTable = new String[]{"accounts", "bookEntries"};
 
         String[] srcID = new String[]{event.getSourceAccountId(), event.getSourceBookEntryId()};
@@ -157,7 +157,7 @@ public class SLBolt_ts extends SLBolt {
         transactionEvents.add(event);
     }
 
-    private void DEPOSIT_REQUEST_CONSTRUCT(DepositEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+    protected void DEPOSITE_REQUEST_CONSTRUCT(DepositEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
         //it simply construct the operations and return.
         transactionManager.Asy_ModifyRecord(txnContext, "accounts", event.getAccountId(), new INC(event.getAccountTransfer()));// read and modify the account itself.
         transactionManager.Asy_ModifyRecord(txnContext, "bookEntries", event.getBookEntryId(), new INC(event.getBookEntryTransfer()));// read and modify the asset itself.
@@ -176,15 +176,9 @@ public class SLBolt_ts extends SLBolt {
 
     private void TRANSFER_REQUEST_CORE() throws InterruptedException {
         for (TransactionEvent event : transactionEvents) {
-            TRANSFER_REQUEST_CORE(event);
+            event.transaction_result = new TransactionResult(event, event.success[0],
+                    event.src_account_value.getRecord().getValues().get(1).getLong(), event.dst_account_value.getRecord().getValues().get(1).getLong());
         }
     }
-
-
-    protected void TRANSFER_REQUEST_CORE(TransactionEvent event) {
-        event.transaction_result = new TransactionResult(event, event.success[0],
-                event.src_account_value.getRecord().getValues().get(1).getLong(), event.dst_account_value.getRecord().getValues().get(1).getLong());
-    }
-
 
 }

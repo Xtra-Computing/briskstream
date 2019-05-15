@@ -90,7 +90,7 @@ public class OBCombo extends SPOUTCombo {
 //                db.eventManager.put(input_event, Integer.parseInt(split[0]));
                 myevents[i++] = event;
                 if (i == num_events_per_thread) break;
-                for (int j = 0; j < (tthread-1) * combo_bid_size; j++) {
+                for (int j = 0; j < (tthread - 1) * combo_bid_size; j++) {
                     if (sc.hasNextLine())
                         sc.nextLine();//skip un-related.
                 }
@@ -124,7 +124,11 @@ public class OBCombo extends SPOUTCombo {
                 break;
             }
             case CCOption_TStream: {//T-Stream
-                bolt = new OBBolt_ts(0);
+
+                if (config.getBoolean("disable_pushdown", false))
+                    bolt = new OBBolt_ts_nopush(0);
+                else
+                    bolt = new OBBolt_ts(0);
                 break;
             }
             case CCOption_SStore: {//SStore

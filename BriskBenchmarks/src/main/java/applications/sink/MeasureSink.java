@@ -13,9 +13,8 @@ import org.slf4j.LoggerFactory;
 import utils.SINK_CONTROL;
 
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static applications.CONTROL.*;
 import static applications.Constants.STAT_Path;
@@ -23,7 +22,7 @@ import static applications.Constants.STAT_Path;
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
     private static final DescriptiveStatistics latency = new DescriptiveStatistics();
-    protected static final LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
+
     private static final long serialVersionUID = 6249684803036342603L;
     protected static String directory;
     protected static String algorithm;
@@ -34,8 +33,8 @@ public class MeasureSink extends BaseSink {
     //    private int batch_number_per_wm;
     private int exe;
 
-//    int _combo_bid_size;
-
+    //    int _combo_bid_size;
+    protected final ArrayDeque<Long> latency_map = new ArrayDeque();
 
     public MeasureSink() {
         super(new HashMap<>());
@@ -77,6 +76,7 @@ public class MeasureSink extends BaseSink {
 
         directory = STAT_Path + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(configPrefix)
+                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
 //                + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket")))
 //                + OsUtils.OS_wrapper(String.valueOf(ccOption))
 //                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
@@ -142,7 +142,7 @@ public class MeasureSink extends BaseSink {
             final long end = System.nanoTime();
             final long start = input.getLong(1);
             final long process_latency = end - start;//ns
-            latency_map.put(msgId, process_latency);
+            latency_map.add(process_latency);
         }
     }
 
@@ -168,35 +168,44 @@ public class MeasureSink extends BaseSink {
      * @param results
      */
     protected void measure_end(double results) {
-
+        LOG.info(Thread.currentThread().getName() + " obtains lock");
         if (enable_latency_measurement) {
-            for (Map.Entry<Long, Long> entry : latency_map.entrySet()) {
+            StringBuilder sb = new StringBuilder();
+
+
+            for (Long entry : latency_map) {
 //                LOG.info("=====Process latency of msg====");
                 //LOG.DEBUG("SpoutID:" + (int) (entry.getKey() / 1E9) + " and msgID:" + entry.getKey() % 1E9 + " is at:\t" + entry.getValue() / 1E6 + "\tms");
-                latency.addValue((entry.getValue() / 1E6));
+                latency.addValue((entry / 1E6));
             }
             try {
 //                Collections.sort(col_value);
 
                 FileWriter f = null;
 
-                f = new FileWriter(new File(directory + OsUtils.OS_wrapper(String.valueOf(ccOption + ".latency"))));
+                f = new FileWriter(new File(directory
+                        + OsUtils.OS_wrapper(String.valueOf(ccOption + ".latency"))));
 
                 Writer w = new BufferedWriter(f);
 
                 for (double percentile = 0.5; percentile <= 100.0; percentile += 0.5) {
                     w.write(String.valueOf(latency.getPercentile(percentile) + "\n"));
                 }
-                w.write("=======Details=======");
-                w.write("\n" + latency.toString() + "\n");
-                w.write("===90th===" + "\n");
-                w.write(String.valueOf(latency.getPercentile(90) + "\n"));
+
+
+                sb.append("=======Details=======");
+                sb.append("\n" + latency.toString() + "\n");
+                sb.append("===90th===" + "\n");
+                sb.append(String.valueOf(latency.getPercentile(90) + "\n"));
+                w.write(sb.toString());
                 w.close();
                 f.close();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            LOG.info(sb.toString());
         }
         SINK_CONTROL.getInstance().throughput = results;
         LOG.info("Thread:" + thisTaskId + " is going to stop all threads sequentially");

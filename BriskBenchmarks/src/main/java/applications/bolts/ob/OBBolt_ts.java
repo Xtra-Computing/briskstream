@@ -34,7 +34,7 @@ public class OBBolt_ts extends OBBolt {
     private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
 
     private int thisTaskId;
-    private final ArrayDeque<BuyingEvent> buyingEvents = new ArrayDeque<>();
+    final ArrayDeque<BuyingEvent> buyingEvents = new ArrayDeque<>();
     private int alertEvents = 0, toppingEvents = 0;
 
 
@@ -57,7 +57,7 @@ public class OBBolt_ts extends OBBolt {
         loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
 
-    private void TOPPING_REQUEST_CONSTRUCT(ToppingEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+    protected void TOPPING_REQUEST_CONSTRUCT(ToppingEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
         //it simply construct the operations and return.
         for (int i = 0; i < event.getNum_access(); i++)
             transactionManager.Asy_ModifyRecord(txnContext, "goods", String.valueOf(event.getItemId()[i]), new INC(event.getItemTopUp()[i]), 2);//asynchronously return.
@@ -67,7 +67,7 @@ public class OBBolt_ts extends OBBolt {
         toppingEvents++;
     }
 
-    private void ALERT_REQUEST_CONSTRUCT(AlertEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+    protected void ALERT_REQUEST_CONSTRUCT(AlertEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
         //it simply construct the operations and return.
         for (int i = 0; i < event.getNum_access(); i++)
             transactionManager.Asy_WriteRecord(txnContext, "goods", String.valueOf(event.getItemId()[i]), event.getAsk_price()[i], 1);//asynchronously return.

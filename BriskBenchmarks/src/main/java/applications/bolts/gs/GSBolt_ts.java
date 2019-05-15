@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Vector;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.*;
@@ -26,7 +25,7 @@ public class GSBolt_ts extends GSBolt {
 
     private static final Logger LOG = LoggerFactory.getLogger(GSBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private Collection<MicroEvent> EventsHolder;
+    Collection<MicroEvent> EventsHolder;
     private int writeEvents;
     private double write_useful_time = 556;//write-compute time pre-measured.
 
@@ -66,7 +65,7 @@ public class GSBolt_ts extends GSBolt {
     }
 
 
-    private void read_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException {
+    void read_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException {
         for (int i = 0; i < NUM_ACCESSES; i++) {
             //it simply constructs the operations and return.
             transactionManager.Asy_ReadRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), event.getRecord_refs()[i], event.enqueue_time);
@@ -80,7 +79,7 @@ public class GSBolt_ts extends GSBolt {
         }
     }
 
-    private void write_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
+    protected void write_construct(MicroEvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
         for (int i = 0; i < NUM_ACCESSES; ++i) {
             //it simply construct the operations and return.
             transactionManager.Asy_WriteRecord(txnContext, "MicroTable", String.valueOf(event.getKeys()[i]), event.getValues()[i], event.enqueue_time);//asynchronously return.
@@ -103,7 +102,7 @@ public class GSBolt_ts extends GSBolt {
     }
 
 
-    private void READ_REQUEST_CORE() throws InterruptedException {
+    void READ_REQUEST_CORE() throws InterruptedException {
 
 //        while (!EventsHolder.isEmpty() && !Thread.interrupted()) {
 //            MicroEvent input_event = EventsHolder.remove();
@@ -122,7 +121,7 @@ public class GSBolt_ts extends GSBolt {
 
     }
 
-    private void READ_POST() throws InterruptedException {
+    void READ_POST() throws InterruptedException {
         for (MicroEvent event : EventsHolder) {
             READ_POST(event);
         }

@@ -21,11 +21,11 @@ public class SINKCombo extends MeasureSink {
 
     public void end(int global_cnt) {
         double results = helper.EndMeasurement(global_cnt);
-        boolean proceed = SINK_CONTROL.getInstance().try_lock();
-        if (proceed) {
-            LOG.info(Thread.currentThread().getName() + " obtains lock");
-            measure_end(results);
-        }
+//        SINK_CONTROL.getInstance().lock();
+//        if (proceed) {
+
+        measure_end(results);
+//        }
     }
 
 

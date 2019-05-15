@@ -38,7 +38,7 @@ public class MeasureSink_Txn extends MeasureSink {
 //				if (process_latency > stored_process_latency)//pick the worst.
 //				{
 //				LOG.debug("msgID:" + msgId + " is at:\t" + process_latency / 1E6 + "\tms");
-                        latency_map.put(msgId, process_latency);
+                        latency_map.add( process_latency);
 //				}
                     } catch (Exception e) {
                         System.nanoTime();

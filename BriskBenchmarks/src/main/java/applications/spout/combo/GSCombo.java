@@ -82,7 +82,7 @@ public class GSCombo extends SPOUTCombo {
                 myevents[i++] = event;
                 if (i == num_events_per_thread) break;
 
-                for (int j = 0; j < (tthread-1) * combo_bid_size; j++) {
+                for (int j = 0; j < (tthread - 1) * combo_bid_size; j++) {
                     if (sc.hasNextLine())
                         sc.nextLine();//skip un-related.
                 }
@@ -117,7 +117,11 @@ public class GSCombo extends SPOUTCombo {
                 break;
             }
             case CCOption_TStream: {//T-Stream
-                bolt = new GSBolt_ts(0);
+
+                if (config.getBoolean("disable_pushdown", false))
+                    bolt = new GSBolt_ts_nopush(0);
+                else
+                    bolt = new GSBolt_ts(0);
                 break;
             }
             case CCOption_SStore: {//SStore

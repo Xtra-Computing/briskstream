@@ -52,6 +52,7 @@ public abstract class TPBolt extends TransactionalBolt {
                 , READ_WRITE);
 
     }
+
     protected void TXN_REQUEST(LREvent event, TxnContext txnContext) throws DatabaseException, InterruptedException {
         transactionManager.SelectKeyRecord(txnContext, "segment_speed"
                 , String.valueOf(event.getPOSReport().getSegment())
@@ -64,6 +65,7 @@ public abstract class TPBolt extends TransactionalBolt {
                 , READ_WRITE);
 
     }
+
     protected void REQUEST_LOCK_AHEAD(LREvent event, TxnContext txnContext) throws DatabaseException {
 
         transactionManager.lock_ahead(txnContext, "segment_speed", String.valueOf(event.getPOSReport().getSegment()), event.speed_value, READ_WRITE);
@@ -108,6 +110,7 @@ public abstract class TPBolt extends TransactionalBolt {
         BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             LREvent event = (LREvent) input_event;
+            ((LREvent) input_event).setTimestamp(timestamp);
             REQUEST_POST(event);
         }
         END_POST_TIME_MEASURE(thread_Id);
@@ -115,18 +118,12 @@ public abstract class TPBolt extends TransactionalBolt {
 
     protected void TXN_REQUEST_CORE(LREvent event) {
 
-        if (event.count_value.getRecord().getValue() != null) {// TSTREAM
-            event.count = event.count_value.getRecord().getValue().getInt();
-            event.lav = event.speed_value.getRecord().getValue().getDouble();
-        } else//others
-        {
-            DataBox dataBox = event.count_value.getRecord().getValues().get(1);
-            HashSet cnt_segment = dataBox.getHashSet();
-            cnt_segment.add(event.getPOSReport().getVid());//update hashset; updated state also. TODO: be careful of this.
-            event.count = cnt_segment.size();
-            DataBox dataBox1 = event.speed_value.getRecord().getValues().get(1);
-            event.lav = dataBox1.getDouble();
-        }
+        DataBox dataBox = event.count_value.getRecord().getValues().get(1);
+        HashSet cnt_segment = dataBox.getHashSet();
+        cnt_segment.add(event.getPOSReport().getVid());//update hashset; updated state also. TODO: be careful of this.
+        event.count = cnt_segment.size();
+        DataBox dataBox1 = event.speed_value.getRecord().getValues().get(1);
+        event.lav = dataBox1.getDouble();
 
     }
 }

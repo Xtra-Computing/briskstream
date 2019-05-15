@@ -139,7 +139,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         double checkpoint = config.getDouble("checkpoint", 1);
 
-        batch_number_per_wm = (int) (10000 * checkpoint);//10K, 1K, 100.
+        batch_number_per_wm = (int) (checkpoint);//10K, 1K, 100.
 
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 
