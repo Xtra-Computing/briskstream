@@ -8,8 +8,8 @@ import engine.transaction.dedicated.TxnManagerNoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static engine.profiler.Metrics.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
 
 
 /**

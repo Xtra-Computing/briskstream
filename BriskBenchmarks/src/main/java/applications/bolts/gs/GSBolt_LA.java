@@ -5,7 +5,7 @@ import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 
 public abstract class GSBolt_LA extends GSBolt {

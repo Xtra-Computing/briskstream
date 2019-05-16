@@ -19,7 +19,7 @@ public class SpinLock {
             while (!owner.compareAndSet(null, thread)) {
                 if (thread.isInterrupted()) return;//to exit program.
             }
-        if (enable_profile)
+//        if (enable_profile)
             count++;
     }
 

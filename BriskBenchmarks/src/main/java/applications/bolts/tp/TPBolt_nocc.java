@@ -9,14 +9,13 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.TxnManagerNoLock;
-import engine.transaction.dedicated.ordered.TxnManagerOrderLockBlocking;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 import static applications.CONTROL.combo_bid_size;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 
 /**

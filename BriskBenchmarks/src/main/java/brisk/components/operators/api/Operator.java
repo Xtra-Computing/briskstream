@@ -249,7 +249,6 @@ public abstract class Operator implements IOperator {
     }
     public void loadDB(int thread_Id, int thisTaskId, ExecutionGraph graph) {
 
-
         graph.topology.tableinitilizer.loadDB(thread_Id, this.context);
     }
 

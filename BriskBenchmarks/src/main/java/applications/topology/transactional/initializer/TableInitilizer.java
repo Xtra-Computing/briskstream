@@ -188,8 +188,8 @@ public abstract class TableInitilizer {
                 if (j == 8)
                     j = 0;
 
+                p = key_to_partition(p_generator.next());//randomly pick a starting point.
                 if (multi_parition_txn_flag) {//multi-partition
-                    p = key_to_partition(p_generator.next());//randomly pick a starting point.
                     event = create_new_event(_number_partitions, i);
 
                     if (event instanceof DepositEvent)

@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.enable_states_partition;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 
 /**

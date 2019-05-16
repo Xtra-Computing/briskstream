@@ -1,4 +1,4 @@
-package applications.spout.combo;
+package applications.combo;
 
 import applications.tools.FastZipfGenerator;
 import applications.util.Configuration;
@@ -13,6 +13,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
+import engine.profiler.MeasureTools;
 import engine.profiler.Metrics;
 import org.slf4j.Logger;
 import utils.SOURCE_CONTROL;
@@ -149,7 +150,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         if (config.getInt("CCOption", 0) == CCOption_SStore) {
             test_num_events_per_thread = num_events_per_thread;//otherwise deadlock.. TODO: fix it later.
-            Metrics.MeasureTools.measure_counts[thisTaskId] = MeasureStart;//skip warm-up phase.
+            MeasureTools.measure_counts[thisTaskId] = MeasureStart;//skip warm-up phase.
             start_measure = 0;
         } else {
             test_num_events_per_thread = TEST_NUM_EVENST / combo_bid_size;
@@ -167,7 +168,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         if (config.getInt("CCOption", 0) == CCOption_TStream) {
             the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
-        }else {
+        } else {
             the_end = test_num_events_per_thread;
         }
 
@@ -179,6 +180,8 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         }
 
+        Metrics metrics = Metrics.getInstance();
+        metrics.initilize(thread_Id);
 
     }
 

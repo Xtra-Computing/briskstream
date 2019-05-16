@@ -626,7 +626,7 @@ public class RateModel implements Serializable {
     }
 
     //Formula x
-    //r_p(c) expected total process rate
+    //r_p(c) expected overhead_total process rate
     public double erp_c(ExecutionNode executionNode, String streamId,
                         SchedulingPlan sp, boolean bound) {
         cache cacheMap = sp.getCacheMap(executionNode, streamId);

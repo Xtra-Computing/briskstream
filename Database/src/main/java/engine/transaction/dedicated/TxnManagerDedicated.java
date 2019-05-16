@@ -21,9 +21,8 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 import static engine.Meta.MetaTypes.kMaxAccessNum;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.

@@ -113,7 +113,7 @@ public class ObjectHistogram<X> implements Histogram<X> {
         this.num_samples += count;
 
         // If we already have this value_list in our histogram, then add the new
-        // count to its existing total
+        // count to its existing overhead_total
         Long existing = this.histogram.get(value);
         if (existing != null) {
             count += existing;

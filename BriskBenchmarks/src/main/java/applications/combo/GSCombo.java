@@ -1,9 +1,7 @@
-package applications.spout.combo;
+package applications.combo;
 
-import applications.bolts.ob.*;
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.ToppingEvent;
+import applications.bolts.gs.*;
+import applications.param.mb.MicroEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
@@ -22,82 +20,81 @@ import java.util.Scanner;
 import static applications.CONTROL.*;
 import static applications.Constants.Event_Path;
 import static engine.content.Content.*;
+import static engine.profiler.Metrics.NUM_ACCESSES;
+import static engine.profiler.Metrics.NUM_ITEMS;
 
 //TODO: Re-name microbenchmark as GS (Grep and Sum).
-public class OBCombo extends SPOUTCombo {
-    private static final Logger LOG = LoggerFactory.getLogger(OBCombo.class);
+public class GSCombo extends SPOUTCombo {
+    private static final Logger LOG = LoggerFactory.getLogger(GSCombo.class);
     private static final long serialVersionUID = -2394340130331865581L;
 
-    public OBCombo() {
+
+    public GSCombo() {
         super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
     }
 
-
-    @Override
     public void loadEvent(String file_name, Configuration config, TopologyContext context, OutputCollector collector) {
+        double ratio_of_multi_partition = config.getDouble("ratio_of_multi_partition", 1);
+        int number_partitions = Math.min(tthread, config.getInt("number_partitions"));
+        double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+
         String event_path = Event_Path
-                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition));
+                + OsUtils.OS_wrapper("enable_states_partition=" + String.valueOf(enable_states_partition))
+                + OsUtils.OS_wrapper("NUM_EVENTS=" + String.valueOf(NUM_EVENTS))
+                + OsUtils.OS_wrapper("ratio_of_multi_partition=" + String.valueOf(ratio_of_multi_partition))
+                + OsUtils.OS_wrapper("number_partitions=" + String.valueOf(number_partitions))
+                + OsUtils.OS_wrapper("ratio_of_read=" + String.valueOf(ratio_of_read))
+                + OsUtils.OS_wrapper("NUM_ACCESSES=" + String.valueOf(NUM_ACCESSES))
+                + OsUtils.OS_wrapper("theta=" + String.valueOf(config.getDouble("theta", 1)))
+                + OsUtils.OS_wrapper("NUM_ITEMS=" + String.valueOf(NUM_ITEMS));
 
         if (Files.notExists(Paths.get(event_path + OsUtils.OS_wrapper(file_name))))
             throw new UnsupportedOperationException();
 
+
+        long start = System.nanoTime();
         Scanner sc;
         try {
             sc = new Scanner(new File(event_path + OsUtils.OS_wrapper(file_name)));
-
             int i = 0;
-            Object event;
+            Object event = null;
+
+
             for (int j = 0; j < taskId; j++) {
                 sc.nextLine();
             }
+
             while (sc.hasNextLine()) {
                 String read = sc.nextLine();
                 String[] split = read.split(split_exp);
 
-                if (split[4].endsWith("BuyingEvent")) {//BuyingEvent
-                    event = new BuyingEvent(
-                            Integer.parseInt(split[0]), //bid
-                            split[2], //bid_array
-                            Integer.parseInt(split[1]),//pid
-                            Integer.parseInt(split[3]),//num_of_partition
-                            split[5],//key_array
-                            split[6],//price_array
-                            split[7]  //qty_array
-                    );
-                } else if (split[4].endsWith("AlertEvent")) {//AlertEvent
-                    event = new AlertEvent(
-                            Integer.parseInt(split[0]), //bid
-                            split[2], // bid_array
-                            Integer.parseInt(split[1]),//pid
-                            Integer.parseInt(split[3]),//num_of_partition
-                            Integer.parseInt(split[5]), //num_access
-                            split[6],//key_array
-                            split[7]//price_array
-                    );
-                } else {
-                    event = new ToppingEvent(
-                            Integer.parseInt(split[0]), //bid
-                            split[2], Integer.parseInt(split[1]), //pid
-                            //bid_array
-                            Integer.parseInt(split[3]),//num_of_partition
-                            Integer.parseInt(split[5]), //num_access
-                            split[6],//key_array
-                            split[7]  //top_array
-                    );
-                }
-//                db.eventManager.put(input_event, Integer.parseInt(split[0]));
+                event = new MicroEvent(
+                        Integer.parseInt(split[0]), //bid
+                        Integer.parseInt(split[1]), //pid
+                        split[2], //bid_array
+                        Integer.parseInt(split[3]),//num_of_partition
+                        split[5],//key_array
+                        Boolean.parseBoolean(split[6])//flag
+                );
+
                 myevents[i++] = event;
                 if (i == num_events_per_thread) break;
+
                 for (int j = 0; j < (tthread - 1) * combo_bid_size; j++) {
                     if (sc.hasNextLine())
                         sc.nextLine();//skip un-related.
                 }
+                //db.eventManager.put(input_event, Integer.parseInt(split[0]));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
+        LOG.info("Thread:" + taskId + " finished loading events (" + test_num_events_per_thread + ") in " + (System.nanoTime() - start) / 1E6 + " ms");
+
 
     }
 
@@ -106,34 +103,29 @@ public class OBCombo extends SPOUTCombo {
 
         super.initialize(thread_Id, thisTaskId, graph);
 
-        _combo_bid_size = combo_bid_size;
-
         switch (config.getInt("CCOption", 0)) {
             case CCOption_LOCK: {//no-order
-                bolt = new OBBolt_nocc(0);
+                bolt = new GSBolt_nocc(0);
                 break;
             }
             case CCOption_OrderLOCK: {//LOB
-                bolt = new OBBolt_olb(0);
-                _combo_bid_size = 1;
+                bolt = new GSBolt_olb(0);
                 break;
             }
             case CCOption_LWM: {//LWM
-                bolt = new OBBolt_lwm(0);
-                _combo_bid_size = 1;
+                bolt = new GSBolt_lwm(0);
                 break;
             }
             case CCOption_TStream: {//T-Stream
 
                 if (config.getBoolean("disable_pushdown", false))
-                    bolt = new OBBolt_ts_nopush(0);
+                    bolt = new GSBolt_ts_nopush(0);
                 else
-                    bolt = new OBBolt_ts(0);
+                    bolt = new GSBolt_ts(0);
                 break;
             }
             case CCOption_SStore: {//SStore
-                bolt = new OBBolt_sstore(0);
-                _combo_bid_size = 1;
+                bolt = new GSBolt_sstore(0);
                 break;
             }
         }
@@ -142,7 +134,8 @@ public class OBCombo extends SPOUTCombo {
         bolt.prepare(config, context, collector);
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
-        loadEvent("OB_Events" + tthread, config, context, collector);
+
+        loadEvent("MB_Events" + tthread, config, context, collector);
 
     }
 }

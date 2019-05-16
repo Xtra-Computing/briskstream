@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.enable_states_partition;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 public class OBBolt_sstore extends OBBolt_LA {
     private static final Logger LOG = LoggerFactory.getLogger(OBBolt_sstore.class);

@@ -250,7 +250,7 @@ public class RandomDistribution {
                 this.history.add(val);
             }
             return (val);
-            // assert(false) : "Went beyond our expected total '" + idx + "'";
+            // assert(false) : "Went beyond our expected overhead_total '" + idx + "'";
             // return (null);
         }
 

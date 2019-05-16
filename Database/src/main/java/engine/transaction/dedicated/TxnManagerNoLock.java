@@ -10,12 +10,8 @@ import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static engine.Meta.MetaTypes.AccessType.READ_ONLY;
-import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.Meta.MetaTypes.kMaxAccessNum;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
-import static engine.transaction.impl.TxnAccess.Access;
+import static engine.profiler.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
 
 /**
  * No Locks at all.

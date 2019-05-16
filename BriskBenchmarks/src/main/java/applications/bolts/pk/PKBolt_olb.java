@@ -9,8 +9,6 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerOrderLockBlocking;
-import engine.transaction.impl.TxnContext;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +18,6 @@ import java.util.Set;
 
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_EVENT;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
-import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.*;
 
 public class PKBolt_olb extends PKBolt {
 

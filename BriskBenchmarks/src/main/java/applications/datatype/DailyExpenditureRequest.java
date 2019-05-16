@@ -31,9 +31,9 @@ import brisk.execution.runtime.tuple.impl.Fields;
  * <li>TYPE: the tuple type ID</li>
  * <li>TIME: 'the timestamp of the input tuple that triggered the tuple to be generated' (in LRB seconds)</li>
  * <li>VID: the unique vehicle ID making the request</li>
- * <li>XWay: the ID of the expressway on which an expenditure total is desired (1...L-1)</li>
+ * <li>XWay: the ID of the expressway on which an expenditure overhead_total is desired (1...L-1)</li>
  * <li>QID: the unique request ID</li>
- * <li>Day: the day on which an expenditure total is desired (1 is yesterday, 69 is 10 weeks ago)</li>
+ * <li>Day: the day on which an expenditure overhead_total is desired (1 is yesterday, 69 is 10 weeks ago)</li>
  * </ul>
  *
  * @author mjsax

@@ -19,9 +19,8 @@ import java.util.LinkedList;
 import static applications.CONTROL.enable_debug;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_ACC;
-import static engine.profiler.Metrics.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
+import static engine.profiler.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**

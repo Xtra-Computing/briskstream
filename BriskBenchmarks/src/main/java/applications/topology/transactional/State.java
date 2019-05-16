@@ -39,7 +39,7 @@ public class State {
         int floor_interval;
         if (enable_states_partition) {
             floor_interval = (int) Math.floor(numItems / (double) tthread);//NUM_ITEMS / tthread;
-            partioned_store = new FastZipfGenerator[tthread];//total number of working threads.
+            partioned_store = new FastZipfGenerator[tthread];//overhead_total number of working threads.
             for (int i = 0; i < tthread; i++) {
                 partioned_store[i] = new FastZipfGenerator((int) (floor_interval * scale_factor), theta, i * floor_interval);
             }

@@ -47,11 +47,6 @@ public class TopologySubmitter {
         Collection<TopologyComponent> topologyComponents = g.topology.getRecords().values();
 
         if (CONTROL.enable_shared_state) {
-            Metrics metrics = Metrics.getInstance();
-            for (int i = 0; i < kMaxThreadNum; i++) {
-                metrics.initilize(i);
-            }
-
             Metrics.COMPUTE_COMPLEXITY = conf.getInt("COMPUTE_COMPLEXITY");
             POST_COMPUTE_COMPLEXITY = conf.getInt("POST_COMPUTE");
             Metrics.NUM_ACCESSES = conf.getInt("NUM_ACCESS");

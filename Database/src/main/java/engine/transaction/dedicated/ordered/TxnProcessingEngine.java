@@ -22,7 +22,7 @@ import static applications.CONTROL.*;
 import static applications.constants.PositionKeepingConstants.Constant.MOVING_AVERAGE_WINDOW;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
 import static engine.Meta.MetaTypes.AccessType.*;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 /**
  * There is one TxnProcessingEngine of each stage.

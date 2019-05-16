@@ -16,8 +16,8 @@ import static applications.CONTROL.enable_app_combo;
 import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE;
+import static engine.profiler.MeasureTools.BEGIN_POST_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_POST_TIME_MEASURE;
 
 public abstract class SLBolt extends TransactionalBolt {
 

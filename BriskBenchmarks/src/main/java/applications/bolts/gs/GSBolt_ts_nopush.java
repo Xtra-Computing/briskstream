@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_app_combo;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 public class GSBolt_ts_nopush extends GSBolt_ts {
 
@@ -61,7 +61,7 @@ public class GSBolt_ts_nopush extends GSBolt_ts {
 
             transactionManager.start_evaluate(thread_Id, in.getBID());//start lazy evaluation in transaction manager.
 
-            END_TP_TIME_MEASURE(thread_Id);// total TP time.
+            END_TP_TIME_MEASURE(thread_Id);// overhead_total TP time.
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
@@ -69,9 +69,9 @@ public class GSBolt_ts_nopush extends GSBolt_ts {
 
             WRITE_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize + writeEvents, 0);//total compute time.
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize + writeEvents, 0);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
 
             READ_POST();
 

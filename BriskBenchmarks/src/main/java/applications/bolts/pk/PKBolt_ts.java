@@ -8,7 +8,6 @@ import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
-import engine.DatabaseException;
 import engine.transaction.dedicated.ordered.TxnManagerTStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +18,8 @@ import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.constants.PositionKeepingConstants.Constant.*;
-import static engine.profiler.Metrics.MeasureTools.*;
-import static engine.profiler.Metrics.NUM_ITEMS;
+import static engine.profiler.MeasureTools.*;
+
 public class PKBolt_ts extends PKBolt {
 
 

@@ -24,13 +24,13 @@ function local_execution {
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 #killall -9 java
 #clean_cache -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
-        JVM_args_local="-Xms25g -Xmx50g -server -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
+        JVM_args_local="-Xms25g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
-			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt		&
+			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt		&
 			 profile $profile_type $path
 		else
-			 java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
+			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
 		fi
 
         cat $path/$tt\_$TP.txt | grep "finished measurement (k events/s)"
@@ -287,7 +287,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "MultiPartition" "Interval" "DB_SIZE" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "OnlineBiding"  #"TP_Txn" #
+for benchmark in "MultiPartition" "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" #"TP_Txn" #
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -421,7 +421,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 0 1 2 4
@@ -441,7 +441,7 @@ do
                         done
                         for tt in 1 5 10 15 20 25 30 35 39
                         do
-                            for CCOption in 0
+                            for CCOption in 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -486,7 +486,7 @@ do
                                 done
                             done
                         done
-                        for tt in 39
+                        for tt in 1 5 10 15 20 25 30 35 39
                         do
                             for CCOption in 4
                             do

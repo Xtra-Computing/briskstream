@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 
 /**

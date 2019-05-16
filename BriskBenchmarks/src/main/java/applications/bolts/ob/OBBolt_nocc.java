@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.combo_bid_size;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 public class OBBolt_nocc extends OBBolt {
     private static final Logger LOG = LoggerFactory.getLogger(OBBolt_nocc.class);

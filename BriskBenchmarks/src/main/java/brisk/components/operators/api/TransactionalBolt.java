@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_latency_measurement;
-import static engine.profiler.Metrics.MeasureTools.*;
+import static engine.profiler.MeasureTools.*;
 
 public abstract class TransactionalBolt<T> extends MapBolt implements Checkpointable {
     protected static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
