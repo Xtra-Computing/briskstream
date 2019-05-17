@@ -288,7 +288,7 @@ class Nets1 extends Frame {
         System.out.println("The average length of a non-empty queue is " + (((double) (que_len)) / non_zero_ele));
         System.out.println("The maximum length of a queue is " + max_que);
         System.out.println("The maximum waiting time of a customer is " + max_waiting);
-        System.out.println("The total idle time of the server is " + tot_idle);
+        System.out.println("The overhead_total idle time of the server is " + tot_idle);
         System.out.println("No. of Packets dropped are : " + customers_dropped);
 
         System.out.flush();

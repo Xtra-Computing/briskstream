@@ -141,15 +141,15 @@ public class GSBolt_ts extends GSBolt {
 
             transactionManager.start_evaluate(thread_Id, in.getBID());//start lazy evaluation in transaction manager.
 
-            END_TP_TIME_MEASURE(thread_Id);// total TP time.
+            END_TP_TIME_MEASURE(thread_Id);// overhead_total TP time.
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             READ_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, writeEvents);//total compute time.
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, writeEvents);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
 
             READ_POST();
 

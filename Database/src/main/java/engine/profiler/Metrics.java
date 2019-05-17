@@ -16,10 +16,12 @@ public class Metrics {
     public static int NUM_ITEMS = 1_000_000;//1. 1_000_000; 2. ? ; 3. 1_000  //1_000_000 YCSB has 16 million records, Ledger use 200 million records.
     public static int H2_SIZE;
 
-    public DescriptiveStatistics[] txn_total = new DescriptiveStatistics[kMaxThreadNum];//total time spend in txn.
-    public DescriptiveStatistics[] stream_total = new DescriptiveStatistics[kMaxThreadNum];//total time spend in txn.
+    public DescriptiveStatistics[] txn_total = new DescriptiveStatistics[kMaxThreadNum];//overhead_total time spend in txn.
+    public DescriptiveStatistics[] stream_total = new DescriptiveStatistics[kMaxThreadNum];//overhead_total time spend in txn.
+    public DescriptiveStatistics[] overhead_total = new DescriptiveStatistics[kMaxThreadNum];//overhead_total time spend in txn.
 
-    public DescriptiveStatistics[] exe_ratio = new DescriptiveStatistics[kMaxThreadNum];//useful_work time.
+
+//    public DescriptiveStatistics[] exe_ratio = new DescriptiveStatistics[kMaxThreadNum];//useful_work time.
 
 //    public volatile boolean measure = false;
 
@@ -42,7 +44,7 @@ public class Metrics {
 //    public Map<String, DescriptiveStatistics> enqueue_time = new HashMap<>();//event enqueue
 
     //TODO: single op for now. per task/thread.
-    public DescriptiveStatistics[] ts_allocation = new DescriptiveStatistics[kMaxThreadNum];//timestamp allocation
+//    public DescriptiveStatistics[] ts_allocation = new DescriptiveStatistics[kMaxThreadNum];//timestamp allocation
     public DescriptiveStatistics[] index_ratio = new DescriptiveStatistics[kMaxThreadNum];//index
     public DescriptiveStatistics[] sync_ratio = new DescriptiveStatistics[kMaxThreadNum];// sync_ratio lock_ratio and order.
     public DescriptiveStatistics[] lock_ratio = new DescriptiveStatistics[kMaxThreadNum];// sync_ratio lock_ratio and order.
@@ -81,26 +83,17 @@ public class Metrics {
     }
 
     public void initilize(int task) {
-//        average_tp_core.put(task, new DescriptiveStatistics());
-//        average_tp_w_syn.put(task, new DescriptiveStatistics());
-//
-//        useful_ratio.put(task, new DescriptiveStatistics());
-//        abort_ratio.put(task, new DescriptiveStatistics());
-//
-//        ts_allocation.put(task, new DescriptiveStatistics());
-//        index_ratio.put(task, new DescriptiveStatistics());
-//
-//        sync_ratio.put(task, new DescriptiveStatistics());
-//        exe_ratio.put(task, new DescriptiveStatistics());
 
         txn_total[task] = new DescriptiveStatistics();
 
         stream_total[task] = new DescriptiveStatistics();
 
+        overhead_total[task] = new DescriptiveStatistics();
+
         useful_ratio[task] = new DescriptiveStatistics();
-        exe_ratio[task] = new DescriptiveStatistics();
+//        exe_ratio[task] = new DescriptiveStatistics();
         abort_ratio[task] = new DescriptiveStatistics();
-        ts_allocation[task] = new DescriptiveStatistics();
+//        ts_allocation[task] = new DescriptiveStatistics();
         index_ratio[task] = new DescriptiveStatistics();
         sync_ratio[task] = new DescriptiveStatistics();
         lock_ratio[task] = new DescriptiveStatistics();
@@ -108,7 +101,7 @@ public class Metrics {
         average_txn_construct[task] = new DescriptiveStatistics();
         average_tp_submit[task] = new DescriptiveStatistics();
         average_tp_w_syn[task] = new DescriptiveStatistics();
-        enqueue_time[task] = new DescriptiveStatistics();
+//        enqueue_time[task] = new DescriptiveStatistics();
     }
 
 
@@ -404,9 +397,11 @@ public class Metrics {
                 long overall_processing_time_per_batch = current_time - stream_start[thread_id];
                 stream_start[thread_id] = current_time;
 
-                metrics.stream_total[thread_id].addValue((overall_processing_time_per_batch - txn_total[thread_id]) / combo_bid_size);
+                long stream_processing = (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size;
+                metrics.stream_total[thread_id].addValue(stream_processing);
+                metrics.overhead_total[thread_id].addValue((overall_processing_time_per_batch - txn_total[thread_id] - stream_processing) / combo_bid_size);
 
-//                metrics.stream_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
+//                metrics.overhead_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
 
                 //clean.
@@ -416,6 +411,8 @@ public class Metrics {
                 txn_lock[thread_id] = 0;
                 txn_wait[thread_id] = 0;
                 abort_time[thread_id] = 0;
+                prepare_time[thread_id] = 0;
+                post_time[thread_id] = 0;
             }
             measure_counts[thread_id]++;
         }
@@ -455,7 +452,11 @@ public class Metrics {
                 long current_time = System.nanoTime();
 
                 long overall_processing_time_per_wm = current_time - stream_start[thread_id];//time from receiving first event to finish last event in the current batch.
-                metrics.stream_total[thread_id].addValue((overall_processing_time_per_wm - txn_total[thread_id]) / txn_size);
+
+                long stream_processing = (prepare_time[thread_id] + post_time[thread_id]) / txn_size;
+                metrics.stream_total[thread_id].addValue(stream_processing);
+                metrics.overhead_total[thread_id].addValue((overall_processing_time_per_wm - txn_total[thread_id] - stream_processing) / txn_size);
+
                 metrics.txn_total[thread_id].addValue(txn_total[thread_id] / txn_size);
                 metrics.average_tp_core[thread_id].addValue(tp_core[thread_id] / txn_size);
                 metrics.average_tp_submit[thread_id].addValue(tp_submit[thread_id] / txn_size);

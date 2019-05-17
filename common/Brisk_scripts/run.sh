@@ -3,11 +3,11 @@ searchdir="--search-dir all:rp=$HOME/Documents/briskstream --search-dir all:rp=$
 
 function profile {
 
+    echo "wait for sink id"
     while [ ! -s  $2/sink_threadId.txt ]
         do
-            echo "wait for sink id"
-            sleep 1
-    done
+            sleep 0
+        done
     r=$(<$2/sink_threadId.txt)
 
 	echo "$r"

@@ -4,15 +4,17 @@ function profile {
     cnt=0
     while [ ! -s  $2/sink_threadId.txt ]
         do
-            echo "wait for sink id $cnt"
+           # echo "wait for sink id $cnt"
             let cnt=cnt+1
-            sleep 1
+            sleep 0.1
     done
     r=$(<$2/sink_threadId.txt)
 
 	echo "$r"
 	jstack $r >> $2/threaddump.txt
 	case $1 in
+    3)
+        perf stat -e mem_load_uops_retired.l2_hit,mem_load_uops_retired.l3_hit,mem_load_uops_l3_hit_retired.xsnp_hit,mem_load_uops_l3_hit_retired.xsnp_hitm,mem_load_uops_l3_hit_retired.xsnp_miss,mem_load_uops_l3_miss_retired.local_dram,mem_load_uops_l3_miss_retired.remote_dram,mem_load_uops_l3_miss_retired.remote_hitm,mem_load_uops_l3_miss_retired.remote_fwd,mem_load_uops_retired.hit_lfb -p $r;;
     4)	#HPC-performance
 		 amplxe-cl -collect hpc-performance -data-limit=1024 --target-pid $r -result-dir $2/hpc >> $2/profile4.txt;;
 	esac
@@ -27,8 +29,8 @@ function local_execution {
         JVM_args_local="-Xms25g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
-			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt		&
-			 profile $profile_type $path
+			 perf stat -e mem_load_uops_retired.l2_hit,mem_load_uops_retired.l3_hit,mem_load_uops_l3_hit_retired.xsnp_hit,mem_load_uops_l3_hit_retired.xsnp_hitm,mem_load_uops_l3_hit_retired.xsnp_miss,mem_load_uops_l3_miss_retired.local_dram,mem_load_uops_l3_miss_retired.remote_dram,mem_load_uops_l3_miss_retired.remote_hitm,mem_load_uops_l3_miss_retired.remote_fwd,mem_load_uops_retired.hit_lfb numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
+			 #profile $profile_type $path
 		else
 			 numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
 		fi
@@ -287,12 +289,12 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" #"TP_Txn" #
+for benchmark in "TP_Txn"
 do
     app="GrepSum"
     machine=3 #RTM.
-    Profile=0 #vtune profile: 0 disable, 1 enable.
-	profile_type=4 # 1 for general..4 for hpc.
+    Profile=0 # 0 disable, 1 enable.
+	profile_type=3 #
 	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.2.0-jar-with-dependencies.jar"
 
     outputPath=$HOME/briskstream/Tests/test-$timestamp/$benchmark
@@ -324,7 +326,7 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 40
                         do
                             for CCOption in 0 1 2 4
                             do
@@ -342,6 +344,9 @@ do
                                     done
                                 done
                             done
+                        done
+                        for tt in 1 10 40
+                        do
                             for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
@@ -389,7 +394,7 @@ do
                                 done
                             done
                          done
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 1 10 40
                         do
                             for CCOption in 0 1 2 3 4
                             do
@@ -439,9 +444,9 @@ do
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 40
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -486,9 +491,9 @@ do
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 40
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 0
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do

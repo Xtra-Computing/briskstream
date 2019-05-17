@@ -47,7 +47,7 @@ public interface CONTROL {
 //    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
-    boolean enable_profile = false;//enable this only when we want to test for breakdown.
+    boolean enable_profile = true;//enable this only when we want to test for breakdown.
 
     boolean enable_debug = false;//some critical debug section.
 

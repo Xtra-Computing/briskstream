@@ -529,17 +529,17 @@ public class Constraints implements Serializable {
         for (int i = 0; i < sockets; i++) {
             double cpu_demand = CPU_demand(plan, i);
             double available_cpu = Available_CPU(i);
-            sb.append("\ntotal demand: ").append(cpu_demand).append("\t available:").append(available_cpu).append("\t\tidle CPU resource on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_cpu - cpu_demand)
+            sb.append("\noverhead_total demand: ").append(cpu_demand).append("\t available:").append(available_cpu).append("\t\tidle CPU resource on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_cpu - cpu_demand)
                     / available_cpu)).append("%").append("\n");
 
             double bandwidth_demand = Bandwidth_demand(plan, i);
             double available_bandwidth = Available_bandwidth(i);
-            sb.append("total demand: ").append(bandwidth_demand).append("\t available:").append(available_bandwidth).append("\t\tidle Bandwidth resource on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_bandwidth - bandwidth_demand)
+            sb.append("overhead_total demand: ").append(bandwidth_demand).append("\t available:").append(available_bandwidth).append("\t\tidle Bandwidth resource on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_bandwidth - bandwidth_demand)
                     / available_bandwidth)).append("%").append("\n");
 
             double cores_demand = cores_demand(plan, i);
             double available_cores = Available_CORES(i);
-            sb.append("\ntotal demand: ").append(cores_demand).append("\t available:").append(available_cpu).append("\t\tidle cores on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_cores - cores_demand)
+            sb.append("\noverhead_total demand: ").append(cores_demand).append("\t available:").append(available_cpu).append("\t\tidle cores on socket:\t").append(i).append("\tis:\t").append(String.format("%.2f", 100 * (available_cores - cores_demand)
                     / available_cores)).append("%").append("\n");
         }
 
@@ -552,7 +552,7 @@ public class Constraints implements Serializable {
                 }
                 double qpi_bandwidth_demand = QPI_Bandwidth_demand(plan, i, j);
                 double available_qpi_bandwidth = Available_QPI_bandwidth(i, j);
-                sb.append("total demand: ").append(qpi_bandwidth_demand).append("\t\tidle QPI bandwidth resource from socket:\t").append(i).append("\tto socket:").append(j).append("\tis:\t").append(String.format("%.2f", 100 * (available_qpi_bandwidth - qpi_bandwidth_demand)
+                sb.append("overhead_total demand: ").append(qpi_bandwidth_demand).append("\t\tidle QPI bandwidth resource from socket:\t").append(i).append("\tto socket:").append(j).append("\tis:\t").append(String.format("%.2f", 100 * (available_qpi_bandwidth - qpi_bandwidth_demand)
                         / available_qpi_bandwidth)).append("%").append("\n");
             }
         }

@@ -65,7 +65,7 @@ public class SLBolt_ts_nopush extends SLBolt_ts {
 
             END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize + depoSize, 0);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time
 
             TRANSFER_REQUEST_POST();
 

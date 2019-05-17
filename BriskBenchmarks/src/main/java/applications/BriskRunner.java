@@ -248,7 +248,7 @@ public class BriskRunner extends abstractRunner {
 
             config.put(BaseConstants.BaseConf.SINK_THREADS, sithread);
             config.put(BaseConstants.BaseConf.PARSER_THREADS, pthread);
-            //set total parallelism, equally parallelism
+            //set overhead_total parallelism, equally parallelism
             switch (application) {
                 case "GrepSum": {
                     config.put("app", 0);
@@ -474,6 +474,7 @@ public class BriskRunner extends abstractRunner {
                 + (Math.abs(record.getPercentile(50) - config.getDouble("predict", 0)) / config.getDouble("predict", 0)) + ")");
 
         if (enable_profile) {
+            double overhead = 0;
             double stream_processing = 0;
             double txn_processing = 0;
 
@@ -499,11 +500,13 @@ public class BriskRunner extends abstractRunner {
                 if (config.getInt("CCOption", 0) != CCOption_TStream)
                     lock_time += metrics.lock_ratio[i].getMean();
 
-                compute_time += metrics.exe_ratio[i].getMean();
+//                compute_time += metrics.exe_ratio[i].getMean();
 //                sum += metrics.useful_ratio[i].getN();
-
                 stream_processing += metrics.stream_total[i].getMean();
+                overhead += metrics.overhead_total[i].getMean();
                 txn_processing += metrics.txn_total[i].getMean();
+
+                LOG.info(metrics.stream_total[i].toString());
             }
 
 
@@ -518,6 +521,7 @@ public class BriskRunner extends abstractRunner {
             compute_time = compute_time / tthread;
 
             stream_processing = stream_processing / tthread;
+            overhead = overhead / tthread;
             txn_processing = txn_processing / tthread;
 
 
@@ -541,6 +545,8 @@ public class BriskRunner extends abstractRunner {
                 Writer w = new BufferedWriter(f);
 
                 w.write(String.valueOf(tthread));
+                w.write(",");
+                w.write(String.format("%.2f", overhead));//overhead per event
                 w.write(",");
                 w.write(String.format("%.2f", stream_processing));//average stream processing.
                 w.write(",");
@@ -597,7 +603,9 @@ public class BriskRunner extends abstractRunner {
             }
 
             LOG.info("===OVERALL===");
-            LOG.info("Stream Processing time on one input_event:" + String.format("%.2f", stream_processing));
+
+            LOG.info("Overhead on one input_event:" + String.format("%.2f", overhead));
+            LOG.info("Stream Processing on one input_event:" + String.format("%.2f", stream_processing));
             LOG.info("TXN Processing on one input_event:" + String.format("%.2f", txn_processing));
 
             LOG.info("===BREAKDOWN TXN===");

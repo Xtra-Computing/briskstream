@@ -107,15 +107,15 @@ public class OBBolt_ts extends OBBolt {
 
             transactionManager.start_evaluate(thread_Id, this.fid);//start lazy evaluation in transaction manager.
 
-            END_TP_TIME_MEASURE(thread_Id);// total TP time.
+            END_TP_TIME_MEASURE(thread_Id);// overhead_total TP time.
 
             BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
 
             BUYING_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, alertEvents + toppingEvents);//total compute time.
+            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, alertEvents + toppingEvents);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
 
 
 //            BEGIN_POST_TIME_MEASURE(thread_Id);

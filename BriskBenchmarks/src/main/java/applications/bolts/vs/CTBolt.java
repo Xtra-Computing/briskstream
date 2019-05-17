@@ -16,7 +16,7 @@ import static applications.datatype.util.VSTopologyControl.CTBolt_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Field;
 
 /**
- * Per-user total call time
+ * Per-user overhead_total call time
  *
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>
  */

@@ -72,7 +72,7 @@ public class SLBolt_ts extends SLBolt {
 
             END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, depositeEvents);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//total txn time
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time
 
             TRANSFER_REQUEST_POST();
 
