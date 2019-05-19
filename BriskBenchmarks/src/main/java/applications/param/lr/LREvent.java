@@ -1,12 +1,13 @@
 package applications.param.lr;
 
 import applications.datatype.PositionReport;
+import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 
 /**
  * Currently only consider position events.
  */
-public class LREvent {
+public class LREvent extends TxnEvent {
 
     private final int tthread;
     private final long bid;
@@ -60,4 +61,7 @@ public class LREvent {
     }
 
 
+    public long[] getBid_array() {
+        return new long[0];
+    }
 }

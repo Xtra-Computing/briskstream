@@ -35,7 +35,7 @@ public class AlertEvent extends TxnEvent {
     //place-rangeMap.
     public SchemaRecordRef[] record_refs;
 
-    private int[] itemId;
+    private int[] itemId;//keys.
     private long[] ask_price;//new ask price
 
     public AlertEvent(int bid, String bid_array, int partition_id, int number_of_partitions,

@@ -426,7 +426,7 @@ do
                 do
                     for theta in 0.6 #biding is contented..?
                     do
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 1 5 10 15 20 25 30 35 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
                             for CCOption in 0 1 2 4
@@ -444,9 +444,9 @@ do
                                 done
                             done
                         done
-                        for tt in 40
+                        for tt in 1 5 10 15 20 25 30 35 40
                         do
-                            for CCOption in 3
+                            for CCOption in 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -462,7 +462,7 @@ do
                                 done
                             done
                         done # Threads/Cores
-                    done #Theta
+                    done #Theta/
                 done #Input Hz
                 ;;
             "TP_Txn") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
@@ -471,29 +471,29 @@ do
                 do
                     for theta in 0.6 ##spout has fixed theta..
                     do
-                        for tt in 1 5 10 15 20 25 30 35 39
+                        for tt in 1 5 10 15 20 25 30 35 40
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 1 2 4
+                            for CCOption in 4 #0 1 2
                             do
                                 for NUM_ACCESS in 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 0.1
+                                        for checkpoint in 1
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 40
+                        for tt in 10 40
                         do
-                            for CCOption in 0
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -504,7 +504,7 @@ do
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
 #                                            TP_Txn_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done

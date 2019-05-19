@@ -1,6 +1,7 @@
 package applications.spout.combo;
 
 import applications.bolts.sl.*;
+import applications.param.TxnEvent;
 import applications.param.sl.DepositEvent;
 import applications.param.sl.TransactionEvent;
 import applications.util.Configuration;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -32,6 +34,92 @@ public class SLCombo extends SPOUTCombo {
         super(LOG, 0);
         this.scalable = false;
         state = new ValueState();
+    }
+
+    int concurrency = 0;
+    int pre_concurrency = 0;
+    int[] concerned_length = new int[]{1, 10, 40};
+    int cnt = 0;
+
+    ArrayDeque<TxnEvent> prevents = new ArrayDeque<>();
+
+
+    private boolean key_conflict(int pre_key, int key) {
+        return pre_key == key;
+    }
+
+    private int[] getKeys(TxnEvent event) {
+        int[] keys;
+        if (event instanceof DepositEvent)
+            keys = new int[]{
+                    Integer.parseInt(((DepositEvent) event).getAccountId()),
+                    Integer.parseInt(((DepositEvent) event).getBookEntryId())
+            };
+
+        else
+            keys = new int[]{
+                    Integer.parseInt(((TransactionEvent) event).getSourceAccountId()),
+                    Integer.parseInt(((TransactionEvent) event).getTargetAccountId()),
+                    Integer.parseInt(((TransactionEvent) event).getSourceBookEntryId()),
+                    Integer.parseInt(((TransactionEvent) event).getTargetBookEntryId())
+            };
+        return keys;
+    }
+
+    private int getLength(TxnEvent event) {
+
+        if (event instanceof DepositEvent)
+            return 2;
+
+        return 4;
+
+    }
+
+    private int check_conflict(TxnEvent pre_event, TxnEvent event) {
+        int conf = 0;//in case no conflict at all.
+
+        for (int key : getKeys(event)) {
+            int[] preEventKeys = getKeys(pre_event);
+            for (int preEventKey : preEventKeys) {
+                if (key_conflict(preEventKey, key))
+                    conf++;
+            }
+        }
+
+        return conf;
+    }
+
+    private int conflict(TxnEvent event) {
+        int conc = getLength(event);//in case no conflict at all.
+
+        for (TxnEvent prevent : prevents) {
+            conc -= check_conflict(prevent, event);
+        }
+        return Math.max(0, conc);
+    }
+
+
+    protected void show_stats() {
+
+        while (cnt < 8) {
+            for (Object myevent : myevents) {
+
+                concurrency += conflict((TxnEvent) myevent);
+                prevents.add((TxnEvent) myevent);
+
+                if (prevents.size() == concerned_length[cnt]) {
+                    if (pre_concurrency == 0)
+                        pre_concurrency = concurrency;
+                    else
+                        pre_concurrency = (pre_concurrency + concurrency) / 2;
+
+                    concurrency = 0;
+                    prevents.clear();
+                }
+            }
+            System.out.println(concerned_length[cnt] + ",\t " + pre_concurrency + ",");
+            cnt++;
+        }
     }
 
 
@@ -105,6 +193,7 @@ public class SLCombo extends SPOUTCombo {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        show_stats();
     }
 
     @Override
