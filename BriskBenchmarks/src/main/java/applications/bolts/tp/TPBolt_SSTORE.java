@@ -56,16 +56,16 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 
             BEGIN_WAIT_TIME_MEASURE(thread_Id);
             //ensures that locks are added in the input_event sequence order.
-            LA_LOCK(_pid, 1, transactionManager, event.getBid_array(), i, tthread);
+            LA_LOCK(_pid, 1, transactionManager, i, tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
             LAL(event, i, _bid);
 
             long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
 
-//            LA_UNLOCKALL(transactionManager, tthread);
+            LA_UNLOCKALL(transactionManager, tthread);
 
-            LA_UNLOCK(_pid, 1, transactionManager, _bid, tthread);
+//            LA_UNLOCK(_pid, 1, transactionManager, _bid, tthread);
 
             END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
         }

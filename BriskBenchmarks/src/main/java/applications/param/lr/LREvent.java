@@ -7,7 +7,7 @@ import engine.storage.SchemaRecordRef;
 /**
  * Currently only consider position events.
  */
-public class LREvent extends TxnEvent {
+public class LREvent  {
 
     private final int tthread;
     private final long bid;
