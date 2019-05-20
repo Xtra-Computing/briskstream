@@ -60,9 +60,11 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         try {
 
-            if (counter == start_measure)
+            if (counter == start_measure) {
                 if (taskId == 0)
                     bolt.sink.start();
+
+            }
 
             if (counter < test_num_events_per_thread) {
                 long bid = mybids[counter];
@@ -141,6 +143,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         batch_number_per_wm = (int) (checkpoint);//10K, 1K, 100.
 
+
         LOG.info("batch_number_per_wm (watermark events length)= " + (batch_number_per_wm) * combo_bid_size);
 
 
@@ -167,7 +170,7 @@ public abstract class SPOUTCombo extends TransactionalSpout {
 
         if (config.getInt("CCOption", 0) == CCOption_TStream) {
             the_end = test_num_events_per_thread - test_num_events_per_thread % batch_number_per_wm;
-        }else {
+        } else {
             the_end = test_num_events_per_thread;
         }
 

@@ -2,6 +2,7 @@ package applications.param.sl;
 
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
+import engine.storage.TableRecordRef;
 import engine.storage.datatype.DataBox;
 
 import java.util.List;
@@ -15,6 +16,13 @@ public class DepositEvent extends TxnEvent {
     //place-rangeMap.
     public SchemaRecordRef account_value = new SchemaRecordRef();
     public SchemaRecordRef asset_value = new SchemaRecordRef();
+
+
+    //used in no-push.
+    public TableRecordRef account_values = new TableRecordRef();
+    public TableRecordRef asset_values = new TableRecordRef();
+
+
     private String accountId;
 
     //expected state.
@@ -42,7 +50,8 @@ public class DepositEvent extends TxnEvent {
 
     /**
      * Loading a DepositEvent.
-     *  @param bid
+     *
+     * @param bid
      * @param pid
      * @param bid_array
      * @param num_of_partition

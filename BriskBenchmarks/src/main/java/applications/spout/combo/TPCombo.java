@@ -239,5 +239,6 @@ public class TPCombo extends SPOUTCombo {
         String file = System.getProperty("user.home").concat("/data/app/").concat(path);
 
         loadEvent(file, config, context, collector);
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

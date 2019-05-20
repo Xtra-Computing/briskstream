@@ -3,6 +3,7 @@ package applications.param.sl;
 import applications.bolts.sl.TransactionResult;
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
+import engine.storage.TableRecordRef;
 import engine.storage.datatype.DataBox;
 
 import java.util.List;
@@ -16,6 +17,13 @@ public class TransactionEvent extends TxnEvent {
     public volatile SchemaRecordRef dst_account_value = new SchemaRecordRef();
     public volatile SchemaRecordRef src_asset_value = new SchemaRecordRef();
     public volatile SchemaRecordRef dst_asset_value = new SchemaRecordRef();
+
+
+    public volatile TableRecordRef src_account_values = new TableRecordRef();
+    public volatile TableRecordRef dst_account_values = new TableRecordRef();
+    public volatile TableRecordRef src_asset_values = new TableRecordRef();
+    public volatile TableRecordRef dst_asset_values = new TableRecordRef();
+
     public TransactionResult transaction_result;
 
 

@@ -35,6 +35,7 @@ public class MeasureSink extends BaseSink {
 
     //    int _combo_bid_size;
     protected final ArrayDeque<Long> latency_map = new ArrayDeque();
+    public int batch_number_per_wm;
 
     public MeasureSink() {
         super(new HashMap<>());
@@ -136,13 +137,21 @@ public class MeasureSink extends BaseSink {
     }
 
 
+    long start;
+
     protected void latency_measure(Tuple input) {
         if (enable_latency_measurement) {
-            long msgId = input.getBID();
-            final long end = System.nanoTime();
-            final long start = input.getLong(1);
-            final long process_latency = end - start;//ns
-            latency_map.add(process_latency);
+            if (cnt == 0) {
+                start = System.nanoTime();
+            } else {
+                if (cnt % batch_number_per_wm == 0) {
+                    final long end = System.nanoTime();
+                    final long process_latency = end - start;//ns
+                    latency_map.add(process_latency / batch_number_per_wm);
+                    start = end;
+                }
+            }
+            cnt++;
         }
     }
 
@@ -195,8 +204,8 @@ public class MeasureSink extends BaseSink {
 
                 sb.append("=======Details=======");
                 sb.append("\n" + latency.toString() + "\n");
-                sb.append("===90th===" + "\n");
-                sb.append(String.valueOf(latency.getPercentile(90) + "\n"));
+                sb.append("===99th===" + "\n");
+                sb.append(String.valueOf(latency.getPercentile(99) + "\n"));
                 w.write(sb.toString());
                 w.close();
                 f.close();

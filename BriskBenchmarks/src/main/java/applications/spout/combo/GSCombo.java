@@ -96,7 +96,7 @@ public class GSCombo extends SPOUTCombo {
 
         LOG.info("Thread:" + taskId + " finished loading events (" + test_num_events_per_thread + ") in " + (System.nanoTime() - start) / 1E6 + " ms");
 
-//        if (enable_debug)
+        if (enable_debug)
             show_stats();
     }
 
@@ -199,5 +199,6 @@ public class GSCombo extends SPOUTCombo {
 
         loadEvent("MB_Events" + tthread, config, context, collector);
 
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

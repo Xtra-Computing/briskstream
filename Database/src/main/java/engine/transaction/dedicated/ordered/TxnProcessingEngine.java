@@ -222,7 +222,11 @@ public final class TxnProcessingEngine {
 
     private void process(Operation operation, long mark_ID, boolean clean) {
 
-        if (operation.accessType == READ_ONLY) {//used in MB.
+        if (operation.accessType == READS_ONLY) {
+
+            operation.records_ref.setRecord(operation.d_record);
+
+        } else if (operation.accessType == READ_ONLY) {//used in MB.
 //            operation.record_ref.inc(Thread.currentThread().getName());
 
             //read source.

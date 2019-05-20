@@ -43,7 +43,7 @@ public interface CONTROL {
 
     //latency related.
 
-    boolean enable_latency_measurement = false;//
+    boolean enable_latency_measurement = true;//
 //    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.

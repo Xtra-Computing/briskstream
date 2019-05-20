@@ -193,7 +193,8 @@ public class SLCombo extends SPOUTCombo {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        show_stats();
+        if (enable_debug)
+            show_stats();
     }
 
     @Override
@@ -238,6 +239,6 @@ public class SLCombo extends SPOUTCombo {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
         loadEvent("SL_Events" + tthread, config, context, collector);
-
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

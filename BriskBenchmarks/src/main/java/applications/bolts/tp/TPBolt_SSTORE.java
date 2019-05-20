@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static applications.CONTROL.enable_debug;
 import static engine.profiler.Metrics.MeasureTools.*;
 
 
@@ -68,6 +69,9 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 //            LA_UNLOCK(_pid, 1, transactionManager, _bid, tthread);
 
             END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+
+            if (enable_debug)
+                LOG.trace(thread_Id + " finished event " + _bid + " with pid of: " + _pid);
         }
     }
 

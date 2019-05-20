@@ -5,10 +5,7 @@ import engine.DatabaseException;
 import engine.Meta.MetaTypes;
 import engine.common.OrderValidate;
 import engine.content.Content;
-import engine.storage.SchemaRecord;
-import engine.storage.SchemaRecordRef;
-import engine.storage.StorageManager;
-import engine.storage.TableRecord;
+import engine.storage.*;
 import engine.transaction.dedicated.TxnManagerDedicated;
 import engine.transaction.impl.Epoch;
 import engine.transaction.impl.GlobalTimestamp;
@@ -34,6 +31,8 @@ public class TxnManagerOccOcc extends TxnManagerDedicated {
         OsUtils.configLOG(LOG);
         this.orderValidate = orderValidate;
     }
+
+
 
     @Override
     public boolean InsertRecord(TxnContext txn_context, String table_name, SchemaRecord record, LinkedList<Long> gap) throws DatabaseException {

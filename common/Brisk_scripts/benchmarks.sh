@@ -289,7 +289,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "TP_Txn"
+for benchmark in "GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -345,15 +345,15 @@ do
                                 done
                             done
                         done
-                        for tt in 1 10 40
+                        for tt in 40
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 3
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0.5 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 500
+                                        for checkpoint in 1 10 50 100 250 500 750 1000
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.25
@@ -394,16 +394,16 @@ do
                                 done
                             done
                          done
-                        for tt in 1 10 40
+                        for tt in 40
                         do
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 3 #0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 500
+                                        for checkpoint in 1 10 50 100 250 500 750 1000
                                         do
                                             ratio_of_multi_partition=0.25
                                             number_partitions=4
@@ -444,15 +444,15 @@ do
                                 done
                             done
                         done
-                        for tt in 1 5 10 15 20 25 30 35 40
+                        for tt in 40
                         do
-                            for CCOption in 4
+                            for CCOption in 3 #0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
-                                        for checkpoint in 500
+                                        for checkpoint in 1 10 50 100 250 500 750 1000
                                         do
                                              TP=$tt
                                              OnlineBiding_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
@@ -485,26 +485,26 @@ do
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
                             done
                         done
-                        for tt in 10 40
+                        for tt in 40
                         do
-                            for CCOption in 3
+                            for CCOption in 3 #0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 500
+                                        for checkpoint in 1 10 50 100 250 500 750 1000
                                         do
                                             ratio_of_multi_partition=0.5
                                             number_partitions=4
-#                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            TP_Txn_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
 #                                            TP_Txn_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done

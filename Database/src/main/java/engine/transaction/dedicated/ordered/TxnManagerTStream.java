@@ -4,10 +4,7 @@ import applications.util.OsUtils;
 import engine.DatabaseException;
 import engine.Meta.MetaTypes;
 import engine.common.Operation;
-import engine.storage.SchemaRecord;
-import engine.storage.SchemaRecordRef;
-import engine.storage.StorageManager;
-import engine.storage.TableRecord;
+import engine.storage.*;
 import engine.storage.datatype.DataBox;
 import engine.transaction.dedicated.TxnManagerDedicated;
 import engine.transaction.function.Condition;
@@ -132,6 +129,26 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      * @param txn_context
      */
     public void operation_chain_construction_read_only(TableRecord record, String primaryKey, String table_name, long bid, MetaTypes.AccessType accessType, SchemaRecordRef record_ref, TxnContext txn_context) {
+
+        ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
+        holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
+        MyList<Operation> myList = holder.get(primaryKey);
+
+//        LOG.info(String.valueOf(OsUtils.Addresser.addressOf(record_ref)));
+
+        myList.add(new Operation(table_name, txn_context, bid, accessType, record, record_ref));
+
+
+//        Integer key = Integer.valueOf(record.record_.GetPrimaryKey());
+//        int taskId = getTaskId(key);
+//        int h2ID = getH2ID(key);
+//        LOG.debug("Submit read for record:" + record.record_.GetPrimaryKey() + " in H2ID:" + h2ID);
+//        MyList<Operation> holder = instance.getHolder(table_name).rangeMap.get(taskId).holder_v2[h2ID];
+//        Set<Operation> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(record)).holder_v3;
+//        holder.add(new Operation(txn_context, bid, accessType, record, record_ref));
+    }
+
+    public void operation_chain_construction_read_only(TableRecord record, String primaryKey, String table_name, long bid, MetaTypes.AccessType accessType, TableRecordRef record_ref, TxnContext txn_context) {
 
         ConcurrentHashMap<String, MyList<Operation>> holder = instance.getHolder(table_name).rangeMap.get(getTaskId(primaryKey)).holder_v1;
         holder.putIfAbsent(primaryKey, new MyList(table_name, primaryKey));
@@ -282,6 +299,28 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      */
     @Override
     protected boolean Asy_ReadRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, MetaTypes.AccessType accessType) {
+
+        long bid = txn_context.getBID();
+
+        operation_chain_construction_read_only(t_record, primary_key, table_name, bid, accessType, record_ref, txn_context);
+
+        return true;//it should be always success.
+    }
+
+    /**
+     * Build Operation chains during SP execution.
+     *
+     * @param txn_context
+     * @param primary_key
+     * @param table_name
+     * @param t_record
+     * @param record_ref
+     * @param enqueue_time
+     * @param accessType
+     * @return
+     */
+    @Override
+    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, TableRecordRef record_ref, double[] enqueue_time, MetaTypes.AccessType accessType) {
 
         long bid = txn_context.getBID();
 
