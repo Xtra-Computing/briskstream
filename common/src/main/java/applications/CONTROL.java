@@ -5,14 +5,14 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
 
-    int MeasureStart = 10_000;//server needs at least 10,000 to compile, so skip them.
+    int MeasureStart = 500_000;//server needs at least 10,000 to compile, so skip them.
 
-    int MeasureBound = 300_000;
+    int MeasureBound = 600_000;
 
     //application related.
-    int NUM_EVENTS = 100_000; //different input events..
+    int NUM_EVENTS = 500_000; //different input events..
 
-    int TEST_NUM_EVENST = 100_000;//total runs per thread.
+    int TEST_NUM_EVENST = 1000_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
@@ -43,11 +43,11 @@ public interface CONTROL {
 
     //latency related.
 
-    boolean enable_latency_measurement = true;//
+    boolean enable_latency_measurement = false;//
 //    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
-    boolean enable_profile = true;//enable this only when we want to test for breakdown.
+    boolean enable_profile = false;//enable this only when we want to test for breakdown.
 
     boolean enable_debug = false;//some critical debug section.
 
