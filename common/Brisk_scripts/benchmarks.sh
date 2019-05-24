@@ -287,9 +287,9 @@ function clean_cache {
 output=test.csv
 # Generate a timestamp
 timestamp=$(date +%Y%m%d-%H%M)
-FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "Read_Only" "Write_Intensive" "Read_Write_Mixture" "Working_Set_Size" "DB_SIZE"  "MultiPartition" "Interval" ) # "Working_Set_Size"
+FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "MultiPartition" "Read_Write_Mixture" "Read_Only" "Write_Intensive"  "Working_Set_Size" "DB_SIZE"  "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Read_Write_Mixture" "Working_Set_Size"
+for benchmark in "MultiPartition" "Read_Write_Mixture"  "Read_Only" "Write_Intensive" "Working_Set_Size"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -514,20 +514,56 @@ do
                     done #Theta
                 done #Input Hz
                 ;;
+            "MultiPartition")  # in use.
+                checkpoint=1
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.6 #0.6 0.8
+                    do
+                        for tt in 40
+                        do
+                            for CCOption in 4 #
+                            do
+                                for NUM_ACCESS in 10
+                                do
+                                    for ratio_of_read in 0 1
+                                    do
+                                        for number_partitions in 1 2 4 6 8 10
+                                        do
+                                            TP=$tt
+                                            ratio_of_multi_partition=0.5
+                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
+                                        done
+                                    done
+                                    for ratio_of_read in 0 1
+                                    do
+                                        for ratio_of_multi_partition in 0 0.25 0.5 0.75 1
+                                        do
+                                            TP=$tt
+                                            number_partitions=6
+                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
+                                        done
+                                    done
+                                done
+                            done
+                        done # Threads/Cores
+                    done #Theta
+                done #Input Hz
+                ;;
             "Read_Write_Mixture") # study read-write mix without compute.
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0.6
                     do
-                        for tt in 10
+                        for tt in 40
                         do
-                            for CCOption in 4
+                            for CCOption in 0 1 2 3 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 0 0.25 0.5 0.75 1
                                     do
-                                        for checkpoint in 0.1 #0.1 0.01 #0.8 0.6 0.4 0.2
+                                        for checkpoint in 500
                                         do
                                             TP=$tt
                                             complexity=0 # disable compute.
@@ -541,40 +577,13 @@ do
                     done #Theta
                 done #Input Hz
                 ;;
-            "Write_Intensive") ##study skewness
-                for hz in "${HZ[@]}"
-                do
-                        for tt in 10
-                        do
-                            for CCOption in 4
-                            do
-                                for theta in 0 0.2 0.4 0.6 0.8 1
-                                do
-                                for NUM_ACCESS in 10
-                                do
-                                    for ratio_of_read in 0
-                                    do
-                                        for checkpoint in 500
-                                        do
-                                            TP=$tt
-                                            complexity=0 # disable compute.
-                                            post_complexity=0 #disable post.
-                                            write_intensive_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
-                                        done
-                                    done
-                                done
-                            done
-                            done #theta
-                        done # Threads/Cores
-                done #Input Hz
-                ;;
             "Read_Only") ## study stream compute complexity
                 #4 * 6 * 1 * 1 * (2 mins) = ~ 48 mins
                 for hz in "${HZ[@]}"
                 do
                      for theta in 0
                      do
-                         for tt in 10
+                         for tt in 40
                          do
                              for CCOption in 0 1 2 3 4
                              do
@@ -598,12 +607,39 @@ do
                      done #Theta
                 done #Input Hz
                 ;;
+            "Write_Intensive") ##study skewness
+                for hz in "${HZ[@]}"
+                do
+                        for tt in 40
+                        do
+                            for CCOption in 4
+                            do
+                                for theta in 0 0.2 0.4 0.6 0.8 1
+                                do
+                                for NUM_ACCESS in 10
+                                do
+                                    for ratio_of_read in 0
+                                    do
+                                        for checkpoint in 500
+                                        do
+                                            TP=$tt
+                                            complexity=0 # disable compute.
+                                            post_complexity=0 #disable post.
+                                            write_intensive_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
+                                        done
+                                    done
+                                done
+                            done
+                            done #theta
+                        done # Threads/Cores
+                done #Input Hz
+                ;;
             "Working_Set_Size") # NUM_ACCESS, study state access complexity
                 for hz in "${HZ[@]}"
                 do
                     for theta in 0.6
                     do
-                        for tt in 10
+                        for tt in 40
                         do
                             for CCOption in 1 2 4
                             do
@@ -646,42 +682,6 @@ do
                         done #Theta
                     done #Input Hz
                 done #varying DB size.
-                ;;
-            "MultiPartition")  # in use.
-                checkpoint=1
-                for hz in "${HZ[@]}"
-                do
-                    for theta in 0.6 #0.6 0.8
-                    do
-                        for tt in 10
-                        do
-                            for CCOption in 4 #
-                            do
-                                for NUM_ACCESS in 10
-                                do
-                                    for ratio_of_read in 0 1
-                                    do
-                                        for number_partitions in 1 2 4 6 8 10
-                                        do
-                                            TP=$tt
-                                            ratio_of_multi_partition=0.5
-                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
-                                        done
-                                    done
-                                    for ratio_of_read in 0 1
-                                    do
-                                        for ratio_of_multi_partition in 0 0.25 0.5 0.75 1
-                                        do
-                                            TP=$tt
-                                            number_partitions=6
-                                            multi_partition_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $number_partitions $ratio_of_multi_partition $complexity $post_complexity
-                                        done
-                                    done
-                                done
-                            done
-                        done # Threads/Cores
-                    done #Theta
-                done #Input Hz
                 ;;
             "Interval") # 1 * 6 * 6 * 1 * 1 * (2 mins) = 72 mins.
                 for hz in "${HZ[@]}"
