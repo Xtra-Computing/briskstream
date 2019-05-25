@@ -14,7 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static engine.profiler.MeasureTools.*;
+import static applications.CONTROL.enable_debug;
+import static engine.profiler.Metrics.MeasureTools.*;
 
 
 /**
@@ -47,7 +48,7 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
-        int _combo_bid_size=1;
+        int _combo_bid_size = 1;
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
             txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
             LREvent event = (LREvent) input_event;
@@ -65,7 +66,12 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 
             LA_UNLOCKALL(transactionManager, tthread);
 
+//            LA_UNLOCK(_pid, 1, transactionManager, _bid, tthread);
+
             END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+
+            if (enable_debug)
+                LOG.trace(thread_Id + " finished event " + _bid + " with pid of: " + _pid);
         }
     }
 

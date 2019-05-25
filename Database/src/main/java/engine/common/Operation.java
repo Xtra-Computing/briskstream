@@ -3,6 +3,7 @@ package engine.common;
 import engine.Meta.MetaTypes;
 import engine.storage.SchemaRecordRef;
 import engine.storage.TableRecord;
+import engine.storage.TableRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.transaction.function.Condition;
 import engine.transaction.function.Function;
@@ -18,6 +19,8 @@ public class Operation implements Comparable<Operation> {
     public final MetaTypes.AccessType accessType;
 
     public final TxnContext txn_context;
+    public volatile TableRecordRef records_ref;//for cross-record dependency.
+
     public volatile SchemaRecordRef record_ref;//required by read-only: the place holder of the reading d_record.
     public final long bid;
     //required by READ_WRITE_and Condition.
@@ -65,6 +68,21 @@ public class Operation implements Comparable<Operation> {
         this.function = null;
 
         this.record_ref = record_ref;//this holds events' record_ref.
+    }
+
+
+    public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, TableRecordRef record_ref) {
+        this.table_name = table_name;
+        this.d_record = record;
+        this.bid = bid;
+        this.accessType = accessType;
+        this.txn_context = txn_context;
+
+
+        this.s_record = d_record;
+        this.function = null;
+
+        this.records_ref = record_ref;//this holds events' record_ref.
     }
 
     public Operation(String table_name, TxnContext txn_context, long bid, MetaTypes.AccessType accessType, TableRecord record, List<DataBox> value_list) {

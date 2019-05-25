@@ -7,8 +7,7 @@ import brisk.components.context.TopologyContext;
 import brisk.execution.runtime.tuple.impl.Marker;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -193,8 +192,33 @@ public abstract class AbstractSpout extends Operator {
                 e1.printStackTrace();
             }
         }
-        long pid = OsUtils.getPID(TopologyContext.HPCMonotor);
+        long pid =OsUtils.getJVMID();
         LOG.info("JVM PID  = " + pid);
+
+        FileWriter fw;
+        BufferedWriter writer = null;
+        File file = new File(config.getString("metrics.output"));
+        if (!file.mkdirs()) {
+            LOG.warn("Not able to create metrics directories");
+        }
+        String sink_path = config.getString("metrics.output") + OsUtils.OS_wrapper("sink_threadId.txt");
+
+        try {
+            fw = new FileWriter(new File(sink_path));
+            writer = new BufferedWriter(fw);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            //String s_pid = String.valueOf(print_pid);
+            writer.write(String.valueOf(pid));
+            writer.flush();
+            //writer.clean();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         int end_index = array_array.length * config.getInt("count_number", 1);
 

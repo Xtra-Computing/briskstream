@@ -1,6 +1,7 @@
 package applications.combo;
 
 import applications.bolts.ob.*;
+import applications.param.TxnEvent;
 import applications.param.ob.AlertEvent;
 import applications.param.ob.BuyingEvent;
 import applications.param.ob.ToppingEvent;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
 import java.util.Scanner;
 
 import static applications.CONTROL.*;
@@ -34,6 +36,88 @@ public class OBCombo extends SPOUTCombo {
         state = new ValueState();
     }
 
+    int concurrency = 0;
+    int pre_concurrency = 0;
+    int[] concerned_length = new int[]{1, 10, 50, 100, 250, 500, 750, 1000};
+    int cnt = 0;
+
+    ArrayDeque<TxnEvent> prevents = new ArrayDeque<>();
+
+
+    private boolean key_conflict(int pre_key, int key) {
+        return pre_key == key;
+    }
+
+
+    private int[] getKeys(TxnEvent event) {
+        int[] keys;
+        if (event instanceof AlertEvent)
+            keys = ((AlertEvent) event).getItemId();
+        else if (event instanceof ToppingEvent)
+            keys = ((ToppingEvent) event).getItemId();
+        else
+            keys = ((BuyingEvent) event).getItemId();
+        return keys;
+    }
+
+
+    private int getLength(TxnEvent event) {
+
+        if (event instanceof AlertEvent)
+            return ((AlertEvent) event).getItemId().length;
+        else if (event instanceof ToppingEvent)
+            return ((ToppingEvent) event).getItemId().length;
+        else
+            return ((BuyingEvent) event).getItemId().length;
+
+    }
+
+    private int check_conflict(TxnEvent pre_event, TxnEvent event) {
+        int conf = 0;//in case no conflict at all.
+
+        for (int key : getKeys(event)) {
+            int[] preEventKeys = getKeys(pre_event);
+            for (int preEventKey : preEventKeys) {
+                if (key_conflict(preEventKey, key))
+                    conf++;
+            }
+        }
+
+        return conf;
+    }
+
+    private int conflict(TxnEvent event) {
+        int conc = getLength(event);//in case no conflict at all.
+
+        for (TxnEvent prevent : prevents) {
+            conc -= check_conflict(prevent, event);
+        }
+        return Math.max(0, conc);
+    }
+
+
+    protected void show_stats() {
+
+        while (cnt < 8) {
+            for (Object myevent : myevents) {
+
+                concurrency += conflict((TxnEvent) myevent);
+                prevents.add((TxnEvent) myevent);
+
+                if (prevents.size() == concerned_length[cnt]) {
+                    if (pre_concurrency == 0)
+                        pre_concurrency = concurrency;
+                    else
+                        pre_concurrency = (pre_concurrency + concurrency) / 2;
+
+                    concurrency = 0;
+                    prevents.clear();
+                }
+            }
+            System.out.println(concerned_length[cnt] + ",\t " + pre_concurrency + ",");
+            cnt++;
+        }
+    }
 
     @Override
     public void loadEvent(String file_name, Configuration config, TopologyContext context, OutputCollector collector) {
@@ -98,7 +182,8 @@ public class OBCombo extends SPOUTCombo {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        if (enable_debug)
+            show_stats();
     }
 
     @Override
@@ -143,6 +228,6 @@ public class OBCombo extends SPOUTCombo {
         if (enable_shared_state)
             bolt.loadDB(config, context, collector);
         loadEvent("OB_Events" + tthread, config, context, collector);
-
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

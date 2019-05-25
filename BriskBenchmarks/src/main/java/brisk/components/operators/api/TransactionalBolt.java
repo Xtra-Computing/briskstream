@@ -92,15 +92,6 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     }
 
 
-    protected PKEvent generatePKEvent(long bid, Set<Integer> deviceID, double[][] value) {
-        return new PKEvent(bid, deviceID, value);
-    }
-
-
-    public void dummayCalculation() {
-
-    }
-
     @Override
     public void forward_checkpoint_single(int sourceId, long bid, Marker marker) {
 

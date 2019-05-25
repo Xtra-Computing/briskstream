@@ -48,7 +48,7 @@ public abstract class GSBolt extends TransactionalBolt {
 
     protected void READ_POST(MicroEvent event) throws InterruptedException {
         int sum = 0;
-        if (enable_post_compute) {
+        if (POST_COMPUTE_COMPLEXITY != 0) {
             for (int i = 0; i < NUM_ACCESSES; ++i) {
                 sum += event.result[i];
             }

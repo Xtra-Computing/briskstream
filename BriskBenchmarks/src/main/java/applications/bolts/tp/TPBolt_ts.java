@@ -138,9 +138,11 @@ public class TPBolt_ts extends TPBolt {
 
 
     protected void REQUEST_POST() throws InterruptedException {
+        BEGIN_POST_TIME_MEASURE(thread_Id);
         for (LREvent event : LREvents) {
             REQUEST_POST(event);
         }
+        END_POST_TIME_MEASURE_ACC(thread_Id);
     }
 
 

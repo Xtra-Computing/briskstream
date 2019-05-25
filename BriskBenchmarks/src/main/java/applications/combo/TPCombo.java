@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -39,14 +40,36 @@ public class TPCombo extends SPOUTCombo {
 
     DescriptiveStatistics stats = new DescriptiveStatistics();
 
+
+    int concurrency = 0;
+    int pre_concurrency = 0;
+    int[] concerned_length = new int[]{1, 10, 50, 100, 250, 500, 750, 1000};
+    int cnt = 0;
+
+    ArrayDeque<LREvent> prevents = new ArrayDeque<>();
+
+
+    private boolean check_conflict(LREvent pre_event, LREvent event) {
+        Short pre_segment = pre_event.getPOSReport().getSegment();
+        Short current_segment = event.getPOSReport().getSegment();
+        return pre_segment.equals(current_segment);
+    }
+
+    private boolean conflict(LREvent event) {
+
+        for (LREvent prevent : prevents) {
+            if (check_conflict(prevent, event))
+                return true;
+        }
+        return false;
+    }
+
+
     protected void show_stats() {
 
         for (Object myevent : myevents) {
-
             Short segment = ((LREvent) myevent).getPOSReport().getSegment();
-
             stats.addValue(segment);
-
             boolean containsKey = keys.containsKey(segment);
             if (containsKey) {
                 keys.put(segment, keys.get(segment) + 1);
@@ -55,12 +78,33 @@ public class TPCombo extends SPOUTCombo {
             }
         }
 
-
         for (Map.Entry<Short, Integer> entry : keys.entrySet()) {
             LOG.info("SEGMENT:" + entry.getKey() + " " + "Counter:" + entry.getValue());
         }
         LOG.info(stats.toString());
 
+
+        while (cnt < 8) {
+            for (Object myevent : myevents) {
+
+                if (!conflict((LREvent) myevent)) {
+                    concurrency++;
+                }
+                prevents.add((LREvent) myevent);
+
+                if (prevents.size() == concerned_length[cnt]) {
+                    if (pre_concurrency == 0)
+                        pre_concurrency = concurrency;
+                    else
+                        pre_concurrency = (pre_concurrency + concurrency) / 2;
+
+                    concurrency = 0;
+                    prevents.clear();
+                }
+            }
+            System.out.println(concerned_length[cnt] + ",\t " + pre_concurrency * 2 + ",");
+            cnt++;
+        }
     }
 
     protected Object create_new_event(String record, int bid) {
@@ -195,5 +239,6 @@ public class TPCombo extends SPOUTCombo {
         String file = System.getProperty("user.home").concat("/data/app/").concat(path);
 
         loadEvent(file, config, context, collector);
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

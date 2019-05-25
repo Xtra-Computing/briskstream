@@ -8,6 +8,7 @@ import engine.common.PartitionedOrderLock;
 import engine.storage.SchemaRecord;
 import engine.storage.SchemaRecordRef;
 import engine.storage.SchemaRecords;
+import engine.storage.TableRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.transaction.function.Condition;
 import engine.transaction.function.Function;
@@ -39,6 +40,20 @@ public interface TxnManager {
      * @throws DatabaseException
      */
     boolean Asy_ReadRecord(TxnContext txn_context, String srcTable, String key, SchemaRecordRef record_ref, double[] enqueue_time) throws DatabaseException;
+
+    /**
+     * Read-only
+     * This API pushes a place-holder to the shared-store.
+     *
+     * @param txn_context
+     * @param srcTable
+     * @param key
+     * @param record_ref   expect a return value_list from the store to support further computation in the application.
+     * @param enqueue_time
+     * @return
+     * @throws DatabaseException
+     */
+    boolean Asy_ReadRecords(TxnContext txn_context, String srcTable, String key, TableRecordRef record_ref, double[] enqueue_time) throws DatabaseException;
 
 
     /**

@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 import static engine.Meta.MetaTypes.kMaxAccessNum;
-import static engine.profiler.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -154,6 +154,24 @@ public abstract class TxnManagerDedicated implements TxnManager {
             return false;
         }
     }
+
+
+    @Override
+    public boolean Asy_ReadRecords(TxnContext txn_context, String srcTable, String primary_key, TableRecordRef record_ref, double[] enqueue_time) throws DatabaseException {
+        MetaTypes.AccessType accessType = AccessType.READS_ONLY;//read multiple versions.
+
+//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(primary_key);
+//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
+        if (t_record != null) {
+            return Asy_ReadRecordCC(txn_context, primary_key, srcTable, t_record, record_ref, enqueue_time, accessType);
+        } else {
+            // if no record_ref is found, then a "virtual record_ref" should be inserted as the placeholder so that we can lock_ratio it.
+            LOG.info("No record is found:" + primary_key);
+            return false;
+        }
+    }
+
 
     @Override
     public boolean Asy_ModifyRecord(TxnContext txn_context, String srcTable, String source_key, Function function, int column_id) throws DatabaseException {
@@ -477,6 +495,10 @@ public abstract class TxnManagerDedicated implements TxnManager {
 
 
     protected boolean Asy_ReadRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, SchemaRecordRef record_ref, double[] enqueue_time, AccessType access_type) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected boolean Asy_ReadRecordCC(TxnContext txn_context, String primary_key, String table_name, TableRecord t_record, TableRecordRef record_ref, double[] enqueue_time, AccessType access_type) {
         throw new UnsupportedOperationException();
     }
 

@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayDeque;
 import java.util.Scanner;
 
 import static applications.CONTROL.*;
@@ -95,7 +96,68 @@ public class GSCombo extends SPOUTCombo {
 
         LOG.info("Thread:" + taskId + " finished loading events (" + test_num_events_per_thread + ") in " + (System.nanoTime() - start) / 1E6 + " ms");
 
+        if (enable_debug)
+            show_stats();
+    }
 
+    int concurrency = 0;
+    int pre_concurrency = 0;
+    int[] concerned_length = new int[]{40};
+    int cnt = 0;
+
+    ArrayDeque<MicroEvent> prevents = new ArrayDeque<>();
+
+
+    private boolean key_conflict(int pre_key, int key) {
+        return pre_key == key;
+    }
+
+    private int check_conflict(MicroEvent pre_event, MicroEvent event) {
+        int conf = 0;//in case no conflict at all.
+
+        for (int key : event.getKeys()) {
+            int[] preEventKeys = pre_event.getKeys();
+            for (int preEventKey : preEventKeys) {
+                if (key_conflict(preEventKey, key))
+                    conf++;
+            }
+        }
+        return conf;
+    }
+
+    private int conflict(MicroEvent event) {
+        int conc = 1;//in case no conflict at all.
+
+        for (MicroEvent prevent : prevents) {
+            conc -= check_conflict(prevent, event);
+        }
+        return Math.max(0, conc);
+    }
+
+
+    protected void show_stats() {
+
+
+        while (cnt < 8) {
+            for (Object myevent : myevents) {
+
+                concurrency += conflict((MicroEvent) myevent);
+
+                prevents.add((MicroEvent) myevent);
+
+                if (prevents.size() == concerned_length[cnt]) {
+                    if (pre_concurrency == 0)
+                        pre_concurrency = concurrency;
+                    else
+                        pre_concurrency = (pre_concurrency + concurrency) / 2;
+
+                    concurrency = 0;
+                    prevents.clear();
+                }
+            }
+            System.out.println(concerned_length[cnt] + ",\t " + pre_concurrency + ",");
+            cnt++;
+        }
     }
 
     @Override
@@ -137,5 +199,6 @@ public class GSCombo extends SPOUTCombo {
 
         loadEvent("MB_Events" + tthread, config, context, collector);
 
+        bolt.sink.batch_number_per_wm = batch_number_per_wm;
     }
 }

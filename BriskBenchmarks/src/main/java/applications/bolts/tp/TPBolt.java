@@ -18,10 +18,12 @@ import java.util.HashSet;
 import java.util.Map;
 
 import static applications.CONTROL.enable_app_combo;
+import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.MeasureTools.BEGIN_POST_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_POST_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE;
+import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE_ACC;
 
 public abstract class TPBolt extends TransactionalBolt {
     /**
@@ -73,6 +75,9 @@ public abstract class TPBolt extends TransactionalBolt {
 
     }
 
+
+    TollNotification tollNotification;
+
     TollNotification toll_process(Integer vid, Integer count, Double lav, short time) {
         int toll = 0;
 
@@ -90,30 +95,41 @@ public abstract class TPBolt extends TransactionalBolt {
         }
 
         // TODO GetAndUpdate accurate emit time...
-        return new TollNotification(
-                time, time, vid, lav, toll);
+//        return new TollNotification(
+//                time, time, vid, lav, toll);
+        return null;
     }
+
+
+    Tuple tuple;
 
     void REQUEST_POST(LREvent event) throws InterruptedException {
 
-        TollNotification tollNotification = toll_process(event.getPOSReport().getVid(), event.count, event.lav, event.getPOSReport().getTime());
+        tollNotification = toll_process(event.getPOSReport().getVid(), event.count, event.lav, event.getPOSReport().getTime());
 
         if (!enable_app_combo) {
             collector.emit(event.getBid(), true, event.getTimestamp());//the tuple is finished.
         } else {
-            sink.execute(new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, tollNotification, event.getTimestamp())));
+
+
+            if (enable_latency_measurement)
+                tuple = new Tuple(event.getBid(), this.thread_Id, context, new GeneralMsg<>(DEFAULT_STREAM_ID, tollNotification, event.getTimestamp()));
+            else
+                tuple = null;
+            sink.execute(tuple);
         }
     }
 
     @Override
     protected void POST_PROCESS(long bid, long timestamp, int combo_bid_size) throws InterruptedException {
-        BEGIN_POST_TIME_MEASURE(thread_Id);
+
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             LREvent event = (LREvent) input_event;
             ((LREvent) input_event).setTimestamp(timestamp);
+            BEGIN_POST_TIME_MEASURE(thread_Id);
             REQUEST_POST(event);
+            END_POST_TIME_MEASURE_ACC(thread_Id);
         }
-        END_POST_TIME_MEASURE(thread_Id);
     }
 
     protected void TXN_REQUEST_CORE(LREvent event) {
@@ -124,7 +140,6 @@ public abstract class TPBolt extends TransactionalBolt {
         event.count = cnt_segment.size();
         DataBox dataBox1 = event.speed_value.getRecord().getValues().get(1);
         event.lav = dataBox1.getDouble();
-
     }
 }
 

@@ -28,7 +28,7 @@ public final class OsUtils {
         if (HPCMonotor != null) {
             return HPCMonotor.getThreadId();
         }
-        return -1;
+        return getJVMID();
     }
 
     public static void detectOS() {
@@ -69,7 +69,7 @@ public final class OsUtils {
     }
 
     public static int TotalCores() {
-        return Runtime.getRuntime().availableProcessors()/2;
+        return Runtime.getRuntime().availableProcessors() / 2;
     }
 
     public static int totalSockets() {
