@@ -16,7 +16,7 @@ function profile {
     3)
         perf stat -e mem_load_uops_retired.l2_hit,mem_load_uops_retired.l3_hit,mem_load_uops_l3_hit_retired.xsnp_hit,mem_load_uops_l3_hit_retired.xsnp_hitm,mem_load_uops_l3_hit_retired.xsnp_miss,mem_load_uops_l3_miss_retired.local_dram,mem_load_uops_l3_miss_retired.remote_dram,mem_load_uops_l3_miss_retired.remote_hitm,mem_load_uops_l3_miss_retired.remote_fwd,mem_load_uops_retired.hit_lfb -p $r;;
     4)	#HPC-performance
-		 amplxe-cl -collect hpc-performance -data-limit=1024 --target-pid $r -result-dir $2/hpc >> $2/profile4.txt;;
+		amplxe-cl -collect hpc-performance -data-limit=1024 --target-pid $r -result-dir $2/hpc >> $2/profile4.txt;;
 	esac
 }
 
@@ -174,7 +174,7 @@ function partition_test {
 }
 
 function multi_partition_test {
-        path=$outputPath/$hz/$CCOption/$ratio_of_read/$number_partitions/$ratio_of_multi_partition
+        path=$outputPath/$hz/$CCOption/
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application=" --POST_COMPUTE $post_complexity --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
@@ -289,7 +289,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "MultiPartition" "Read_Write_Mixture" "Read_Only" "Write_Intensive"  "Working_Set_Size" "DB_SIZE"  "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "MultiPartition" "Read_Write_Mixture"  "Read_Only" "Write_Intensive" "Working_Set_Size"
+for benchmark in "Write_Intensive" "Working_Set_Size"
 do
     app="GrepSum"
     machine=3 #RTM.
@@ -351,9 +351,9 @@ do
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
-                                    for ratio_of_read in 0.5 #0.25 0.5 0.75
+                                    for ratio_of_read in 0 1 #0.25 0.5 0.75
                                     do
-                                        for checkpoint in 10 50 100 250 500 750 1000
+                                        for checkpoint in 500 #10 50 100 250 500 750 1000
                                         do
                                             TP=$tt
                                             ratio_of_multi_partition=0.25
@@ -612,7 +612,7 @@ do
                 do
                         for tt in 40
                         do
-                            for CCOption in 4
+                            for CCOption in 0 1 2 3 #4
                             do
                                 for theta in 0 0.2 0.4 0.6 0.8 1
                                 do
@@ -641,7 +641,7 @@ do
                     do
                         for tt in 40
                         do
-                            for CCOption in 1 2 4
+                            for CCOption in 3 #1 2 4
                             do
                                 for NUM_ACCESS in 1 2 4 6 8 10 12 14 16
                                 do
