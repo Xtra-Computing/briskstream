@@ -299,7 +299,7 @@ public class BriskRunner extends abstractRunner {
                         int threads = (int) Math.floor(tthread);
                         config.put(FraudDetectionConstants.Conf.PREDICTOR_THREADS, threads);
                     } else {
-                        int threads = (int) Math.floor(tthread / 2.0);
+                        int threads = Math.max(1, (int) Math.floor((tthread - sthread - sithread) / 2.0));
                         config.put(BaseConstants.BaseConf.PARSER_THREADS, threads);//insignificant
                         config.put(FraudDetectionConstants.Conf.PREDICTOR_THREADS, threads);
                     }
