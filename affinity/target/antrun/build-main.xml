@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<project name="maven-antrun-" default="main"  >
-<target name="main">
-  <property name="makefile" value="/Users/shuhaozhang/briskstream/Java-Thread-Affinity-master/affinity/src/main/c/Makefile"/>
-  <chmod file="${makefile}" perm="u+x"/>
-</target>
-</project>
