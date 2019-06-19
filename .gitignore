@@ -247,4 +247,4 @@ BriskBenchamrks/nbactions-manual.xml
 MAP/wc/tmp
 StormBenchmarks/logs/
 PROFILE/
-
+affinity/target/*
