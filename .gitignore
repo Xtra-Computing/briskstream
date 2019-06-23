@@ -248,3 +248,4 @@ MAP/wc/tmp
 StormBenchmarks/logs/
 PROFILE/
 affinity/target/*
+*.iml
