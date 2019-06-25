@@ -1,6 +1,7 @@
 package applications.bolts.traj;
 
 import applications.util.OsUtils;
+import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
@@ -17,7 +18,7 @@ import static applications.constants.TrajConstants.Field.POINT;
 
 public class CompressorBolt extends MapBolt {
     private static final Logger LOG = LoggerFactory.getLogger(CompressorBolt.class);
-//    Compressor compressor = new UniformSampler(5);//implement different compression algorithm.
+    //    Compressor compressor = new UniformSampler(5);//implement different compression algorithm.
     Compressor compressor = new OPW(0.0001);//implement different compression algorithm.
 
     public CompressorBolt() {
@@ -32,8 +33,9 @@ public class CompressorBolt extends MapBolt {
     @Override
     public void execute(Tuple input) throws InterruptedException {
         Point point = input.getPoint();
-        compressor.compress(point);
-//        this.collector.emit();
+        Point result = compressor.compress(point);
+        if (result != null)
+            this.collector.emit(new StreamValues(result));
     }
 
     @Override
