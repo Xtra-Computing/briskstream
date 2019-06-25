@@ -9,7 +9,7 @@ public class UniformSampler extends Compressor {
     public UniformSampler(int skip_gap) {
         this.skip_gap = skip_gap;
     }
-    
+
     @Override
     public Point compress(Point point) {
         if (cnt == skip_gap) {

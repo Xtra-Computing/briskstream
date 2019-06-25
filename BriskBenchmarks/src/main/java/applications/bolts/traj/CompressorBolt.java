@@ -7,6 +7,7 @@ import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import compress.Compressor;
+import compress.OPW;
 import compress.UniformSampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,8 @@ import static applications.constants.TrajConstants.Field.POINT;
 
 public class CompressorBolt extends MapBolt {
     private static final Logger LOG = LoggerFactory.getLogger(CompressorBolt.class);
-    Compressor compressor = new UniformSampler(5);//implement different compression algorithm.
+//    Compressor compressor = new UniformSampler(5);//implement different compression algorithm.
+    Compressor compressor = new OPW(0.0001);//implement different compression algorithm.
 
     public CompressorBolt() {
         super(LOG);
