@@ -14,6 +14,7 @@
         <module>Database</module>
         <module>CEP</module>
         <module>BriskBenchmarks</module>
+        <module>traj</module>
         <!--<module>SparkBenchmarks</module>-->
         <!--<module>StormBenchmarks</module>-->
         <!--<module>FlinkBenchmarks</module>-->
