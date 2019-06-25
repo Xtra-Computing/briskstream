@@ -5,9 +5,7 @@ public interface TrajConstants extends BaseConstants {
     int max_hz = 450000;
 
     interface Field extends BaseField {
-        String WORD = "word";
-        String COUNT = "count";
-        String LargeData = "LD";
+        String POINT = "point";
     }
 
     interface Conf extends BaseConf {

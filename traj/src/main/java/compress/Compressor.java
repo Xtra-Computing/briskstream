@@ -1,4 +1,4 @@
-package core;
+package compress;
 
 public abstract class Compressor {
 }
