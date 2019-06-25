@@ -3,6 +3,7 @@ package compress;
 import struct.Point;
 
 /**
+ *  https://github.com/uestc-db/traj-compression/blob/master/online/OPW/OPW.cpp
  * OPW [32] is a very early algorithm designed for online simpliﬁcation.
  * As a new point arrives in the buﬀer, it uses the new point and the ﬁrst point to build an anchor segment
  * and calculates the PED distance for all the points in the buﬀer.
