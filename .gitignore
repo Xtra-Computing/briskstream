@@ -249,3 +249,6 @@ StormBenchmarks/logs/
 PROFILE/
 affinity/target/*
 *.iml
+BriskBenchmarks/target/
+Database/target/
+traj/target/classes/

@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import static applications.constants.TrajConstants.*;
 import static applications.constants.TrajConstants.Conf.COMPRESSOR_THREADS;
 
-
 public class TrajCompress extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(TrajCompress.class);
 
@@ -24,7 +23,6 @@ public class TrajCompress extends BasicTopology {
 //        initilize_parser();
     }
 
-
     public static String getPrefix() {
         return PREFIX;
     }
@@ -32,7 +30,6 @@ public class TrajCompress extends BasicTopology {
     public void initialize() {
         super.initialize();
         sink = loadSink();
-
     }
 
     @Override
@@ -40,7 +37,6 @@ public class TrajCompress extends BasicTopology {
         try {
             spout.setFields(new Fields(Field.TEXT));
             builder.setSpout(Component.SPOUT, spout, spoutThreads);
-
             builder.setBolt(Component.COMPRESSOR, new CompressorBolt()
                     , config.getInt(COMPRESSOR_THREADS, 1)
                     , new ShuffleGrouping(Component.SPOUT));
