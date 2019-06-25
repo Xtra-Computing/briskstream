@@ -10,12 +10,13 @@ import compress.Compressor;
 import compress.UniformSampler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import struct.Point;
 
 import static applications.constants.TrajConstants.Field.POINT;
 
 public class CompressorBolt extends MapBolt {
     private static final Logger LOG = LoggerFactory.getLogger(CompressorBolt.class);
-    Compressor compressor = new UniformSampler();//implement different compression algorithm.
+    Compressor compressor = new UniformSampler(5);//implement different compression algorithm.
 
     public CompressorBolt() {
         super(LOG);
@@ -28,8 +29,9 @@ public class CompressorBolt extends MapBolt {
      */
     @Override
     public void execute(Tuple input) throws InterruptedException {
-    
-
+        Point point = input.getPoint();
+        compressor.compress(point);
+//        this.collector.emit();
     }
 
     @Override
@@ -42,7 +44,6 @@ public class CompressorBolt extends MapBolt {
     public Fields getDefaultFields() {
         return new Fields(POINT);
     }
-
 
 
 }

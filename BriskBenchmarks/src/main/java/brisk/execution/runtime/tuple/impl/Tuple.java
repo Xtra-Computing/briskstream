@@ -3,6 +3,7 @@ package brisk.execution.runtime.tuple.impl;
 import applications.spout.PhoneCallGenerator;
 import brisk.components.context.TopologyContext;
 import engine.storage.datatype.TimestampType;
+import struct.Point;
 
 import java.util.Collection;
 
@@ -190,5 +191,9 @@ public class Tuple {
     public Short getShort(int timeIdx) {
 
         return (short) getValue(timeIdx);
+    }
+
+    public Point getPoint() {
+        return (Point) getValue(0);
     }
 }
