@@ -1,7 +1,7 @@
 package struct;
 
 public class Point {
-    double lat;
-    double lon;
+    public double lat;
+    public double lon;
     double timestamp;
 }
