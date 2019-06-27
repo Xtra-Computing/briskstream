@@ -29,7 +29,7 @@ public interface CONTROL {
     boolean enable_force_ordering = true;
 
     //db related.
-    boolean enable_shared_state = true;//this is for transactional state mgmt.
+    boolean enable_shared_state = false;//this is for transactional state mgmt.
 
     boolean enable_states_partition = true;//must be enabled for PAT/SSTORE.
 

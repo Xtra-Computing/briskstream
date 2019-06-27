@@ -5,6 +5,7 @@ import applications.topology.*;
 import applications.topology.faulttolerance.WordCount_FT;
 import applications.topology.latency.LinearRoad_latency;
 import applications.topology.latency.WordCount_latency;
+import applications.topology.ol.ClassificationTopology;
 import applications.topology.transactional.*;
 import applications.util.Configuration;
 import applications.util.Constants;
@@ -83,6 +84,9 @@ public class BriskRunner extends abstractRunner {
         driver.addApp("LeaderBoard", LeaderBoard.class);//
         driver.addApp("PositionKeeping", PositionKeeping.class);
 
+
+        //OL
+        driver.addApp("Classification", ClassificationTopology.class);
 
     }
 
