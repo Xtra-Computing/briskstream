@@ -249,3 +249,4 @@ StormBenchmarks/logs/
 PROFILE/
 affinity/target/*
 *.iml
+Java-Thread-Affinity/
