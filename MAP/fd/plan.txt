@@ -1,0 +1,11 @@
+Executor	spout           allocate into 0	input rate:450.00    	output rate:450.00    	process rate:Infinity  	demand cycles:0.00      
+Executor	spout           allocate into 0	input rate:450.00    	output rate:450.00    	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	predictorBolt   allocate into 0	input rate:112.50    	output rate:94.39     	process rate:Infinity  	demand cycles:0.00      
+Executor	sink            allocate into 0	input rate:755.10    	output rate:755.10    	process rate:Infinity  	demand cycles:0.00      

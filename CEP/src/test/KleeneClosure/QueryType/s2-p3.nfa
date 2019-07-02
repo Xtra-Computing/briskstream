@@ -1,0 +1,5 @@
+SelectionStrategy = partition-contiguity | TimeWindow = 500 | partitionAttribute = symbol
+State=1 & type = kleeneClosure  & eventtype = stock | edgetype = begin  & price % 500 = 0 | edgetype = take & price > min($1.price) | edgetype = proceed 
+State=2 & type = normal & eventtype = stock | edgetype = begin & volume < 150
+end
+

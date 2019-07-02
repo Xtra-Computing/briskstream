@@ -1,0 +1,9 @@
+The experiments in this folder vary the selection strategy and predicates on the Kleene Closure part.
+The meanings of parameters in the query name are as the following:
+s2: partition-contiguity
+s3: skip-till-next-match
+p1: always true
+p2: price should be increasing
+p3: price should be larger than the minimum price of selected events
+
+More details about the experiments, please read Section 6 in our SIGMOD 08 paper.
