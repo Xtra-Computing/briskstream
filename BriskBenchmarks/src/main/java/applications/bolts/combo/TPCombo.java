@@ -4,7 +4,7 @@ import applications.bolts.tp.*;
 import applications.constants.BaseConstants;
 import applications.datatype.AbstractLRBTuple;
 import applications.datatype.PositionReport;
-import applications.param.lr.LREvent;
+import applications.param.txn.lr.LREvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

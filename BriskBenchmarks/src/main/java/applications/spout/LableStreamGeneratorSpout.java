@@ -14,13 +14,14 @@ public class LableStreamGeneratorSpout extends AbstractSpout {
 
     public LableStreamGeneratorSpout() {
         super(LOG);
+        int numContestants = 100;
+        Generator = new RandomTreeGenerator(this.getContext().getThisTaskId(), numContestants);
     }
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
-        int numContestants = 100;
-        Generator = new RandomTreeGenerator(this.getContext().getThisTaskId(), numContestants);
+        Generator.prepareForUse();
     }
 
     @Override

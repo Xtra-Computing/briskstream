@@ -1,7 +1,7 @@
 package applications.bolts.sl;
 
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.sl.DepositEvent;
+import applications.param.txn.sl.TransactionEvent;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;

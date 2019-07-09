@@ -1,7 +1,7 @@
 package applications.bolts.sl;
 
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.sl.DepositEvent;
+import applications.param.txn.sl.TransactionEvent;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;

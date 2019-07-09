@@ -3,7 +3,7 @@ package applications.bolts.tp;
 import applications.datatype.TollNotification;
 import applications.datatype.util.AvgValue;
 import applications.datatype.util.SegmentIdentifier;
-import applications.param.lr.LREvent;
+import applications.param.txn.lr.LREvent;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
@@ -22,7 +22,6 @@ import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
 import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE;
 import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE_ACC;
 
 public abstract class TPBolt extends TransactionalBolt {

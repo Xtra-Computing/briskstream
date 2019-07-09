@@ -1,11 +1,6 @@
 package applications.topology.transactional.initializer;
 
-import applications.constants.BaseConstants;
-import applications.datatype.AbstractLRBTuple;
-import applications.datatype.PositionReport;
-import applications.param.lr.LREvent;
 import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import engine.Database;
 import engine.DatabaseException;
@@ -20,7 +15,6 @@ import engine.storage.table.RecordSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

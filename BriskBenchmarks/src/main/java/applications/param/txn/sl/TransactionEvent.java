@@ -1,7 +1,7 @@
-package applications.param.sl;
+package applications.param.txn.sl;
 
 import applications.bolts.sl.TransactionResult;
-import applications.param.TxnEvent;
+import applications.param.txn.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.TableRecordRef;
 import engine.storage.datatype.DataBox;

@@ -1,6 +1,6 @@
 package applications.bolts.gs;
 
-import applications.param.mb.MicroEvent;
+import applications.param.txn.mb.MicroEvent;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;

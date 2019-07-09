@@ -1,6 +1,6 @@
 package applications.bolts.sl;
 
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.sl.TransactionEvent;
 
 import static java.util.Objects.requireNonNull;
 

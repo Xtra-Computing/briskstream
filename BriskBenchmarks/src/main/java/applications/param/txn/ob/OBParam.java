@@ -1,4 +1,4 @@
-package applications.param.ob;
+package applications.param.txn.ob;
 
 import engine.benchmark.TxnParam;
 

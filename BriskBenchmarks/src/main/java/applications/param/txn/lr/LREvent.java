@@ -1,7 +1,6 @@
-package applications.param.lr;
+package applications.param.txn.lr;
 
 import applications.datatype.PositionReport;
-import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 
 /**

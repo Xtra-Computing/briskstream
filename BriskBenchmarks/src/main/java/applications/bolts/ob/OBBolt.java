@@ -1,9 +1,9 @@
 package applications.bolts.ob;
 
-import applications.param.TxnEvent;
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.ToppingEvent;
+import applications.param.txn.TxnEvent;
+import applications.param.txn.ob.AlertEvent;
+import applications.param.txn.ob.BuyingEvent;
+import applications.param.txn.ob.ToppingEvent;
 import brisk.components.operators.api.TransactionalBolt;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;

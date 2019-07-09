@@ -1,7 +1,7 @@
 package applications.bolts.combo;
 
 import applications.bolts.gs.*;
-import applications.param.mb.MicroEvent;
+import applications.param.txn.mb.MicroEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

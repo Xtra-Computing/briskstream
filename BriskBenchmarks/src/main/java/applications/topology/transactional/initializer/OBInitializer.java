@@ -1,9 +1,9 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.OBParam;
-import applications.param.ob.ToppingEvent;
+import applications.param.txn.ob.AlertEvent;
+import applications.param.txn.ob.BuyingEvent;
+import applications.param.txn.ob.OBParam;
+import applications.param.txn.ob.ToppingEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

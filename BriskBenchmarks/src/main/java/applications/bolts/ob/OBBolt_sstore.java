@@ -1,6 +1,6 @@
 package applications.bolts.ob;
 
-import applications.param.TxnEvent;
+import applications.param.txn.TxnEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;

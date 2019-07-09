@@ -1,6 +1,5 @@
 package brisk.components.operators.api;
 
-import applications.param.PKEvent;
 import applications.sink.SINKCombo;
 import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
@@ -15,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.SOURCE_CONTROL;
 
-import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
 import static applications.CONTROL.enable_latency_measurement;

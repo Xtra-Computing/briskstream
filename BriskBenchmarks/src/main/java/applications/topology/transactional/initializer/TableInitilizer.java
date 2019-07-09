@@ -1,7 +1,7 @@
 package applications.topology.transactional.initializer;
 
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.sl.DepositEvent;
+import applications.param.txn.sl.TransactionEvent;
 import applications.tools.FastZipfGenerator;
 import applications.util.Configuration;
 import brisk.components.context.TopologyContext;

@@ -1,6 +1,6 @@
-package applications.param.mb;
+package applications.param.txn.mb;
 
-import applications.param.TxnEvent;
+import applications.param.txn.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.IntDataBox;

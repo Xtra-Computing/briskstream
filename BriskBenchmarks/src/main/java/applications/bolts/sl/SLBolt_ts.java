@@ -1,9 +1,9 @@
 package applications.bolts.sl;
 
 
-import applications.param.TxnEvent;
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.TxnEvent;
+import applications.param.txn.sl.DepositEvent;
+import applications.param.txn.sl.TransactionEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;

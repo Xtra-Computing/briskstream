@@ -1,6 +1,6 @@
 package applications.bolts.pk;
 
-import applications.param.PKEvent;
+import applications.param.txn.PKEvent;
 import brisk.components.operators.api.TransactionalBolt;
 import engine.storage.datatype.DataBox;
 import engine.storage.datatype.ListDoubleDataBox;

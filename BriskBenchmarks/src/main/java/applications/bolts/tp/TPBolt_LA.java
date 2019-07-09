@@ -1,6 +1,6 @@
 package applications.bolts.tp;
 
-import applications.param.lr.LREvent;
+import applications.param.txn.lr.LREvent;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;

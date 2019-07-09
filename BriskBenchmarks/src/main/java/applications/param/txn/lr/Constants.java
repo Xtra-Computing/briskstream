@@ -16,7 +16,7 @@
  * limitations under the License.
  * #_
  */
-package applications.param.lr;
+package applications.param.txn.lr;
 
 
 

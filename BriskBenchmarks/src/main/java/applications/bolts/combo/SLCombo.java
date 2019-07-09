@@ -1,9 +1,9 @@
 package applications.bolts.combo;
 
 import applications.bolts.sl.*;
-import applications.param.TxnEvent;
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.txn.TxnEvent;
+import applications.param.txn.sl.DepositEvent;
+import applications.param.txn.sl.TransactionEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

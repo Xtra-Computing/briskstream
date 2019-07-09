@@ -1,9 +1,9 @@
 package applications.bolts.ob;
 
-import applications.param.TxnEvent;
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.ToppingEvent;
+import applications.param.txn.TxnEvent;
+import applications.param.txn.ob.AlertEvent;
+import applications.param.txn.ob.BuyingEvent;
+import applications.param.txn.ob.ToppingEvent;
 import engine.DatabaseException;
 import engine.transaction.impl.TxnContext;
 import org.slf4j.Logger;

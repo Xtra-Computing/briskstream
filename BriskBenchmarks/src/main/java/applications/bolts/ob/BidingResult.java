@@ -1,6 +1,6 @@
 package applications.bolts.ob;
 
-import applications.param.ob.BuyingEvent;
+import applications.param.txn.ob.BuyingEvent;
 
 /**
  * Data type describing the result of a processed transaction.

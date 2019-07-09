@@ -1,10 +1,10 @@
 package applications.bolts.combo;
 
 import applications.bolts.ob.*;
-import applications.param.TxnEvent;
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.ToppingEvent;
+import applications.param.txn.TxnEvent;
+import applications.param.txn.ob.AlertEvent;
+import applications.param.txn.ob.BuyingEvent;
+import applications.param.txn.ob.ToppingEvent;
 import applications.util.Configuration;
 import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;

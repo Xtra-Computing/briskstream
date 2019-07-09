@@ -1,7 +1,7 @@
 package applications.bolts.tp;
 
 
-import applications.param.lr.LREvent;
+import applications.param.txn.lr.LREvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;

@@ -1,7 +1,7 @@
 package applications.bolts.gs;
 
 
-import applications.param.mb.MicroEvent;
+import applications.param.txn.mb.MicroEvent;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;

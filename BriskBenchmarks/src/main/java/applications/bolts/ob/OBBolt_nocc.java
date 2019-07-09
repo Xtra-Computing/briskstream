@@ -1,8 +1,8 @@
 package applications.bolts.ob;
 
-import applications.param.ob.AlertEvent;
-import applications.param.ob.BuyingEvent;
-import applications.param.ob.ToppingEvent;
+import applications.param.txn.ob.AlertEvent;
+import applications.param.txn.ob.BuyingEvent;
+import applications.param.txn.ob.ToppingEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;

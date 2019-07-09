@@ -1,7 +1,7 @@
 package applications.bolts.gs;
 
 
-import applications.param.mb.MicroEvent;
+import applications.param.txn.mb.MicroEvent;
 import brisk.execution.ExecutionGraph;
 import engine.DatabaseException;
 import engine.transaction.dedicated.TxnManagerNoLock;

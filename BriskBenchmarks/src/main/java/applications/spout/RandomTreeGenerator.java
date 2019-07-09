@@ -8,4 +8,17 @@ public class RandomTreeGenerator {
     public long nextInstance() {
         return 0;
     }
+
+
+    protected void generateHeader() {
+
+    }
+
+    public void prepareForUse() {
+
+        //generate instance header.
+
+
+
+    }
 }
