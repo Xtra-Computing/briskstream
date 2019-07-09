@@ -17,9 +17,6 @@ public class MemFileSpout extends AbstractSpout {
 
     protected int element = 0;
 
-
-
-
     public MemFileSpout() {
         super(LOG);
         this.scalable = false;

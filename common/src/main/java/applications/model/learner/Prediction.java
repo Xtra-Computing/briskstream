@@ -1,4 +1,4 @@
-package applications.model.predictor;
+package applications.model.learner;
 
 import java.io.Serializable;
 

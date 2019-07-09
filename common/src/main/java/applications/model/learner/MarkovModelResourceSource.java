@@ -1,4 +1,4 @@
-package applications.model.predictor;
+package applications.model.learner;
 
 import com.google.common.io.Resources;
 import org.slf4j.Logger;

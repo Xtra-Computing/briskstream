@@ -6,11 +6,13 @@ public interface ClassifierConstants extends BaseConstants {
     int max_hz = 450000;
 
     interface Conf extends BaseConf {
-        String CLASSIFIER_THREADS = "classifier.threads";
+        String LEARNER_THREADS = "learner.threads";
+        String EVALUTOR_THREADS = "evalutor.threads";
     }
 
     interface Component extends BaseComponent {
-        String CLASSIFIER = "classifierBolt";
+        String LEARNER = "learnerBolt";
+        String EVALUATOR = "evaluatorBolt";
     }
 
     interface Field extends BaseField {

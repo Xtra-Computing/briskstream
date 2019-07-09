@@ -16,7 +16,7 @@
  */
 
 
-package applications.model.predictor;
+package applications.model.learner;
 
 /**
  * Generic Pair class

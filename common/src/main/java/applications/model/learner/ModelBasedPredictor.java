@@ -15,7 +15,7 @@
  * permissions and limitations under the License.
  */
 
-package applications.model.predictor;
+package applications.model.learner;
 
 /**
  * Base class for all model based predictors

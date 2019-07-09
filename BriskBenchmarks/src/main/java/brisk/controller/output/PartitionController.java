@@ -372,7 +372,7 @@ public abstract class PartitionController implements IPartitionController, Seria
      * @param streamId
      * @param output   @return
      */
-    protected boolean offer_bid(int srcId, int targetId, String streamId, Object... output) {
+    protected boolean  offer_bid(int srcId, int targetId, String streamId, Object... output) {
         JumboTuple tuple = collections[srcId - firt_executor_Id].add_bid(targetId, streamId, context[srcId - firt_executor_Id], output);
 
         if (tuple != null) {

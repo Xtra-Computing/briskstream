@@ -1,8 +1,7 @@
-package applications.bolts.classifier;
+package applications.bolts.learner;
 
 import applications.constants.BaseConstants;
 import applications.constants.FraudDetectionConstants;
-import applications.model.predictor.ModelBasedPredictor;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Fields;
@@ -12,18 +11,16 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public class ClassifierBolt extends MapBolt {
+public class EvaluatorBolt extends MapBolt {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ClassifierBolt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EvaluatorBolt.class);
     private static final long serialVersionUID = 6445550040247603261L;
     double sel = 0;
     double nsel = 0;
     int cnt = 0;
     int loop = 1;
-    private ModelBasedPredictor predictor;
 
-
-    public ClassifierBolt() {
+    public EvaluatorBolt() {
         super(LOG, new HashMap<>());
         this.read_selectivity = 1;
         this.output_selectivity.put(BaseConstants.BaseStream.DEFAULT, 1.0);//workaround to ensure same output selectivity
@@ -31,7 +28,7 @@ public class ClassifierBolt extends MapBolt {
     }
 
     /**
-     * Initilize this classifer.
+     * Initilize this Learner.
      *
      * @param thread_Id
      * @param thisTaskId
@@ -39,17 +36,14 @@ public class ClassifierBolt extends MapBolt {
      */
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
+        LOG.info("Successfully instantiating Learner");
+
 
     }
 
     @Override
     public void execute(Tuple in) throws InterruptedException {
-        LOG.info("Classifer has received a tuple: " + in.getString(0));
-    }
-
-
-    public void display() {
-//		LOG.info("cnt:" + cnt + "\tcnt1:" + sel + "(" + (sel / cnt) + ")");
+        LOG.info("Learner has received a tuple: " + in.getString(0));
     }
 
 

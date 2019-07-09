@@ -2,9 +2,9 @@ package applications.bolts.fd;
 
 import applications.constants.BaseConstants;
 import applications.constants.FraudDetectionConstants;
-import applications.model.predictor.MarkovModelPredictor;
-import applications.model.predictor.ModelBasedPredictor;
-import applications.model.predictor.Prediction;
+import applications.model.learner.MarkovModelPredictor;
+import applications.model.learner.ModelBasedPredictor;
+import applications.model.learner.Prediction;
 import applications.util.Configuration;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;

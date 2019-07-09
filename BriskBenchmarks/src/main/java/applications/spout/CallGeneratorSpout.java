@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import static applications.Constants.DEFAULT_STREAM_ID;
 
-public class GeneratorSpout extends AbstractSpout {
-    private static final Logger LOG = LoggerFactory.getLogger(GeneratorSpout.class);
+public class CallGeneratorSpout extends AbstractSpout {
+    private static final Logger LOG = LoggerFactory.getLogger(CallGeneratorSpout.class);
     private static final long serialVersionUID = 7738169734935576086L;
     private PhoneCallGenerator callGenerator;
 
-    public GeneratorSpout() {
+    public CallGeneratorSpout() {
         super(LOG);
     }
 
