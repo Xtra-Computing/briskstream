@@ -1,4 +1,4 @@
-package applications.topology;
+package applications.topology.classical;
 
 import applications.bolts.comm.StringParserBolt;
 import applications.bolts.wc.SplitSentenceBolt;

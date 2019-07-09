@@ -1,9 +1,8 @@
-package applications.topology;
+package applications.topology.classical;
 
 
 import applications.bolts.comm.StringParserBolt;
 import applications.bolts.lr.*;
-import applications.datatype.PositionReport;
 import applications.datatype.util.LRTopologyControl;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;

@@ -135,32 +135,6 @@ public class PKSpout extends TransactionalSpout {
     }
 
 
-    private void spout_pid() {
-        RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
-
-        String jvmName = runtimeBean.getName();
-        long pid = Long.valueOf(jvmName.split("@")[0]);
-        LOG.info("JVM PID  = " + pid);
-
-        FileWriter fw;
-        try {
-            fw = new FileWriter(new File(config.getString("metrics.output")
-                    + OsUtils.OS_wrapper("spout_threadId.txt")));
-            writer = new BufferedWriter(fw);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        try {
-            String s_pid = String.valueOf(pid);
-            writer.write(s_pid);
-            writer.flush();
-            //writer.relax_reset();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     Random r = new Random();
 

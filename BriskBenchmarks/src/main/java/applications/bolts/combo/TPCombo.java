@@ -1,4 +1,4 @@
-package applications.combo;
+package applications.bolts.combo;
 
 import applications.bolts.tp.*;
 import applications.constants.BaseConstants;

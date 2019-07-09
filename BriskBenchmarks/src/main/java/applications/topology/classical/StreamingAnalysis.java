@@ -1,4 +1,4 @@
-package applications.topology;
+package applications.topology.classical;
 
 import applications.constants.streamingAnalysisConstants.Component;
 import applications.constants.streamingAnalysisConstants.Field;

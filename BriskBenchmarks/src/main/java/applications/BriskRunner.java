@@ -1,11 +1,11 @@
 package applications;
 
 import applications.constants.*;
-import applications.topology.*;
+import applications.topology.classical.*;
 import applications.topology.faulttolerance.WordCount_FT;
 import applications.topology.latency.LinearRoad_latency;
 import applications.topology.latency.WordCount_latency;
-import applications.topology.ol.ClassificationTopology;
+import applications.topology.ol.PrequentialEvaluation;
 import applications.topology.transactional.*;
 import applications.util.Configuration;
 import applications.util.Constants;
@@ -86,7 +86,7 @@ public class BriskRunner extends abstractRunner {
 
 
         //OL
-        driver.addApp("Classification", ClassificationTopology.class);
+        driver.addApp("Classification", PrequentialEvaluation.class);
 
     }
 

@@ -1,7 +1,6 @@
 package applications.topology.ol;
 
 import applications.bolts.classifier.ClassifierBolt;
-import applications.constants.ClassifierConstants;
 import applications.constants.ClassifierConstants.Component;
 import applications.constants.ClassifierConstants.Field;
 import applications.util.Configuration;
@@ -17,10 +16,18 @@ import org.slf4j.LoggerFactory;
 import static applications.constants.ClassifierConstants.Conf.CLASSIFIER_THREADS;
 import static applications.constants.ClassifierConstants.PREFIX;
 
-public class ClassificationTopology extends BasicTopology {
-    private static final Logger LOG = LoggerFactory.getLogger(ClassificationTopology.class);
 
-    public ClassificationTopology(String topologyName, Configuration config) {
+/**
+ * Prequential Evaluation task is a scheme in evaluating performance of online classifiers which uses each instance for
+ * testing online classifiers model and then it further uses the same instance for training the model(Test-then-train)
+ *
+ * @author Arinto Murdopo
+ *
+ */
+public class PrequentialEvaluation extends BasicTopology {
+    private static final Logger LOG = LoggerFactory.getLogger(PrequentialEvaluation.class);
+
+    public PrequentialEvaluation(String topologyName, Configuration config) {
         super(topologyName, config);
     }
 
@@ -31,7 +38,6 @@ public class ClassificationTopology extends BasicTopology {
     public void initialize() {
         super.initialize();
         sink = loadSink();
-//        initilize_parser();
     }
 
     @Override

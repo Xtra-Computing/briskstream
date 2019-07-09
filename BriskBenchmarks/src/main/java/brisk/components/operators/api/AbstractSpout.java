@@ -8,6 +8,8 @@ import brisk.execution.runtime.tuple.impl.Marker;
 import org.slf4j.Logger;
 
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -46,7 +48,34 @@ public abstract class AbstractSpout extends Operator {
         nextTuple();
     }
 
+    private transient BufferedWriter writer;
 
+    protected void spout_pid() {
+        RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
+
+        String jvmName = runtimeBean.getName();
+        long pid = Long.valueOf(jvmName.split("@")[0]);
+        LOG.info("JVM PID  = " + pid);
+
+        FileWriter fw;
+        try {
+            fw = new FileWriter(new File(config.getString("metrics.output")
+                    + OsUtils.OS_wrapper("spout_threadId.txt")));
+            writer = new BufferedWriter(fw);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        try {
+            String s_pid = String.valueOf(pid);
+            writer.write(s_pid);
+            writer.flush();
+            //writer.relax_reset();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     private void construction(Scanner scanner, StringStatesWrapper wrapper) {
 
         String splitregex = ",";
