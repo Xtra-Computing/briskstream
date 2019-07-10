@@ -1,6 +1,6 @@
 package brisk.controller.output;
 
-import applications.datatype.internal.AccidentTuple;
+import applications.general.datatype.internal.AccidentTuple;
 import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.execution.runtime.collector.impl.MetaGroup;

@@ -1,6 +1,6 @@
-package applications.bolts.lg;
+package applications.general.bolts.lg;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.model.geoip.IPLocation;
 import applications.model.geoip.IPLocationFactory;
 import applications.model.geoip.Location;

@@ -1,6 +1,6 @@
 package applications.tasks;
 
-import applications.spout.helper.Event;
+import applications.general.spout.helper.Event;
 
 import java.util.HashMap;
 import java.util.Random;

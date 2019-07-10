@@ -3,7 +3,7 @@ package applications.parser;
 //import applications.utils.Configuration;
 
 import applications.constants.SpikeDetectionConstants.Conf;
-import applications.spout.helper.parser.Parser;
+import applications.general.spout.helper.parser.Parser;
 import applications.util.Configuration;
 import applications.util.datatypes.StreamValues;
 import com.google.common.collect.ImmutableList;

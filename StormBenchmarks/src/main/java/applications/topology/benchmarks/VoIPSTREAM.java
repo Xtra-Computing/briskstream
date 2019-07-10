@@ -1,8 +1,8 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.vs.*;
-import applications.topology.BasicTopology;
+import applications.general.bolts.comm.ParserBolt;
+import applications.general.bolts.vs.*;
+import applications.general.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

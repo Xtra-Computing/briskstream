@@ -1,4 +1,4 @@
-package applications.sink.formatter;
+package applications.general.sink.formatter;
 
 import applications.util.Configuration;
 import org.apache.storm.task.TopologyContext;

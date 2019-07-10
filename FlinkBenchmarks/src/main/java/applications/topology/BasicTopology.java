@@ -1,9 +1,9 @@
-package applications.topology;
+package applications.general.topology;
 
 import applications.constants.BaseConstants;
-import applications.sink.BaseSink;
-import applications.spout.AbstractSpout;
-import applications.spout.helper.parser.Parser;
+import applications.general.sink.BaseSink;
+import applications.general.spout.AbstractSpout;
+import applications.general.spout.helper.parser.Parser;
 import applications.util.ClassLoaderUtils;
 import org.apache.storm.Config;
 import org.slf4j.Logger;
@@ -13,8 +13,8 @@ public abstract class BasicTopology extends AbstractTopology {
     private static final Logger LOG = LoggerFactory.getLogger(BasicTopology.class);
     protected AbstractSpout spout;
     protected Parser parser;
-    //    protected applications.spout.myKafkaSpout kspout;
-//    protected applications.spout.verbose.myKafkaSpout kspout_verbose;
+    //    protected applications.general.spout.myKafkaSpout kspout;
+//    protected applications.general.spout.verbose.myKafkaSpout kspout_verbose;
     protected BaseSink sink;
     protected int spoutThreads;
     protected int sinkThreads;
@@ -31,13 +31,13 @@ public abstract class BasicTopology extends AbstractTopology {
     //    @Override
 //    public void initialize() {
 //
-////        if (config.getString("spout_class").equals("applications.spout.KafkaSpout")) {
+////        if (config.getString("spout_class").equals("applications.general.spout.KafkaSpout")) {
 ////            if (config.getBoolean("verbose")) {
-////                final SpoutConfig config = applications.spout.verbose.myKafkaSpout.create_config(this.config, getConfigPrefix());
-////                kspout_verbose = new applications.spout.verbose.myKafkaSpout(config);
+////                final SpoutConfig config = applications.general.spout.verbose.myKafkaSpout.create_config(this.config, getConfigPrefix());
+////                kspout_verbose = new applications.general.spout.verbose.myKafkaSpout(config);
 ////            } else {
-////                final SpoutConfig config = applications.spout.myKafkaSpout.create_config(this.config, getConfigPrefix());
-////                kspout = new applications.spout.myKafkaSpout(config);
+////                final SpoutConfig config = applications.general.spout.myKafkaSpout.create_config(this.config, getConfigPrefix());
+////                kspout = new applications.general.spout.myKafkaSpout(config);
 ////            }
 ////        } else {
 //        spout = loadSpout();

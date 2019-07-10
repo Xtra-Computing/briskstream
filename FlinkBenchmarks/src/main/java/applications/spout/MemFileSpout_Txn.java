@@ -1,7 +1,7 @@
-package applications.spout;
+package applications.general.spout;
 
 import applications.constants.BaseConstants;
-import applications.spout.helper.wrapper.StringStatesWrapper;
+import applications.general.spout.helper.wrapper.StringStatesWrapper;
 import applications.util.OsUtils;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;

@@ -17,10 +17,10 @@
  * #_
  */
 
-package applications.bolts.lr;
+package applications.general.bolts.lr;
 
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.internal.CountTuple;

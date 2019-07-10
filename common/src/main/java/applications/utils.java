@@ -1,7 +1,7 @@
 package applications;
 
-import applications.spout.helper.DataSource;
-import applications.spout.helper.Event;
+import applications.general.spout.helper.DataSource;
+import applications.general.spout.helper.Event;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
@@ -38,7 +38,7 @@ public class utils {
                 final boolean verbose = Boolean.parseBoolean(args[5]);
 //                LOG.info("Run producer with skew of:" + skew + ", tuple_size:" + tuple_size + ", verbose?" + verbose);
 
-                DataSource dataSource = new DataSource("applications.spout.helper.wrapper.StringStatesWrapper", skew, test, tuple_size, verbose);
+                DataSource dataSource = new DataSource("applications.general.spout.helper.wrapper.StringStatesWrapper", skew, test, tuple_size, verbose);
                 if (test) {
                     final Event event = dataSource.generateEvent();
                     LOG.info("Test output:" + Arrays.toString(event.getEvent().split(Event.split_expression)));

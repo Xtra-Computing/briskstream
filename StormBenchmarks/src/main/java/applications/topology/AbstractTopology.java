@@ -1,8 +1,8 @@
-package applications.topology;
+package applications.general.topology;
 
 import applications.constants.BaseConstants.BaseConf;
-import applications.sink.BaseSink;
-import applications.spout.AbstractSpout;
+import applications.general.sink.BaseSink;
+import applications.general.spout.AbstractSpout;
 import applications.util.ClassLoaderUtils;
 import applications.util.Configuration;
 import org.apache.storm.Config;
@@ -44,7 +44,7 @@ public abstract class AbstractTopology {
 
 		if (config.getBoolean("verbose")) {
 			final String[] split = spoutClass.split("\\.");
-			spoutClass = "applications.spout." + "verbose." + split[2];
+			spoutClass = "applications.general.spout." + "verbose." + split[2];
 			LOG.info("spout class:" + spoutClass);
 		}
 		AbstractSpout spout;
@@ -69,7 +69,7 @@ public abstract class AbstractTopology {
 
 		if (config.getBoolean("verbose")) {
 			final String[] split = sinkClass.split("\\.");
-			sinkClass = "applications.sink." + "verbose." + split[2];
+			sinkClass = "applications.general.sink." + "verbose." + split[2];
 			LOG.info("sink class:" + sinkClass);
 		}
 

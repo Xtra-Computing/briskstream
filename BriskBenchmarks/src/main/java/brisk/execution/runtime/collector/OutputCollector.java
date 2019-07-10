@@ -1,6 +1,6 @@
 package brisk.execution.runtime.collector;
 
-import applications.datatype.TollNotification;
+import applications.general.datatype.TollNotification;
 import applications.util.OsUtils;
 import applications.util.datatypes.StreamValues;
 import brisk.components.TopologyComponent;

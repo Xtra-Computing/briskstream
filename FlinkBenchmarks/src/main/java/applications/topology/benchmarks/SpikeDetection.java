@@ -1,12 +1,12 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.sd.MovingAverageBolt;
-import applications.bolts.sd.SpikeDetectionBolt;
+import applications.general.bolts.comm.ParserBolt;
+import applications.general.bolts.sd.MovingAverageBolt;
+import applications.general.bolts.sd.SpikeDetectionBolt;
 import applications.constants.SpikeDetectionConstants;
 import applications.constants.SpikeDetectionConstants.Component;
 import applications.constants.SpikeDetectionConstants.Field;
-import applications.topology.BasicTopology;
+import applications.general.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.tuple.Fields;

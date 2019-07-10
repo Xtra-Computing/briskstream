@@ -1,6 +1,6 @@
 package applications;
 
-import applications.topology.AbstractTopology;
+import applications.general.topology.AbstractTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.slf4j.Logger;

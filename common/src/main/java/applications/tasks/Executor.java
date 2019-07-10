@@ -1,6 +1,6 @@
 package applications.tasks;
 
-import applications.spout.helper.Event;
+import applications.general.spout.helper.Event;
 
 /**
  * Created by I309939 on 8/3/2016.

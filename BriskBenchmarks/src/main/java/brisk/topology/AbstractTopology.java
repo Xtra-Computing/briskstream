@@ -1,15 +1,13 @@
 package brisk.topology;
 
 import applications.constants.BaseConstants;
-import applications.sink.BaseSink;
+import applications.general.sink.BaseSink;
 import applications.util.ClassLoaderUtils;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.operators.api.AbstractSpout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static applications.CONTROL.enable_latency_measurement;
 
 public abstract class AbstractTopology {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTopology.class);
@@ -41,13 +39,13 @@ public abstract class AbstractTopology {
 
         if (config.getBoolean("verbose")) {
             final String[] split = spoutClass.split("\\.");
-            spoutClass = "applications.spout." + "verbose." + split[2];
+            spoutClass = "applications.general.spout." + "verbose." + split[2];
             LOG.info("spout class:" + spoutClass);
         }
 
 //        if (enable_latency_measurement) {
 //            final String[] split = spoutClass.split("\\.");
-//            spoutClass = "applications.spout." + split[2] + "_latency";
+//            spoutClass = "applications.general.spout." + split[2] + "_latency";
 //            LOG.info("spout class:" + spoutClass);
 //        }
 
@@ -72,13 +70,13 @@ public abstract class AbstractTopology {
 
         if (config.getBoolean("verbose")) {
             final String[] split = sinkClass.split("\\.");
-            sinkClass = "applications.sink." + "verbose." + split[2];
+            sinkClass = "applications.general.sink." + "verbose." + split[2];
             LOG.info("sink class:" + sinkClass);
         }
 
 //        if (enable_latency_measurement) {
 //            final String[] split = sinkClass.split("\\.");
-//            sinkClass = "applications.sink." + split[2] + "_latency";
+//            sinkClass = "applications.general.sink." + split[2] + "_latency";
 //            LOG.info("sink class:" + sinkClass);
 //        }
 

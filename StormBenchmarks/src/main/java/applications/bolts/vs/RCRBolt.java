@@ -1,6 +1,6 @@
-package applications.bolts.vs;
+package applications.general.bolts.vs;
 
-import applications.bolts.comm.AbstractFilterBolt;
+import applications.general.bolts.comm.AbstractFilterBolt;
 import applications.constants.VoIPSTREAMConstants;
 import applications.model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Tuple;

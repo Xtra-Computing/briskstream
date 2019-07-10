@@ -1,6 +1,6 @@
 package brisk.components.operators.api;
 
-import applications.sink.SINKCombo;
+import applications.general.sink.SINKCombo;
 import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;

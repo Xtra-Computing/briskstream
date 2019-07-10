@@ -16,9 +16,9 @@
  * limitations under the License.
  * #_
  */
-package applications.bolts.lr;
+package applications.general.bolts.lr;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.datatypes.AbstractLRBTuple;
 import applications.datatypes.DailyExpenditureRequest;
 import applications.datatypes.toll.MemoryTollDataStore;

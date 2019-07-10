@@ -1,4 +1,4 @@
-package applications.bolts;
+package applications.general.bolts;
 
 import applications.constants.BaseConstants;
 import applications.constants.BaseConstants.BaseStream;

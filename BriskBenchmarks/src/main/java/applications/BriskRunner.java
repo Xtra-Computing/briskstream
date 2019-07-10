@@ -1,12 +1,12 @@
 package applications;
 
 import applications.constants.*;
-import applications.topology.classical.*;
-import applications.topology.faulttolerance.WordCount_FT;
-import applications.topology.latency.LinearRoad_latency;
-import applications.topology.latency.WordCount_latency;
-import applications.topology.ol.PrequentialEvaluation;
-import applications.topology.transactional.*;
+import applications.general.topology.classical.*;
+import applications.general.topology.faulttolerance.WordCount_FT;
+import applications.general.topology.latency.LinearRoad_latency;
+import applications.general.topology.latency.WordCount_latency;
+import applications.ml.topology.PrequentialEvaluation;
+import applications.general.topology.transactional.*;
 import applications.util.Configuration;
 import applications.util.Constants;
 import applications.util.OsUtils;
@@ -174,7 +174,7 @@ public class BriskRunner extends abstractRunner {
             config.putAll(Configuration.fromProperties(p));
             if (mode.equalsIgnoreCase(RUN_REMOTE)) {
                 final String spout_class = String.valueOf(config.get("mb.spout.class"));
-                if (spout_class.equals("applications.spout.LocalStateSpout")) {
+                if (spout_class.equals("applications.general.spout.LocalStateSpout")) {
                     LOG.info("Please use kafkaSpout in cluster mode!!!");
                     System.exit(-1);
                 }
