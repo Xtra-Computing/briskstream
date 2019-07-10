@@ -1,4 +1,4 @@
-package applications.ml.spout.util;
+package applications.ml.datatypes;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -203,7 +203,7 @@ public class Attribute {
      * @param value the value
      * @return the string
      */
-    String formatDate(double value) {
+    public String formatDate(double value) {
         return this.m_DateFormat.format(new Date((long) value));
     }
 
@@ -212,7 +212,7 @@ public class Attribute {
      *
      * @return true, if is date
      */
-    boolean isDate() {
+    public boolean isDate() {
         return isDate;
     }
 

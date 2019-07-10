@@ -1,4 +1,4 @@
-package applications.ml.spout.util;
+package applications.ml.datatypes;
 
 
 /*
