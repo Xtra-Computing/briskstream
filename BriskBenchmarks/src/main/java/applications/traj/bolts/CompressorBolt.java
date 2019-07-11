@@ -1,4 +1,4 @@
-package applications.general.bolts.traj;
+package applications.traj.bolts;
 
 import applications.util.OsUtils;
 import applications.util.datatypes.StreamValues;

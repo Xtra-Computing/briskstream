@@ -1,7 +1,7 @@
-package applications.traj;
+package applications.traj.topology;
 
 
-import applications.general.bolts.traj.CompressorBolt;
+import applications.traj.bolts.CompressorBolt;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
