@@ -5,7 +5,6 @@ import applications.ml.datatypes.Attribute;
 import applications.ml.datatypes.Range;
 import applications.ml.datatypes.Utils;
 
-import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -67,42 +66,6 @@ public class Instances {
     public Instances() {
     }
 
-    /**
-     * Instantiates a new instances.
-     *
-     * @param reader         the reader
-     * @param size           the size
-     * @param classAttribute the class attribute
-     */
-    public Instances(Reader reader, int size, int classAttribute) {
-        this.loader = new ArffLoader(reader, 0, classAttribute);
-        this.instanceInformation = loader.getStructure();
-        this.instances = new ArrayList<Instances>();
-    }
-
-    /**
-     * Instantiates a new instances.
-     *
-     * @param reader the reader
-     * @param range
-     */
-    public Instances(Reader reader, Range range) {
-        this.loader = new ArffLoader(reader, 0, classAttribute);//new MultiTargetArffLoader(reader, range);
-        this.instanceInformation = loader.getStructure();
-        this.instances = new ArrayList<Instances>();
-    }
-
-    public Instances(InputStream inputStream, int classAttribute, String encodingFormat) {
-        this.classAttribute = classAttribute;
-
-        if (encodingFormat.equalsIgnoreCase(AVRO_ENCODING_FORMAT.BINARY.toString()))
-            loader = new AvroBinaryLoader(inputStream, classAttribute);
-        else
-            loader = new AvroJsonLoader(inputStream, classAttribute);
-
-        this.instanceInformation = loader.getStructure();
-        this.instances = new ArrayList<>();
-    }
 
     /**
      * Instantiates a new instances.
@@ -296,49 +259,7 @@ public class Instances {
         }
     }
 
-    /**
-     * Stratify.
-     *
-     * @param numFolds the num folds
-     */
-    public void stratify(int numFolds) {
 
-        if (classAttribute().isNominal()) {
-
-            // sort by class
-            int index = 1;
-            while (index < numInstances()) {
-                Instances instance1 = instance(index - 1);
-                for (int j = index; j < numInstances(); j++) {
-                    Instances instance2 = instance(j);
-                    if ((instance1.classValue() == instance2.classValue())
-                            || (instance1.classIsMissing()
-                            && instance2.classIsMissing())) {
-                        swap(index, j);
-                        index++;
-                    }
-                }
-                index++;
-            }
-            stratStep(numFolds);
-        }
-    }
-
-    protected void stratStep(int numFolds) {
-        ArrayList<Instances> newVec = new ArrayList<Instances>(this.instances.size());
-        int start = 0, j;
-
-        // create stratified batch
-        while (newVec.size() < numInstances()) {
-            j = start;
-            while (j < numInstances()) {
-                newVec.add(instance(j));
-                j = j + numFolds;
-            }
-            start++;
-        }
-        this.instances = newVec;
-    }
 
     /**
      * Train cv.
@@ -416,40 +337,6 @@ public class Instances {
      */
     public double meanOrMode(int j) {
         throw new UnsupportedOperationException("Not yet implemented"); //CobWeb
-    }
-
-    /**
-     * Read instance.
-     *
-     * @param fileReader the file reader
-     * @return true, if successful
-     */
-    public boolean readInstance(Reader fileReader) {
-
-        //ArffReader arff = new ArffReader(reader, this, m_Lines, 1);
-        if (loader == null) {
-            loader = new ArffLoader(fileReader, 0, this.classAttribute);
-        }
-        Instances inst = loader.readInstance();
-        if (inst != null) {
-            inst.setDataset(this);
-            add(inst);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public boolean readInstance() {
-
-        Instances inst = loader.readInstance();
-        if (inst != null) {
-            inst.setDataset(this);
-            add(inst);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -608,7 +495,7 @@ public class Instances {
      * Completes the hashset with attributes indices.
      */
     private void computeAttributesIndices() {
-        this.hsAttributesIndices = new HashMap<String, Integer>();
+        this.hsAttributesIndices = new HashMap<>();
         // iterates through all existing attributes
         // and sets an unique identifier for each one of them
         for (int i = 0; i < this.numAttributes(); i++) {

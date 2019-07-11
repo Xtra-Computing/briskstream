@@ -70,7 +70,7 @@ public class Range implements Serializable {
         return ret;
     }
 
-    int getSelectionLength() {
+    public int getSelectionLength() {
         return end - start + 1;
     }
 

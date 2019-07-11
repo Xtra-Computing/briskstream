@@ -1,10 +1,10 @@
 package applications.ml.topology;
 
+import applications.constants.ClassifierConstants.Component;
+import applications.constants.ClassifierConstants.Field;
 import applications.ml.bolts.EvaluatorBolt;
 import applications.ml.bolts.LearnerBolt;
 import applications.ml.bolts.VerticalHoeffdingTreeBolt;
-import applications.constants.ClassifierConstants.Component;
-import applications.constants.ClassifierConstants.Field;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
@@ -44,9 +44,6 @@ public class PrequentialEvaluation extends BasicTopology {
     public void initialize() {
         super.initialize();
         sink = loadSink();
-        classifier = new VerticalHoeffdingTreeBolt();//for illustration purpose..
-        evaluator = new EvaluatorBolt();
-
     }
 
     @Override
@@ -55,9 +52,14 @@ public class PrequentialEvaluation extends BasicTopology {
             spout.setFields(new Fields(Field.TEXT));
             builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
+
+            classifier = new VerticalHoeffdingTreeBolt(builder);//may include additional operator inside classifier operator.
+
             builder.setBolt(Component.LEARNER, classifier
                     , config.getInt(LEARNER_THREADS, 1)
                     , new ShuffleGrouping(Component.SPOUT));
+
+            evaluator = new EvaluatorBolt();
 
             builder.setBolt(Component.EVALUATOR, evaluator
                     , config.getInt(EVALUTOR_THREADS, 1)

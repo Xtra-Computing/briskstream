@@ -74,7 +74,7 @@ public class Attribute {
     /**
      * The name.
      */
-    protected String name;
+    public String name;
 
     /**
      * The attribute values.

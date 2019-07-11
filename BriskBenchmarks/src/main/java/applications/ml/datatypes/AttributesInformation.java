@@ -15,7 +15,7 @@ public class AttributesInformation {
     /**
      * The number of attributes.
      */
-    protected int numberAttributes;
+    public int numberAttributes;
 
 
     /**

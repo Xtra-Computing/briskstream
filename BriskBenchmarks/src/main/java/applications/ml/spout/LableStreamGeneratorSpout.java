@@ -1,6 +1,6 @@
-package applications.general.spout;
+package applications.ml.spout;
 
-import applications.ml.spout.RandomTreeGenerator;
+import applications.util.datatypes.StreamValues;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
 import org.slf4j.Logger;
@@ -15,13 +15,19 @@ public class LableStreamGeneratorSpout extends AbstractSpout {
 
     public LableStreamGeneratorSpout() {
         super(LOG);
-        int numContestants = 100;
-        Generator = new RandomTreeGenerator(this.getContext().getThisTaskId(), numContestants);
+
+
+//        preqSource.setMaxNumInstances(instanceLimitOption.getValue());
+//        preqSource.setSourceDelay(sourceDelayOption.getValue());
+//        preqSource.setDelayBatchSize(batchDelayOption.getValue());
+
     }
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
+        int numContestants = 100;
+        Generator = new RandomTreeGenerator(this.getContext().getThisTaskId(), numContestants);
         Generator.prepareForUse();
     }
 
@@ -32,6 +38,6 @@ public class LableStreamGeneratorSpout extends AbstractSpout {
 
     @Override
     public void nextTuple() throws InterruptedException {
-        collector.emit(DEFAULT_STREAM_ID, Generator.nextInstance());
+        collector.emit(DEFAULT_STREAM_ID, new StreamValues(Generator.nextInstance()));
     }
 }

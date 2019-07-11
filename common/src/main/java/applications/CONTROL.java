@@ -51,8 +51,8 @@ public interface CONTROL {
     boolean enable_debug = false;//some critical debug section.
 
     //engine related.
-    boolean enable_engine = true;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.
-    boolean enable_numa_placement = true;//thread placement. always on.
+    boolean enable_engine = enable_TSTREAM;//1. enable TP_engine. Always enabled. There's no meaning if we disable engine for T-Stream.
+    boolean enable_numa_placement = enable_TSTREAM;//thread placement. always on in case of TSTREAM.
 
     //used for NUMA-aware partition engine
     boolean enable_work_partition = true; // 2. this is a sub-option, only useful when engine is enabled.

@@ -11,13 +11,13 @@ import java.util.List;
  * training data instance information
  */
 public class InstanceInformation {
+
     /**
      * The dataset's name.
      */
-    protected String Name;
+    protected String relationName;
 
     protected AttributesInformation attributesInformation;
-
 
     /**
      * The class index.
@@ -43,7 +43,7 @@ public class InstanceInformation {
      * @param chunk the chunk
      */
     public InstanceInformation(InstanceInformation chunk) {
-        this.Name = chunk.Name;
+        this.relationName = chunk.relationName;
         this.attributesInformation = chunk.attributesInformation;
         this.classIndex = chunk.classIndex;
     }
@@ -52,10 +52,10 @@ public class InstanceInformation {
      * Instantiates a new instance information.
      *
      * @param st the st
-     * @param input
+     * @param v the v
      */
     public InstanceInformation(String st, List<Attribute> input) {
-        this.Name = st;
+        this.relationName = st;
         this.attributesInformation = new AttributesInformation(input, input.size());
     }
 
@@ -63,23 +63,23 @@ public class InstanceInformation {
      * Instantiates a new instance information.
      */
     public InstanceInformation() {
-        this.Name = null;
+        this.relationName = null;
         this.attributesInformation = null;
     }
 
     //Information Instances
     /* (non-Javadoc)
-     * @see com.yahoo.labs.samoa.instances.InstanceInformationInterface#setName(java.lang.String)
+     * @see com.yahoo.labs.samoa.instances.InstanceInformationInterface#setRelationName(java.lang.String)
      */
-    public void setName(String string) {
-        this.Name = string;
+    public void setRelationName(String string) {
+        this.relationName = string;
     }
 
     /* (non-Javadoc)
-     * @see com.yahoo.labs.samoa.instances.InstanceInformationInterface#getName()
+     * @see com.yahoo.labs.samoa.instances.InstanceInformationInterface#getRelationName()
      */
-    public String getName() {
-        return this.Name;
+    public String getRelationName() {
+        return this.relationName;
     }
 
     /* (non-Javadoc)

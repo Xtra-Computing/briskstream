@@ -36,9 +36,21 @@ public abstract class LearnerBolt extends MapBolt {
      */
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         LOG.info("Successfully instantiating Learner");
-
-
     }
 
     @Override
