@@ -4,8 +4,8 @@
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>580</x>
-      <y>280</y>
+      <lon>580</lon>
+      <lat>280</lat>
       <w>40</w>
       <h>40</h>
     </coordinates>
@@ -15,8 +15,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>300</y>
+      <lon>580</lon>
+      <lat>300</lat>
       <w>60</w>
       <h>120</h>
     </coordinates>
@@ -26,8 +26,8 @@
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>500</x>
-      <y>560</y>
+      <lon>500</lon>
+      <lat>560</lat>
       <w>200</w>
       <h>120</h>
     </coordinates>
@@ -37,8 +37,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>720</x>
-      <y>540</y>
+      <lon>720</lon>
+      <lat>540</lat>
       <w>320</w>
       <h>160</h>
     </coordinates>
@@ -49,8 +49,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>660</y>
+      <lon>580</lon>
+      <lat>660</lat>
       <w>60</w>
       <h>120</h>
     </coordinates>
@@ -60,8 +60,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1700</x>
-      <y>1680</y>
+      <lon>1700</lon>
+      <lat>1680</lat>
       <w>1640</w>
       <h>260</h>
     </coordinates>
@@ -76,8 +76,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>420</x>
-      <y>740</y>
+      <lon>420</lon>
+      <lat>740</lat>
       <w>380</w>
       <h>120</h>
     </coordinates>
@@ -87,8 +87,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>820</x>
-      <y>720</y>
+      <lon>820</lon>
+      <lat>720</lat>
       <w>1320</w>
       <h>200</h>
     </coordinates>
@@ -102,8 +102,8 @@ in the best case one access 64 bytes:  #access = |tuple|/64 </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>2600</x>
-      <y>1960</y>
+      <lon>2600</lon>
+      <lat>1960</lat>
       <w>740</w>
       <h>260</h>
     </coordinates>
@@ -118,8 +118,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>460</x>
-      <y>380</y>
+      <lon>460</lon>
+      <lat>380</lat>
       <w>280</w>
       <h>120</h>
     </coordinates>
@@ -129,8 +129,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>760</x>
-      <y>360</y>
+      <lon>760</lon>
+      <lat>360</lat>
       <w>300</w>
       <h>180</h>
     </coordinates>
@@ -141,8 +141,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>480</y>
+      <lon>580</lon>
+      <lat>480</lat>
       <w>60</w>
       <h>120</h>
     </coordinates>
@@ -152,8 +152,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>840</y>
+      <lon>580</lon>
+      <lat>840</lat>
       <w>60</w>
       <h>140</h>
     </coordinates>
@@ -163,8 +163,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>420</x>
-      <y>940</y>
+      <lon>420</lon>
+      <lat>940</lat>
       <w>380</w>
       <h>120</h>
     </coordinates>
@@ -174,8 +174,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>820</x>
-      <y>920</y>
+      <lon>820</lon>
+      <lat>920</lat>
       <w>980</w>
       <h>180</h>
     </coordinates>
@@ -187,8 +187,8 @@ including function execution, tuple serialize, emit.}</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>1040</y>
+      <lon>580</lon>
+      <lat>1040</lat>
       <w>60</w>
       <h>160</h>
     </coordinates>
@@ -198,8 +198,8 @@ including function execution, tuple serialize, emit.}</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>60</x>
-      <y>920</y>
+      <lon>60</lon>
+      <lat>920</lat>
       <w>340</w>
       <h>180</h>
     </coordinates>
@@ -212,8 +212,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLSpecialState</id>
     <coordinates>
-      <x>580</x>
-      <y>1160</y>
+      <lon>580</lon>
+      <lat>1160</lat>
       <w>40</w>
       <h>40</h>
     </coordinates>
@@ -223,8 +223,8 @@ style=wordwrap</panel_attributes>
   <element>
     <id>UMLObject</id>
     <coordinates>
-      <x>40</x>
-      <y>220</y>
+      <lon>40</lon>
+      <lat>220</lat>
       <w>2080</w>
       <h>1140</h>
     </coordinates>

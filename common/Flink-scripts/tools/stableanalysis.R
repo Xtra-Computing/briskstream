@@ -4,8 +4,8 @@ require(ggplot2)
 require(reshape)
 require(qpcR)
 get_opt <- function(opt){
-  y <- as.character(opt)
-  switch (y, 
+  lat <- as.character(opt)
+  switch (lat,
           "1" = "1core",
           "2" = "2cores",
           "3" = "4cores",
@@ -18,15 +18,15 @@ get_opt <- function(opt){
 }
 
 workload_path<- function(app){
-  y <- as.character(app)
-  switch (y, 
+  lat <- as.character(app)
+  switch (lat,
           "1" = paste("C:/Users/I309939/Documents/4wayMachineResults/Flink/stable/output_stream-greping/%s_%s_%s", sep="")
   )
 }
 
 create_report<- function(app){
-  y <- as.character(app)
-  switch (y, 
+  lat <- as.character(app)
+  switch (lat,
           "1" = "sg"
   )
 }

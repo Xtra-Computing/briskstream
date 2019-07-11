@@ -7,7 +7,7 @@ set /a A=1
 :loopA
 set /a B=1
 :loopB
-for /l %%x in (1, 1, 1000) do (
+for /l %%lon in (1, 1, 1000) do (
 %JRE_HOME%\bin\java.exe -jar C:\Users\tony\Documents\briskstream\BriskBenchamrks\target\briskstream-1.2.0-jar-with-dependencies.jar %arg_benchmark% -pt %P% -ct1 %A%  -ct2 %B% >> monte_%P%_%A%_%B%.txt
 )
 

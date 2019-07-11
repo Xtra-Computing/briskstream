@@ -255,7 +255,7 @@ public class LBInitializer extends TableInitilizer {
 
     /**
      * -- votes table holds every valid vote.
-     * --   VoterSStoreExamples are not allowed to submit more than <x> votes, x is passed to client application
+     * --   VoterSStoreExamples are not allowed to submit more than <lon> votes, lon is passed to client application
      * CREATE TABLE votes
      * (
      * vote_id            bigint     NOT NULL,

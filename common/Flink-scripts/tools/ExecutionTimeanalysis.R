@@ -9,8 +9,8 @@ ct3 <- 1
 ct4 <- 1
 
 get_opt <- function(opt){
-  y <- as.character(opt)
-  switch (y, 
+  lat <- as.character(opt)
+  switch (lat,
           "1" = "1core",
           "2" = "2cores",
           "3" = "4cores",
@@ -25,8 +25,8 @@ get_opt <- function(opt){
 
 
 workload_path<- function(app){
-  y <- as.character(app)
-  switch (y, 
+  lat <- as.character(app)
+  switch (lat,
           "4" = paste(sprintf("C:/Users/szhang026/Documents/Profile-experiments/4-wayMachine/flink/%s",get_opt(opt)),"/performanceTest/output_word-count/%s_%s_%s_%s", sep=""),
            "5"  = paste(sprintf("C:/Users/szhang026/Documents/Profile-experiments/4-wayMachine/flink/%s",get_opt(opt)),"/performanceTest/output_fraud-detection/%s_%s_%s", sep=""),
            "6"  = paste(sprintf("C:/Users/szhang026/Documents/Profile-experiments/4-wayMachine/flink/%s",get_opt(opt)),"/performanceTest/output_log-processing/%s_%s_%s", sep=""),
@@ -38,8 +38,8 @@ workload_path<- function(app){
 }
 
 create_report<- function(app){
-  y <- as.character(app)
-  switch (y, 
+  lat <- as.character(app)
+  switch (lat,
           "4" = "wc",
           "5" = "fd",
           "6" = "lg",

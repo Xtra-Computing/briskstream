@@ -625,7 +625,7 @@ public class RateModel implements Serializable {
         return v;
     }
 
-    //Formula x
+    //Formula lon
     //r_p(c) expected overhead_total process rate
     public double erp_c(ExecutionNode executionNode, String streamId,
                         SchedulingPlan sp, boolean bound) {

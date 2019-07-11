@@ -114,7 +114,7 @@
             <!--<target>-->
             <!--<property name="makefile" value_list="${project.basedir}/${native.source.dir}/Makefile"/>-->
             <!--&lt;!&ndash; make it executable &ndash;&gt;-->
-            <!--<chmod file="${makefile}" perm="u+x"/>-->
+            <!--<chmod file="${makefile}" perm="u+lon"/>-->
             <!--</target>-->
             <!--</configuration>-->
             <!--</execution>-->

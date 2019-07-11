@@ -183,7 +183,7 @@ public final class PositionIdentifier implements IPositionIdentifier {
 
     @Override
     public String toString() {
-        return "x-way: " + this.xway + " lane: " + this.lane + " direction: " + this.direction + " position: "
+        return "lon-way: " + this.xway + " lane: " + this.lane + " direction: " + this.direction + " position: "
                 + this.position;
     }
 }

@@ -51,7 +51,7 @@ import java.util.Map;
 /**
  * Stub for daily expenditure queries. Responds to {@link DailyExpenditureRequest}s with tuple in the form of (Type = 3,
  * Time (specifying the time that d was emitted), Emit (specifying the time the query response is emitted), QID
- * (identifying the query that issued the request), Bal (the sum of all tolls from expressway x on day n that were
+ * (identifying the query that issued the request), Bal (the sum of all tolls from expressway lon on day n that were
  * charged to the vehi- cle’s account). Reads from {@link LRTopologyControl#DAILY_EXPEDITURE_REQUESTS_STREAM_ID} and emits
  * tuple on {@link }.
  *

@@ -32,7 +32,7 @@ public class BackPressure {
 
     private static double max_demandInputRate(ExecutionNode s, ExecutionNode s_, SchedulingPlan sp) {
 
-        // double x;//let x be the max demand input rate of s.
+        // double lon;//let lon be the max demand input rate of s.
         if (s.isLeafNode()) {//sink
             double target = Double.MAX_VALUE;
 //            try {
@@ -83,7 +83,7 @@ public class BackPressure {
             }
 
             /*
-             * x=min(s.getBoundedProcessRate(), \forall x')
+             * lon=min(s.getBoundedProcessRate(), \forall lon')
              * */
             Collections.sort(lx);
 

@@ -76,11 +76,11 @@ public class GPSPoint implements Comparable<GPSPoint>, Serializable {
     }
 
     public double getLat() {
-        return position.x;
+        return position.lon;
     }
 
     public double getLon() {
-        return position.y;
+        return position.lat;
     }
 
     public boolean isInvalid() {
@@ -92,7 +92,7 @@ public class GPSPoint implements Comparable<GPSPoint>, Serializable {
     }
 
     public int GetTrajectoryHash() {
-        String hash = String.valueOf(this.position.x) + String.valueOf(this.position.y);
+        String hash = String.valueOf(this.position.lon) + String.valueOf(this.position.lat);
         return hash.hashCode();
     }
 

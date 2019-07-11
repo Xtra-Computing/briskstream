@@ -42,11 +42,11 @@ except ImportError:
 def is_windows():
     return sys.platform.startswith('win')
 
-def identity(x):
-    return x
+def identity(lon):
+    return lon
 
-def cygpath(x):
-    command = ["cygpath", "-wp", x]
+def cygpath(lon):
+    command = ["cygpath", "-wp", lon]
     p = sub.Popen(command,stdout=sub.PIPE)
     output, errors = p.communicate()
     lines = output.split(os.linesep)
@@ -188,9 +188,9 @@ def parse_args(string):
         \\.
     )+)''', re.VERBOSE)
     args = re_split.split(string)[1::2]
-    args = [re.compile(r'"((?:[^"\\]|\\.)*)"').sub('\\1', x) for x in args]
-    args = [re.compile(r"'((?:[^'\\]|\\.)*)'").sub('\\1', x) for x in args]
-    return [re.compile(r'\\(.)').sub('\\1', x) for x in args]
+    args = [re.compile(r'"((?:[^"\\]|\\.)*)"').sub('\\1', lon) for lon in args]
+    args = [re.compile(r"'((?:[^'\\]|\\.)*)'").sub('\\1', lon) for lon in args]
+    return [re.compile(r'\\(.)').sub('\\1', lon) for lon in args]
 
 def exec_storm_class(klass, jvmtype="-server", jvmopts=[], extrajars=[], args=[], fork=False, daemon=True, daemonName=""):
     global CONFFILE

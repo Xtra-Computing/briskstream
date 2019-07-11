@@ -12,7 +12,7 @@ set /a "num_workers_end = 1"
 set /a "bt = 0"
 set /a "bt_end = -1"
 :forloop_batch
-set /a "x = 0"
+set /a "lon = 0"
 set /a "x_end = 0"
 :forloop_x
 REM set /a "vm = 384/num_workers"
@@ -207,28 +207,28 @@ if %app%==12 (
 	start storm.cmd jar C:\Users\szhang026\Documents\test.jar storm.applications.BriskRunner mytest -a sentiment-analysis -n %num_workers% -bt %bt% -mp %MY_PATH2% -m remote -cn %count_number% -co "-server -Xmx%vm%g -Xms%vm%g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UseNUMA"
 )
 
-IF %x% gtr 0 (
+IF %lon% gtr 0 (
 	del "%MY_PATH2%\spout_threadId.txt"
 	:forloops	
 	TIMEOUT /T 30 /NOBREAK
 	for %%R in ("%MY_PATH2%\spout_threadId.txt") do if not %%~zR gtr 1 goto forloops
 	set /p r=< "%MY_PATH2%\spout_threadId.txt" 
 
-	"C:\Java\bin\jstack.exe" %r% >> "%MY_PATH2%\threaddump_%x%.txt
+	"C:\Java\bin\jstack.exe" %r% >> "%MY_PATH2%\threaddump_%lon%.txt
 )
 
 
-REM IF %x%==1 (
+REM IF %lon%==1 (
 	REM concurrency has some problem, need to mannualy..
 	REM "C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect concurrency -target-duration-type=medium -data-limit=150 --search-dir sym:p=C:\Java\bin --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10 --target-pid %r% -result-dir %MY_PATH2%\concurrency >> %MY_PATH2%\profile1.txt	
 REM )
 
-IF %x%==1 (
+IF %lon%==1 (
 	REM General Exploration with CPU concurrency and Memory Bandwidth
 	"C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect general-exploration -knob collect-memory-bandwidth=true -target-duration-type=medium -data-limit=0 --search-dir sym:p=C:\Java\bin --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10 --target-pid  %r% -result-dir %MY_PATH2%\resource	>> %MY_PATH2%\profile1.txt
 )
 
-IF %x%==2 (
+IF %lon%==2 (
 	REM general
 	REM "C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect-with runsa -knob event-config=CPU_CLK_UNHALTED.THREAD_P:sa=2000003,DTLB_LOAD_MISSES.STLB_HIT:sa=100003,DTLB_LOAD_MISSES.WALK_DURATION:sa=2000003,ICACHE.MISSES:sa=200003,IDQ_UOPS_NOT_DELIVERED.CORE:sa=2000003,ILD_STALL.IQ_FULL:sa=2000003,ILD_STALL.LCP:sa=2000003,INST_RETIRED.ANY_P:sa=2000003,INT_MISC.RECOVERY_CYCLES:sa=2000003,ITLB_MISSES.STLB_HIT:sa=100003,ITLB_MISSES.WALK_DURATION:sa=2000003,LD_BLOCKS.STORE_FORWARD:sa=100003,LD_BLOCKS_PARTIAL.ADDRESS_ALIAS:sa=100003,MEM_LOAD_UOPS_LLC_HIT_RETIRED.XSNP_HIT:sa=20011,MEM_LOAD_UOPS_LLC_HIT_RETIRED.XSNP_HITM:sa=20011,MEM_LOAD_UOPS_LLC_MISS_RETIRED.REMOTE_DRAM:sa=100007,MEM_LOAD_UOPS_RETIRED.L1_HIT_PS:sa=2000003,MEM_LOAD_UOPS_RETIRED.L2_HIT_PS:sa=100003,MEM_LOAD_UOPS_RETIRED.LLC_HIT:sa=50021,MEM_LOAD_UOPS_RETIRED.LLC_MISS:sa=100007,MEM_UOPS_RETIRED.SPLIT_LOADS_PS:sa=100003,MEM_UOPS_RETIRED.SPLIT_STORES_PS:sa=100003,OFFCORE_RESPONSE.ALL_DEMAND_MLC_PREF_READS.LLC_MISS.ANY_RESPONSE_1:sa=100003,OFFCORE_RESPONSE.ALL_DEMAND_MLC_PREF_READS.LLC_MISS.LOCAL_DRAM_0:sa=100003,OFFCORE_RESPONSE.ALL_DEMAND_MLC_PREF_READS.LLC_MISS.REMOTE_HITM_HIT_FORWARD_1:sa=100003,PARTIAL_RAT_STALLS.FLAGS_MERGE_UOP_CYCLES:sa=2000003,PARTIAL_RAT_STALLS.SLOW_LEA_WINDOW:sa=2000003,UOPS_ISSUED.ANY:sa=2000003,UOPS_RETIRED.ALL_PS:sa=2000003,UOPS_RETIRED.RETIRE_SLOTS_PS:sa=2000003 -data-limit=0 --search-dir sym:p=C:\Java\bin --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10  --target-pid  %r% -result-dir %MY_PATH2%\general >> %MY_PATH2%\profile2.txt
 	
@@ -238,13 +238,13 @@ IF %x%==2 (
 	
 )
 
-IF %x%==3 (
+IF %lon%==3 (
 	REM context switch
 	REM "C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect-with runsa -knob enable-stack-collection=true -knob enable-call-counts=true -knob enable-trip-counts=true -knob enable-frames=false -knob enable-context-switches=true -knob preciseMultiplexing=true --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10 --duration 500 --target-pid %r% -result-dir %MY_PATH2%\context >> %MY_PATH2%\profile3.txt
 	"C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect advanced-hotspots -knob collection-detail=stack-sampling -data-limit=0 --search-dir sym:p=C:\Java\bin --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10 --duration 500 --target-pid %r% -result-dir %MY_PATH2%\context >> %MY_PATH2%\profile3.txt
 )
 
-IF %x%==4 (
+IF %lon%==4 (
 "C:\Program Files (x86)\IntelSWTools\VTune Amplifier XE 2016\bin64\amplxe-cl" -collect-with runsa -knob event-config=OFFCORE_RESPONSE.ALL_DATA_RD.ANY_RESPONSE_0:sa=100003,OFFCORE_RESPONSE.DEMAND_DATA_RD.LLC_MISS.LOCAL_DRAM_0:sa=100003,OFFCORE_RESPONSE.PF_L2_CODE_RD.LLC_MISS.ANY_RESPONSE_0:sa=100003,OFFCORE_RESPONSE.PF_L2_DATA_RD.LLC_MISS.ANY_DRAM_0:sa=100003,OFFCORE_RESPONSE.PF_L2_DATA_RD.LLC_MISS.LOCAL_DRAM_0:sa=100003,OFFCORE_RESPONSE.PF_L2_DATA_RD.LLC_MISS.REMOTE_HITM_0:sa=100003,OFFCORE_RESPONSE.PF_L2_DATA_RD.LLC_MISS.REMOTE_HIT_FORWARD_0:sa=100003 -data-limit=0 --search-dir sym:p=C:\Java\bin --search-dir bin:p=C:\Java\bin --start-paused --resume-after 10  --target-pid  %r% -result-dir %MY_PATH2%\MEM_%c% >> %MY_PATH2%\profile4_%c%.txt
 )
 	
@@ -266,8 +266,8 @@ if %app% LEQ %app_end% goto forloop_app
 REM set /a "num_workers = num_workers + 1"
 REM if %num_workers% LEQ %num_workers_end% goto forloop_vm
 
-set /a "x = x + 1"
-if %x% LEQ %x_end% goto forloop_x
+set /a "lon = lon + 1"
+if %lon% LEQ %x_end% goto forloop_x
 
 set /a "bt = bt * 2"
 if %bt% LEQ %bt_end% goto forloop_batch
