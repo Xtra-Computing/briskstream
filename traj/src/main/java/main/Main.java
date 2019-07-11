@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import struct.GPSPoint;
 import struct.GPSPointTimestampComparator;
-import struct.Trajectory;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,14 +11,17 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
-
-        ParseSGTrajectoryData("");
+        LOG.info("Sort data file by file.");
+//        ParseSGTrajectoryData("/nfs/grab_data/usr/idszs/trajectory_data");
     }
 
 
@@ -31,7 +33,6 @@ public class Main {
      * @return : The generated trajectory map.
      */
     public static void ParseSGTrajectoryData(String data_location) {
-        Map<String, Trajectory> trajectory_map = new HashMap<>();
 
         //Building the Trajectory Map
         Path dir = Paths.get(data_location);
