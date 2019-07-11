@@ -1,4 +1,4 @@
-package applications.sink.formatter;
+package applications.general.sink.formatter;
 
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;

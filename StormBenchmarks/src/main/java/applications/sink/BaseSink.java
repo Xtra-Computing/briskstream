@@ -1,10 +1,10 @@
-package applications.sink;
+package applications.general.sink;
 
 import applications.StormRunner;
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.BaseConstants.BaseConf;
-import applications.sink.formatter.BasicFormatter;
-import applications.sink.formatter.Formatter;
+import applications.general.sink.formatter.BasicFormatter;
+import applications.general.sink.formatter.Formatter;
 import applications.util.ClassLoaderUtils;
 import org.apache.storm.generated.KillOptions;
 import org.apache.storm.generated.Nimbus;

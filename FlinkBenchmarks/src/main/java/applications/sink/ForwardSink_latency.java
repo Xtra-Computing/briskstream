@@ -1,7 +1,7 @@
-package applications.sink;
+package applications.general.sink;
 
 
-import applications.sink.helper.stable_sink_helper;
+import applications.general.sink.helper.stable_sink_helper;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;

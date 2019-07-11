@@ -1,13 +1,13 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.lg.GeoStatsBolt;
-import applications.bolts.lg.GeographyBolt;
-import applications.bolts.lg.StatusCountBolt;
-import applications.bolts.lg.VolumeCountBolt;
+import applications.general.bolts.comm.ParserBolt;
+import applications.general.bolts.lg.GeoStatsBolt;
+import applications.general.bolts.lg.GeographyBolt;
+import applications.general.bolts.lg.StatusCountBolt;
+import applications.general.bolts.lg.VolumeCountBolt;
 import applications.constants.FraudDetectionConstants;
-import applications.sink.BaseSink;
-import applications.topology.BasicTopology;
+import applications.general.sink.BaseSink;
+import applications.general.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.tuple.Fields;

@@ -1,6 +1,6 @@
 package applications;
 
-import applications.topology.AbstractTopology;
+import applications.general.topology.AbstractTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.slf4j.Logger;

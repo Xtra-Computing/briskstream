@@ -1,9 +1,8 @@
 package brisk.components.operators.api;
 
 import applications.constants.BaseConstants;
-import applications.spout.helper.wrapper.StringStatesWrapper;
+import applications.general.spout.helper.wrapper.StringStatesWrapper;
 import applications.util.OsUtils;
-import brisk.components.context.TopologyContext;
 import brisk.execution.runtime.tuple.impl.Marker;
 import org.slf4j.Logger;
 

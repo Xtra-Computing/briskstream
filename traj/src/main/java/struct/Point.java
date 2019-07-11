@@ -20,10 +20,7 @@ public class Point {
     }
 
     public boolean isInvalid() {
-        if (this.lon == -1 && this.lat == -1) {
-            return true;
-        }
+        return this.lon == -1 && this.lat == -1;
 
-        return false;
     }
 }

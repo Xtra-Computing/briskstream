@@ -1,6 +1,6 @@
 package brisk.execution.runtime.tuple.impl;
 
-import applications.spout.PhoneCallGenerator;
+import applications.general.spout.PhoneCallGenerator;
 import brisk.components.context.TopologyContext;
 import engine.storage.datatype.TimestampType;
 import struct.Point;

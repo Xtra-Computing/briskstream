@@ -407,7 +407,7 @@ public class TxnManagerTStream extends TxnManagerDedicated {
      * @return time spend in tp evaluation.
      */
     @Override
-    public void start_evaluate(int thread_Id, long mark_ID) throws InterruptedException, BrokenBarrierException {
+    public void start_evaluate(int thread_Id, long mark_ID) throws InterruptedException {
 
         instance.start_evaluation(thread_Id,mark_ID);
     }

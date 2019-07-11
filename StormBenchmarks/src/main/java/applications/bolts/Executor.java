@@ -1,4 +1,4 @@
-package applications.bolts;
+package applications.general.bolts;
 
 import applications.tasks.fully_stateful_task;
 import applications.tasks.partial_stateful_task;

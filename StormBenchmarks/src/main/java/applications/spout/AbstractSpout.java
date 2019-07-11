@@ -1,4 +1,4 @@
-package applications.spout;
+package applications.general.spout;
 
 //import applications.utils.Configuration;
 

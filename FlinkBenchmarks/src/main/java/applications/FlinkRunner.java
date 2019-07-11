@@ -1,7 +1,7 @@
 package applications;
 
 import applications.constants.*;
-import applications.topology.benchmarks.*;
+import applications.general.topology.benchmarks.*;
 import applications.util.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
@@ -132,7 +132,7 @@ public class FlinkRunner extends abstractRunner {
 				config.putAll(Configuration.fromProperties(p));
 				if (mode.equalsIgnoreCase(RUN_REMOTE)) {
 					final String spout_class = String.valueOf(config.get("mb.spout.class"));
-					if (spout_class.equals("applications.spout.LocalStateSpout")) {
+					if (spout_class.equals("applications.general.spout.LocalStateSpout")) {
 						LOG.info("Please use kafkaSpout in cluster mode!!!");
 						System.exit(-1);
 					}

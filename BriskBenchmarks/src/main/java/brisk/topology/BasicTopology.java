@@ -1,8 +1,8 @@
 package brisk.topology;
 
 import applications.constants.BaseConstants;
-import applications.sink.BaseSink;
-import applications.spout.helper.parser.Parser;
+import applications.general.sink.BaseSink;
+import applications.general.spout.helper.parser.Parser;
 import applications.util.ClassLoaderUtils;
 import applications.util.Configuration;
 import brisk.components.operators.api.AbstractSpout;

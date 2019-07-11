@@ -1,6 +1,6 @@
-package applications.bolts.fd;
+package applications.general.bolts.fd;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.FraudDetectionConstants;
 import applications.model.predictor.MarkovModelPredictor;
 import applications.model.predictor.ModelBasedPredictor;

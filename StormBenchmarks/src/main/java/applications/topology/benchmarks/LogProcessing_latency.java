@@ -1,13 +1,13 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.lg.GeoStatsBolt_latency;
-import applications.bolts.lg.GeographyBolt_latency;
-import applications.bolts.lg.StatusCountBolt_latency;
-import applications.bolts.lg.VolumeCountBolt_latency;
+import applications.general.bolts.comm.ParserBolt_latency;
+import applications.general.bolts.lg.GeoStatsBolt_latency;
+import applications.general.bolts.lg.GeographyBolt_latency;
+import applications.general.bolts.lg.StatusCountBolt_latency;
+import applications.general.bolts.lg.VolumeCountBolt_latency;
 import applications.constants.WordCountConstants;
-import applications.sink.BaseSink;
-import applications.topology.BasicTopology;
+import applications.general.sink.BaseSink;
+import applications.general.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

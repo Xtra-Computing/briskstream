@@ -2,7 +2,7 @@ package brisk.components;
 
 
 import applications.Platform;
-import applications.topology.transactional.initializer.TableInitilizer;
+import applications.general.topology.transactional.initializer.TableInitilizer;
 import brisk.controller.input.InputStreamController;
 import brisk.topology.TransactionTopology;
 import engine.Database;

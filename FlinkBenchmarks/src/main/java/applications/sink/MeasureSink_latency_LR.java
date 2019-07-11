@@ -1,8 +1,8 @@
-package applications.sink;
+package applications.general.sink;
 
 import applications.constants.BaseConstants;
-import applications.sink.helper.helper;
-import applications.sink.helper.stable_sink_helper;
+import applications.general.sink.helper.helper;
+import applications.general.sink.helper.stable_sink_helper;
 import applications.util.OsUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.storm.tuple.Tuple;

@@ -1,6 +1,6 @@
 package applications.parser;
 
-import applications.spout.helper.parser.Parser;
+import applications.general.spout.helper.parser.Parser;
 import applications.util.datatypes.StreamValues;
 
 import java.util.Arrays;

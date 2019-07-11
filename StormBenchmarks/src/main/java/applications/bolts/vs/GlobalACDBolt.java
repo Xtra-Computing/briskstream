@@ -1,6 +1,6 @@
-package applications.bolts.vs;
+package applications.general.bolts.vs;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.math.VariableEWMA;
 import org.apache.storm.tuple.Fields;

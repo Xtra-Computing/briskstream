@@ -1,12 +1,12 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.lr.*;
+import applications.general.bolts.comm.ParserBolt;
+import applications.general.bolts.lr.*;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.datatypes.util.TopologyControl;
-import applications.topology.BasicTopology;
+import applications.general.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.tuple.Fields;

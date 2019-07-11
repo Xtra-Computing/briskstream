@@ -1,13 +1,13 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.lr.*;
+import applications.general.bolts.comm.ParserBolt_latency;
+import applications.general.bolts.lr.*;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;
 import applications.datatypes.util.TopologyControl;
-import applications.topology.BasicTopology;
+import applications.general.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

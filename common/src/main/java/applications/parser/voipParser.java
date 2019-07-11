@@ -1,7 +1,7 @@
 package applications.parser;
 
 import applications.model.cdr.CallDetailRecord;
-import applications.spout.helper.parser.Parser;
+import applications.general.spout.helper.parser.Parser;
 import applications.util.datatypes.StreamValues;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;

@@ -428,9 +428,8 @@ public class Engine {
 	/**
 	 * If the selection strategy is partition-contiguity, this method is called and it will iterate runs in the same partition for the current event
 	 * @param e The current event which is being evaluated.
-	 * @throws CloneNotSupportedException
-	 */
-	public void evaluateRunsForPartitionContiguity(Event e) throws CloneNotSupportedException{
+     */
+	public void evaluateRunsForPartitionContiguity(Event e) {
 		int key = e.getAttributeByName(ConfigFlags.partitionAttribute);
 		if(this.activeRunsByPartition.containsKey(key)){
 			ArrayList<Run> partitionedRuns = this.activeRunsByPartition.get(key);

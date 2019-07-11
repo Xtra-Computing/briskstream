@@ -1,12 +1,12 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.wc.SplitSentenceBolt;
-import applications.bolts.wc.WordCountBolt;
+import applications.general.bolts.comm.ParserBolt;
+import applications.general.bolts.wc.SplitSentenceBolt;
+import applications.general.bolts.wc.WordCountBolt;
 import applications.constants.WordCountConstants;
 import applications.constants.WordCountConstants.Component;
 import applications.constants.WordCountConstants.Field;
-import applications.topology.BasicTopology;
+import applications.general.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

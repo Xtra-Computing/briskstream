@@ -1,7 +1,7 @@
-package applications.bolts.lg;
+package applications.general.bolts.lg;
 
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.LogProcessingConstants.Conf;
 import applications.constants.LogProcessingConstants.Field;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;

@@ -1,6 +1,6 @@
-package applications.bolts.wc;
+package applications.general.bolts.wc;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.WordCountConstants.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.storm.task.OutputCollector;

@@ -1,4 +1,4 @@
-package applications.bolts;
+package applications.general.bolts;
 
 //import applications.utils.Configuration;
 

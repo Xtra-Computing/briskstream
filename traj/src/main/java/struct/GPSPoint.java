@@ -84,11 +84,8 @@ public class GPSPoint implements Comparable<GPSPoint>, Serializable {
     }
 
     public boolean isInvalid() {
-        if (this.time == new Date(0) && this.position.isInvalid()) {
-            return true;
-        }
+        return this.time == new Date(0) && this.position.isInvalid();
 
-        return false;
     }
 
     public int GetTrajectoryHash() {

@@ -1,12 +1,12 @@
-package applications.topology.benchmarks;
+package applications.general.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.sd.MovingAverageBolt_latency;
-import applications.bolts.sd.SpikeDetectionBolt_latency;
+import applications.general.bolts.comm.ParserBolt_latency;
+import applications.general.bolts.sd.MovingAverageBolt_latency;
+import applications.general.bolts.sd.SpikeDetectionBolt_latency;
 import applications.constants.SpikeDetectionConstants;
 import applications.constants.SpikeDetectionConstants.Component;
 import applications.constants.SpikeDetectionConstants.Field;
-import applications.topology.BasicTopology;
+import applications.general.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

@@ -1,9 +1,9 @@
-package applications.sink;
+package applications.general.sink;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.constants.BaseConstants.BaseConf;
-import applications.sink.formatter.BasicFormatter;
-import applications.sink.formatter.Formatter;
+import applications.general.sink.formatter.BasicFormatter;
+import applications.general.sink.formatter.Formatter;
 import applications.util.ClassLoaderUtils;
 import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;

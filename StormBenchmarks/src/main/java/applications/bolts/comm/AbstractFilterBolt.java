@@ -1,6 +1,6 @@
-package applications.bolts.comm;
+package applications.general.bolts.comm;
 
-import applications.bolts.AbstractBolt;
+import applications.general.bolts.AbstractBolt;
 import applications.util.hash.ODTDBloomFilter;
 import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
