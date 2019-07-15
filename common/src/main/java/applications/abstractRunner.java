@@ -182,7 +182,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"-m", "--mode"}, description = "Mode for running the topology")
     public String mode = RUN_LOCAL;
     @Parameter(names = {"-a", "--app"}, description = "The application to be executed", required = false)
-    public String application = "wordcount"; /*"wordcount";*/ /*"streamingAnalysis"*/
+    public String application = "WordCount"; /*"wordcount";*/ /*"streamingAnalysis"*/
 
     @Parameter(names = {"-t", "--Brisk.topology-name"}, required = false, description = "The name of the Brisk.topology")
     public String topologyName;

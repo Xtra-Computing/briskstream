@@ -1,2 +1,0 @@
-Executor	spout           allocate into 0	input rate:220.00    	output rate:220.00    	process rate:Infinity  	demand cycles:0.00      
-Executor	sink            allocate into 0	input rate:220.00    	output rate:220.00    	process rate:Infinity  	demand cycles:0.00      

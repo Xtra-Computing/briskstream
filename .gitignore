@@ -247,3 +247,7 @@ MAP/wc/tmp
 StormBenchmarks/logs/
 PROFILE/
 HeronBenchmarks/target/
+BriskBenchmarks/target/
+Database/target/
+CEP/target/
+affinity/target/
