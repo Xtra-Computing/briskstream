@@ -287,14 +287,20 @@ public class STAT implements Serializable {
 
             target = executionNode.getOP() + numTasks + srcNode.getOP();
 
-//			LOG.info("load initial target: "+target);c
+//			LOG.info("load initial target: "+target);
             File tmpfile = new File(dir + OsUtils.OS_wrapper(target + ".txt"));
 
             while (!tmpfile.exists()) {
                 target = executionNode.getOP() + Math.max(1, (numTasks--)) + srcNode.getOP();
                 tmpfile = new File(dir + OsUtils.OS_wrapper(target + ".txt"));
+                if (numTasks == 0)
+                    break;
             }
-//			LOG.info("load final target:"+target);
+
+            if (tmpfile.exists())
+                LOG.info("load final target:" + target);
+            else
+                LOG.info("not able to load any target file, have you profile it already?");
 //			int numTasks = 5;
 //			target = executionNode.getOP() + numTasks + srcNode.getOP();
 
