@@ -140,14 +140,14 @@ public class WordCountBolt extends MapBolt {
     }
 
     public void display() {
-        double size_state;
+//        double size_state;
 //		if (OsUtils.isUnix()) {
 //			size_state = MemoryUtil.deepMemoryUsageOf(counts, MemoryUtil.VisibilityFilter.ALL);
 //		} else {
-        size_state = counts.size();
+//        size_state = counts.size();
 //		}
 //
-        LOG.info("Num of Tasks:" + this.getContext().getNUMTasks() + ", State size: " + size_state);
+//        LOG.info("Num of Tasks:" + this.getContext().getNUMTasks() + ", State size: " + size_state);
 
 //		for (Map.Entry<String, MutableLong> entry : counts.entrySet()) {
 //			System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());

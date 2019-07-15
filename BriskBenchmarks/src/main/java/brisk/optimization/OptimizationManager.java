@@ -33,7 +33,7 @@ public class OptimizationManager extends executorThread {
     private final static Logger LOG = LoggerFactory.getLogger(OptimizationManager.class);
     private final Configuration conf;
     private final int end_cnt = 50;//50* 10=500 seconds per executor maximally
-    private final long warmup_gaps = (long) (60 * 1E3);//60 seconds.
+    private final long warmup_gaps = (long) (1 * 1E3);//1 seconds.
     private final boolean profile;
     private final RoutingOptimizer ro;
     private final String prefix;
@@ -66,6 +66,7 @@ public class OptimizationManager extends executorThread {
 
     private void profile_eachThread() {
         int cnt;
+        LOG.info("Start to profile each thread!");
         executionPlan.profile_executor = 0;//start_executor reverse profile...
         end_executor = g.getSink().getExecutorID();// Math.min(end_executor, g.getExecutionNodeArrayList().size());//profile all threads except virtual.
         try {
@@ -394,7 +395,7 @@ public class OptimizationManager extends executorThread {
 
 
         if (profile) {
-//            LOG.info("Wait for warm up phase...");
+            LOG.info("Wait for warm up phase...");
             warmup();
             LOG.info("Start to profile each thread...");
             profile_eachThread();

@@ -299,8 +299,8 @@ public class STAT implements Serializable {
 
             if (tmpfile.exists())
                 LOG.info("load final target:" + target);
-            else
-                LOG.info("not able to load any target file, have you profile it already?");
+
+
 //			int numTasks = 5;
 //			target = executionNode.getOP() + numTasks + srcNode.getOP();
 
@@ -324,10 +324,11 @@ public class STAT implements Serializable {
                         read_info(read);
                         sc.close();
                     } catch (Exception e) {
-                        LOG.info("Load STAT failed, set all to 0");
+                        LOG.info("Load file failed, set all to 0");
                         setAllZero();
                     }
                 } else {
+                    LOG.info("not able to load any statistic file for operator "+executionNode.getOP_full()+", please profile it first.");
                     setAllZero();
                 }
                 //Store information to hashmap.
