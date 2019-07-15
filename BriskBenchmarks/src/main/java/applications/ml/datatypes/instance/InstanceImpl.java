@@ -20,8 +20,6 @@ package applications.ml.datatypes.instance;
  * #L%
  */
 
-import applications.ml.datatypes.Attribute;
-
 import java.text.SimpleDateFormat;
 
 public class InstanceImpl implements MultiLabelInstance {

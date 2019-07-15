@@ -1,4 +1,4 @@
-package applications.ml.datatypes;
+package applications.ml.datatypes.instance;
 
 import java.io.Serializable;
 

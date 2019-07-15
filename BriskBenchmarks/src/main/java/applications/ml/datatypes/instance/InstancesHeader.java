@@ -20,8 +20,6 @@ package applications.ml.datatypes.instance;
  * #L%
  */
 
-import applications.ml.datatypes.Attribute;
-
 public class InstancesHeader extends Instances {
 
     private static final long serialVersionUID = 1L;

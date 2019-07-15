@@ -1,4 +1,6 @@
-package applications.ml.datatypes;
+package applications.ml.datatypes.instance;
+
+import applications.ml.datatypes.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

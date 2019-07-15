@@ -1,10 +1,6 @@
 package applications.ml.datatypes.instance;
 
 
-import applications.ml.datatypes.Attribute;
-import applications.ml.datatypes.AttributesInformation;
-import applications.ml.datatypes.Range;
-
 import java.util.List;
 
 /**

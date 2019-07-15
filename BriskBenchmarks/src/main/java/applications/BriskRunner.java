@@ -5,7 +5,7 @@ import applications.general.topology.classical.*;
 import applications.general.topology.faulttolerance.WordCount_FT;
 import applications.general.topology.latency.LinearRoad_latency;
 import applications.general.topology.latency.WordCount_latency;
-import applications.ml.topology.PrequentialEvaluation;
+import applications.ml.topology.PrequentialEvaluationVHT;
 import applications.general.topology.transactional.*;
 import applications.util.Configuration;
 import applications.util.Constants;
@@ -86,7 +86,7 @@ public class BriskRunner extends abstractRunner {
 
 
         //OL
-        driver.addApp("Classification", PrequentialEvaluation.class);
+        driver.addApp("Classification", PrequentialEvaluationVHT.class);
 
     }
 

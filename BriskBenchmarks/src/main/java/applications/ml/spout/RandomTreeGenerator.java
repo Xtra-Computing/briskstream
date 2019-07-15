@@ -1,7 +1,7 @@
 package applications.ml.spout;
 
-import applications.ml.datatypes.Attribute;
-import applications.ml.datatypes.DenseInstance;
+import applications.ml.datatypes.instance.Attribute;
+import applications.ml.datatypes.instance.DenseInstance;
 import applications.ml.datatypes.instance.Instance;
 import applications.ml.datatypes.instance.Instances;
 import applications.ml.datatypes.instance.InstancesHeader;

@@ -3,8 +3,9 @@ package applications.ml.topology;
 import applications.constants.ClassifierConstants.Component;
 import applications.constants.ClassifierConstants.Field;
 import applications.ml.bolts.EvaluatorBolt;
-import applications.ml.bolts.LearnerBolt;
-import applications.ml.bolts.VerticalHoeffdingTreeBolt;
+import applications.ml.bolts.FilterBolt;
+import applications.ml.bolts.FilterProcessor;
+import applications.ml.bolts.ModelAggregatorProcessor;
 import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
@@ -27,13 +28,15 @@ import static applications.constants.ClassifierConstants.PREFIX;
  * @author Arinto Murdopo
  * @author shuhaozhang adapt to BriskStream.
  */
-public class PrequentialEvaluation extends BasicTopology {
-    private static final Logger LOG = LoggerFactory.getLogger(PrequentialEvaluation.class);
+public class PrequentialEvaluationVHT extends BasicTopology {
+    private static final Logger LOG = LoggerFactory.getLogger(PrequentialEvaluationVHT.class);
 
-    private LearnerBolt classifier;
+    private FilterProcessor filter;
+    private ModelAggregatorProcessor MA;
+
     private EvaluatorBolt evaluator;
 
-    public PrequentialEvaluation(String topologyName, Configuration config) {
+    public PrequentialEvaluationVHT(String topologyName, Configuration config) {
         super(topologyName, config);
     }
 
@@ -52,12 +55,15 @@ public class PrequentialEvaluation extends BasicTopology {
             spout.setFields(new Fields(Field.TEXT));
             builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
+            filter = new FilterProcessor();
 
-            classifier = new VerticalHoeffdingTreeBolt(builder);//may include additional operator inside classifier operator.
-
-            builder.setBolt(Component.LEARNER, classifier
+            builder.setBolt(Component.LEARNER, filter
                     , config.getInt(LEARNER_THREADS, 1)
                     , new ShuffleGrouping(Component.SPOUT));
+
+
+
+
 
             evaluator = new EvaluatorBolt();
 

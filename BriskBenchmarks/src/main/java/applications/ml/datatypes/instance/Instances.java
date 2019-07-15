@@ -1,11 +1,8 @@
 package applications.ml.datatypes.instance;
 
 
-import applications.ml.datatypes.Attribute;
-import applications.ml.datatypes.Range;
 import applications.ml.datatypes.Utils;
 
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;

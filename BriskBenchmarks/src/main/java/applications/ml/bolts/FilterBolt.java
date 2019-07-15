@@ -11,16 +11,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 
-public abstract class LearnerBolt extends MapBolt {
-
-    private static final Logger LOG = LoggerFactory.getLogger(LearnerBolt.class);
+public class FilterBolt extends MapBolt {
+    private static final Logger LOG = LoggerFactory.getLogger(FilterBolt.class);
     private static final long serialVersionUID = 6445550040247603261L;
     double sel = 0;
     double nsel = 0;
     int cnt = 0;
     int loop = 1;
 
-    public LearnerBolt() {
+    public FilterBolt() {
         super(LOG, new HashMap<>());
         this.read_selectivity = 1;
         this.output_selectivity.put(BaseConstants.BaseStream.DEFAULT, 1.0);//workaround to ensure same output selectivity
@@ -37,25 +36,12 @@ public abstract class LearnerBolt extends MapBolt {
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         LOG.info("Successfully instantiating Learner");
     }
 
     @Override
     public void execute(Tuple in) throws InterruptedException {
-        LOG.info("Learner has received a tuple: " + in.getString(0));
+        LOG.info("FilterBolt has received a tuple: " + in.getString(0));
     }
 
 
