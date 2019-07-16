@@ -294,6 +294,8 @@ public class STAT implements Serializable {
             while (!tmpfile.exists()) {
                 target = executionNode.getOP() + Math.max(1, (numTasks--)) + srcNode.getOP();
                 tmpfile = new File(dir + OsUtils.OS_wrapper(target + ".txt"));
+                if (numTasks == 0)
+                    break;
             }
 //			LOG.info("Prepared final target:"+target);
 //			int numTasks = 5;

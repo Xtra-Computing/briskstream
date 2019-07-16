@@ -148,7 +148,7 @@ public class AffinityController {
 //			}
 
 //			LOG.info("cnt:" + cnt + " pick CPU" + cpus[0] + " from nodes: " + node);
-            if ((conf.getBoolean("profile", false) || conf.getBoolean("NAV", false)) && cnt == 17) {
+            if ((conf.getBoolean("profile", false) || conf.getBoolean("NAV", false)) && cnt == cores - 1) {
                 offset++;
 //				LOG.info("offset ++");
             } else {
