@@ -10,15 +10,11 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>common</module>
-        <module>Database</module>
         <module>Affinity</module>
         <module>BriskBenchmarks</module>
-        <!--<module>SparkBenchmarks</module>-->
 <!--        <module>StormBenchmarks</module>-->
 <!--        <module>FlinkBenchmarks</module>-->
-        <!--<module>briskstream_MQ</module>-->
         <!--<module>HeronBenchmarks</module>-->
-        <!--<module>kafka-spout-develop</module>-->
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
