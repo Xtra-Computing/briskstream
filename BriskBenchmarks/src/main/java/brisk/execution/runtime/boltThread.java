@@ -25,8 +25,6 @@ import java.util.HashSet;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
-import static applications.CONTROL.enable_numa_placement;
-import static applications.CONTROL.enable_shared_state;
 import static applications.util.OsUtils.isUnix;
 import static com.javamex.classmexer.MemoryUtil.VisibilityFilter.ALL;
 import static net.openhft.affinity.AffinityLock.dumpLocks;
@@ -71,7 +69,7 @@ public class boltThread extends executorThread {
         bolt.setclock(clock);
     }
 
-    protected void _profile() throws InterruptedException,  BrokenBarrierException {
+    protected void _profile() throws InterruptedException, BrokenBarrierException {
         if (isUnix()) {
             UNIX = true;
             // LOG.info("running in Linux environment");
@@ -164,30 +162,20 @@ public class boltThread extends executorThread {
      *
      * @throws InterruptedException
      */
-    protected void _execute_noControl() throws InterruptedException,  BrokenBarrierException {
+    protected void _execute_noControl() throws InterruptedException, BrokenBarrierException {
 
-
-        if (enable_shared_state) {//this is for T-Stream.
-            Tuple in = fetchResult_single();
-            if (in != null) {
-                bolt.execute(in);
-                cnt += batch;
-            } else {
-                miss++;
-            }
+        TransferTuple in = fetchResult();
+        if (in != null) {
+            bolt.execute(in);
+            cnt += batch;
         } else {
-            TransferTuple in = fetchResult();
-            if (in != null) {
-                bolt.execute(in);
-                cnt += batch;
-            } else {
-                miss++;
-            }
+            miss++;
         }
+
 
     }
 
-    protected void _execute() throws InterruptedException,  BrokenBarrierException {
+    protected void _execute() throws InterruptedException, BrokenBarrierException {
         _execute_noControl();
     }
 
@@ -209,20 +197,12 @@ public class boltThread extends executorThread {
                 binding = binding();
             }
 
-            if (enable_numa_placement && enable_shared_state)//used only in T-Stream.
-                if (conf.getBoolean("Sequential_Binding", true) && !this.executor.isLeafNode()) {
-                    binding = sequential_binding();
-
-                }
             initilize_queue(this.executor.getExecutorID());
 
             //do preparation.
             bolt.prepare(conf, context, collector);
 
             this.Ready(LOG);
-
-            if (enable_shared_state)
-                LOG.info("Operator:\t" + executor.getOP_full() + " is ready" + "\n lock dumps:" + dumpLocks());
 
 
             binding_finished = true;
@@ -236,7 +216,7 @@ public class boltThread extends executorThread {
                 );
             }
 //            controllerThread ct = new controllerThread(this);
-            
+
             latch.countDown();          //tells others I'm ready.
             try {
                 latch.await();
@@ -261,7 +241,7 @@ public class boltThread extends executorThread {
                 routing();
             }
         } catch (InterruptedException | BrokenBarrierException ignored) {
-        }  finally {
+        } finally {
             if (lock != null) {
                 lock.release();
             }

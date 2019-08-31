@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
-import static applications.CONTROL.enable_numa_placement;
+
 
 /**
  * Task thread that hosts spout logic.
@@ -107,11 +107,6 @@ public class spoutThread extends executorThread {
             if (!conf.getBoolean("NAV", true)) {
                 binding = binding();
             }
-            if (enable_numa_placement)
-                if (conf.getBoolean("Sequential_Binding", true)) {
-                    binding = sequential_binding();
-
-                }
 
             initilize_queue(this.executor.getExecutorID());
             boolean binding_finished = true;
