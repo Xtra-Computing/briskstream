@@ -14,7 +14,6 @@ import brisk.optimization.impl.SchedulingPlan;
 import brisk.optimization.model.BackPressure;
 import brisk.optimization.routing.RoutingOptimizer;
 import brisk.optimization.routing.RoutingPlan;
-import engine.Database;
 import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
-
-import static applications.CONTROL.enable_shared_state;
 import static applications.Constants.MAP_Path;
 
 /**
@@ -126,7 +123,7 @@ public class OptimizationManager extends executorThread {
         }
     }
 
-    public ExecutionPlan lanuch(Topology topology, Platform p, Database db) {
+    public ExecutionPlan lanuch(Topology topology, Platform p) {
         this.topology = topology;
         final String initial_locks = AffinityLock.dumpLocks();
         AffinityLock.reset();
@@ -152,7 +149,7 @@ public class OptimizationManager extends executorThread {
             so = new Optimizer(g, benchmark, conf, p, scaling_plan);
         }
 
-        EM = new ExecutionManager(g, conf, this, db, p);
+        EM = new ExecutionManager(g, conf, this,  p);
 
         //load only
         latch = new CountDownLatch(g.getExecutionNodeArrayList().size() + 1 - 1);//+1:OM -1:virtual
@@ -169,24 +166,24 @@ public class OptimizationManager extends executorThread {
                 g = executionPlan.SP.graph;
 
                 schedulingPlan.planToString(false, true);
-                EM.distributeTasks(conf, executionPlan, latch, false, false, db, p);
+                EM.distributeTasks(conf, executionPlan, latch, false, false,  p);
             } else if (nav) {
                 LOG.info("Native execution");
                 executionPlan = new ExecutionPlan(null, null);
                 executionPlan.setProfile();
-                EM.distributeTasks(conf, executionPlan, latch, false, false, db, p);
+                EM.distributeTasks(conf, executionPlan, latch, false, false,  p);
 //                return executionPlan;
             } else if (benchmark) {
                 //manually load the desired benchmark plan.
                 SchedulingPlan schedulingPlan = so.benchmark_plan(conf.getInt("plan"), prefix);
                 executionPlan = new ExecutionPlan(schedulingPlan, null);
-                EM.distributeTasks(conf, executionPlan, latch, true, false, db, p);
+                EM.distributeTasks(conf, executionPlan, latch, true, false,  p);
 //                return executionPlan;
             } else if (profile) {
                 LOG.info("Start profiling");
                 executionPlan = new ExecutionPlan(null, null);
                 executionPlan.setProfile();
-                EM.distributeTasks(conf, executionPlan, latch, false, true, db, p);
+                EM.distributeTasks(conf, executionPlan, latch, false, true,  p);
 //                return executionPlan;
             } else if (manual) {
                 SchedulingPlan schedulingPlan = load_next_plan_toProfile();
@@ -194,7 +191,7 @@ public class OptimizationManager extends executorThread {
                     BackPressure.BP(schedulingPlan);
                 }
                 //if (!simulation)
-                EM.distributeTasks(conf, executionPlan, latch, false, false, db, p);
+                EM.distributeTasks(conf, executionPlan, latch, false, false, p);
                 //return executionPlan;
             } else {//produce the optimize plan
 
@@ -216,7 +213,7 @@ public class OptimizationManager extends executorThread {
                     System.exit(0);
                 }
                 if (!conf.getBoolean("monte", false)) {
-                    EM.distributeTasks(conf, executionPlan, latch, false, false, db, p);
+                    EM.distributeTasks(conf, executionPlan, latch, false, false, p);
                 }
             }
         } catch (UnhandledCaseException e) {
@@ -389,7 +386,7 @@ public class OptimizationManager extends executorThread {
         }
         //initialize queue set.
 
-        if (conf.getBoolean("Fault_tolerance", false) || enable_shared_state) {
+        if (conf.getBoolean("Fault_tolerance", false)) {
             ExecutionManager.clock.start();
         }
 

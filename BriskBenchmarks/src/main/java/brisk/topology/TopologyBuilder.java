@@ -16,7 +16,6 @@ import brisk.components.streaminfo;
 import brisk.controller.input.InputStreamController;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
-import engine.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,18 +173,6 @@ public class TopologyBuilder {
         topology.setScheduler(scheduler);
     }
 
-    public Topology createTopology(Database db, TransactionTopology txnTopology) {
-
-        if (topology.getScheduler() == null) {
-            LOG.info("Tuple input scheduler is not set, use default scheduler instead!");
-            topology.setScheduler(new SequentialScheduler());
-        }
-        if (db != null) {
-            this.topology.db = db;
-            this.topology.txnTopology = txnTopology;
-        }
-        return topology;
-    }
 
     public Topology createTopology() {
 

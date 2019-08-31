@@ -14,15 +14,11 @@ import brisk.faulttolerance.Writer;
 import brisk.optimization.ExecutionPlan;
 import brisk.optimization.OptimizationManager;
 import ch.usi.overseer.OverHpc;
-import engine.Database;
-import engine.transaction.dedicated.ordered.TxnProcessingEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static applications.Constants.EVENTS.*;
@@ -47,7 +43,7 @@ public class ExecutionManager {
     private boolean Txn_lock = true;
 
 
-    public ExecutionManager(ExecutionGraph g, Configuration conf, OptimizationManager optimizationManager, Database db, Platform p) {
+    public ExecutionManager(ExecutionGraph g, Configuration conf, OptimizationManager optimizationManager, Platform p) {
         this.g = g;
         AC = new AffinityController(conf, p);
         this.optimizationManager = optimizationManager;
@@ -96,8 +92,6 @@ public class ExecutionManager {
         }
     }
 
-    TxnProcessingEngine tp_engine;
-
     /**
      * Launch threads for each executor in executionGraph
      * We make sure no interference among threads --> one thread one core.
@@ -105,7 +99,7 @@ public class ExecutionManager {
      * All executors have to wait for OM to start, so it's safe to do initialization here. E.g., initialize database.
      */
     public void distributeTasks(Configuration conf,
-                                ExecutionPlan plan, CountDownLatch latch, boolean benchmark, boolean profile, Database db, Platform p) throws UnhandledCaseException {
+                                ExecutionPlan plan, CountDownLatch latch, boolean benchmark, boolean profile, Platform p) throws UnhandledCaseException {
         assert plan != null;
         loadTargetHz = (int) conf.getDouble("targetHz", 10000000);
         LOG.info("Finally, targetHZ set to:" + loadTargetHz);
@@ -132,36 +126,17 @@ public class ExecutionManager {
             }
         }
 
-        //TODO: support multi-stages later.
-        if (conf.getBoolean("transaction", false)) {
-            HashMap<Integer, List<Integer>> stage_map = new HashMap<>();//Stages --> Executors.
-            for (ExecutionNode e : g.getExecutionNodeArrayList()) {
-                stage_map.putIfAbsent(e.op.getStage(), new LinkedList<>());
-                stage_map.get(e.op.getStage()).add(e.getExecutorID());
-            }
-            int stage = 0;//currently only stage 0 is required..
-            List<Integer> integers = stage_map.get(stage);
-//            TxnProcessingEngine tp_engine = new TxnProcessingEngine(stage);
-            tp_engine = TxnProcessingEngine.getInstance();
-
-            if (integers != null) {
-                tp_engine.initilize(integers.size(), conf.getInt("app"));//TODO: use fixed number of partition?
-                tp_engine.engine_init(integers.get(0),
-                        integers.get(integers.size() - 1), integers.size(), conf.getInt("TP", 10));
-            }
-        }
-
         executorThread thread = null;
         if (benchmark) {
             for (ExecutionNode e : g.getExecutionNodeArrayList()) {
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_InCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchSpout_InCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), plan.getSP().allowedCores(), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_InCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchBolt_InCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), plan.getSP().allowedCores(), latch);
                         break;
                     case virtualType:
@@ -189,12 +164,12 @@ public class ExecutionManager {
             for (ExecutionNode e : g.getExecutionNodeArrayList()) {
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_SingleCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchSpout_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_SingleCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchBolt_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case virtualType:
@@ -225,12 +200,12 @@ public class ExecutionManager {
 
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_SingleCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor)
+                        thread = launchSpout_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor)
                                 , conf, plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_SingleCore(e, new TopologyContext(g, db, plan, e, ThreadMap, HPCMonotor)
+                        thread = launchBolt_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor)
                                 , conf, plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case virtualType:
@@ -479,8 +454,6 @@ public class ExecutionManager {
             clock.close();
         }
         this.getSinkThread().getContext().Sequential_stopAll();
-        if (CONTROL.enable_shared_state)
-            tp_engine.engine_shutdown();
     }
 
     public executorThread getSinkThread() {

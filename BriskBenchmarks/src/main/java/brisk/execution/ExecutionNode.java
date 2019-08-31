@@ -17,8 +17,6 @@ import brisk.optimization.impl.SchedulingPlan;
 import brisk.optimization.model.RateModel;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -530,10 +528,6 @@ public class ExecutionNode implements Serializable {
 
     public void configureWriter(Writer writer) {
         op.configureWriter(writer);
-    }
-
-    public void configureLocker(OrderLock lock, OrderValidate orderValidate) {
-        op.configureLocker(lock, orderValidate);
     }
 
     public void clean_state(Marker marker) {

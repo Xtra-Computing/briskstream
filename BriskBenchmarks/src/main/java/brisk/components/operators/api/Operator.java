@@ -12,10 +12,6 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.faulttolerance.State;
-import engine.Database;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
-import engine.transaction.impl.TxnContext;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
@@ -53,12 +49,8 @@ public abstract class Operator implements IOperator {
     public TopologyContext context;
     public Clock clock;
     public State state = null;
-    public transient Database db;//this is only used if the bolt is transactional bolt. DB is shared by all operators.
-    public transient TxnContext txn_context;
     public boolean forceStop;
     public int fid = -1;//if fid is -1 it means it does not participate
-    public OrderLock lock;//used for lock-based ordering constraint.
-    public OrderValidate orderValidate;
     protected String configPrefix = BaseConstants.BASE_PREFIX;
     protected OutputCollector collector;
     protected Configuration config;
@@ -229,9 +221,6 @@ public abstract class Operator implements IOperator {
 //		txn_context = new TxnContext(thisTaskId, fid, bid);
     }
 
-    public void loadData(Map conf, TopologyContext context, OutputCollector collector) {
-        loadData(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
-    }
 
     /**
      * Base init will always be called.
@@ -262,9 +251,6 @@ public abstract class Operator implements IOperator {
                 state.dst_state_init(executor);
             }
         }
-        db = getContext().getDb();
-//		TxnManagerLWM txnManagerLWM = new TxnManagerLWM(db.getStorageManager());
-
         initialize(thread_Id, thisTaskId, graph);
 
     }
@@ -283,12 +269,6 @@ public abstract class Operator implements IOperator {
 
     public void prepareEvents() {
 
-    }
-
-    public void loadData(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-
-
-        graph.topology.tableinitilizer.loadData(thread_Id, this.context);
     }
 
     public void setExecutionNode(ExecutionNode e) {

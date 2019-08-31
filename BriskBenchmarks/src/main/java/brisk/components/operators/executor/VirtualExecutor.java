@@ -8,8 +8,6 @@ import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;
 import brisk.topology.TopologyBuilder;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,9 +94,6 @@ public class VirtualExecutor implements IExecutor {
 
     }
 
-    public void configureLocker(OrderLock lock, OrderValidate orderValidate) {
-
-    }
 
     @Override
     public void clean_state(Marker marker) {

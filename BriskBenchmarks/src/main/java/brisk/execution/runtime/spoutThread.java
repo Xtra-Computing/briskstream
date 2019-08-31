@@ -9,7 +9,6 @@ import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
-import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,7 +158,7 @@ public class spoutThread extends executorThread {
             } else {
                 routing();
             }
-        } catch (InterruptedException | DatabaseException | BrokenBarrierException ignored) {
+        } catch (InterruptedException |  BrokenBarrierException ignored) {
 //            e.printStackTrace();
         } finally {
             if (lock != null) {

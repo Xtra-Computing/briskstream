@@ -2,8 +2,6 @@ package brisk.execution.runtime.tuple.impl;
 
 import applications.spout.PhoneCallGenerator;
 import brisk.components.context.TopologyContext;
-import engine.storage.datatype.TimestampType;
-
 /**
  * Created by shuhaozhang on 10/7/16.
  * TODO:Make it generic!!
@@ -146,10 +144,6 @@ public class Tuple {
 
     public double getDouble(int i) {
         return (double) getValue(i);
-    }
-
-    public TimestampType getTimestampType(int i) {
-        return (TimestampType) getValue(i);
     }
 
 //	public boolean isTickerMark() {

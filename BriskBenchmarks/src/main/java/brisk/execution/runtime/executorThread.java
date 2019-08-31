@@ -6,7 +6,6 @@ import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
 import ch.usi.overseer.OverHpc;
-import engine.DatabaseException;
 import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -330,7 +329,7 @@ public abstract class executorThread extends Thread {
         return executor.getInputStreamController().getRQ();
     }
 
-    void profile_routing(Platform p) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    void profile_routing(Platform p) throws InterruptedException,  BrokenBarrierException {
         executor.prepareProfilingStruct(conf, hpcMonotor, context, p);
         if (start) {
             cnt = 0;
@@ -348,7 +347,7 @@ public abstract class executorThread extends Thread {
         end_emit = System.nanoTime();
     }
 
-    void routing() throws InterruptedException, DatabaseException, BrokenBarrierException {
+    void routing() throws InterruptedException,  BrokenBarrierException {
 //        int s = 0;
         if (start) {
             cnt = 0;
@@ -365,11 +364,11 @@ public abstract class executorThread extends Thread {
         end_emit = System.nanoTime();
     }
 
-    protected abstract void _execute_noControl() throws InterruptedException, DatabaseException, BrokenBarrierException;
+    protected abstract void _execute_noControl() throws InterruptedException,  BrokenBarrierException;
 
-    protected abstract void _execute() throws InterruptedException, DatabaseException, BrokenBarrierException;
+    protected abstract void _execute() throws InterruptedException,  BrokenBarrierException;
 
-    protected abstract void _profile() throws InterruptedException, DatabaseException, BrokenBarrierException;
+    protected abstract void _profile() throws InterruptedException,  BrokenBarrierException;
 
     public int getExecutorID() {
         return executor.getExecutorID();

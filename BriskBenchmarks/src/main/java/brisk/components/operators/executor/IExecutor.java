@@ -6,8 +6,7 @@ import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
+
 
 import java.io.Serializable;
 import java.util.Map;
@@ -53,7 +52,6 @@ public interface IExecutor extends Serializable {
 
     void configureWriter(Writer writer);
 
-    void configureLocker(OrderLock lock, OrderValidate orderValidate);
 
     void clean_state(Marker marker);
 

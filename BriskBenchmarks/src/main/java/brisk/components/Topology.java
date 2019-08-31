@@ -2,11 +2,7 @@ package brisk.components;
 
 
 import applications.Platform;
-import applications.topology.transactional.initializer.TableInitilizer;
 import brisk.controller.input.InputStreamController;
-import brisk.topology.TransactionTopology;
-import engine.Database;
-import engine.common.SpinLock;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -25,10 +21,6 @@ public class Topology implements Serializable {
      * <Operator ID, Operator>
      */
     private final LinkedHashMap<String, TopologyComponent> records;
-    public Database db;
-    public TransactionTopology txnTopology;
-    public SpinLock[] spinlock;
-    public TableInitilizer tableinitilizer;
     private TopologyComponent sink;
     /**
      * global scheduler template..

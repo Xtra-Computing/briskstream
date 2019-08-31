@@ -14,7 +14,6 @@ import brisk.optimization.OptimizationManager;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
 import com.javamex.classmexer.MemoryUtil;
-import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +71,7 @@ public class boltThread extends executorThread {
         bolt.setclock(clock);
     }
 
-    protected void _profile() throws InterruptedException, DatabaseException, BrokenBarrierException {
+    protected void _profile() throws InterruptedException,  BrokenBarrierException {
         if (isUnix()) {
             UNIX = true;
             // LOG.info("running in Linux environment");
@@ -164,9 +163,8 @@ public class boltThread extends executorThread {
      * Be very careful for this method..
      *
      * @throws InterruptedException
-     * @throws DatabaseException
      */
-    protected void _execute_noControl() throws InterruptedException, DatabaseException, BrokenBarrierException {
+    protected void _execute_noControl() throws InterruptedException,  BrokenBarrierException {
 
 
         if (enable_shared_state) {//this is for T-Stream.
@@ -189,7 +187,7 @@ public class boltThread extends executorThread {
 
     }
 
-    protected void _execute() throws InterruptedException, DatabaseException, BrokenBarrierException {
+    protected void _execute() throws InterruptedException,  BrokenBarrierException {
         _execute_noControl();
     }
 
@@ -238,11 +236,7 @@ public class boltThread extends executorThread {
                 );
             }
 //            controllerThread ct = new controllerThread(this);
-
-            if (enable_shared_state)
-                if (!this.executor.isLeafNode())//TODO: remove such hard code in future.
-                    bolt.loadDB(conf, context, collector);
-
+            
             latch.countDown();          //tells others I'm ready.
             try {
                 latch.await();
@@ -267,9 +261,7 @@ public class boltThread extends executorThread {
                 routing();
             }
         } catch (InterruptedException | BrokenBarrierException ignored) {
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             if (lock != null) {
                 lock.release();
             }

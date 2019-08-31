@@ -6,7 +6,6 @@ import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
-import engine.DatabaseException;
 
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
@@ -34,16 +33,16 @@ public class BasicBoltBatchExecutor extends BoltExecutor {
     }
 
 
-    public void execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
         _op.execute(in);
     }
 
     @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void execute(Tuple in) throws InterruptedException,  BrokenBarrierException {
         _op.execute(in);
     }
 
-    public void profile_execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+    public void profile_execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
         _op.profile_execute(in);
     }
 

@@ -11,9 +11,6 @@ import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.Writer;
-import engine.DatabaseException;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
 
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
@@ -27,19 +24,15 @@ public abstract class BoltExecutor implements IExecutor {
         this.op = op;
     }
 
-    public abstract void execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
+    public abstract void execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException;
 
-    public abstract void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
+    public abstract void execute(Tuple in) throws InterruptedException,  BrokenBarrierException;
 
-    public abstract void profile_execute(TransferTuple in) throws InterruptedException, DatabaseException, BrokenBarrierException;
+    public abstract void profile_execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
         op.prepare(stormConf, context, collector);
-    }
-
-    public void loadDB(Configuration conf, TopologyContext context, OutputCollector collector) {
-        op.loadData(conf, context, collector);
     }
 
     @Override
@@ -113,11 +106,6 @@ public abstract class BoltExecutor implements IExecutor {
         }
     }
 
-    public void configureLocker(OrderLock lock, OrderValidate orderValidate) {
-        op.lock = lock;
-        op.orderValidate = orderValidate;
-
-    }
 
     @Override
     public void earlier_clean_state(Marker marker) {

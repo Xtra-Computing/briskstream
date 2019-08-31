@@ -132,7 +132,7 @@ public class MeasureSink extends BaseSink {
         } else if (cnt == (NUM_EVENTS - 1)) {
             double results = helper.EndMeasurement(cnt);
             this.setResults(results);
-            if (!enable_engine)//performance measure for TStream is different.
+
                 LOG.info("Received:" + cnt + " throughput:" + results);
             if (thisTaskId == graph.getSink().getExecutorID()) {
                 measure_end();

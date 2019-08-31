@@ -9,7 +9,6 @@ import brisk.execution.runtime.executorThread;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.optimization.ExecutionPlan;
 import ch.usi.overseer.OverHpc;
-import engine.Database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ public class TopologyContext {
     public static ExecutionPlan plan;
     public static OverHpc HPCMonotor;
     private static ExecutionGraph graph;
-    private static Database db;
     private static HashMap<Integer, executorThread> threadMap;
     private final int _taskId;
 
@@ -37,23 +35,15 @@ public class TopologyContext {
      */
 
 
-    public TopologyContext(ExecutionGraph g, Database db, ExecutionPlan plan, ExecutionNode executor, HashMap<Integer, executorThread> threadMap, OverHpc HPCMonotor) {
-
+    public TopologyContext(ExecutionGraph g,  ExecutionPlan plan, ExecutionNode executor, HashMap<Integer, executorThread> threadMap, OverHpc HPCMonotor) {
         TopologyContext.plan = plan;
         TopologyContext.graph = g;
-        TopologyContext.db = db;
         TopologyContext.threadMap = threadMap;
         TopologyContext.HPCMonotor = HPCMonotor;
 
         this._taskId = executor.getExecutorID();
 
     }
-
-
-    public Database getDb() {
-        return db;
-    }
-
 
     public HashMap<String, Map<TopologyComponent, Grouping>> getThisSources() {
         return this.getComponent(this.getThisComponentId()).getParents();

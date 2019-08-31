@@ -5,7 +5,6 @@ import applications.topology.*;
 import applications.topology.faulttolerance.WordCount_FT;
 import applications.topology.latency.LinearRoad_latency;
 import applications.topology.latency.WordCount_latency;
-import applications.topology.transactional.*;
 import applications.util.Configuration;
 import applications.util.Constants;
 import applications.util.OsUtils;
@@ -16,8 +15,6 @@ import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import engine.common.SpinLock;
-import engine.profiler.Metrics;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +29,6 @@ import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
 import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
 import static applications.constants.PositionKeepingConstants.Conf.PK_THREADS;
 import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
-import static engine.content.Content.*;
-import static engine.content.LWMContentImpl.LWM_CONTENT;
-import static engine.content.LockContentImpl.LOCK_CONTENT;
-import static engine.content.SStoreContentImpl.SSTORE_CONTENT;
-import static engine.content.T_StreamContentImpl.T_STREAMCONTENT;
-import static engine.content.common.ContentCommon.content_type;
 
 public class BriskRunner extends abstractRunner {
 
@@ -67,13 +58,6 @@ public class BriskRunner extends abstractRunner {
         //Fault tolerance application
         driver.addApp("WordCount_FT", WordCount_FT.class);//
 
-        //Transactional Application
-
-        driver.addApp("OnlineBiding", OnlineBiding.class);//
-        driver.addApp("LeaderBoard", LeaderBoard.class);//
-        driver.addApp("MicroBenchmark", MicroBenchmark.class);
-        driver.addApp("CrossTables", CrossTables.class);
-        driver.addApp("PositionKeeping", PositionKeeping.class);
     }
 
     public static void main(String[] args) {
@@ -183,22 +167,6 @@ public class BriskRunner extends abstractRunner {
             }
 
             //configure database.
-
-            switch (config.getInt("CCOption", 0)) {
-                case CCOption_LOCK://Lock
-                case CCOption_OrderLOCK://Ordered lock
-                    content_type = LOCK_CONTENT;
-                    break;
-                case CCOption_LWM://LWM
-                    content_type = LWM_CONTENT;
-                    break;
-                case CCOption_TStream:
-                    content_type = T_STREAMCONTENT;//records the multi-version of table record.
-                    break;
-                case CCOption_SStore://SStore
-                    content_type = SSTORE_CONTENT;//records the multi-version of table record.
-                    break;
-            }
 
             int max_hz = 0;
             boolean profile = config.getBoolean("profile");
@@ -407,17 +375,7 @@ public class BriskRunner extends abstractRunner {
         double rt = runTopologyLocally(topology, config);
 
 
-        if (CONTROL.enable_shared_state) {
-            SpinLock[] spinlock = final_topology.spinlock;
-            for (SpinLock lock : spinlock) {
-                if (lock != null)
-                    LOG.info("Partition" + lock + " being locked:\t" + lock.count + "\t times");
-            }
-        }
-
-
         Collection<TopologyComponent> topologyComponents = final_topology.getRecords().values();
-        Metrics metrics = Metrics.getInstance();
 
         if (rt != -1) {//returns normally.
             record.addValue(rt);
@@ -426,79 +384,6 @@ public class BriskRunner extends abstractRunner {
         LOG.info("predict throughput (k events/s):" + config.getDouble("predict", 0));
         LOG.info("finished measurement (k events/s):" + record.getPercentile(50) + "("
                 + (Math.abs(record.getPercentile(50) - config.getDouble("predict", 0)) / config.getDouble("predict", 0)) + ")");
-
-        if (enable_profile) {
-            double useful_time = 0;
-            double abort_time = 0;
-            double ts_alloc_time = 0;
-            double index_time = 0;
-            double wait_time = 0;
-            double lock_time = 0;
-            double compute_time = 0;
-            double sum = 0;
-
-            StringBuilder sb = new StringBuilder("Metrics:\n");
-            for (int i = 0; i < tthread; i++) {
-
-//            sb.append("====Median======\n")
-//                    .append("Task Id :\t").append(i).append("\n")
-//                    .append("useful time:\t").append(metrics.useful_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("abort time:\t").append(metrics.abort_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("ts allocation time:\t").append(metrics.ts_allocation.get(componentId).getPercentile(50)).append("\n")
-//                    .append("index time:\t").append(metrics.index_time.get(componentId).getPercentile(50)).append("\n")
-//                    .append("wait time:\t").append(metrics.wait.get(componentId).getPercentile(50)).append("\n")
-////                            .append("order_wait time:\t").append(metrics.order_wait.get(componentId).getPercentile(50)).append("\n")
-//
-////                            .append("enqueue time:\t").append(metrics.enqueue_time.get(componentId).getPercentile(50)).append("\n")
-////                            .append("rma time:\t").append((VALUE_LEN + 4) * metrics.NUM_ACCESSES / p.cache_line * p.latency_map[0][7]).append("\n")
-//
-//            ;
-
-                sb.append("====Mean======\n")
-                        .append("Id :\t").append(i).append("\n")
-                        .append("useful time:\t").append(String.format("%.2f", metrics.useful_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("abort time:\t").append(String.format("%.2f", metrics.abort_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("ts_alloc. time:\t").append(String.format("%.2f", metrics.ts_allocation[i].getMean() / 1E4)).append(" %\n")
-                        .append("index time:\t").append(String.format("%.2f", metrics.index_time[i].getMean() / 1E4)).append(" %\n")
-                        .append("wait time:\t").append(String.format("%.2f", metrics.wait[i].getMean() / 1E4)).append(" %\n")
-                        .append("lock time:\t").append(String.format("%.2f", metrics.lock[i].getMean() / 1E4)).append(" %\n")
-                        .append("compute time:\t").append(metrics.exe_time[i].getMean()).append("\n");
-
-
-                useful_time += metrics.useful_time[i].getSum();
-                abort_time += metrics.abort_time[i].getSum();
-                ts_alloc_time += metrics.ts_allocation[i].getSum();
-                index_time += metrics.index_time[i].getSum();
-                wait_time += metrics.wait[i].getSum();
-                lock_time += metrics.lock[i].getSum();
-                compute_time += metrics.exe_time[i].getSum();
-                sum += metrics.useful_time[i].getN();
-
-                sb.append("Processed:" + metrics.useful_time[i].getN()).append("\n");
-                sb.append("average tp processing:");
-                sb.append("\t").append(metrics.average_tp[i].getMean() / 1E6).append("\n");
-                sb.append("average tp submit:");
-                sb.append("\t").append(metrics.average_tp_submit[i].getMean() / 1E6).append("\n");
-
-                sb.append("average tp processing w/ synchronization:");
-                sb.append("\t").append(metrics.average_tp_w_syn[i].getMean() / 1E6).append("\n");
-
-                sb.append("tp processing per event:");
-                sb.append("\t").append(metrics.average_tp_event[i].getMean() / 1E6).append("\n");
-
-            }
-
-
-            LOG.info(sb.toString());
-            LOG.info("===OVERALL===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_time / sum / 1E6));
-            LOG.info("Abort time:\t" + String.format("%.2f", abort_time / sum / 1E6));
-            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time / sum / 1E6));
-            LOG.info("Index_time time:\t" + String.format("%.2f", index_time / sum / 1E6));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time / sum / 1E6));
-            LOG.info("Lock time:\t" + String.format("%.2f", lock_time / sum / 1E6));
-            LOG.info("Compute:\t" + (compute_time / sum));
-        }
 
         String algorithm;
         if (config.getBoolean("random", false)) {

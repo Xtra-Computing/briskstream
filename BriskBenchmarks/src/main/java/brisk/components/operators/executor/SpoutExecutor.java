@@ -6,8 +6,6 @@ import brisk.execution.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;
-import engine.common.OrderLock;
-import engine.common.OrderValidate;
 
 public abstract class SpoutExecutor implements IExecutor {
     private static final long serialVersionUID = -6394372792803974178L;
@@ -27,12 +25,6 @@ public abstract class SpoutExecutor implements IExecutor {
             op.state.writer = writer;
         }
     }
-
-    public void configureLocker(OrderLock lock, OrderValidate orderValidate) {
-        op.lock = lock;
-        op.orderValidate = orderValidate;
-    }
-
     public int getStage() {
         return op.getFid();
     }
