@@ -6,9 +6,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -123,11 +123,12 @@ public class TollNotification extends AbstractOutputTuple {
                 TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME);
     }
 
-	public static Fields getSchema_latency() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
-				TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    public static Fields getSchema_latency() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
+                TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
+    }
+
     /**
      * Returns the vehicle ID of this {@link TollNotification}.
      *
@@ -208,11 +209,11 @@ public class TollNotification extends AbstractOutputTuple {
             return false;
         }
 
-		if (this.getToll() == null) {
-			return other.getToll() == null;
-		} else {
-			return this.getToll().equals(other.getToll());
-		}
+        if (this.getToll() == null) {
+            return other.getToll() == null;
+        } else {
+            return this.getToll().equals(other.getToll());
+        }
 
-	}
+    }
 }

@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.datatype.util.VSTopologyControl.RCR_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Field;
+import static applications.datatype.util.VSTopologyControl.RCR_STREAM_ID;
 
 /**
  * Per-user received call rate.

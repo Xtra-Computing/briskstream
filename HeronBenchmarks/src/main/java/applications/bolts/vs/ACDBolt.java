@@ -49,7 +49,7 @@ public class ACDBolt extends AbstractScoreBolt {
                     double score = score(thresholdMin, thresholdMax, ratio);
 
                     //LOG.DEBUG(String.format("T1=%f; T2=%f; CT24=%f; ECR24=%f; AvgCallDur=%f; Ratio=%f; Score=%f",
-                            thresholdMin, thresholdMax, e.get(Source.CT24), e.get(Source.ECR24), avg, ratio, score));
+                    thresholdMin, thresholdMax, e.get(Source.CT24), e.get(Source.ECR24), avg, ratio, score));
 //                    cnt1++;
                     collector.emit(new Values(number, timestamp, score, cdr));
                     map.remove(key);

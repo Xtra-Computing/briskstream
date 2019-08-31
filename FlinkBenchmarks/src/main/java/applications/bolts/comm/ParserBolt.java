@@ -18,36 +18,36 @@ import java.util.Map;
  * Created by tony on 5/5/2017.
  */
 public class ParserBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(ParserBolt.class);
-	Fields default_fields;
-	int loop;
-	int cnt;
-	private Parser parser;
+    private static final Logger LOG = LoggerFactory.getLogger(ParserBolt.class);
+    Fields default_fields;
+    int loop;
+    int cnt;
+    private Parser parser;
 
-	public ParserBolt(Parser parser, Fields fields) {
-		this.parser = parser;
-		this.default_fields = fields;
-		cnt = 0;
-		loop = 1;
-	}
+    public ParserBolt(Parser parser, Fields fields) {
+        this.parser = parser;
+        this.default_fields = fields;
+        cnt = 0;
+        loop = 1;
+    }
 
-	@Override
-	public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
-		super.prepare(conf, context, collector);
-		cnt = 0;
-	}
+    @Override
+    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
+        super.prepare(conf, context, collector);
+        cnt = 0;
+    }
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 //        this.fields.put(Marker_STREAM_ID, System_fields);
-		return default_fields;
-	}
+        return default_fields;
+    }
 
-	@Override
-	public void execute(Tuple input) {
-		String value = input.getString(0);
-		List<StreamValues> tuples = parser.parse(value);
-		if (tuples != null) {
+    @Override
+    public void execute(Tuple input) {
+        String value = input.getString(0);
+        List<StreamValues> tuples = parser.parse(value);
+        if (tuples != null) {
 //			final Long msgid = input.getLongByField(MSG_ID);
 //			if (msgid != -1L) {
 //				tuples.add(msgid);
@@ -58,9 +58,9 @@ public class ParserBolt extends AbstractBolt {
 //				tuples.add(null);
 //				collector.emit(tuples);
 //			}
-			for (StreamValues values : tuples) {
-				collector.emit(values);
-			}
-		}
-	}
+            for (StreamValues values : tuples) {
+                collector.emit(values);
+            }
+        }
+    }
 }

@@ -23,7 +23,6 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Properties;
 
-import static applications.CONTROL.enable_profile;
 import static applications.Constants.System_Plan_Path;
 import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
 import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
@@ -154,8 +153,11 @@ public class BriskRunner extends abstractRunner {
                 case 1:
                     this.p = new applications.HP_Machine();
                     break;
+                case 2:
+                    this.p = new applications.HP_Machine();
+                    break;
                 default:
-                    this.p = new applications.HUAWEI_Machine();
+                    this.p = new applications.RTM_Machine();
             }
 
             if (simulation) {

@@ -23,7 +23,6 @@ import applications.models.TollEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -35,146 +34,146 @@ import java.util.Queue;
  * @author richter
  */
 public class FileTollDataStore implements TollDataStore {
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(FileTollDataStore.class);
-	private final File histFile;
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(FileTollDataStore.class);
+    private final File histFile;
 
-	private boolean firstWriteDone = false;
+    private boolean firstWriteDone = false;
 
-	/**
-	 * Creates a {@code FileTollDataStore} using a temporary file
-	 *
-	 * @throws IOException if the creation of the temporary file fails
-	 */
-	public FileTollDataStore() throws IOException {
-		this.histFile = File.createTempFile("aeolus-lrb", null);
-	}
+    /**
+     * Creates a {@code FileTollDataStore} using a temporary file
+     *
+     * @throws IOException if the creation of the temporary file fails
+     */
+    public FileTollDataStore() throws IOException {
+        this.histFile = File.createTempFile("aeolus-lrb", null);
+    }
 
-	/**
-	 * Creates a {@code FileTollDataStore} reading from {@code histFile}.
-	 *
-	 * @param histFile
-	 */
-	public FileTollDataStore(File histFile) {
-		this.histFile = histFile;
-	}
+    /**
+     * Creates a {@code FileTollDataStore} reading from {@code histFile}.
+     *
+     * @param histFile
+     */
+    public FileTollDataStore(File histFile) {
+        this.histFile = histFile;
+    }
 
-	/**
-	 * @param histFilePath
-	 * @throws FileNotFoundException    if the file denoted by {@code histFilePath} doesn't exist
-	 * @throws IllegalArgumentException if {@code histFilePath} is {@code null} or empty.
-	 */
-	public FileTollDataStore(String histFilePath) {
-		if (histFilePath == null) {
-			throw new IllegalArgumentException("histFilePath mustn't be null.");
-		}
-		if (histFilePath.isEmpty()) {
-			throw new IllegalArgumentException("no filename for historic data given.");
-		}
-		this.histFile = new File(histFilePath);
-	}
+    /**
+     * @param histFilePath
+     * @throws FileNotFoundException    if the file denoted by {@code histFilePath} doesn't exist
+     * @throws IllegalArgumentException if {@code histFilePath} is {@code null} or empty.
+     */
+    public FileTollDataStore(String histFilePath) {
+        if (histFilePath == null) {
+            throw new IllegalArgumentException("histFilePath mustn't be null.");
+        }
+        if (histFilePath.isEmpty()) {
+            throw new IllegalArgumentException("no filename for historic data given.");
+        }
+        this.histFile = new File(histFilePath);
+    }
 
-	@Override
-	public Integer retrieveToll(int xWay, int day, int vehicleIdentifier) {
-		try {
-			FileInputStream is = new FileInputStream(histFile);
-			ObjectInputStream objectInputStream = new ObjectInputStream(is);
-			Object nextObject = objectInputStream.readObject();
-			while (nextObject != null) {
-				TollEntry next = (TollEntry) nextObject;
-				if (next.getxWay() == xWay && next.getADay() == day && next.getVehicleIdentifier() == vehicleIdentifier) {
-					return next.getToll();
-				}
-			}
-			objectInputStream.close();
-			is.close();
-		} catch (IOException | ClassNotFoundException ex) {
-			throw new RuntimeException(ex);
-		}
-		return null;
-	}
+    @Override
+    public Integer retrieveToll(int xWay, int day, int vehicleIdentifier) {
+        try {
+            FileInputStream is = new FileInputStream(histFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(is);
+            Object nextObject = objectInputStream.readObject();
+            while (nextObject != null) {
+                TollEntry next = (TollEntry) nextObject;
+                if (next.getxWay() == xWay && next.getADay() == day && next.getVehicleIdentifier() == vehicleIdentifier) {
+                    return next.getToll();
+                }
+            }
+            objectInputStream.close();
+            is.close();
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+        return null;
+    }
 
-	@Override
-	public void storeToll(int xWay, int day, int vehicleIdentifier, int toll) {
-		try {
-			if (!firstWriteDone) {
-				FileOutputStream os = new FileOutputStream(histFile, true // append
-				);
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
-				objectOutputStream.writeObject(null);
-				objectOutputStream.flush();
-				objectOutputStream.close();
-				os.flush();
-				os.close();
-				firstWriteDone = true;
-			}
-			FileInputStream is = new FileInputStream(histFile);
-			ObjectInputStream objectInputStream = new ObjectInputStream(is);
-			File tmpStoreFile = File.createTempFile("aeolus-lrb", null);
-			FileOutputStream os = new FileOutputStream(tmpStoreFile);
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
-			Object nextObject = objectInputStream.readObject();
-			Queue<Object> tmpStore = new LinkedList<>();
-			while (nextObject != null) {
-				tmpStore.add(nextObject);
-				if (tmpStore.size() > 1000) {
-					while (!tmpStore.isEmpty()) {
-						objectOutputStream.writeObject(tmpStore.poll());
-					}
-				}
-				nextObject = objectInputStream.readObject();
-			}
-			TollEntry newTollEntry = new TollEntry(vehicleIdentifier, xWay, day, toll);
+    @Override
+    public void storeToll(int xWay, int day, int vehicleIdentifier, int toll) {
+        try {
+            if (!firstWriteDone) {
+                FileOutputStream os = new FileOutputStream(histFile, true // append
+                );
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
+                objectOutputStream.writeObject(null);
+                objectOutputStream.flush();
+                objectOutputStream.close();
+                os.flush();
+                os.close();
+                firstWriteDone = true;
+            }
+            FileInputStream is = new FileInputStream(histFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(is);
+            File tmpStoreFile = File.createTempFile("aeolus-lrb", null);
+            FileOutputStream os = new FileOutputStream(tmpStoreFile);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
+            Object nextObject = objectInputStream.readObject();
+            Queue<Object> tmpStore = new LinkedList<>();
+            while (nextObject != null) {
+                tmpStore.add(nextObject);
+                if (tmpStore.size() > 1000) {
+                    while (!tmpStore.isEmpty()) {
+                        objectOutputStream.writeObject(tmpStore.poll());
+                    }
+                }
+                nextObject = objectInputStream.readObject();
+            }
+            TollEntry newTollEntry = new TollEntry(vehicleIdentifier, xWay, day, toll);
 
-			objectOutputStream.writeObject(newTollEntry);
-			objectOutputStream.writeObject(null);
-			objectInputStream.close();
-			objectOutputStream.close();
-			is.close();
-			os.close();
-			histFile.delete();
-			tmpStoreFile.renameTo(histFile);
-		} catch (IOException | ClassNotFoundException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+            objectOutputStream.writeObject(newTollEntry);
+            objectOutputStream.writeObject(null);
+            objectInputStream.close();
+            objectOutputStream.close();
+            is.close();
+            os.close();
+            histFile.delete();
+            tmpStoreFile.renameTo(histFile);
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 
-	@Override
-	public Integer removeEntry(int xWay, int day, int vehicleIdentifier) {
-		Integer retValue = null;
-		try {
-			FileInputStream is = new FileInputStream(histFile);
-			ObjectInputStream objectInputStream = new ObjectInputStream(is);
-			File tmpStoreFile = File.createTempFile("aeolus-lrb", null);
-			FileOutputStream os = new FileOutputStream(tmpStoreFile);
-			ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
-			Object nextObject = objectInputStream.readObject();
-			Queue<Object> tmpStore = new LinkedList<>();
-			while (nextObject != null) {
-				TollEntry next = (TollEntry) nextObject;
-				if (!(next.getxWay() == xWay && next.getADay() == day && next.getVehicleIdentifier() == vehicleIdentifier)) {
-					tmpStore.add(nextObject);
-					if (tmpStore.size() > 1000) {
-						while (!tmpStore.isEmpty()) {
-							objectOutputStream.writeObject(tmpStore.poll());
-						}
-					}
-				} else {
-					retValue = next.getToll();
-				}
-				nextObject = objectInputStream.readObject();
-			}
-			objectOutputStream.writeObject(null);
-			objectInputStream.close();
-			objectOutputStream.close();
-			is.close();
-			os.close();
-			histFile.delete();
-			tmpStoreFile.renameTo(histFile);
-		} catch (IOException | ClassNotFoundException ex) {
-			throw new RuntimeException(ex);
-		}
-		return retValue;
-	}
+    @Override
+    public Integer removeEntry(int xWay, int day, int vehicleIdentifier) {
+        Integer retValue = null;
+        try {
+            FileInputStream is = new FileInputStream(histFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(is);
+            File tmpStoreFile = File.createTempFile("aeolus-lrb", null);
+            FileOutputStream os = new FileOutputStream(tmpStoreFile);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(os);
+            Object nextObject = objectInputStream.readObject();
+            Queue<Object> tmpStore = new LinkedList<>();
+            while (nextObject != null) {
+                TollEntry next = (TollEntry) nextObject;
+                if (!(next.getxWay() == xWay && next.getADay() == day && next.getVehicleIdentifier() == vehicleIdentifier)) {
+                    tmpStore.add(nextObject);
+                    if (tmpStore.size() > 1000) {
+                        while (!tmpStore.isEmpty()) {
+                            objectOutputStream.writeObject(tmpStore.poll());
+                        }
+                    }
+                } else {
+                    retValue = next.getToll();
+                }
+                nextObject = objectInputStream.readObject();
+            }
+            objectOutputStream.writeObject(null);
+            objectInputStream.close();
+            objectOutputStream.close();
+            is.close();
+            os.close();
+            histFile.delete();
+            tmpStoreFile.renameTo(histFile);
+        } catch (IOException | ClassNotFoundException ex) {
+            throw new RuntimeException(ex);
+        }
+        return retValue;
+    }
 
 }

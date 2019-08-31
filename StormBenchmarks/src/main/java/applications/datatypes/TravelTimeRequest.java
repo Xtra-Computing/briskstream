@@ -42,137 +42,137 @@ import org.apache.storm.tuple.Fields;
  * @author richtekp
  */
 public class TravelTimeRequest extends AbstractInputTuple {
-	/**
-	 * The index of the express way attribute.
-	 */
-	public final static int XWAY_IDX = 3;
+    /**
+     * The index of the express way attribute.
+     */
+    public final static int XWAY_IDX = 3;
 
-	// attribute indexes
-	/**
-	 * The index of the query identifier attribute.
-	 */
-	public final static int QID_IDX = 4;
-	/**
-	 * The index of the start segment attribute.
-	 */
-	public final static int S_INIT_IDX = 5;
-	/**
-	 * The index of the end segment attribute.
-	 */
-	public final static int S_END_IDX = 6;
-	/**
-	 * The index of the day of the week attribute.
-	 */
-	public final static int DOW_IDX = 7;
-	/**
-	 * The index of the minute number attribute.
-	 */
-	public final static int TOD_IDX = 8;
-	private static final long serialVersionUID = -7993444129202648467L;
+    // attribute indexes
+    /**
+     * The index of the query identifier attribute.
+     */
+    public final static int QID_IDX = 4;
+    /**
+     * The index of the start segment attribute.
+     */
+    public final static int S_INIT_IDX = 5;
+    /**
+     * The index of the end segment attribute.
+     */
+    public final static int S_END_IDX = 6;
+    /**
+     * The index of the day of the week attribute.
+     */
+    public final static int DOW_IDX = 7;
+    /**
+     * The index of the minute number attribute.
+     */
+    public final static int TOD_IDX = 8;
+    private static final long serialVersionUID = -7993444129202648467L;
 
 
-	public TravelTimeRequest() {
-		super();
-	}
+    public TravelTimeRequest() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new travel time request for the given attributes.
-	 *
-	 * @param time  the time at which the request was issued (in LRB seconds)
-	 * @param vid   the vehicle identifier
-	 * @param xway  the express way of the planed travel
-	 * @param qid   the query identifier
-	 * @param sInit the start segment of the planed travel
-	 * @param sEnd  the end segment of the planed travel
-	 * @param dow   the day of the week when the journey would take place
-	 * @param tod   the minute number of the day when the journey would take place
-	 */
-	public TravelTimeRequest(Integer time, Integer vid, Integer xway, Integer qid, Short sInit, Short sEnd, Short dow,
-							 Short tod) {
-		super(TRAVEL_TIME_REQUEST, time, vid);
+    /**
+     * Instantiates a new travel time request for the given attributes.
+     *
+     * @param time  the time at which the request was issued (in LRB seconds)
+     * @param vid   the vehicle identifier
+     * @param xway  the express way of the planed travel
+     * @param qid   the query identifier
+     * @param sInit the start segment of the planed travel
+     * @param sEnd  the end segment of the planed travel
+     * @param dow   the day of the week when the journey would take place
+     * @param tod   the minute number of the day when the journey would take place
+     */
+    public TravelTimeRequest(Integer time, Integer vid, Integer xway, Integer qid, Short sInit, Short sEnd, Short dow,
+                             Short tod) {
+        super(TRAVEL_TIME_REQUEST, time, vid);
 
-		assert (xway != null);
-		assert (qid != null);
-		assert (sInit != null);
-		assert (sEnd != null);
-		assert (dow != null);
-		assert (tod != null);
+        assert (xway != null);
+        assert (qid != null);
+        assert (sInit != null);
+        assert (sEnd != null);
+        assert (dow != null);
+        assert (tod != null);
 
-		super.add(XWAY_IDX, xway);
-		super.add(QID_IDX, qid);
-		super.add(S_INIT_IDX, sInit);
-		super.add(S_END_IDX, sEnd);
-		super.add(DOW_IDX, dow);
-		super.add(TOD_IDX, tod);
+        super.add(XWAY_IDX, xway);
+        super.add(QID_IDX, qid);
+        super.add(S_INIT_IDX, sInit);
+        super.add(S_END_IDX, sEnd);
+        super.add(DOW_IDX, dow);
+        super.add(TOD_IDX, tod);
 
-		assert (super.size() == 9);
-	}
+        assert (super.size() == 9);
+    }
 
-	/**
-	 * Returns the schema of a {@link TravelTimeRequest}.
-	 *
-	 * @return the schema of a {@link TravelTimeRequest}
-	 */
-	public static Fields getSchema() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
-				TopologyControl.QUERY_ID_FIELD_NAME, TopologyControl.START_SEGMENT_FIELD_NAME,
-				TopologyControl.END_SEGMENT_FIELD_NAME, TopologyControl.DAY_OF_WEEK_FIELD_NAME,
-				TopologyControl.TIME_OF_DAY_FIELD_NAME);
-	}
+    /**
+     * Returns the schema of a {@link TravelTimeRequest}.
+     *
+     * @return the schema of a {@link TravelTimeRequest}
+     */
+    public static Fields getSchema() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
+                TopologyControl.QUERY_ID_FIELD_NAME, TopologyControl.START_SEGMENT_FIELD_NAME,
+                TopologyControl.END_SEGMENT_FIELD_NAME, TopologyControl.DAY_OF_WEEK_FIELD_NAME,
+                TopologyControl.TIME_OF_DAY_FIELD_NAME);
+    }
 
-	/**
-	 * Returns the expressway ID of this {@link TravelTimeRequest}.
-	 *
-	 * @return the VID of this travel time request
-	 */
-	public final Integer getXWay() {
-		return (Integer) super.get(XWAY_IDX);
-	}
+    /**
+     * Returns the expressway ID of this {@link TravelTimeRequest}.
+     *
+     * @return the VID of this travel time request
+     */
+    public final Integer getXWay() {
+        return (Integer) super.get(XWAY_IDX);
+    }
 
-	/**
-	 * Returns the query ID of this {@link TravelTimeRequest}.
-	 *
-	 * @return the QID of this travel time request
-	 */
-	public final Integer getQid() {
-		return (Integer) super.get(QID_IDX);
-	}
+    /**
+     * Returns the query ID of this {@link TravelTimeRequest}.
+     *
+     * @return the QID of this travel time request
+     */
+    public final Integer getQid() {
+        return (Integer) super.get(QID_IDX);
+    }
 
-	/**
-	 * Returns the start segment of this {@link TravelTimeRequest}.
-	 *
-	 * @return the start segment of this travel time request
-	 */
-	public final Short getSinit() {
-		return (Short) super.get(S_INIT_IDX);
-	}
+    /**
+     * Returns the start segment of this {@link TravelTimeRequest}.
+     *
+     * @return the start segment of this travel time request
+     */
+    public final Short getSinit() {
+        return (Short) super.get(S_INIT_IDX);
+    }
 
-	/**
-	 * Returns the end segment of this {@link TravelTimeRequest}.
-	 *
-	 * @return the end segment of this travel time request
-	 */
-	public final Short getSend() {
-		return (Short) super.get(S_END_IDX);
-	}
+    /**
+     * Returns the end segment of this {@link TravelTimeRequest}.
+     *
+     * @return the end segment of this travel time request
+     */
+    public final Short getSend() {
+        return (Short) super.get(S_END_IDX);
+    }
 
-	/**
-	 * Returns the day-of-week of this {@link TravelTimeRequest}.
-	 *
-	 * @return the DOW of this travel time request
-	 */
-	public final Short getDow() {
-		return (Short) super.get(DOW_IDX);
-	}
+    /**
+     * Returns the day-of-week of this {@link TravelTimeRequest}.
+     *
+     * @return the DOW of this travel time request
+     */
+    public final Short getDow() {
+        return (Short) super.get(DOW_IDX);
+    }
 
-	/**
-	 * Returns the time-of-day of this {@link TravelTimeRequest}.
-	 *
-	 * @return the TOD of this travel time request
-	 */
-	public final Short getTod() {
-		return (Short) super.get(TOD_IDX);
-	}
+    /**
+     * Returns the time-of-day of this {@link TravelTimeRequest}.
+     *
+     * @return the TOD of this travel time request
+     */
+    public final Short getTod() {
+        return (Short) super.get(TOD_IDX);
+    }
 
 }

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
+
 import static applications.Constants.MAP_Path;
 
 /**
@@ -149,7 +150,7 @@ public class OptimizationManager extends executorThread {
             so = new Optimizer(g, benchmark, conf, p, scaling_plan);
         }
 
-        EM = new ExecutionManager(g, conf, this,  p);
+        EM = new ExecutionManager(g, conf, this, p);
 
         //load only
         latch = new CountDownLatch(g.getExecutionNodeArrayList().size() + 1 - 1);//+1:OM -1:virtual
@@ -166,24 +167,24 @@ public class OptimizationManager extends executorThread {
                 g = executionPlan.SP.graph;
 
                 schedulingPlan.planToString(false, true);
-                EM.distributeTasks(conf, executionPlan, latch, false, false,  p);
+                EM.distributeTasks(conf, executionPlan, latch, false, false, p);
             } else if (nav) {
                 LOG.info("Native execution");
                 executionPlan = new ExecutionPlan(null, null);
                 executionPlan.setProfile();
-                EM.distributeTasks(conf, executionPlan, latch, false, false,  p);
+                EM.distributeTasks(conf, executionPlan, latch, false, false, p);
 //                return executionPlan;
             } else if (benchmark) {
                 //manually load the desired benchmark plan.
                 SchedulingPlan schedulingPlan = so.benchmark_plan(conf.getInt("plan"), prefix);
                 executionPlan = new ExecutionPlan(schedulingPlan, null);
-                EM.distributeTasks(conf, executionPlan, latch, true, false,  p);
+                EM.distributeTasks(conf, executionPlan, latch, true, false, p);
 //                return executionPlan;
             } else if (profile) {
                 LOG.info("Start profiling");
                 executionPlan = new ExecutionPlan(null, null);
                 executionPlan.setProfile();
-                EM.distributeTasks(conf, executionPlan, latch, false, true,  p);
+                EM.distributeTasks(conf, executionPlan, latch, false, true, p);
 //                return executionPlan;
             } else if (manual) {
                 SchedulingPlan schedulingPlan = load_next_plan_toProfile();

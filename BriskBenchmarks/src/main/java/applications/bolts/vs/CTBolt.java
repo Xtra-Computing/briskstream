@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.datatype.util.VSTopologyControl.CTBolt_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Field;
+import static applications.datatype.util.VSTopologyControl.CTBolt_STREAM_ID;
 
 /**
  * Per-user total call time

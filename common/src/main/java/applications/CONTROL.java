@@ -14,5 +14,4 @@ public interface CONTROL {
     boolean enable_debug = false;//some critical debug section.
 
 
-
 }

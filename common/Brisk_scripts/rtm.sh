@@ -607,9 +607,9 @@ timestamp=$(date +%Y%m%d-%H%M)
 # Create a temporary directory
 app_cnt=0
 cnt=0
-for app in "OnlineBiding" #"MicroBenchmark" "FraudDetection" "SpikeDetection" "LinearRoad" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
+for app in "WordCount" #"FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
 do
-    machine=0
+    machine=3
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
 	outputPath=$HOME/Documents/briskstream/Tests/test-$timestamp/$app
@@ -657,194 +657,6 @@ do
 	#5 repeats
     let "iteration = 1"
 		case "$app" in
-		    "OnlineBiding")
-				for hz in "${OB[@]}"
-				do
-				    for bt in 1
-                    do
-					 for socket in 8 #2 4 8 #2 4 8 #4 2 1
-                        do
-                            for cpu in 18 #18
-                            do
-                                for percentile in 99 # 100 #99 100 ##the percentile used in profiling..
-                                do
-                                   for tt in 2 8 32 64
-                                   do
-                                       for gc_factor in 0
-                                        do
-                                            for TP in 10 50
-                                            do
-                                                echo "$socket"
-                                                CCOption=0
-                                                checkpoint=1
-                                                main_transaction_native_local $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint
-                                            done
-                                        done
-                                   done
-                                done
-                            done
-                        done
-                     done
-				done
-				;;
-			"CrossTables")
-				for hz in "${CT[@]}"
-				do
-				    for bt in 1
-                    do
-					 for socket in 8 #2 4 8 #2 4 8 #4 2 1
-                        do
-                            for cpu in 18 #18
-                            do
-                                for percentile in 99 # 100 #99 100 ##the percentile used in profiling..
-                                do
-                                   for tt in 2 8 32 64
-                                   do
-                                       for gc_factor in 0
-                                        do
-                                            for TP in 10 50 100 150
-                                            do
-                                                echo "$socket"
-                                                CCOption=0
-                                                checkpoint=1
-                                                main_transaction_native_local $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint
-                                            done
-                                        done
-                                   done
-                                done
-                            done
-                        done
-                     done
-				done
-				;;
-			"MicroBenchmark")
-				for hz in "${MB[@]}"
-				do
-				    for theta in 0 0.6 0.8
-				        do
-                        for bt in 1
-                        do
-                         for socket in 2 #2 4 8 #2 4 8 #4 2 1
-                            do
-                                for cpu in 18 #18
-                                do
-                                    for percentile in 99 # 100 #99 100 ##the percentile used in profiling..
-                                    do
-
-                                       for tt in 40 32 24 16 8 2
-                                       do
-                                           let "st = 1"
-                                           for gc_factor in 0
-                                           do
-                                                CCOption=3
-                                                for checkpoint in 10 5 1 #default 10 seconds.
-                                                do
-                                                   for x in 2 1 #25 50 75 100
-                                                   do
-                                                      let "TP = $tt/$x"
-                                                       #let "tt = $tt*$y"
-                                                      for NUM_ACCESS in 10 8 6 4 2 1
-                                                      do
-                                                          for ratio_of_read in 0 0.25 0.5 0.75 1
-                                                          do
-                                                              main_transaction_native_local $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                                          done
-                                                      done
-                                                   done
-                                                done
-                                                for CCOption in 0 #1 2
-                                                do
-                                                    for NUM_ACCESS in 10 8 6 4 2 1
-                                                    do
-                                                        for ratio_of_read in 0 0.25 0.5 0.75 1
-                                                        do
-                                                            TP=1
-                                                            checkpoint=1
-                                                            main_transaction_native_local $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
-                                                        done
-                                                    done
-                                                done
-                                            done
-                                       done
-                                    done
-                                done
-                            done
-                         done
-                     done
-				done
-				;;
-			"StreamingAnalysis")
-				for hz in "${SA[@]}"
-				do
-						#8 configurations of profile plan
-					for profile_plan in 0 #1 #2 3 4 5 6 7
-					do
-							#10 configurations of tuple size
-						for size_tuple in 1 16 64 128 256 512 # 
-						do
-							for window in 2 #4 8
-							do
-								#complexity of sink
-								for complexity in 0 10 100 1000
-								do
-									# for repeate in 1 2 3 4 5
-									# do
-										statistics_profile $Profile $hz $app $size_tuple $profile_plan $complexity $window
-									# done
-								done
-							done
-						done
-					done
-				done
-				;;
-			"WordCount_FT")
-				for hz in "${WC[@]}"
-				do
-					echo "WordCount fault tolerance Study"
-					for bt in 50
-                    do
-#                        statistics_profile $hz $app 0 -1
-                        for socket in 1 2 4 8
-                        do
-                            let "tt = 288/8*$socket"
-                            for ck in 60
-                            do
-                                for percentile in 50 # 100 #99 100 ##the percentile used in profiling..
-                                do
-                                    main_opt_ft $Profile $hz $app $socket -1 $tt $iteration $bt $ck
-                                done
-                            done
-                        done
-                    done
-				done
-				;;
-            "WordCount_latency")
-				for hz in "${WC[@]}"
-				do
-                    echo "WordCount latency Study"
-					for bt in 50
-                    do
-                       echo "latency test"
-                        for percentile in 50 #90 99 # 100 #99 100 ##the percentile used in profiling..
-                        do
-                            for socket in 7 #4 2 1
-                            do
-                                for cpu in 18 #18
-                                do
-                                    for gc_factor in 0
-                                    do
-                                        echo "$socket"
-                                        let "tt = 144/8*$socket"
-                                        #main_opt $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $percentile
-                                        main_opt $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $percentile
-                                    done
-                                done
-                            done
-                        done #end of percentile
-
-                    done #end of bt
-                  done
-				;;
 			"WordCount")
 				for hz in "${WC[@]}"
 				do
@@ -856,15 +668,15 @@ do
                         do
                         END=18 #to get a ground-truth!!
 
-#                            for((tt=5;tt<=END;tt+=5));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
-#
-#                            for((tt=1;tt<2;tt+=2));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
+                            for((tt=5;tt<=END;tt+=5));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
+
+                            for((tt=1;tt<2;tt+=2));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
 
 				        done #end of percentile
 

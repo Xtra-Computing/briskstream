@@ -18,62 +18,62 @@ import java.util.Map;
  * @author surajwaghulde
  */
 public class MovingAverageBolt extends AbstractBolt {
-	//    private static final Logger LOG = LoggerFactory.getLogger(MovingAverageBolt.class);
+    //    private static final Logger LOG = LoggerFactory.getLogger(MovingAverageBolt.class);
 //    int loop = 1;
 //    int cnt = 0;
-	private int movingAverageWindow;
-	private Map<Integer, LinkedList<Double>> deviceIDtoStreamMap;
-	private Map<Integer, Double> deviceIDtoSumOfEvents;
+    private int movingAverageWindow;
+    private Map<Integer, LinkedList<Double>> deviceIDtoStreamMap;
+    private Map<Integer, Double> deviceIDtoSumOfEvents;
 
-	@Override
-	public void initialize() {
-		movingAverageWindow = config.getInt(SpikeDetectionConstants.Conf.MOVING_AVERAGE_WINDOW, 1000);
-		deviceIDtoStreamMap = new HashMap<>();
-		deviceIDtoSumOfEvents = new HashMap<>();
-	}
+    @Override
+    public void initialize() {
+        movingAverageWindow = config.getInt(SpikeDetectionConstants.Conf.MOVING_AVERAGE_WINDOW, 1000);
+        deviceIDtoStreamMap = new HashMap<>();
+        deviceIDtoSumOfEvents = new HashMap<>();
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
 //        if (cnt < queue_size) {//make sure no gc due to queue full.
 //            cnt++;
 //        String deviceID = input.getStringByField(SpikeDetectionConstants.Field.DEVICE_ID);
 //        double nextDouble = input.getDoubleByField(SpikeDetectionConstants.Field.VALUE);
-		int deviceID = input.getInteger(0);
-		double nextDouble = input.getDouble(1);
-		double movingAvergeInstant = movingAverage(deviceID, nextDouble);
+        int deviceID = input.getInteger(0);
+        double nextDouble = input.getDouble(1);
+        double movingAvergeInstant = movingAverage(deviceID, nextDouble);
 
-		collector.emit(new Values(deviceID, movingAvergeInstant, nextDouble));
+        collector.emit(new Values(deviceID, movingAvergeInstant, nextDouble));
 //        }
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	public double movingAverage(int deviceID, double nextDouble) {
-		LinkedList<Double> valueList = new LinkedList<>();
-		double sum = 0.0;
+    public double movingAverage(int deviceID, double nextDouble) {
+        LinkedList<Double> valueList = new LinkedList<>();
+        double sum = 0.0;
 
-		if (deviceIDtoStreamMap.containsKey(deviceID)) {
-			valueList = deviceIDtoStreamMap.get(deviceID);
-			sum = deviceIDtoSumOfEvents.get(deviceID);
-			if (valueList.size() > movingAverageWindow - 1) {
-				double valueToRemove = valueList.removeFirst();
-				sum -= valueToRemove;
-			}
-			valueList.addLast(nextDouble);
-			sum += nextDouble;
-			deviceIDtoSumOfEvents.put(deviceID, sum);
-			deviceIDtoStreamMap.put(deviceID, valueList);
-			return sum / valueList.size();
-		} else {
-			valueList.add(nextDouble);
-			deviceIDtoStreamMap.put(deviceID, valueList);
-			deviceIDtoSumOfEvents.put(deviceID, nextDouble);
-			return nextDouble;
-		}
-	}
+        if (deviceIDtoStreamMap.containsKey(deviceID)) {
+            valueList = deviceIDtoStreamMap.get(deviceID);
+            sum = deviceIDtoSumOfEvents.get(deviceID);
+            if (valueList.size() > movingAverageWindow - 1) {
+                double valueToRemove = valueList.removeFirst();
+                sum -= valueToRemove;
+            }
+            valueList.addLast(nextDouble);
+            sum += nextDouble;
+            deviceIDtoSumOfEvents.put(deviceID, sum);
+            deviceIDtoStreamMap.put(deviceID, valueList);
+            return sum / valueList.size();
+        } else {
+            valueList.add(nextDouble);
+            deviceIDtoStreamMap.put(deviceID, valueList);
+            deviceIDtoSumOfEvents.put(deviceID, nextDouble);
+            return nextDouble;
+        }
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(SpikeDetectionConstants.Field.DEVICE_ID, SpikeDetectionConstants.Field.MOVING_AVG, SpikeDetectionConstants.Field.VALUE);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(SpikeDetectionConstants.Field.DEVICE_ID, SpikeDetectionConstants.Field.MOVING_AVG, SpikeDetectionConstants.Field.VALUE);
+    }
 }

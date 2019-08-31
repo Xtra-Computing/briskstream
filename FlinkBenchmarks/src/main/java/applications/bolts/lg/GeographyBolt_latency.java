@@ -20,43 +20,43 @@ import static applications.constants.ClickAnalyticsConstants.Field;
  * User: domenicosolazzo
  */
 public class GeographyBolt_latency extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(GeographyBolt_latency.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GeographyBolt_latency.class);
 
-	private IPLocation resolver;
+    private IPLocation resolver;
 
-	private double cnt = 0, cnt1 = 0;
+    private double cnt = 0, cnt1 = 0;
 
 
-	@Override
-	public void initialize() {
-		String ipResolver = config.getString(BaseConf.GEOIP_INSTANCE);
-		resolver = IPLocationFactory.create(ipResolver, config);
-		LOG.info(Thread.currentThread().getName());
-	}
+    @Override
+    public void initialize() {
+        String ipResolver = config.getString(BaseConf.GEOIP_INSTANCE);
+        resolver = IPLocationFactory.create(ipResolver, config);
+        LOG.info(Thread.currentThread().getName());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 
-		String ip = input.getStringByField(Field.IP);
-		Location location = resolver.resolve(ip);
+        String ip = input.getStringByField(Field.IP);
+        Location location = resolver.resolve(ip);
 
-		Long msgId;
-		Long SYSStamp;
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		if (location != null) {
-			String city = location.getCity();
-			String country = location.getCountryName();
+        if (location != null) {
+            String city = location.getCity();
+            String country = location.getCountryName();
 //            cnt1++;
-			collector.emit(new Values(country, city, msgId, SYSStamp));
-		}
+            collector.emit(new Values(country, city, msgId, SYSStamp));
+        }
 
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(Field.COUNTRY, Field.CITY, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(Field.COUNTRY, Field.CITY, MSG_ID, SYSTEMTIMESTAMP);
+    }
 }

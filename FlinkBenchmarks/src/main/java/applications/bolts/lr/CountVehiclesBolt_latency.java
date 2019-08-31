@@ -51,89 +51,89 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
  * @author mjsax
  */
 public class CountVehiclesBolt_latency extends AbstractBolt {
-	private static final long serialVersionUID = 6158421247331445466L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(CountVehiclesBolt_latency.class);
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final PositionReport inputPositionReport = new PositionReport();
-	/**
-	 * Internally (re)used object.
-	 */
-	private final SegmentIdentifier segment = new SegmentIdentifier();
-	/**
-	 * Maps each segment to its count value.
-	 */
-	private final Map<SegmentIdentifier, CarCount> countsMap = new HashMap<SegmentIdentifier, CarCount>();
+    private static final long serialVersionUID = 6158421247331445466L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CountVehiclesBolt_latency.class);
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final PositionReport inputPositionReport = new PositionReport();
+    /**
+     * Internally (re)used object.
+     */
+    private final SegmentIdentifier segment = new SegmentIdentifier();
+    /**
+     * Maps each segment to its count value.
+     */
+    private final Map<SegmentIdentifier, CarCount> countsMap = new HashMap<SegmentIdentifier, CarCount>();
 
-	/**
-	 * The currently processed 'minute number'.
-	 */
-	private short currentMinute = -1;
+    /**
+     * The currently processed 'minute number'.
+     */
+    private short currentMinute = -1;
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        cnt++;
 
-		Long msgId;
-		Long SYSStamp;
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		this.inputPositionReport.clear();
-		this.inputPositionReport.addAll(input.getValues());
-		LOGGER.trace(this.inputPositionReport.toString());
+        this.inputPositionReport.clear();
+        this.inputPositionReport.addAll(input.getValues());
+        LOGGER.trace(this.inputPositionReport.toString());
 
-		short minute = this.inputPositionReport.getMinuteNumber();
-		this.segment.set(this.inputPositionReport);
+        short minute = this.inputPositionReport.getMinuteNumber();
+        this.segment.set(this.inputPositionReport);
 
 //		assert (minute >= this.currentMinute);
-		if (minute < this.currentMinute) {
-			//restart..
-			currentMinute = minute;
-		}
+        if (minute < this.currentMinute) {
+            //restart..
+            currentMinute = minute;
+        }
 
-		if (minute > this.currentMinute) {
-			boolean emitted = false;
+        if (minute > this.currentMinute) {
+            boolean emitted = false;
 
-			for (Entry<SegmentIdentifier, CarCount> entry : this.countsMap.entrySet()) {
-				SegmentIdentifier segId = entry.getKey();
+            for (Entry<SegmentIdentifier, CarCount> entry : this.countsMap.entrySet()) {
+                SegmentIdentifier segId = entry.getKey();
 
 
-				int count = entry.getValue().count;
-				if (count > 50) {
+                int count = entry.getValue().count;
+                if (count > 50) {
 
-					emitted = true;
-					this.collector.emit(TopologyControl.CAR_COUNTS_STREAM_ID,
-							new CountTuple(new Short(
-									this.currentMinute), segId.getXWay(), segId.getSegment(), segId.getDirection(), new Integer(
-									count), msgId, SYSStamp));
-				}
-			}
-			if (!emitted) {
+                    emitted = true;
+                    this.collector.emit(TopologyControl.CAR_COUNTS_STREAM_ID,
+                            new CountTuple(new Short(
+                                    this.currentMinute), segId.getXWay(), segId.getSegment(), segId.getDirection(), new Integer(
+                                    count), msgId, SYSStamp));
+                }
+            }
+            if (!emitted) {
 //                cnt1++;
-				this.collector.emit(TopologyControl.CAR_COUNTS_STREAM_ID, new CountTuple(new Short(minute), msgId, SYSStamp));
-			}
-			this.countsMap.clear();
-			this.currentMinute = minute;
-		}
+                this.collector.emit(TopologyControl.CAR_COUNTS_STREAM_ID, new CountTuple(new Short(minute), msgId, SYSStamp));
+            }
+            this.countsMap.clear();
+            this.currentMinute = minute;
+        }
 
-		CarCount segCnt = this.countsMap.get(this.segment);
-		if (segCnt == null) {
-			segCnt = new CarCount();
-			this.countsMap.put(this.segment.copy(), segCnt);
-		} else {
-			++segCnt.count;
-		}
+        CarCount segCnt = this.countsMap.get(this.segment);
+        if (segCnt == null) {
+            segCnt = new CarCount();
+            this.countsMap.put(this.segment.copy(), segCnt);
+        } else {
+            ++segCnt.count;
+        }
 
-	}
+    }
 
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declareStream(TopologyControl.CAR_COUNTS_STREAM_ID, CountTuple.getSchema_latency());
-	}
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declareStream(TopologyControl.CAR_COUNTS_STREAM_ID, CountTuple.getSchema_latency());
+    }
 
 
 }

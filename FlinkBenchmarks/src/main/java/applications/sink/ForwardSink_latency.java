@@ -15,33 +15,33 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mayconbordin
  */
 public class ForwardSink_latency extends BaseSink {
-	private static final Logger LOG = LoggerFactory.getLogger(ForwardSink_latency.class);
-	stable_sink_helper helper;
+    private static final Logger LOG = LoggerFactory.getLogger(ForwardSink_latency.class);
+    stable_sink_helper helper;
 
-	@Override
-	public void initialize() {
+    @Override
+    public void initialize() {
 
-		helper = new stable_sink_helper(LOG
-				, config.getInt("runtimeInSeconds")
-				, config.getString("metrics.output"), config.getDouble("predict", 0), 0, context.getThisTaskId());
-	}
+        helper = new stable_sink_helper(LOG
+                , config.getInt("runtimeInSeconds")
+                , config.getString("metrics.output"), config.getDouble("predict", 0), 0, context.getThisTaskId());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
-		collector.emit(new Values(input, input.getLongByField(MSG_ID), input.getLongByField(SYSTEMTIMESTAMP)));
+        collector.emit(new Values(input, input.getLongByField(MSG_ID), input.getLongByField(SYSTEMTIMESTAMP)));
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	@Override
-	protected Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 
-		return new Fields("", MSG_ID, SYSTEMTIMESTAMP);
-	}
+        return new Fields("", MSG_ID, SYSTEMTIMESTAMP);
+    }
 
 }

@@ -27,7 +27,6 @@ import java.util.concurrent.CountDownLatch;
 
 import static applications.util.OsUtils.isUnix;
 import static com.javamex.classmexer.MemoryUtil.VisibilityFilter.ALL;
-import static net.openhft.affinity.AffinityLock.dumpLocks;
 
 /**
  * Task thread that hosts bolt logic. Receives input Brisk.execution.runtime.tuple,

@@ -1,8 +1,8 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.datatype.util.VSTopologyControl;
 import applications.constants.VoIPSTREAMConstants;
+import applications.datatype.util.VSTopologyControl;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.tuple.TransferTuple;

@@ -8,20 +8,20 @@ import org.apache.storm.tuple.Tuple;
  */
 public class BasicFormatter extends Formatter {
 
-	@Override
-	public String format(Tuple tuple) {
-		Fields schema = context.getComponentOutputFields(tuple.getSourceComponent(), tuple.getSourceStreamId());
+    @Override
+    public String format(Tuple tuple) {
+        Fields schema = context.getComponentOutputFields(tuple.getSourceComponent(), tuple.getSourceStreamId());
 
-		StringBuilder line = new StringBuilder();
+        StringBuilder line = new StringBuilder();
 
-		for (int i = 0; i < tuple.size(); i++) {
-			if (i != 0) {
-				line.append(", ");
-			}
-			line.append(String.format("%s=%s", schema.get(i), tuple.getValue(i)));
-		}
+        for (int i = 0; i < tuple.size(); i++) {
+            if (i != 0) {
+                line.append(", ");
+            }
+            line.append(String.format("%s=%s", schema.get(i), tuple.getValue(i)));
+        }
 
-		return line.toString();
-	}
+        return line.toString();
+    }
 
 }

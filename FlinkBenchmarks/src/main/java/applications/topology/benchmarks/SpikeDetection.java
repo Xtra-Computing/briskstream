@@ -18,51 +18,51 @@ import static applications.constants.SpikeDetectionConstants.Conf.SPIKE_DETECTOR
 import static applications.constants.SpikeDetectionConstants.PREFIX;
 
 public class SpikeDetection extends BasicTopology {
-	private static final Logger LOG = LoggerFactory.getLogger(SpikeDetection.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpikeDetection.class);
 
-	public SpikeDetection(String topologyName, Config config) {
-		super(topologyName, config);
-	}
+    public SpikeDetection(String topologyName, Config config) {
+        super(topologyName, config);
+    }
 
-	public void initialize() {
-		super.initialize();
-		sink = loadSink();
+    public void initialize() {
+        super.initialize();
+        sink = loadSink();
 //        initilize_parser();
-	}
+    }
 
-	@Override
-	public FlinkTopology buildTopology() {
+    @Override
+    public FlinkTopology buildTopology() {
 
-		spout.setFields(new Fields(Field.TEXT));
-		builder.setSpout(Component.SPOUT, spout, spoutThreads);
+        spout.setFields(new Fields(Field.TEXT));
+        builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
-		builder.setBolt(Component.PARSER,
-				new ParserBolt(parser, new Fields(Field.DEVICE_ID, Field.VALUE))
-				, config.getInt(SpikeDetectionConstants.Conf.PARSER_THREADS, 1))
-				.shuffleGrouping(Component.SPOUT);
+        builder.setBolt(Component.PARSER,
+                new ParserBolt(parser, new Fields(Field.DEVICE_ID, Field.VALUE))
+                , config.getInt(SpikeDetectionConstants.Conf.PARSER_THREADS, 1))
+                .shuffleGrouping(Component.SPOUT);
 
-		builder.setBolt(Component.MOVING_AVERAGE, new MovingAverageBolt(),
-				config.getInt(MOVING_AVERAGE_THREADS, 1))
-				.fieldsGrouping(Component.PARSER, new Fields(Field.DEVICE_ID));
+        builder.setBolt(Component.MOVING_AVERAGE, new MovingAverageBolt(),
+                config.getInt(MOVING_AVERAGE_THREADS, 1))
+                .fieldsGrouping(Component.PARSER, new Fields(Field.DEVICE_ID));
 
-		builder.setBolt(Component.SPIKE_DETECTOR, new SpikeDetectionBolt(),
-				config.getInt(SPIKE_DETECTOR_THREADS, 1))
-				.shuffleGrouping(Component.MOVING_AVERAGE);
+        builder.setBolt(Component.SPIKE_DETECTOR, new SpikeDetectionBolt(),
+                config.getInt(SPIKE_DETECTOR_THREADS, 1))
+                .shuffleGrouping(Component.MOVING_AVERAGE);
 
-		builder.setBolt(Component.SINK, sink, sinkThreads
+        builder.setBolt(Component.SINK, sink, sinkThreads
 //                    , new shuffleGrouping(Component.SPOUT)
-		).shuffleGrouping(Component.SPIKE_DETECTOR);
-		return FlinkTopology.createTopology(builder, config);
-	}
+        ).shuffleGrouping(Component.SPIKE_DETECTOR);
+        return FlinkTopology.createTopology(builder, config);
+    }
 
-	@Override
-	public Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    public Logger getLogger() {
+        return LOG;
+    }
 
-	@Override
-	public String getConfigPrefix() {
-		return PREFIX;
-	}
+    @Override
+    public String getConfigPrefix() {
+        return PREFIX;
+    }
 
 }

@@ -1,6 +1,5 @@
 package brisk.execution;
 
-import applications.CONTROL;
 import applications.Platform;
 import applications.util.Configuration;
 import brisk.components.TopologyComponent;
@@ -131,12 +130,12 @@ public class ExecutionManager {
             for (ExecutionNode e : g.getExecutionNodeArrayList()) {
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_InCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchSpout_InCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), plan.getSP().allowedCores(), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_InCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchBolt_InCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), plan.getSP().allowedCores(), latch);
                         break;
                     case virtualType:
@@ -164,12 +163,12 @@ public class ExecutionManager {
             for (ExecutionNode e : g.getExecutionNodeArrayList()) {
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchSpout_SingleCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor), conf
+                        thread = launchBolt_SingleCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor), conf
                                 , plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case virtualType:
@@ -200,12 +199,12 @@ public class ExecutionManager {
 
                 switch (e.operator.type) {
                     case spoutType:
-                        thread = launchSpout_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor)
+                        thread = launchSpout_SingleCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor)
                                 , conf, plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case boltType:
                     case sinkType:
-                        thread = launchBolt_SingleCore(e, new TopologyContext(g,  plan, e, ThreadMap, HPCMonotor)
+                        thread = launchBolt_SingleCore(e, new TopologyContext(g, plan, e, ThreadMap, HPCMonotor)
                                 , conf, plan.toSocket(e.getExecutorID()), latch);
                         break;
                     case virtualType:

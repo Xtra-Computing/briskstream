@@ -116,7 +116,7 @@ public class RateModel implements Serializable {
 //                        * Math.ceil((stat.tuple_size / p.cache_line))
 //                        * (p.latency_map[0][7]);
 //
-                //RLAS-Min
+        //RLAS-Min
 //                0;
     }
 

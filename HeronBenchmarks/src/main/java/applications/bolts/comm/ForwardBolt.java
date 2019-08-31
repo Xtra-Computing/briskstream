@@ -21,7 +21,7 @@ public class ForwardBolt extends AbstractBolt {
     Random r = new Random();
 
     @Override
-    public void execute(Tuple in)  throws InterruptedException {
+    public void execute(Tuple in) throws InterruptedException {
 //        for(int i = new Random().nextInt(1000);i<100;i++){
 //            cnt+=i;
 //        }

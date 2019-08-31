@@ -5,7 +5,6 @@ import applications.bolts.lg.GeoStatsBolt;
 import applications.bolts.lg.GeographyBolt;
 import applications.bolts.lg.StatusCountBolt;
 import applications.bolts.lg.VolumeCountBolt;
-import applications.constants.FraudDetectionConstants;
 import applications.sink.BaseSink;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
@@ -71,7 +70,7 @@ public class LogProcessing extends BasicTopology {
 
         builder.setBolt(Component.PARSER, new ParserBolt(parser,
                         new Fields(Field.IP, Field.TIMESTAMP, Field.TIMESTAMP_MINUTES,
-                        Field.REQUEST, Field.RESPONSE, Field.BYTE_SIZE, MSG_ID, SYSTEMTIMESTAMP)
+                                Field.REQUEST, Field.RESPONSE, Field.BYTE_SIZE, MSG_ID, SYSTEMTIMESTAMP)
                 )
                 , config.getInt(Conf.PARSER_THREADS, 1)).
                 shuffleGrouping(Component.SPOUT);

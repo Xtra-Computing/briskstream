@@ -77,120 +77,120 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
  * @author mjsax
  */
 public class TollNotificationBolt_las_latency extends AbstractBolt {
-	private final static long serialVersionUID = 5537727428628598519L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(TollNotificationBolt_las_latency.class);
-	/**
-	 * Contains all vehicle IDs and segment of the last {@link PositionReport} to allow skipping already sent
-	 * notifications (there's only one notification per segment per vehicle).
-	 */
-	private final Map<Integer, Short> allCars = new HashMap<>();
-	/**
-	 * Contains the last toll notification for each vehicle to assess the toll when the vehicle leaves a segment.
-	 */
-	private final Map<Integer, TollNotification> lastTollNotification = new HashMap<>();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final PositionReport inputPositionReport = new PositionReport();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final AccidentTuple inputAccidentTuple = new AccidentTuple();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final CountTuple inputCountTuple = new CountTuple();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final LavTuple inputLavTuple = new LavTuple();
-	/**
-	 * Internally (re)used object.
-	 */
-	private final SegmentIdentifier segmentToCheck = new SegmentIdentifier();
-	/**
-	 * Buffer for accidents.
-	 */
-	private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<>();
-	/**
-	 * Buffer for accidents.
-	 */
-	private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<>();
-	/**
-	 * Buffer for car counts.
-	 */
-	private Map<ISegmentIdentifier, Integer> currentMinuteCounts = new HashMap<>();
-	/**
-	 * Buffer for car counts.
-	 */
-	private Map<ISegmentIdentifier, Integer> previousMinuteCounts = new HashMap<>();
-	/**
-	 * Buffer for LAV values.
-	 */
-	private Map<ISegmentIdentifier, Integer> currentMinuteLavs = new HashMap<>();
-	/**
-	 * Buffer for LAV values.
-	 */
-	private Map<ISegmentIdentifier, Integer> previousMinuteLavs = new HashMap<>();
-	/**
-	 * The currently processed 'minute number'.
-	 */
-	private int currentMinute = -1;
+    private final static long serialVersionUID = 5537727428628598519L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TollNotificationBolt_las_latency.class);
+    /**
+     * Contains all vehicle IDs and segment of the last {@link PositionReport} to allow skipping already sent
+     * notifications (there's only one notification per segment per vehicle).
+     */
+    private final Map<Integer, Short> allCars = new HashMap<>();
+    /**
+     * Contains the last toll notification for each vehicle to assess the toll when the vehicle leaves a segment.
+     */
+    private final Map<Integer, TollNotification> lastTollNotification = new HashMap<>();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final PositionReport inputPositionReport = new PositionReport();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final AccidentTuple inputAccidentTuple = new AccidentTuple();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final CountTuple inputCountTuple = new CountTuple();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final LavTuple inputLavTuple = new LavTuple();
+    /**
+     * Internally (re)used object.
+     */
+    private final SegmentIdentifier segmentToCheck = new SegmentIdentifier();
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<>();
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<>();
+    /**
+     * Buffer for car counts.
+     */
+    private Map<ISegmentIdentifier, Integer> currentMinuteCounts = new HashMap<>();
+    /**
+     * Buffer for car counts.
+     */
+    private Map<ISegmentIdentifier, Integer> previousMinuteCounts = new HashMap<>();
+    /**
+     * Buffer for LAV values.
+     */
+    private Map<ISegmentIdentifier, Integer> currentMinuteLavs = new HashMap<>();
+    /**
+     * Buffer for LAV values.
+     */
+    private Map<ISegmentIdentifier, Integer> previousMinuteLavs = new HashMap<>();
+    /**
+     * The currently processed 'minute number'.
+     */
+    private int currentMinute = -1;
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        cnt++;
 //        if (stat != null) stat.start_measure();
-		Long msgId;
-		Long SYSStamp;
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        Long msgId;
+        Long SYSStamp;
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
 //		final String inputStreamId = input.getSourceStreamId();
-		this.collector.emit(TopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, new StreamValues<>(null,null,null,null,null,null,null,msgId,SYSStamp));//as an indication.
+        this.collector.emit(TopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, new StreamValues<>(null, null, null, null, null, null, null, msgId, SYSStamp));//as an indication.
 
-		this.inputLavTuple.clear();
-		this.inputLavTuple.addAll(input.getValues());
-		LOGGER.trace("this.inputLavTuple" + this.inputLavTuple.toString());
+        this.inputLavTuple.clear();
+        this.inputLavTuple.addAll(input.getValues());
+        LOGGER.trace("this.inputLavTuple" + this.inputLavTuple.toString());
 
-		this.checkMinute(this.inputLavTuple.getMinuteNumber());
+        this.checkMinute(this.inputLavTuple.getMinuteNumber());
 //            assert (this.inputLavTuple.getMinuteNumber().shortValue() - 1 == this.currentMinute);
 
-		this.currentMinuteLavs.put(new SegmentIdentifier(this.inputLavTuple), this.inputLavTuple.getLav());
+        this.currentMinuteLavs.put(new SegmentIdentifier(this.inputLavTuple), this.inputLavTuple.getLav());
 
 
 //        double v = cnt1 / cnt;
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	public void display() {
+    public void display() {
 //        LOGGER.info("cnt:" + cnt + "\tcnt1:" + TopologyControl.TOLL_NOTIFICATIONS_STREAM_ID + ":" + cnt1 + "(" + (cnt1 / cnt) + ")" + "\tcnt2:" + TOLL_ASSESSMENTS_STREAM_ID + ":" + cnt2 + "(" + (cnt2 / cnt) + ")");
-	}
+    }
 
-	private void checkMinute(short minute) {
-		//due to the tuple may be send in reverse-order, it may happen that some tuples are processed too late.
+    private void checkMinute(short minute) {
+        //due to the tuple may be send in reverse-order, it may happen that some tuples are processed too late.
 //        assert (minute >= this.currentMinute);
 
-		if (minute < this.currentMinute) {
-			//restart..
-			currentMinute = minute;
-		}
-		if (minute > this.currentMinute) {
-			LOGGER.trace("New minute: {}", minute);
-			this.currentMinute = minute;
-			this.previousMinuteAccidents = this.currentMinuteAccidents;
-			this.currentMinuteAccidents = new HashSet<>();
-			this.previousMinuteCounts = this.currentMinuteCounts;
-			this.currentMinuteCounts = new HashMap<>();
-			this.previousMinuteLavs = this.currentMinuteLavs;
-			this.currentMinuteLavs = new HashMap<>();
-		}
-	}
+        if (minute < this.currentMinute) {
+            //restart..
+            currentMinute = minute;
+        }
+        if (minute > this.currentMinute) {
+            LOGGER.trace("New minute: {}", minute);
+            this.currentMinute = minute;
+            this.previousMinuteAccidents = this.currentMinuteAccidents;
+            this.currentMinuteAccidents = new HashSet<>();
+            this.previousMinuteCounts = this.currentMinuteCounts;
+            this.currentMinuteCounts = new HashMap<>();
+            this.previousMinuteLavs = this.currentMinuteLavs;
+            this.currentMinuteLavs = new HashMap<>();
+        }
+    }
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declareStream(TopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, TollNotification.getLatencySchema());
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declareStream(TopologyControl.TOLL_NOTIFICATIONS_STREAM_ID, TollNotification.getLatencySchema());
 //		declarer.declareStream(TOLL_ASSESSMENTS_STREAM_ID, TollNotification.getSchema());
-	}
+    }
 
 }

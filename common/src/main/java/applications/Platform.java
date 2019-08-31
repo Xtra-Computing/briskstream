@@ -43,60 +43,8 @@ public class Platform implements Serializable {
 
         ArrayList<Integer> node_0;
 
-        if (machine == 1) {//HPI machine
-            //WITH HT
+        if (machine == 0) {//NUS 8-way machine
 
-            Integer[] no_0 = {0, 1, 2, 3, 4, 5, 6, 7, 64, 65, 66, 67, 68, 69, 70, 71};
-            node_0 = new ArrayList<>(Arrays.asList(no_0));
-            Integer[] no_1 = {8, 9, 10, 11, 12, 13, 14, 15, 72, 73, 74, 75, 76, 77, 78, 79};
-            ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
-
-            Integer[] no_2 = {16, 17, 18, 19, 20, 21, 22, 23, 80, 81, 82, 83, 84, 85, 86, 87};
-            ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
-            Integer[] no_3 = {24, 25, 26, 27, 28, 29, 30, 31, 88, 89, 90, 91, 92, 93, 94, 95};
-            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
-
-            Integer[] no_4 = {32, 33, 34, 35, 36, 37, 38, 39, 96, 97, 98, 99, 100, 101, 102, 103};
-            ArrayList<Integer> node_4 = new ArrayList<>(Arrays.asList(no_4));
-            Integer[] no_5 = {40, 41, 42, 43, 44, 45, 46, 47, 104, 105, 106, 107, 108, 109, 110, 111};
-            ArrayList<Integer> node_5 = new ArrayList<>(Arrays.asList(no_5));
-
-            Integer[] no_6 = {48, 49, 50, 51, 52, 53, 54, 55, 112, 113, 114, 115, 116, 117, 118, 119};
-            ArrayList<Integer> node_6 = new ArrayList<>(Arrays.asList(no_6));
-            Integer[] no_7 = {56, 57, 58, 59, 60, 61, 62, 63, 120, 121, 122, 123, 124, 125, 126, 127};
-            ArrayList<Integer> node_7 = new ArrayList<>(Arrays.asList(no_7));
-
-            //Without HT
-//            Integer[] no_0 = {0, 1, 2, 3, 4, 5, 6, 7};
-//            node_0 = new ArrayList<>(Arrays.asList(no_0));
-//            Integer[] no_1 = {8, 9, 10, 11, 12, 13, 14, 15};
-//            ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
-//
-//            Integer[] no_2 = {16, 17, 18, 19, 20, 21, 22, 23};
-//            ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
-//            Integer[] no_3 = {24, 25, 26, 27, 28, 29, 30, 31};
-//            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
-//
-//            Integer[] no_4 = {32, 33, 34, 35, 36, 37, 38, 39};
-//            ArrayList<Integer> node_4 = new ArrayList<>(Arrays.asList(no_4));
-//            Integer[] no_5 = {40, 41, 42, 43, 44, 45, 46, 47};
-//            ArrayList<Integer> node_5 = new ArrayList<>(Arrays.asList(no_5));
-//
-//            Integer[] no_6 = {48, 49, 50, 51, 52, 53, 54, 55};
-//            ArrayList<Integer> node_6 = new ArrayList<>(Arrays.asList(no_6));
-//            Integer[] no_7 = {56, 57, 58, 59, 60, 61, 62, 63};
-//            ArrayList<Integer> node_7 = new ArrayList<>(Arrays.asList(no_7));
-
-            return new ArrayList[]{node_0,
-                    node_1,
-                    node_2,
-                    node_3,
-                    node_4,
-                    node_5,
-                    node_6,
-                    node_7};
-
-        } else if (machine == 0) {//NUS machine
             //WITH HT
 //
 //			//cpu 0 should not be used.
@@ -168,8 +116,59 @@ public class Platform implements Serializable {
                     node_6,
                     node_7};
 
-        } else if (machine == 3) {
+        } else if (machine == 1) {//HP 8-way machine
+            //WITH HT
 
+            Integer[] no_0 = {0, 1, 2, 3, 4, 5, 6, 7, 64, 65, 66, 67, 68, 69, 70, 71};
+            node_0 = new ArrayList<>(Arrays.asList(no_0));
+            Integer[] no_1 = {8, 9, 10, 11, 12, 13, 14, 15, 72, 73, 74, 75, 76, 77, 78, 79};
+            ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
+
+            Integer[] no_2 = {16, 17, 18, 19, 20, 21, 22, 23, 80, 81, 82, 83, 84, 85, 86, 87};
+            ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
+            Integer[] no_3 = {24, 25, 26, 27, 28, 29, 30, 31, 88, 89, 90, 91, 92, 93, 94, 95};
+            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
+
+            Integer[] no_4 = {32, 33, 34, 35, 36, 37, 38, 39, 96, 97, 98, 99, 100, 101, 102, 103};
+            ArrayList<Integer> node_4 = new ArrayList<>(Arrays.asList(no_4));
+            Integer[] no_5 = {40, 41, 42, 43, 44, 45, 46, 47, 104, 105, 106, 107, 108, 109, 110, 111};
+            ArrayList<Integer> node_5 = new ArrayList<>(Arrays.asList(no_5));
+
+            Integer[] no_6 = {48, 49, 50, 51, 52, 53, 54, 55, 112, 113, 114, 115, 116, 117, 118, 119};
+            ArrayList<Integer> node_6 = new ArrayList<>(Arrays.asList(no_6));
+            Integer[] no_7 = {56, 57, 58, 59, 60, 61, 62, 63, 120, 121, 122, 123, 124, 125, 126, 127};
+            ArrayList<Integer> node_7 = new ArrayList<>(Arrays.asList(no_7));
+
+            //Without HT
+//            Integer[] no_0 = {0, 1, 2, 3, 4, 5, 6, 7};
+//            node_0 = new ArrayList<>(Arrays.asList(no_0));
+//            Integer[] no_1 = {8, 9, 10, 11, 12, 13, 14, 15};
+//            ArrayList<Integer> node_1 = new ArrayList<>(Arrays.asList(no_1));
+//
+//            Integer[] no_2 = {16, 17, 18, 19, 20, 21, 22, 23};
+//            ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
+//            Integer[] no_3 = {24, 25, 26, 27, 28, 29, 30, 31};
+//            ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
+//
+//            Integer[] no_4 = {32, 33, 34, 35, 36, 37, 38, 39};
+//            ArrayList<Integer> node_4 = new ArrayList<>(Arrays.asList(no_4));
+//            Integer[] no_5 = {40, 41, 42, 43, 44, 45, 46, 47};
+//            ArrayList<Integer> node_5 = new ArrayList<>(Arrays.asList(no_5));
+//
+//            Integer[] no_6 = {48, 49, 50, 51, 52, 53, 54, 55};
+//            ArrayList<Integer> node_6 = new ArrayList<>(Arrays.asList(no_6));
+//            Integer[] no_7 = {56, 57, 58, 59, 60, 61, 62, 63};
+//            ArrayList<Integer> node_7 = new ArrayList<>(Arrays.asList(no_7));
+
+            return new ArrayList[]{node_0,
+                    node_1,
+                    node_2,
+                    node_3,
+                    node_4,
+                    node_5,
+                    node_6,
+                    node_7};
+        } else if (machine == 2) { // NUS 4-way machine
 
 //    public static volatile int Sequential_CPU = OsUtils.isMac() ? 5 : 39;//reverse binding..
 //    node 0 cpus: 0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76
@@ -191,6 +190,7 @@ public class Platform implements Serializable {
 
             Integer[] no_2 = {2, 6, 10, 14, 18, 22, 26, 30, 34, 38};// 42 46 50 54 58 62 66 70 74 78
             ArrayList<Integer> node_2 = new ArrayList<>(Arrays.asList(no_2));
+
             Integer[] no_3 = {3, 7, 11, 15, 19, 23, 27, 31, 35, 39};//  43 47 51 55 59 63 67 71 75 79
             ArrayList<Integer> node_3 = new ArrayList<>(Arrays.asList(no_3));
 

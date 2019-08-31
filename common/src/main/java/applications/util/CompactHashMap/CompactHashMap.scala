@@ -151,15 +151,15 @@ class CompactHashMap[K, V](
     * @param  value The new value
     */
   def update(key: K, value: V) =
-  try {
-    val i = myKeys.add(key)
-    myValues(i) = value
-  } catch {
-    case ResizeNeeded =>
-      resize(key, value, myKeys.bits + 1)
-      val i2 = myKeys.addNew(key)
-      myValues(i2) = value
-  }
+    try {
+      val i = myKeys.add(key)
+      myValues(i) = value
+    } catch {
+      case ResizeNeeded =>
+        resize(key, value, myKeys.bits + 1)
+        val i2 = myKeys.addNew(key)
+        myValues(i2) = value
+    }
 
   /** This method allows one to add a new mapping from integer <code>key</code>
     * to integer <code>value</code> to the map. If the map already contains a
@@ -170,21 +170,21 @@ class CompactHashMap[K, V](
     * @param  value The new value
     */
   def updateIntInt(key: Int, value: Int) =
-  myValues.asInstanceOf[Object] match {
-    case bia: scala.runtime.BoxedIntArray =>
-      try {
-        val i = myKeys.addInt(key)
-        bia.value(i) = value
-      } catch {
-        case ResizeNeeded =>
-          val boxedKey = key.asInstanceOf[K]
-          val boxedValue = value.asInstanceOf[V]
-          resize(boxedKey, boxedValue, myKeys.bits + 1)
-          val i2 = myKeys.addNew(boxedKey)
-          myValues(i2) = boxedValue
-      }
-    case _ => updateInt(key, value.asInstanceOf[V])
-  }
+    myValues.asInstanceOf[Object] match {
+      case bia: scala.runtime.BoxedIntArray =>
+        try {
+          val i = myKeys.addInt(key)
+          bia.value(i) = value
+        } catch {
+          case ResizeNeeded =>
+            val boxedKey = key.asInstanceOf[K]
+            val boxedValue = value.asInstanceOf[V]
+            resize(boxedKey, boxedValue, myKeys.bits + 1)
+            val i2 = myKeys.addNew(boxedKey)
+            myValues(i2) = boxedValue
+        }
+      case _ => updateInt(key, value.asInstanceOf[V])
+    }
 
   /** This method allows one to add a new mapping from integer <code>key</code>
     * to <code>value</code> to the map. If the map already contains a
@@ -195,16 +195,16 @@ class CompactHashMap[K, V](
     * @param  value The new value
     */
   def updateInt(key: Int, value: V) =
-  try {
-    val i = myKeys.addInt(key)
-    myValues(i) = value
-  } catch {
-    case ResizeNeeded =>
-      val boxedKey = key.asInstanceOf[K]
-      resize(boxedKey, value, myKeys.bits + 1)
-      val i2 = myKeys.addNew(boxedKey)
-      myValues(i2) = value
-  }
+    try {
+      val i = myKeys.addInt(key)
+      myValues(i) = value
+    } catch {
+      case ResizeNeeded =>
+        val boxedKey = key.asInstanceOf[K]
+        resize(boxedKey, value, myKeys.bits + 1)
+        val i2 = myKeys.addNew(boxedKey)
+        myValues(i2) = value
+    }
 
   /** Resize map.
     */
@@ -400,9 +400,10 @@ class CompactHashMap[K, V](
   def toArray = {
     val a = new Array[(K, V)](myKeys.size)
     var i = 0
-    elements foreach { x => a {
-      i
-    } = x;
+    elements foreach { x =>
+      a {
+        i
+      } = x;
       i += 1
     }
     a
@@ -449,24 +450,24 @@ object CompactHashMap {
   /** Construct an empty map with given key and value classes.
     */
   def apply[K, V](keyClass: Class[K], valueClass: Class[V]) =
-  new CompactHashMap(keyClass, valueClass)
+    new CompactHashMap(keyClass, valueClass)
 
   /** Construct an empty map with given key and value classes
     * and initial capacity.
     */
   def apply[K, V](keyClass: Class[K], valueClass: Class[V], capacity: Int) =
-  new CompactHashMap(keyClass, valueClass, capacity)
+    new CompactHashMap(keyClass, valueClass, capacity)
 
   /** Construct an empty map with given key and value classes,
     * initial capacity, and load factor.
     */
   def apply[K, V](keyClass: Class[K], valueClass: Class[V], capacity: Int, loadFactor: Float) =
-  new CompactHashMap(keyClass, valueClass, capacity, loadFactor)
+    new CompactHashMap(keyClass, valueClass, capacity, loadFactor)
 
   /** Construct an empty map with given elements.
     */
   def apply[K, V](elems: (K, V)*) =
-  (new CompactHashMap[K, V] /: elems) {
-    (m, p) => m update(p._1, p._2); m
-  }
+    (new CompactHashMap[K, V] /: elems) {
+      (m, p) => m update(p._1, p._2); m
+    }
 }

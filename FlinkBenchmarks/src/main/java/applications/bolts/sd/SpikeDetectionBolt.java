@@ -16,42 +16,42 @@ import org.slf4j.LoggerFactory;
  * @author surajwaghulde
  */
 public class SpikeDetectionBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(SpikeDetectionBolt.class);
-	double cnt = 0;
-	double cnt1 = 0;
-	int loop = 1;
-	private double spikeThreshold;
+    private static final Logger LOG = LoggerFactory.getLogger(SpikeDetectionBolt.class);
+    double cnt = 0;
+    double cnt1 = 0;
+    int loop = 1;
+    private double spikeThreshold;
 
 
-	@Override
-	public void initialize() {
-		spikeThreshold = config.getDouble(SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THRESHOLD, 0.03d);
-	}
+    @Override
+    public void initialize() {
+        spikeThreshold = config.getDouble(SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THRESHOLD, 0.03d);
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
 //        if (cnt < queue_size) {//make sure no gc due to queue full.
 //        cnt++;
-		int deviceID = input.getInteger(0);
-		double movingAverageInstant = input.getDouble(1);
-		double nextDouble = input.getDouble(2);
+        int deviceID = input.getInteger(0);
+        double movingAverageInstant = input.getDouble(1);
+        double nextDouble = input.getDouble(2);
 
 //        if (Math.abs(nextDouble - movingAverageInstant) > spikeThreshold * movingAverageInstant) {
-		collector.emit(new Values(deviceID, movingAverageInstant, nextDouble, Math.abs(nextDouble - movingAverageInstant) > spikeThreshold * movingAverageInstant));
+        collector.emit(new Values(deviceID, movingAverageInstant, nextDouble, Math.abs(nextDouble - movingAverageInstant) > spikeThreshold * movingAverageInstant));
 //            cnt1++;
 //        }
-		//      double v = (cnt - cnt1) / cnt;
+        //      double v = (cnt - cnt1) / cnt;
 //        }
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	public void display() {
+    public void display() {
 //        LOG.info("cnt:" + cnt + "\tcnt1:" + cnt1 + "\toutput selectivity:" + ((cnt1) / cnt));
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(SpikeDetectionConstants.Field.DEVICE_ID, SpikeDetectionConstants.Field.MOVING_AVG, SpikeDetectionConstants.Field.VALUE, SpikeDetectionConstants.Field.MESSAGE);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(SpikeDetectionConstants.Field.DEVICE_ID, SpikeDetectionConstants.Field.MOVING_AVG, SpikeDetectionConstants.Field.VALUE, SpikeDetectionConstants.Field.MESSAGE);
+    }
 }

@@ -1,8 +1,8 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.datatype.util.VSTopologyControl;
 import applications.constants.VoIPSTREAMConstants;
+import applications.datatype.util.VSTopologyControl;
 import applications.model.cdr.CallDetailRecord;
 import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.datatype.util.VSTopologyControl.ACD_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Field;
+import static applications.datatype.util.VSTopologyControl.ACD_STREAM_ID;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>
@@ -86,7 +86,6 @@ public class ACDBolt extends AbstractScoreBolt {
 //        if (stat != null) stat.end_measure();
 //        double i = cnt1 / cnt;
     }
-
 
 
     @Override

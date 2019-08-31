@@ -17,7 +17,6 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
 
-
 /**
  * Task thread that hosts spout logic.
  */
@@ -153,7 +152,7 @@ public class spoutThread extends executorThread {
             } else {
                 routing();
             }
-        } catch (InterruptedException |  BrokenBarrierException ignored) {
+        } catch (InterruptedException | BrokenBarrierException ignored) {
 //            e.printStackTrace();
         } finally {
             if (lock != null) {

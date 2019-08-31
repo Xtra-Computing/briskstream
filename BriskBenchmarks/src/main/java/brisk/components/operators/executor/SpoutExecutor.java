@@ -25,6 +25,7 @@ public abstract class SpoutExecutor implements IExecutor {
             op.state.writer = writer;
         }
     }
+
     public int getStage() {
         return op.getFid();
     }

@@ -45,175 +45,175 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mjsax
  */
 public final class CountTuple extends Values implements ISegmentIdentifier {
-	/**
-	 * The index of the MINUTE attribute.
-	 */
-	public final static int MINUTE_IDX = 0;
+    /**
+     * The index of the MINUTE attribute.
+     */
+    public final static int MINUTE_IDX = 0;
 
-	// attribute indexes
-	/**
-	 * The index of the XWAY attribute.
-	 */
-	public final static int XWAY_IDX = 1;
-	/**
-	 * The index of the SEGMENT attribute.
-	 */
-	public final static int SEG_IDX = 2;
-	/**
-	 * The index of the DIR attribute.
-	 */
-	public final static int DIR_IDX = 3;
-	/**
-	 * The index of the CNT attribute.
-	 */
-	public final static int CNT_IDX = 4;
-	private static final long serialVersionUID = 2521804330216975272L;
+    // attribute indexes
+    /**
+     * The index of the XWAY attribute.
+     */
+    public final static int XWAY_IDX = 1;
+    /**
+     * The index of the SEGMENT attribute.
+     */
+    public final static int SEG_IDX = 2;
+    /**
+     * The index of the DIR attribute.
+     */
+    public final static int DIR_IDX = 3;
+    /**
+     * The index of the CNT attribute.
+     */
+    public final static int CNT_IDX = 4;
+    private static final long serialVersionUID = 2521804330216975272L;
 
 
-	public CountTuple() {
-	}
+    public CountTuple() {
+    }
 
-	/**
-	 * Instantiates a new <em>dummy</em> {@link CountTuple} for the given minute. This dummy tuple does not report an
-	 * count value but is used as a "time progress tuple" to unblock downstream operators.
-	 *
-	 * @param minute the 'minute number' of the new minute that starts
-	 */
-	public CountTuple(Short minute) {
-		assert (minute != null);
+    /**
+     * Instantiates a new <em>dummy</em> {@link CountTuple} for the given minute. This dummy tuple does not report an
+     * count value but is used as a "time progress tuple" to unblock downstream operators.
+     *
+     * @param minute the 'minute number' of the new minute that starts
+     */
+    public CountTuple(Short minute) {
+        assert (minute != null);
 
-		super.add(MINUTE_IDX, minute);
-		super.add(XWAY_IDX, null);
-		super.add(SEG_IDX, null);
-		super.add(DIR_IDX, null);
-		super.add(CNT_IDX, null);
-	}
+        super.add(MINUTE_IDX, minute);
+        super.add(XWAY_IDX, null);
+        super.add(SEG_IDX, null);
+        super.add(DIR_IDX, null);
+        super.add(CNT_IDX, null);
+    }
 
-	/**
-	 * Instantiates a new {@link CountTuple} for the given attributes.
-	 *
-	 * @param minute   the 'minute number' of the speed average
-	 * @param xway     the expressway the vehicle is on
-	 * @param segment  the segment number the vehicle is in
-	 * @param diretion the vehicle's driving direction
-	 * @param count    the number the vehicles counted
-	 */
-	public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count) {
-		assert (minute != null);
-		assert (xway != null);
-		assert (segment != null);
-		assert (diretion != null);
-		assert (count != null);
+    /**
+     * Instantiates a new {@link CountTuple} for the given attributes.
+     *
+     * @param minute   the 'minute number' of the speed average
+     * @param xway     the expressway the vehicle is on
+     * @param segment  the segment number the vehicle is in
+     * @param diretion the vehicle's driving direction
+     * @param count    the number the vehicles counted
+     */
+    public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count) {
+        assert (minute != null);
+        assert (xway != null);
+        assert (segment != null);
+        assert (diretion != null);
+        assert (count != null);
 
-		super.add(MINUTE_IDX, minute);
-		super.add(XWAY_IDX, xway);
-		super.add(SEG_IDX, segment);
-		super.add(DIR_IDX, diretion);
-		super.add(CNT_IDX, count);
-	}
+        super.add(MINUTE_IDX, minute);
+        super.add(XWAY_IDX, xway);
+        super.add(SEG_IDX, segment);
+        super.add(DIR_IDX, diretion);
+        super.add(CNT_IDX, count);
+    }
 
-	public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count, Long msgId, Long sysStamp) {
-		assert (minute != null);
-		assert (xway != null);
-		assert (segment != null);
-		assert (diretion != null);
-		assert (count != null);
+    public CountTuple(Short minute, Integer xway, Short segment, Short diretion, Integer count, Long msgId, Long sysStamp) {
+        assert (minute != null);
+        assert (xway != null);
+        assert (segment != null);
+        assert (diretion != null);
+        assert (count != null);
 
-		super.add(MINUTE_IDX, minute);
-		super.add(XWAY_IDX, xway);
-		super.add(SEG_IDX, segment);
-		super.add(DIR_IDX, diretion);
-		super.add(CNT_IDX, count);
+        super.add(MINUTE_IDX, minute);
+        super.add(XWAY_IDX, xway);
+        super.add(SEG_IDX, segment);
+        super.add(DIR_IDX, diretion);
+        super.add(CNT_IDX, count);
 
-		super.add(msgId);
-		super.add(sysStamp);
-	}
+        super.add(msgId);
+        super.add(sysStamp);
+    }
 
-	public CountTuple(Short minute, Long msgId, Long sysStamp) {
-		assert (minute != null);
+    public CountTuple(Short minute, Long msgId, Long sysStamp) {
+        assert (minute != null);
 
-		super.add(MINUTE_IDX, minute);
-		super.add(XWAY_IDX, null);
-		super.add(SEG_IDX, null);
-		super.add(DIR_IDX, null);
-		super.add(CNT_IDX, null);
-		super.add(msgId);
-		super.add(sysStamp);
-	}
+        super.add(MINUTE_IDX, minute);
+        super.add(XWAY_IDX, null);
+        super.add(SEG_IDX, null);
+        super.add(DIR_IDX, null);
+        super.add(CNT_IDX, null);
+        super.add(msgId);
+        super.add(sysStamp);
+    }
 
-	/**
-	 * Returns the schema of a {@link CountTuple}..
-	 *
-	 * @return the schema of a {@link CountTuple}
-	 */
-	public static Fields getSchema() {
-		return new Fields(TopologyControl.MINUTE_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
-				TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.DIRECTION_FIELD_NAME,
-				TopologyControl.CAR_COUNT_FIELD_NAME);
-	}
+    /**
+     * Returns the schema of a {@link CountTuple}..
+     *
+     * @return the schema of a {@link CountTuple}
+     */
+    public static Fields getSchema() {
+        return new Fields(TopologyControl.MINUTE_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
+                TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.DIRECTION_FIELD_NAME,
+                TopologyControl.CAR_COUNT_FIELD_NAME);
+    }
 
-	public static Fields getSchema_latency() {
-		return new Fields(TopologyControl.MINUTE_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
-				TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.DIRECTION_FIELD_NAME,
-				TopologyControl.CAR_COUNT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    public static Fields getSchema_latency() {
+        return new Fields(TopologyControl.MINUTE_FIELD_NAME, TopologyControl.XWAY_FIELD_NAME,
+                TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.DIRECTION_FIELD_NAME,
+                TopologyControl.CAR_COUNT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
+    }
 
-	/**
-	 * Returns the 'minute number' of this {@link CountTuple}.
-	 *
-	 * @return the 'minute number' of this tuple
-	 */
-	public final Short getMinuteNumber() {
-		return (Short) super.get(MINUTE_IDX);
-	}
+    /**
+     * Returns the 'minute number' of this {@link CountTuple}.
+     *
+     * @return the 'minute number' of this tuple
+     */
+    public final Short getMinuteNumber() {
+        return (Short) super.get(MINUTE_IDX);
+    }
 
-	/**
-	 * Returns the expressway ID of this {@link CountTuple}.
-	 *
-	 * @return the VID of this tuple
-	 */
-	@Override
-	public final Integer getXWay() {
-		return (Integer) super.get(XWAY_IDX);
-	}
+    /**
+     * Returns the expressway ID of this {@link CountTuple}.
+     *
+     * @return the VID of this tuple
+     */
+    @Override
+    public final Integer getXWay() {
+        return (Integer) super.get(XWAY_IDX);
+    }
 
-	/**
-	 * Returns the segment of this {@link CountTuple}.
-	 *
-	 * @return the VID of this tuple
-	 */
-	@Override
-	public final Short getSegment() {
-		return (Short) super.get(SEG_IDX);
-	}
+    /**
+     * Returns the segment of this {@link CountTuple}.
+     *
+     * @return the VID of this tuple
+     */
+    @Override
+    public final Short getSegment() {
+        return (Short) super.get(SEG_IDX);
+    }
 
-	/**
-	 * Returns the vehicle's direction of this {@link CountTuple}.
-	 *
-	 * @return the VID of this tuple
-	 */
-	@Override
-	public final Short getDirection() {
-		return (Short) super.get(DIR_IDX);
-	}
+    /**
+     * Returns the vehicle's direction of this {@link CountTuple}.
+     *
+     * @return the VID of this tuple
+     */
+    @Override
+    public final Short getDirection() {
+        return (Short) super.get(DIR_IDX);
+    }
 
-	/**
-	 * Returns the number of vehicles of this {@link CountTuple}.
-	 *
-	 * @return the count of this tuple
-	 */
-	public final Integer getCount() {
-		return (Integer) super.get(CNT_IDX);
-	}
+    /**
+     * Returns the number of vehicles of this {@link CountTuple}.
+     *
+     * @return the count of this tuple
+     */
+    public final Integer getCount() {
+        return (Integer) super.get(CNT_IDX);
+    }
 
-	/**
-	 * Returns {@code true} if this tuple does not report a count value but only carries the next 'minute number'.
-	 *
-	 * @return {@code true} if this tuple does not report a count value but only carries the next 'minute number' --
-	 * {@code false} otherwise
-	 */
-	public final boolean isProgressTuple() {
-		return super.get(XWAY_IDX) == null;
-	}
+    /**
+     * Returns {@code true} if this tuple does not report a count value but only carries the next 'minute number'.
+     *
+     * @return {@code true} if this tuple does not report a count value but only carries the next 'minute number' --
+     * {@code false} otherwise
+     */
+    public final boolean isProgressTuple() {
+        return super.get(XWAY_IDX) == null;
+    }
 
 }

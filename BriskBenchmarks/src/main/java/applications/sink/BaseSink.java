@@ -22,11 +22,13 @@ public abstract class BaseSink extends unionBolt {
     boolean isSINK = false;
     protected static final int max_num_msg = (int) 1E5;
     protected static final int skip_msg = 0;
+
     protected BaseSink(Logger log) {
         super(log);
     }
 
     protected static final long[] latency_map = new long[max_num_msg];
+
     BaseSink(Map<String, Double> input_selectivity, double read_selectivity) {
         super(LOG, input_selectivity, null, (double) 1, read_selectivity);
     }

@@ -2,7 +2,6 @@ package applications.topology.benchmarks;
 
 
 import applications.bolts.comm.ParserBolt;
-import applications.bolts.lr.*;
 import applications.constants.LinearRoadConstants;
 import applications.constants.LinearRoadConstants.Conf;
 import applications.constants.LinearRoadConstants.Field;

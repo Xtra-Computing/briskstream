@@ -31,9 +31,9 @@ public abstract class AbstractBolt extends Operator {
     }
 
 
-    public abstract void execute(Tuple in) throws InterruptedException,  BrokenBarrierException;
+    public abstract void execute(Tuple in) throws InterruptedException, BrokenBarrierException;
 
-    public void execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
+    public void execute(TransferTuple in) throws InterruptedException, BrokenBarrierException {
         int bound = in.length;
         for (int i = 0; i < bound; i++) {
             execute(new Tuple(in.getBID(), in.getSourceTask(), in.getContext(), in.msg[i]));
@@ -92,7 +92,7 @@ public abstract class AbstractBolt extends Operator {
 //		}
     }
 
-    public void profile_execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
+    public void profile_execute(TransferTuple in) throws InterruptedException, BrokenBarrierException {
         execute(in);
     }
 }

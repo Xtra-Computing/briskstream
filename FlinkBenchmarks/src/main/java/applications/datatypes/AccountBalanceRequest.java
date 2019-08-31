@@ -40,85 +40,85 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author richtekp
  */
 public class AccountBalanceRequest extends AbstractInputTuple {
-	/**
-	 * The index of the query identifier attribute.
-	 */
-	public final static int QID_IDX = 3;
+    /**
+     * The index of the query identifier attribute.
+     */
+    public final static int QID_IDX = 3;
 
-	// attribute indexes
-	private static final long serialVersionUID = -7472179619183838842L;
+    // attribute indexes
+    private static final long serialVersionUID = -7472179619183838842L;
 
 
-	public AccountBalanceRequest(Integer time, Integer vid, Integer qid, PositionReport objects) {
-		super(ACCOUNT_BALANCE_REQUEST, time, vid);
+    public AccountBalanceRequest(Integer time, Integer vid, Integer qid, PositionReport objects) {
+        super(ACCOUNT_BALANCE_REQUEST, time, vid);
 
-		assert (qid != null);
+        assert (qid != null);
 
-		super.add(QID_IDX, qid);
-		super.add(objects);
-		assert (super.size() == 5);
-	}
+        super.add(QID_IDX, qid);
+        super.add(objects);
+        assert (super.size() == 5);
+    }
 
-	/**
-	 * Instantiates a new account balance request for the given attributes.
-	 *
-	 * @param time the time at which the request was issued (in LRB seconds)
-	 * @param vid  the vehicle identifier
-	 * @param qid  the query identifier
-	 */
-	public AccountBalanceRequest(Integer time, Integer vid, Integer qid) {
-		super(ACCOUNT_BALANCE_REQUEST, time, vid);
+    /**
+     * Instantiates a new account balance request for the given attributes.
+     *
+     * @param time the time at which the request was issued (in LRB seconds)
+     * @param vid  the vehicle identifier
+     * @param qid  the query identifier
+     */
+    public AccountBalanceRequest(Integer time, Integer vid, Integer qid) {
+        super(ACCOUNT_BALANCE_REQUEST, time, vid);
 
-		assert (qid != null);
+        assert (qid != null);
 
-		super.add(QID_IDX, qid);
+        super.add(QID_IDX, qid);
 
-		assert (super.size() == 4);
-	}
+        assert (super.size() == 4);
+    }
 
-	public AccountBalanceRequest(Integer time, Integer vid, Integer qid, Long msgId, Long sysStamp) {
-		super(ACCOUNT_BALANCE_REQUEST, time, vid);
+    public AccountBalanceRequest(Integer time, Integer vid, Integer qid, Long msgId, Long sysStamp) {
+        super(ACCOUNT_BALANCE_REQUEST, time, vid);
 
-		assert (qid != null);
+        assert (qid != null);
 
-		super.add(QID_IDX, qid);
+        super.add(QID_IDX, qid);
 
-		assert (super.size() == 4);
-		super.add(msgId);
-		super.add(sysStamp);
-	}
+        assert (super.size() == 4);
+        super.add(msgId);
+        super.add(sysStamp);
+    }
 
-	/**
-	 * Returns the schema of a {@link AccountBalanceRequest}.
-	 *
-	 * @return the schema of a {@link AccountBalanceRequest}
-	 */
-	public static Fields getSchema() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME
+    /**
+     * Returns the schema of a {@link AccountBalanceRequest}.
+     *
+     * @return the schema of a {@link AccountBalanceRequest}
+     */
+    public static Fields getSchema() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME
 //                , TopologyControl.POS_REPORT_FIELD_NAME
-		);
-	}
+        );
+    }
 
-	/**
-	 * Returns the schema of a {@link AccountBalanceRequest}.
-	 *
-	 * @return the schema of a {@link AccountBalanceRequest}
-	 */
-	public static Fields getSchema_latency() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP
+    /**
+     * Returns the schema of a {@link AccountBalanceRequest}.
+     *
+     * @return the schema of a {@link AccountBalanceRequest}
+     */
+    public static Fields getSchema_latency() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP
 //                , TopologyControl.POS_REPORT_FIELD_NAME
-		);
-	}
+        );
+    }
 
-	/**
-	 * Returns the query ID of this {@link AccountBalanceRequest}.
-	 *
-	 * @return the QID of this request
-	 */
-	public final Integer getQid() {
-		return (Integer) super.get(QID_IDX);
-	}
+    /**
+     * Returns the query ID of this {@link AccountBalanceRequest}.
+     *
+     * @return the QID of this request
+     */
+    public final Integer getQid() {
+        return (Integer) super.get(QID_IDX);
+    }
 
 }

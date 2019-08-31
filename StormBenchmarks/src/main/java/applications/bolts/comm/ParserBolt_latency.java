@@ -18,40 +18,40 @@ import java.util.Map;
  * Created by tony on 5/5/2017.
  */
 public class ParserBolt_latency extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(ParserBolt_latency.class);
-	Fields default_fields;
-	int loop;
-	int cnt;
-//	private Fields System_fields;
-	private Parser parser;
+    private static final Logger LOG = LoggerFactory.getLogger(ParserBolt_latency.class);
+    Fields default_fields;
+    int loop;
+    int cnt;
+    //	private Fields System_fields;
+    private Parser parser;
 
-	public ParserBolt_latency(Parser parser, Fields fields) {
-		this.parser = parser;
-		this.default_fields = fields;
-		cnt = 0;
-		loop = 1;
-	}
+    public ParserBolt_latency(Parser parser, Fields fields) {
+        this.parser = parser;
+        this.default_fields = fields;
+        cnt = 0;
+        loop = 1;
+    }
 
-	@Override
-	public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
-		super.prepare(conf, context, collector);
-		cnt = 0;
-	}
+    @Override
+    public void prepare(Map conf, TopologyContext context, OutputCollector collector) {
+        super.prepare(conf, context, collector);
+        cnt = 0;
+    }
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 //		this.fields.put(Marker_STREAM_ID, System_fields);
-		return default_fields;
-	}
+        return default_fields;
+    }
 
-	@Override
-	public void execute(Tuple input) {
-		String value = input.getString(0);
-		List<StreamValues> tuples = parser.parse(value);
-		for (StreamValues values : tuples) {
-			values.add(input.getLong(1));
-			values.add(input.getLong(2));
-			collector.emit(values);
-		}
-	}
+    @Override
+    public void execute(Tuple input) {
+        String value = input.getString(0);
+        List<StreamValues> tuples = parser.parse(value);
+        for (StreamValues values : tuples) {
+            values.add(input.getLong(1));
+            values.add(input.getLong(2));
+            collector.emit(values);
+        }
+    }
 }

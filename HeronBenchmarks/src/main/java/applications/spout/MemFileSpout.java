@@ -6,7 +6,6 @@ import applications.util.datatypes.StreamValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.LinkedList;
@@ -160,7 +159,7 @@ public class MemFileSpout extends AbstractSpout {
     }
 
     @Override
-    public void nextTuple()  throws InterruptedException {
+    public void nextTuple() throws InterruptedException {
 //        String[] value = new String[batch];
 //        for (int i = 0; i < batch; i++) {
         counter++;
@@ -168,7 +167,7 @@ public class MemFileSpout extends AbstractSpout {
 //            value[i] = array[counter];
 
 //        }
-        collector.emit(new StreamValues(new String(array[counter]),System.currentTimeMillis()));
+        collector.emit(new StreamValues(new String(array[counter]), System.currentTimeMillis()));
     }
 
 //    @Override

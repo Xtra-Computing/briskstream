@@ -19,46 +19,46 @@ import java.util.Map;
  * This bolt will count number of log events per minute
  */
 public class VolumeCountBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(VolumeCountBolt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VolumeCountBolt.class);
 
-	private CircularFifoBuffer buffer;
-	private Map<Long, MutableLong> counts;
+    private CircularFifoBuffer buffer;
+    private Map<Long, MutableLong> counts;
 
 
-	@Override
-	public void initialize() {
-		int windowSize = config.getInt(Conf.VOLUME_COUNTER_WINDOW, 60);
+    @Override
+    public void initialize() {
+        int windowSize = config.getInt(Conf.VOLUME_COUNTER_WINDOW, 60);
 
-		buffer = new CircularFifoBuffer(windowSize);
-		counts = new HashMap<>(windowSize);
-		LOG.info(Thread.currentThread().getName());
-	}
+        buffer = new CircularFifoBuffer(windowSize);
+        counts = new HashMap<>(windowSize);
+        LOG.info(Thread.currentThread().getName());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
-		long minute = input.getLongByField(Field.TIMESTAMP_MINUTES);
+        long minute = input.getLongByField(Field.TIMESTAMP_MINUTES);
 
-		MutableLong count = counts.get(minute);
+        MutableLong count = counts.get(minute);
 
-		if (count == null) {
-			if (buffer.isFull()) {
-				long oldMinute = (Long) buffer.remove();
-				counts.remove(oldMinute);
-			}
-			count = new MutableLong(1);
-			counts.put(minute, count);
-			buffer.add(minute);
-		} else {
-			count.increment();
-		}
+        if (count == null) {
+            if (buffer.isFull()) {
+                long oldMinute = (Long) buffer.remove();
+                counts.remove(oldMinute);
+            }
+            count = new MutableLong(1);
+            counts.put(minute, count);
+            buffer.add(minute);
+        } else {
+            count.increment();
+        }
 
-		collector.emit(new Values(minute, count.longValue()));
+        collector.emit(new Values(minute, count.longValue()));
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(Field.TIMESTAMP_MINUTES, Field.COUNT);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(Field.TIMESTAMP_MINUTES, Field.COUNT);
+    }
 }

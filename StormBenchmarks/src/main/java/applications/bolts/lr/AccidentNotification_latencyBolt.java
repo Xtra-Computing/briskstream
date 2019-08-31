@@ -65,126 +65,126 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
  * @author trillian
  */
 public class AccidentNotification_latencyBolt extends AbstractBolt {
-	private static final long serialVersionUID = 5537727428628598519L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(AccidentNotification_latencyBolt.class);
-	/**
-	 * Contains all vehicle IDs and segment of the last {@link PositionReport} to allow skipping already sent
-	 * notifications (there's only one notification per segment per vehicle).
-	 */
-	private final Map<Integer, Short> allCars = new HashMap<>();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final PositionReport inputPositionReport = new PositionReport();
-	/**
-	 * Internally (re)used object to access individual attributes.
-	 */
-	private final AccidentTuple inputAccidentTuple = new AccidentTuple();
-	/**
-	 * Internally (re)used object.
-	 */
-	private final SegmentIdentifier segmentToCheck = new SegmentIdentifier();
-	/**
-	 * Buffer for accidents.
-	 */
-	private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<>();
-	/**
-	 * Buffer for accidents.
-	 */
-	private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<>();
-	/**
-	 * The currently processed 'minute number'.
-	 */
-	private int currentMinute = -1;
+    private static final long serialVersionUID = 5537727428628598519L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccidentNotification_latencyBolt.class);
+    /**
+     * Contains all vehicle IDs and segment of the last {@link PositionReport} to allow skipping already sent
+     * notifications (there's only one notification per segment per vehicle).
+     */
+    private final Map<Integer, Short> allCars = new HashMap<>();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final PositionReport inputPositionReport = new PositionReport();
+    /**
+     * Internally (re)used object to access individual attributes.
+     */
+    private final AccidentTuple inputAccidentTuple = new AccidentTuple();
+    /**
+     * Internally (re)used object.
+     */
+    private final SegmentIdentifier segmentToCheck = new SegmentIdentifier();
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> currentMinuteAccidents = new HashSet<>();
+    /**
+     * Buffer for accidents.
+     */
+    private Set<ISegmentIdentifier> previousMinuteAccidents = new HashSet<>();
+    /**
+     * The currently processed 'minute number'.
+     */
+    private int currentMinute = -1;
 
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 
-		Long msgId;
-		Long SYSStamp;
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
 
-		if (input.getSourceStreamId().equals(TopologyControl.POSITION_REPORTS_STREAM_ID)) {
-			this.inputPositionReport.clear();
-			this.inputPositionReport.addAll(input.getValues());
-			LOGGER.trace("ACCNotification,this.inputPositionReport:" + this.inputPositionReport.toString());
+        if (input.getSourceStreamId().equals(TopologyControl.POSITION_REPORTS_STREAM_ID)) {
+            this.inputPositionReport.clear();
+            this.inputPositionReport.addAll(input.getValues());
+            LOGGER.trace("ACCNotification,this.inputPositionReport:" + this.inputPositionReport.toString());
 
-			this.checkMinute(this.inputPositionReport.getMinuteNumber());
+            this.checkMinute(this.inputPositionReport.getMinuteNumber());
 
-			if (this.inputPositionReport.isOnExitLane()) {
-				return;
-			}
+            if (this.inputPositionReport.isOnExitLane()) {
+                return;
+            }
 
-			final Short currentSegment = this.inputPositionReport.getSegment();
-			final Integer vid = this.inputPositionReport.getVid();
-			final Short previousSegment = this.allCars.put(vid, currentSegment);
-			if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
-				return;
-			}
+            final Short currentSegment = this.inputPositionReport.getSegment();
+            final Integer vid = this.inputPositionReport.getVid();
+            final Short previousSegment = this.allCars.put(vid, currentSegment);
+            if (previousSegment != null && currentSegment.shortValue() == previousSegment.shortValue()) {
+                return;
+            }
 
-			// upstream is either larger or smaller of current segment
-			final Short direction = this.inputPositionReport.getDirection();
-			final short dir = direction;
-			// EASTBOUND == 0 => diff := 1
-			// WESTBOUNT == 1 => diff := -1
-			final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-			assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
+            // upstream is either larger or smaller of current segment
+            final Short direction = this.inputPositionReport.getDirection();
+            final short dir = direction;
+            // EASTBOUND == 0 => diff := 1
+            // WESTBOUNT == 1 => diff := -1
+            final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
+            assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
 
-			final Integer xway = this.inputPositionReport.getXWay();
-			final short curSeg = currentSegment;
+            final Integer xway = this.inputPositionReport.getXWay();
+            final short curSeg = currentSegment;
 
-			this.segmentToCheck.setXWay(xway);
-			this.segmentToCheck.setDirection(direction);
+            this.segmentToCheck.setXWay(xway);
+            this.segmentToCheck.setDirection(direction);
 
-			for (int i = 0; i <= 4; ++i) {
-				final short nextSegment = (short) (curSeg + (diff * i));
-				assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
+            for (int i = 0; i <= 4; ++i) {
+                final short nextSegment = (short) (curSeg + (diff * i));
+                assert (dir == Constants.EASTBOUND ? nextSegment >= curSeg : nextSegment <= curSeg);
 
-				this.segmentToCheck.setSegment(nextSegment);
+                this.segmentToCheck.setSegment(nextSegment);
 
-				if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
-					// TODO get accurate emit time...
+                if (this.previousMinuteAccidents.contains(this.segmentToCheck)) {
+                    // TODO get accurate emit time...
 //                    cnt1++;
-					this.collector.emit(TopologyControl.ACCIDENTS_NOIT_STREAM_ID,
-							new AccidentNotification(this.inputPositionReport.getTime()
-									, this.inputPositionReport.getTime(), this.segmentToCheck.getSegment(), vid, msgId, SYSStamp));
+                    this.collector.emit(TopologyControl.ACCIDENTS_NOIT_STREAM_ID,
+                            new AccidentNotification(this.inputPositionReport.getTime()
+                                    , this.inputPositionReport.getTime(), this.segmentToCheck.getSegment(), vid, msgId, SYSStamp));
 
-					break; // send a notification for the closest accident only
-				}
-			}
-		} else {
-			this.inputAccidentTuple.clear();
-			this.inputAccidentTuple.addAll(input.getValues());
+                    break; // send a notification for the closest accident only
+                }
+            }
+        } else {
+            this.inputAccidentTuple.clear();
+            this.inputAccidentTuple.addAll(input.getValues());
 //			LOGGER.trace(this.inputAccidentTuple.toString());
-			this.checkMinute(this.inputAccidentTuple.getMinuteNumber());
-			assert (this.inputAccidentTuple.getMinuteNumber() == this.currentMinute);
+            this.checkMinute(this.inputAccidentTuple.getMinuteNumber());
+            assert (this.inputAccidentTuple.getMinuteNumber() == this.currentMinute);
 
-			this.currentMinuteAccidents.add(new SegmentIdentifier(this.inputAccidentTuple));
-		}
+            this.currentMinuteAccidents.add(new SegmentIdentifier(this.inputAccidentTuple));
+        }
 
-	}
+    }
 
-	private void checkMinute(short minute) {
+    private void checkMinute(short minute) {
 //        assert (minute >= this.currentMinute);
-		if (minute < this.currentMinute) {
-			//restart..
-			currentMinute = minute;
-		}
+        if (minute < this.currentMinute) {
+            //restart..
+            currentMinute = minute;
+        }
 
-		if (minute > this.currentMinute) {
-			LOGGER.trace("New minute: {}", minute);
-			this.currentMinute = minute;
-			this.previousMinuteAccidents = this.currentMinuteAccidents;
-			this.currentMinuteAccidents = new HashSet<>();
-		}
-	}
+        if (minute > this.currentMinute) {
+            LOGGER.trace("New minute: {}", minute);
+            this.currentMinute = minute;
+            this.previousMinuteAccidents = this.currentMinuteAccidents;
+            this.currentMinuteAccidents = new HashSet<>();
+        }
+    }
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declareStream(TopologyControl.ACCIDENTS_NOIT_STREAM_ID, AccidentNotification.getLatencySchema());
-	}
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declareStream(TopologyControl.ACCIDENTS_NOIT_STREAM_ID, AccidentNotification.getLatencySchema());
+    }
 }

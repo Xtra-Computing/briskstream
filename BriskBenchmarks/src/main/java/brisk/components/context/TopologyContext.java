@@ -35,7 +35,7 @@ public class TopologyContext {
      */
 
 
-    public TopologyContext(ExecutionGraph g,  ExecutionPlan plan, ExecutionNode executor, HashMap<Integer, executorThread> threadMap, OverHpc HPCMonotor) {
+    public TopologyContext(ExecutionGraph g, ExecutionPlan plan, ExecutionNode executor, HashMap<Integer, executorThread> threadMap, OverHpc HPCMonotor) {
         TopologyContext.plan = plan;
         TopologyContext.graph = g;
         TopologyContext.threadMap = threadMap;

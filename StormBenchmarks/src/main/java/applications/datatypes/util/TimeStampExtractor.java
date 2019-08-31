@@ -34,6 +34,6 @@ import java.io.Serializable;
  */
 public interface TimeStampExtractor<T> extends Serializable {
 
-	long getTs(T tuple);
+    long getTs(T tuple);
 
 }

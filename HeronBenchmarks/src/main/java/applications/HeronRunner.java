@@ -1,6 +1,5 @@
 package applications;
 
-import applications.constants.*;
 import applications.topology.benchmarks.*;
 import applications.util.Configuration;
 import com.beust.jcommander.JCommander;
@@ -35,7 +34,7 @@ public class HeronRunner extends abstractRunner {
         driver.addApp("LinearRoad", LinearRoad.class);//
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
         HeronRunner runner = new HeronRunner();
         JCommander cmd = new JCommander(runner);
@@ -91,7 +90,7 @@ public class HeronRunner extends abstractRunner {
      * @throws AlreadyAliveException
      * @throws InvalidTopologyException
      */
-	public static void runTopologyRemotely(StormTopology topology, String topologyName, Config conf) {
+    public static void runTopologyRemotely(StormTopology topology, String topologyName, Config conf) {
 
         // conf.registerMetricsConsumer(LoggingMetricsConsumer.class, 2);
 

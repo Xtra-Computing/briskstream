@@ -20,12 +20,12 @@
 package applications.bolts.lr;
 
 
+import applications.bolts.lr.model.AccountBalance;
+import applications.bolts.lr.model.VehicleAccount;
 import applications.datatype.AccountBalanceRequest;
 import applications.datatype.PositionReport;
 import applications.datatype.TollNotification;
 import applications.datatype.util.LRTopologyControl;
-import applications.bolts.lr.model.AccountBalance;
-import applications.bolts.lr.model.VehicleAccount;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.collector.OutputCollector;

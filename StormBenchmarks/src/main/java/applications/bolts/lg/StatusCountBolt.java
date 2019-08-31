@@ -16,34 +16,34 @@ import java.util.Map;
  * This bolt will count the status codes from http logs such as 200, 404, 503
  */
 public class StatusCountBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(StatusCountBolt.class);
-	private Map<Integer, Integer> counts;
+    private static final Logger LOG = LoggerFactory.getLogger(StatusCountBolt.class);
+    private Map<Integer, Integer> counts;
 
-	@Override
-	public void initialize() {
-		this.counts = new HashMap<>();
-		LOG.info(Thread.currentThread().getName());
-	}
+    @Override
+    public void initialize() {
+        this.counts = new HashMap<>();
+        LOG.info(Thread.currentThread().getName());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
-		int statusCode = input.getIntegerByField(Field.RESPONSE);
-		int count = 0;
+        int statusCode = input.getIntegerByField(Field.RESPONSE);
+        int count = 0;
 
-		if (counts.containsKey(statusCode)) {
-			count = counts.get(statusCode);
-		}
+        if (counts.containsKey(statusCode)) {
+            count = counts.get(statusCode);
+        }
 
-		count++;
-		counts.put(statusCode, count);
+        count++;
+        counts.put(statusCode, count);
 
-		collector.emit(new Values(statusCode, count));
+        collector.emit(new Values(statusCode, count));
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(Field.RESPONSE, Field.COUNT);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(Field.RESPONSE, Field.COUNT);
+    }
 }

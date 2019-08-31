@@ -69,7 +69,7 @@ public final class OsUtils {
     }
 
     public static int TotalCores() {
-        return Runtime.getRuntime().availableProcessors()/2;
+        return Runtime.getRuntime().availableProcessors() / 2;
     }
 
     public static int totalSockets() {

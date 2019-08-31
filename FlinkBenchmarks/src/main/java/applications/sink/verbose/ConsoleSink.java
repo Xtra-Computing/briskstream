@@ -23,7 +23,7 @@ public class ConsoleSink extends BaseSink {
         super.initialize();
         helper = new stable_sink_helper_verbose(LOG
                 , config.getInt("runtimeInSeconds")
-                , config.getString("metrics.output"),context.getThisTaskId());
+                , config.getString("metrics.output"), context.getThisTaskId());
     }
 
     @Override

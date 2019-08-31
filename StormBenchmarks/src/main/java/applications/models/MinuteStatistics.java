@@ -30,33 +30,33 @@ import java.util.Map;
  */
 public class MinuteStatistics {
 
-	private final Map<Integer, Integer> vehicleSpeeds = new HashMap<>();
-	private double speedAverage; // rolling average for vehicles in this segment
+    private final Map<Integer, Integer> vehicleSpeeds = new HashMap<>();
+    private double speedAverage; // rolling average for vehicles in this segment
 
-	protected synchronized void addVehicleSpeed(int vehicleId, int vehicleSpeed) {
-		double cumulativeSpeed = this.speedAverage * this.vehicleSpeeds.size();
-		if (this.vehicleSpeeds.containsKey(vehicleId)) {
-			int prevVehicleSpeed = this.vehicleSpeeds.get(vehicleId);
-			cumulativeSpeed -= prevVehicleSpeed;
-			cumulativeSpeed += (prevVehicleSpeed + vehicleSpeed) / 2.0;
-		} else {
-			this.vehicleSpeeds.put(vehicleId, vehicleSpeed);
-			cumulativeSpeed += vehicleSpeed;
-		}
+    protected synchronized void addVehicleSpeed(int vehicleId, int vehicleSpeed) {
+        double cumulativeSpeed = this.speedAverage * this.vehicleSpeeds.size();
+        if (this.vehicleSpeeds.containsKey(vehicleId)) {
+            int prevVehicleSpeed = this.vehicleSpeeds.get(vehicleId);
+            cumulativeSpeed -= prevVehicleSpeed;
+            cumulativeSpeed += (prevVehicleSpeed + vehicleSpeed) / 2.0;
+        } else {
+            this.vehicleSpeeds.put(vehicleId, vehicleSpeed);
+            cumulativeSpeed += vehicleSpeed;
+        }
 
-		this.speedAverage = cumulativeSpeed / this.vehicleSpeeds.size();
-	}
+        this.speedAverage = cumulativeSpeed / this.vehicleSpeeds.size();
+    }
 
-	protected synchronized double speedAverage() {
-		return this.speedAverage;
-	}
+    protected synchronized double speedAverage() {
+        return this.speedAverage;
+    }
 
-	protected synchronized int vehicleCount() {
-		return this.vehicleSpeeds.size();
-	}
+    protected synchronized int vehicleCount() {
+        return this.vehicleSpeeds.size();
+    }
 
-	@Override
-	public String toString() {
-		return " [vehicleSpeeds=" + this.vehicleSpeeds + ", speedAverage=" + this.speedAverage + "]";
-	}
+    @Override
+    public String toString() {
+        return " [vehicleSpeeds=" + this.vehicleSpeeds + ", speedAverage=" + this.speedAverage + "]";
+    }
 }

@@ -9,8 +9,6 @@ import brisk.components.operators.api.AbstractSpout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.CONTROL.enable_latency_measurement;
-
 public abstract class AbstractTopology {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTopology.class);
     protected final TopologyBuilder builder;

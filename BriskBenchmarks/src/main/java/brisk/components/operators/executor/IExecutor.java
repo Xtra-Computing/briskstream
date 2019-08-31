@@ -7,7 +7,6 @@ import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.Writer;
 
-
 import java.io.Serializable;
 import java.util.Map;
 

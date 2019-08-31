@@ -73,7 +73,6 @@ public class TransferTuple implements Comparable<TransferTuple> {
     }
 
 
-
     public int getSourceTask() {
         return sourceId;
     }

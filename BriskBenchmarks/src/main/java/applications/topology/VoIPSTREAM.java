@@ -14,9 +14,9 @@ import brisk.topology.BasicTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.datatype.util.VSTopologyControl.*;
 import static applications.constants.VoIPSTREAMConstants.*;
 import static applications.constants.VoIPSTREAMConstants.Field.*;
+import static applications.datatype.util.VSTopologyControl.*;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

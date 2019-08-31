@@ -43,183 +43,183 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mjsax
  */
 public class TollNotification extends AbstractOutputTuple {
-	/**
-	 * The index of the VID attribute.
-	 */
-	public final static int VID_IDX = 3;
+    /**
+     * The index of the VID attribute.
+     */
+    public final static int VID_IDX = 3;
 
-	// attribute indexes
-	/**
-	 * The index of the speed attribute.
-	 */
-	public final static int SPEED_IDX = 4;
-	/**
-	 * The index of the toll attribute.
-	 */
-	public final static int TOLL_IDX = 5;
-	/**
-	 * The index of the POS attribute.
-	 */
-	public final static int POS_IDX = 6;
-	private static final long serialVersionUID = -6980996098837847843L;
+    // attribute indexes
+    /**
+     * The index of the speed attribute.
+     */
+    public final static int SPEED_IDX = 4;
+    /**
+     * The index of the toll attribute.
+     */
+    public final static int TOLL_IDX = 5;
+    /**
+     * The index of the POS attribute.
+     */
+    public final static int POS_IDX = 6;
+    private static final long serialVersionUID = -6980996098837847843L;
 
-	public TollNotification() {
-		super();
-	}
+    public TollNotification() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new accident notification for the given attributes.
-	 *
-	 * @param time  the time or the position record triggering this notification
-	 * @param emit  the emit time of the notification
-	 * @param vid   the ID of the vehicle that is notified of the toll
-	 * @param speed the 5-minute average speed in the segment
-	 * @param toll  the calculated toll
-	 */
-	public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll) {
-		super(TOLL_NOTIFICATION, time, emit);
+    /**
+     * Instantiates a new accident notification for the given attributes.
+     *
+     * @param time  the time or the position record triggering this notification
+     * @param emit  the emit time of the notification
+     * @param vid   the ID of the vehicle that is notified of the toll
+     * @param speed the 5-minute average speed in the segment
+     * @param toll  the calculated toll
+     */
+    public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll) {
+        super(TOLL_NOTIFICATION, time, emit);
 
-		assert (vid != null);
-		assert (speed != null);
-		assert (toll != null);
+        assert (vid != null);
+        assert (speed != null);
+        assert (toll != null);
 
-		super.add(VID_IDX, vid);
-		super.add(SPEED_IDX, speed);
-		super.add(TOLL_IDX, toll);
+        super.add(VID_IDX, vid);
+        super.add(SPEED_IDX, speed);
+        super.add(TOLL_IDX, toll);
 
-		assert (super.size() == 6);
-	}
+        assert (super.size() == 6);
+    }
 
-	/**
-	 * Instantiates a new accident notification for the given attributes.
-	 *
-	 * @param time  the time or the position record triggering this notification
-	 * @param emit  the emit time of the notification
-	 * @param vid   the ID of the vehicle that is notified of the toll
-	 * @param speed the 5-minute average speed in the segment
-	 * @param toll  the calculated toll
-	 */
-	public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll, PositionReport pos) {
-		super(TOLL_NOTIFICATION, time, emit);
+    /**
+     * Instantiates a new accident notification for the given attributes.
+     *
+     * @param time  the time or the position record triggering this notification
+     * @param emit  the emit time of the notification
+     * @param vid   the ID of the vehicle that is notified of the toll
+     * @param speed the 5-minute average speed in the segment
+     * @param toll  the calculated toll
+     */
+    public TollNotification(Integer time, Integer emit, Integer vid, Integer speed, Integer toll, PositionReport pos) {
+        super(TOLL_NOTIFICATION, time, emit);
 
-		assert (vid != null);
-		assert (speed != null);
-		assert (toll != null);
+        assert (vid != null);
+        assert (speed != null);
+        assert (toll != null);
 
-		super.add(VID_IDX, vid);
-		super.add(SPEED_IDX, speed);
-		super.add(TOLL_IDX, toll);
-		super.add(pos);
-		assert (super.size() == 7);
-	}
+        super.add(VID_IDX, vid);
+        super.add(SPEED_IDX, speed);
+        super.add(TOLL_IDX, toll);
+        super.add(pos);
+        assert (super.size() == 7);
+    }
 
-	/**
-	 * Returns the schema of an {@link TollNotification}.
-	 *
-	 * @return the schema of an {@link TollNotification}
-	 */
-	public static Fields getSchema() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
-				TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME);
-	}
+    /**
+     * Returns the schema of an {@link TollNotification}.
+     *
+     * @return the schema of an {@link TollNotification}
+     */
+    public static Fields getSchema() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
+                TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME);
+    }
 
-	/**
-	 * Returns the schema of an {@link TollNotification}.
-	 *
-	 * @return the schema of an {@link TollNotification}
-	 */
-	public static Fields getLatencySchema() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
-				TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    /**
+     * Returns the schema of an {@link TollNotification}.
+     *
+     * @return the schema of an {@link TollNotification}
+     */
+    public static Fields getLatencySchema() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.EMIT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME, TopologyControl.SPEED_FIELD_NAME,
+                TopologyControl.TOLL_FIELD_NAME, TopologyControl.POS_REPORT_FIELD_NAME, MSG_ID, SYSTEMTIMESTAMP);
+    }
 
-	/**
-	 * Returns the vehicle ID of this {@link TollNotification}.
-	 *
-	 * @return the VID of this tuple
-	 */
-	public final Integer getVid() {
-		return (Integer) super.get(VID_IDX);
-	}
+    /**
+     * Returns the vehicle ID of this {@link TollNotification}.
+     *
+     * @return the VID of this tuple
+     */
+    public final Integer getVid() {
+        return (Integer) super.get(VID_IDX);
+    }
 
-	/**
-	 * Returns the 5-minute average speed of the segment of this {@link TollNotification}.
-	 *
-	 * @return the speed of this tuple
-	 */
-	public final Integer getSpeed() {
-		return (Integer) super.get(SPEED_IDX);
-	}
+    /**
+     * Returns the 5-minute average speed of the segment of this {@link TollNotification}.
+     *
+     * @return the speed of this tuple
+     */
+    public final Integer getSpeed() {
+        return (Integer) super.get(SPEED_IDX);
+    }
 
-	/**
-	 * Returns the toll of this {@link TollNotification}.
-	 *
-	 * @return the toll of this tuple
-	 */
-	public final Integer getToll() {
-		return (Integer) super.get(TOLL_IDX);
-	}
+    /**
+     * Returns the toll of this {@link TollNotification}.
+     *
+     * @return the toll of this tuple
+     */
+    public final Integer getToll() {
+        return (Integer) super.get(TOLL_IDX);
+    }
 
-	/**
-	 * Returns the toll of this {@link TollNotification}.
-	 *
-	 * @return the toll of this tuple
-	 */
-	public final PositionReport getPos() {
-		return (PositionReport) super.get(POS_IDX);
-	}
+    /**
+     * Returns the toll of this {@link TollNotification}.
+     *
+     * @return the toll of this tuple
+     */
+    public final PositionReport getPos() {
+        return (PositionReport) super.get(POS_IDX);
+    }
 
-	/**
-	 * Compares the specified object with this {@link TollNotification} object for equality. Returns true if and only if
-	 * the specified object is also a {@link TollNotification} and their TIME, VID, SPEED, and TOLL attributes are
-	 * equals. The EMIT attribute is not considered. Furthermore, TYPE is known to be equal if the specified object is
-	 * of type {@link TollNotification}.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		TollNotification other = (TollNotification) obj;
-		assert (this.getType().equals(other.getType()));
+    /**
+     * Compares the specified object with this {@link TollNotification} object for equality. Returns true if and only if
+     * the specified object is also a {@link TollNotification} and their TIME, VID, SPEED, and TOLL attributes are
+     * equals. The EMIT attribute is not considered. Furthermore, TYPE is known to be equal if the specified object is
+     * of type {@link TollNotification}.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        TollNotification other = (TollNotification) obj;
+        assert (this.getType().equals(other.getType()));
 
-		if (this.getTime() == null) {
-			if (other.getTime() != null) {
-				return false;
-			}
-		} else if (!this.getTime().equals(other.getTime())) {
-			return false;
-		}
+        if (this.getTime() == null) {
+            if (other.getTime() != null) {
+                return false;
+            }
+        } else if (!this.getTime().equals(other.getTime())) {
+            return false;
+        }
 
-		if (this.getVid() == null) {
-			if (other.getVid() != null) {
-				return false;
-			}
-		} else if (!this.getVid().equals(other.getVid())) {
-			return false;
-		}
+        if (this.getVid() == null) {
+            if (other.getVid() != null) {
+                return false;
+            }
+        } else if (!this.getVid().equals(other.getVid())) {
+            return false;
+        }
 
-		if (this.getSpeed() == null) {
-			if (other.getSpeed() != null) {
-				return false;
-			}
-		} else if (!this.getSpeed().equals(other.getSpeed())) {
-			return false;
-		}
+        if (this.getSpeed() == null) {
+            if (other.getSpeed() != null) {
+                return false;
+            }
+        } else if (!this.getSpeed().equals(other.getSpeed())) {
+            return false;
+        }
 
-		if (this.getToll() == null) {
-			return other.getToll() == null;
-		} else {
-			return this.getToll().equals(other.getToll());
-		}
+        if (this.getToll() == null) {
+            return other.getToll() == null;
+        } else {
+            return this.getToll().equals(other.getToll());
+        }
 
-	}
+    }
 }

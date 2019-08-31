@@ -17,56 +17,56 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 import static applications.constants.FraudDetectionConstants.PREFIX;
 
 public class FraudDetection_latency extends BasicTopology {
-	private static final Logger LOG = LoggerFactory.getLogger(FraudDetection_latency.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FraudDetection_latency.class);
 
-	public FraudDetection_latency(String topologyName, Config config) {
-		super(topologyName, config);
-	}
+    public FraudDetection_latency(String topologyName, Config config) {
+        super(topologyName, config);
+    }
 
-	public void initialize() {
-		super.initialize();
-		sink = loadSink();
+    public void initialize() {
+        super.initialize();
+        sink = loadSink();
 //        initilize_parser();
-	}
+    }
 
-	@Override
-	public StormTopology buildTopology() {
+    @Override
+    public StormTopology buildTopology() {
 
-		spout.setFields( new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP));
+        spout.setFields(new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP));
 
-		builder.setSpout(Component.SPOUT, spout, spoutThreads);
+        builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
-		builder.setBolt(Component.PARSER, new ParserBolt_latency(parser
-						, new Fields(Field.RECORD_DATA, Field.RECORD_KEY)
+        builder.setBolt(Component.PARSER, new ParserBolt_latency(parser
+                        , new Fields(Field.RECORD_DATA, Field.RECORD_KEY)
 
-				)
-				, config.getInt(FraudDetectionConstants.Conf.PARSER_THREADS, 1))
-				.shuffleGrouping(Component.SPOUT)
+                )
+                , config.getInt(FraudDetectionConstants.Conf.PARSER_THREADS, 1))
+                .shuffleGrouping(Component.SPOUT)
 
-		;
+        ;
 //;
-		builder.setBolt(Component.PREDICTOR, new FraudPredictorBolt_latency()
-				, config.getInt(FraudDetectionConstants.Conf.PREDICTOR_THREADS, 1))
-				.shuffleGrouping(Component.PARSER)
+        builder.setBolt(Component.PREDICTOR, new FraudPredictorBolt_latency()
+                , config.getInt(FraudDetectionConstants.Conf.PREDICTOR_THREADS, 1))
+                .shuffleGrouping(Component.PARSER)
 
-		;
+        ;
 //;
-		builder.setBolt(Component.SINK, sink, sinkThreads)
-				.shuffleGrouping(Component.PREDICTOR)
+        builder.setBolt(Component.SINK, sink, sinkThreads)
+                .shuffleGrouping(Component.PREDICTOR)
 
-		;
+        ;
 //;
-		return builder.createTopology();
-	}
+        return builder.createTopology();
+    }
 
-	@Override
-	public Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    public Logger getLogger() {
+        return LOG;
+    }
 
-	@Override
-	public String getConfigPrefix() {
-		return PREFIX;
-	}
+    @Override
+    public String getConfigPrefix() {
+        return PREFIX;
+    }
 
 }

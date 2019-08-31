@@ -34,57 +34,57 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author richter
  */
 public class AccountBalance extends AbstractOutputTuple {
-	private static final long serialVersionUID = 1L;
-	private int queryIdentifier;
-	private int balance;
-	private long tollTime;
+    private static final long serialVersionUID = 1L;
+    private int queryIdentifier;
+    private int balance;
+    private long tollTime;
 
-	public AccountBalance(Integer time, int queryIdentifier, int balance, long tollTime, Integer created) {
-		super(AbstractLRBTuple.ACCOUNT_BALANCE_REQUEST, time, created);
-		this.queryIdentifier = queryIdentifier;
-		this.balance = balance;
-		this.tollTime = tollTime;
-	}
+    public AccountBalance(Integer time, int queryIdentifier, int balance, long tollTime, Integer created) {
+        super(AbstractLRBTuple.ACCOUNT_BALANCE_REQUEST, time, created);
+        this.queryIdentifier = queryIdentifier;
+        this.balance = balance;
+        this.tollTime = tollTime;
+    }
 
-	public static Fields getSchema() {
-		return new Fields(
-				TopologyControl.QUERY_ID_FIELD_NAME,
-				TopologyControl.BALANCE_NOTIFICATION_REQUESTS_FIELD_NAME,
-				TopologyControl.TOLL_ASSESSMENTS_FILE_WRITER_BOLT_NAME);
+    public static Fields getSchema() {
+        return new Fields(
+                TopologyControl.QUERY_ID_FIELD_NAME,
+                TopologyControl.BALANCE_NOTIFICATION_REQUESTS_FIELD_NAME,
+                TopologyControl.TOLL_ASSESSMENTS_FILE_WRITER_BOLT_NAME);
 
-	}
+    }
 
-	public static Fields getLatencySchema() {
-		return new Fields(
-				TopologyControl.QUERY_ID_FIELD_NAME,
-				TopologyControl.BALANCE_NOTIFICATION_REQUESTS_FIELD_NAME,
-				TopologyControl.TOLL_ASSESSMENTS_FILE_WRITER_BOLT_NAME, MSG_ID, SYSTEMTIMESTAMP
+    public static Fields getLatencySchema() {
+        return new Fields(
+                TopologyControl.QUERY_ID_FIELD_NAME,
+                TopologyControl.BALANCE_NOTIFICATION_REQUESTS_FIELD_NAME,
+                TopologyControl.TOLL_ASSESSMENTS_FILE_WRITER_BOLT_NAME, MSG_ID, SYSTEMTIMESTAMP
 
-		);
+        );
 
-	}
+    }
 
-	public long getTollTime() {
-		return this.tollTime;
-	}
+    public long getTollTime() {
+        return this.tollTime;
+    }
 
-	public void setTollTime(long tollTime) {
-		this.tollTime = tollTime;
-	}
+    public void setTollTime(long tollTime) {
+        this.tollTime = tollTime;
+    }
 
-	public int getQueryIdentifier() {
-		return this.queryIdentifier;
-	}
+    public int getQueryIdentifier() {
+        return this.queryIdentifier;
+    }
 
-	protected void setQueryIdentifier(int queryIdentifier) {
-		this.queryIdentifier = queryIdentifier;
-	}
+    protected void setQueryIdentifier(int queryIdentifier) {
+        this.queryIdentifier = queryIdentifier;
+    }
 
-	public int getBalance() {
-		return this.balance;
-	}
+    public int getBalance() {
+        return this.balance;
+    }
 
-	protected void setBalance(int balance) {
-		this.balance = balance;
-	}
+    protected void setBalance(int balance) {
+        this.balance = balance;
+    }
 }

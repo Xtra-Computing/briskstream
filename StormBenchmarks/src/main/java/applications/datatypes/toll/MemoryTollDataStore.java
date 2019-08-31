@@ -38,36 +38,36 @@ import java.util.Map;
  * This class is almost used exclusively for tests, but it doesn't hurt to share it to be users started easier.
  */
 public class MemoryTollDataStore implements TollDataStore {
-	private final Map<Triple<Integer, Integer, Integer>, Integer> store = new HashMap<>();
-	private final MutableTriple<Integer, Integer, Integer> reusableMapKey = new MutableTriple<>(
-			0, 0, 0);
+    private final Map<Triple<Integer, Integer, Integer>, Integer> store = new HashMap<>();
+    private final MutableTriple<Integer, Integer, Integer> reusableMapKey = new MutableTriple<>(
+            0, 0, 0);
 
-	// avoid the allocation of memory for every key
+    // avoid the allocation of memory for every key
 
-	@Override
-	public Integer retrieveToll(int xWay, int day, int vehicleIdentifier) {
-		this.reusableMapKey.setLeft(xWay);
-		this.reusableMapKey.setMiddle(day);
-		this.reusableMapKey.setRight(vehicleIdentifier);
-		Integer toll = this.store.get(this.reusableMapKey);
-		return toll;
-	}
+    @Override
+    public Integer retrieveToll(int xWay, int day, int vehicleIdentifier) {
+        this.reusableMapKey.setLeft(xWay);
+        this.reusableMapKey.setMiddle(day);
+        this.reusableMapKey.setRight(vehicleIdentifier);
+        Integer toll = this.store.get(this.reusableMapKey);
+        return toll;
+    }
 
-	@Override
-	public void storeToll(int xWay, int day, int vehicleIdentifier, int toll) {
-		this.reusableMapKey.setLeft(xWay);
-		this.reusableMapKey.setMiddle(day);
-		this.reusableMapKey.setRight(vehicleIdentifier);
-		this.store.put(this.reusableMapKey, toll);
-	}
+    @Override
+    public void storeToll(int xWay, int day, int vehicleIdentifier, int toll) {
+        this.reusableMapKey.setLeft(xWay);
+        this.reusableMapKey.setMiddle(day);
+        this.reusableMapKey.setRight(vehicleIdentifier);
+        this.store.put(this.reusableMapKey, toll);
+    }
 
-	@Override
-	public Integer removeEntry(int xWay, int day, int vehicleIdentifier) {
-		this.reusableMapKey.setLeft(xWay);
-		this.reusableMapKey.setMiddle(day);
-		this.reusableMapKey.setRight(vehicleIdentifier);
-		Integer toll = this.store.remove(this.reusableMapKey);
-		return toll;
-	}
+    @Override
+    public Integer removeEntry(int xWay, int day, int vehicleIdentifier) {
+        this.reusableMapKey.setLeft(xWay);
+        this.reusableMapKey.setMiddle(day);
+        this.reusableMapKey.setRight(vehicleIdentifier);
+        Integer toll = this.store.remove(this.reusableMapKey);
+        return toll;
+    }
 
 }

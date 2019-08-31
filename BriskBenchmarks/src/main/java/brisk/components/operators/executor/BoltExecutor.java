@@ -24,11 +24,11 @@ public abstract class BoltExecutor implements IExecutor {
         this.op = op;
     }
 
-    public abstract void execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException;
+    public abstract void execute(TransferTuple in) throws InterruptedException, BrokenBarrierException;
 
-    public abstract void execute(Tuple in) throws InterruptedException,  BrokenBarrierException;
+    public abstract void execute(Tuple in) throws InterruptedException, BrokenBarrierException;
 
-    public abstract void profile_execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException;
+    public abstract void profile_execute(TransferTuple in) throws InterruptedException, BrokenBarrierException;
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {

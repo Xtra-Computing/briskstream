@@ -26,38 +26,38 @@ import applications.datatypes.PositionReport;
  * Immutable version of the Accident object for serialization.
  */
 public class AccidentImmutable extends Accident {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected AccidentImmutable() {
-		super();
-	}
+    protected AccidentImmutable() {
+        super();
+    }
 
-	public AccidentImmutable(Accident accident) {
-		super(accident);
-	}
+    public AccidentImmutable(Accident accident) {
+        super(accident);
+    }
 
-	public AccidentImmutable(PositionReport report) {
-		super(report);
-	}
+    public AccidentImmutable(PositionReport report) {
+        super(report);
+    }
 
-	public AccidentImmutable(long startMinute, long lastUpdateTime, int position, int maxPos, int minPos,
-							 PositionReport posReport) {
-		super(startMinute, lastUpdateTime, position, maxPos, minPos, posReport);
-	}
+    public AccidentImmutable(long startMinute, long lastUpdateTime, int position, int maxPos, int minPos,
+                             PositionReport posReport) {
+        super(startMinute, lastUpdateTime, position, maxPos, minPos, posReport);
+    }
 
-	@Override
-	public void setOver(boolean over) {
-		throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
-	}
+    @Override
+    public void setOver(boolean over) {
+        throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
+    }
 
-	@Override
-	public void setLastUpdateTime(long lastUpdateTime) {
-		throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
-	}
+    @Override
+    public void setLastUpdateTime(long lastUpdateTime) {
+        throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
+    }
 
-	@Override
-	public void setPosReport(PositionReport posReport) {
-		throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
-	}
+    @Override
+    public void setPosReport(PositionReport posReport) {
+        throw new UnsupportedOperationException(String.format("instances of %s are immutable", AccidentImmutable.class));
+    }
 
 }

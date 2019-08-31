@@ -6,9 +6,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,9 +44,9 @@ public class TopologyControl {
     public final static String LAST_AVERAGE_SPEED_BOLT_NAME = "LAS";
     public final static String TOLL_NOTIFICATION_BOLT_NAME = "TN";
 
-	public final static String TOLL_NOTIFICATION_POS_BOLT_NAME = "TN_POS";
-	public final static String TOLL_NOTIFICATION_CV_BOLT_NAME = "TN_CV";
-	public final static String TOLL_NOTIFICATION_LAS_BOLT_NAME = "TN_LAS";
+    public final static String TOLL_NOTIFICATION_POS_BOLT_NAME = "TN_POS";
+    public final static String TOLL_NOTIFICATION_CV_BOLT_NAME = "TN_CV";
+    public final static String TOLL_NOTIFICATION_LAS_BOLT_NAME = "TN_LAS";
 
     // sinks
     public final static String ACCIDENT_FILE_WRITER_BOLT_NAME = "Accident-File-Writer-ParserBolt";

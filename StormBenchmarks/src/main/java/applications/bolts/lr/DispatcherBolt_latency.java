@@ -47,72 +47,72 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
  * @author mjsax
  **/
 public class DispatcherBolt_latency extends AbstractBolt {
-	private static final long serialVersionUID = 6908631355830501961L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(DispatcherBolt_latency.class);
+    private static final long serialVersionUID = 6908631355830501961L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DispatcherBolt_latency.class);
 
-	@Override
-	public void execute(Tuple input) {
-		String raw = null;
-		try {
-			Long msgId;
-			Long SYSStamp;
-			msgId = input.getLongByField(MSG_ID);
-			SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+    @Override
+    public void execute(Tuple input) {
+        String raw = null;
+        try {
+            Long msgId;
+            Long SYSStamp;
+            msgId = input.getLongByField(MSG_ID);
+            SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-			raw = input.getString(0);
-			String[] token = raw.split(" ");
-			// common attributes of all input tuples
-			short type = Short.parseShort(token[0]);
-			Integer time = Integer.parseInt(token[1]);
-			Integer vid = Integer.parseInt(token[2]);
-			//  assert (time.shortValue() == Short.parseShort(token[1]));
+            raw = input.getString(0);
+            String[] token = raw.split(" ");
+            // common attributes of all input tuples
+            short type = Short.parseShort(token[0]);
+            Integer time = Integer.parseInt(token[1]);
+            Integer vid = Integer.parseInt(token[2]);
+            //  assert (time.shortValue() == Short.parseShort(token[1]));
 
-			if (type == AbstractLRBTuple.position_report) {
-				this.collector.emit(TopologyControl.POSITION_REPORTS_STREAM_ID,
-						new PositionReport(//
-								time,//
-								vid,//
-								Integer.parseInt(token[3]), // speed
-								Integer.parseInt(token[4]), // xway
-								Short.parseShort(token[5]), // lane
-								Short.parseShort(token[6]), // direction
-								Short.parseShort(token[7]), // segment
-								Integer.parseInt(token[8])
-								, msgId, SYSStamp
-						)
-				); // position
+            if (type == AbstractLRBTuple.position_report) {
+                this.collector.emit(TopologyControl.POSITION_REPORTS_STREAM_ID,
+                        new PositionReport(//
+                                time,//
+                                vid,//
+                                Integer.parseInt(token[3]), // speed
+                                Integer.parseInt(token[4]), // xway
+                                Short.parseShort(token[5]), // lane
+                                Short.parseShort(token[6]), // direction
+                                Short.parseShort(token[7]), // segment
+                                Integer.parseInt(token[8])
+                                , msgId, SYSStamp
+                        )
+                ); // position
 
 //                pr++;
-			} else {
-				// common attribute of all requests
-				Integer qid = Integer.parseInt(token[9]);
-				switch (type) {
-					case AbstractLRBTuple.account_balance_request:
-					case AbstractLRBTuple.daily_expenditure_request:
-						break;
-					default:
+            } else {
+                // common attribute of all requests
+                Integer qid = Integer.parseInt(token[9]);
+                switch (type) {
+                    case AbstractLRBTuple.account_balance_request:
+                    case AbstractLRBTuple.daily_expenditure_request:
+                        break;
+                    default:
 
-				}
-			}
+                }
+            }
 //            double i=cnt1/cnt;
-		} catch (Exception e) {
-			LOGGER.error("Error in line: {}", raw);
-			LOGGER.error("StackTrace:", e);
-			System.exit(-1);
-		}
+        } catch (Exception e) {
+            LOGGER.error("Error in line: {}", raw);
+            LOGGER.error("StackTrace:", e);
+            System.exit(-1);
+        }
 
-	}
+    }
 
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-		outputFieldsDeclarer.declareStream(TopologyControl.POSITION_REPORTS_STREAM_ID, PositionReport.getLatencySchema());
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
+        outputFieldsDeclarer.declareStream(TopologyControl.POSITION_REPORTS_STREAM_ID, PositionReport.getLatencySchema());
 
 //		outputFieldsDeclarer.declareStream(TopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID,
 //				AccountBalanceRequest.getLatencySchema());
 //
 //		outputFieldsDeclarer.declareStream(TopologyControl.DAILY_EXPEDITURE_REQUESTS_STREAM_ID,
 //				DailyExpenditureRequest.getLatencySchema());
-	}
+    }
 
 }

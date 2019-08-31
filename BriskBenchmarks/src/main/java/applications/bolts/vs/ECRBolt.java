@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static applications.constants.VoIPSTREAMConstants.Field;
 import static applications.datatype.util.VSTopologyControl.ECR24_STREAM_ID;
 import static applications.datatype.util.VSTopologyControl.ECR_STREAM_ID;
-import static applications.constants.VoIPSTREAMConstants.Field;
 
 /**
  * Per-user received call rate.

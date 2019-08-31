@@ -17,39 +17,39 @@ import static applications.constants.ClickAnalyticsConstants.Field;
  * User: domenicosolazzo
  */
 public class GeographyBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(GeographyBolt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GeographyBolt.class);
 
-	private IPLocation resolver;
+    private IPLocation resolver;
 
-	private double cnt = 0, cnt1 = 0;
+    private double cnt = 0, cnt1 = 0;
 
 
-	@Override
-	public void initialize() {
-		String ipResolver = config.getString(BaseConf.GEOIP_INSTANCE);
-		resolver = IPLocationFactory.create(ipResolver, config);
-		LOG.info(Thread.currentThread().getName());
-	}
+    @Override
+    public void initialize() {
+        String ipResolver = config.getString(BaseConf.GEOIP_INSTANCE);
+        resolver = IPLocationFactory.create(ipResolver, config);
+        LOG.info(Thread.currentThread().getName());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        cnt++;
 //        if (stat != null) stat.start_measure();
-		String ip = input.getStringByField(Field.IP);
-		Location location = resolver.resolve(ip);
+        String ip = input.getStringByField(Field.IP);
+        Location location = resolver.resolve(ip);
 
-		if (location != null) {
-			String city = location.getCity();
-			String country = location.getCountryName();
+        if (location != null) {
+            String city = location.getCity();
+            String country = location.getCountryName();
 //            cnt1++;
-			collector.emit(new Values(country, city));
-		}
+            collector.emit(new Values(country, city));
+        }
 //        double i=(cnt1-cnt)/cnt;
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(Field.COUNTRY, Field.CITY);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(Field.COUNTRY, Field.CITY);
+    }
 }

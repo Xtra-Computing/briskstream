@@ -101,9 +101,9 @@ public class VanillaCpuLayout implements CpuLayout {
     }
 
 
-	public static VanillaCpuLayout fromCpuInfo(File file) throws IOException {
-		return fromCpuInfo(new FileInputStream(file));
-	}
+    public static VanillaCpuLayout fromCpuInfo(File file) throws IOException {
+        return fromCpuInfo(new FileInputStream(file));
+    }
 
     private static InputStream openFile(String filename) throws FileNotFoundException {
         try {
@@ -216,7 +216,7 @@ public class VanillaCpuLayout implements CpuLayout {
     }
 
 
-	static class CpuInfo {
+    static class CpuInfo {
         int socketId, coreId, threadId;
 
         CpuInfo() {

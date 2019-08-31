@@ -18,55 +18,55 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 import static applications.constants.WordCountConstants.PREFIX;
 
 public class WordCount_latency extends BasicTopology {
-	private static final Logger LOG = LoggerFactory.getLogger(WordCount_latency.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WordCount_latency.class);
 
-	public WordCount_latency(String topologyName, Config config) {
-		super(topologyName, config);
-	}
+    public WordCount_latency(String topologyName, Config config) {
+        super(topologyName, config);
+    }
 
-	public void initialize() {
-		super.initialize();
-		sink = loadSink();
-	}
+    public void initialize() {
+        super.initialize();
+        sink = loadSink();
+    }
 
-	@Override
-	public StormTopology buildTopology() {
-
-
-		spout.setFields(new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP));
-
-		builder.setSpout(Component.SPOUT, spout, spoutThreads);
-
-		builder.setBolt(Component.PARSER, new ParserBolt_latency(parser,
-						new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP))
-				, config.getInt(WordCountConstants.Conf.PARSER_THREADS, 1))
-				.shuffleGrouping(Component.SPOUT);
+    @Override
+    public StormTopology buildTopology() {
 
 
-		builder.setBolt(Component.SPLITTER, new SplitSentenceBolt_latency()
-				, config.getInt(WordCountConstants.Conf.SPLITTER_THREADS, 1))
-				.shuffleGrouping(Component.PARSER);
+        spout.setFields(new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP));
+
+        builder.setSpout(Component.SPOUT, spout, spoutThreads);
+
+        builder.setBolt(Component.PARSER, new ParserBolt_latency(parser,
+                        new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP))
+                , config.getInt(WordCountConstants.Conf.PARSER_THREADS, 1))
+                .shuffleGrouping(Component.SPOUT);
 
 
-		builder.setBolt(Component.COUNTER, new WordCountBolt_latency()
-				, config.getInt(WordCountConstants.Conf.COUNTER_THREADS, 1))
-				.fieldsGrouping(Component.SPLITTER, new Fields(Field.WORD));
+        builder.setBolt(Component.SPLITTER, new SplitSentenceBolt_latency()
+                , config.getInt(WordCountConstants.Conf.SPLITTER_THREADS, 1))
+                .shuffleGrouping(Component.PARSER);
 
 
-		builder.setBolt(Component.SINK, sink, sinkThreads)
-				.shuffleGrouping(Component.COUNTER);
+        builder.setBolt(Component.COUNTER, new WordCountBolt_latency()
+                , config.getInt(WordCountConstants.Conf.COUNTER_THREADS, 1))
+                .fieldsGrouping(Component.SPLITTER, new Fields(Field.WORD));
 
-		return builder.createTopology();
-	}
 
-	@Override
-	public Logger getLogger() {
-		return LOG;
-	}
+        builder.setBolt(Component.SINK, sink, sinkThreads)
+                .shuffleGrouping(Component.COUNTER);
 
-	@Override
-	public String getConfigPrefix() {
-		return PREFIX;
-	}
+        return builder.createTopology();
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LOG;
+    }
+
+    @Override
+    public String getConfigPrefix() {
+        return PREFIX;
+    }
 
 }

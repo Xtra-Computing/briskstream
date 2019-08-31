@@ -33,7 +33,7 @@ public class FraudDetection extends BasicTopology {
         spout.setFields(new Fields(Field.TEXT));
         builder.setSpout(Component.SPOUT, spout, spoutThreads);
 //
-		builder.setBolt(Component.PARSER, new ParserBolt(parser, new Fields(Field.RECORD_DATA, Field.RECORD_KEY))
+        builder.setBolt(Component.PARSER, new ParserBolt(parser, new Fields(Field.RECORD_DATA, Field.RECORD_KEY))
                 , config.getInt(FraudDetectionConstants.Conf.PARSER_THREADS, 1)).shuffleGrouping(Component.SPOUT);
 //
         builder.setBolt(Component.PREDICTOR, new FraudPredictorBolt()

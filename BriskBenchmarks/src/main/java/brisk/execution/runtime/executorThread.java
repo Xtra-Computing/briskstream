@@ -329,7 +329,7 @@ public abstract class executorThread extends Thread {
         return executor.getInputStreamController().getRQ();
     }
 
-    void profile_routing(Platform p) throws InterruptedException,  BrokenBarrierException {
+    void profile_routing(Platform p) throws InterruptedException, BrokenBarrierException {
         executor.prepareProfilingStruct(conf, hpcMonotor, context, p);
         if (start) {
             cnt = 0;
@@ -347,7 +347,7 @@ public abstract class executorThread extends Thread {
         end_emit = System.nanoTime();
     }
 
-    void routing() throws InterruptedException,  BrokenBarrierException {
+    void routing() throws InterruptedException, BrokenBarrierException {
 //        int s = 0;
         if (start) {
             cnt = 0;
@@ -364,11 +364,11 @@ public abstract class executorThread extends Thread {
         end_emit = System.nanoTime();
     }
 
-    protected abstract void _execute_noControl() throws InterruptedException,  BrokenBarrierException;
+    protected abstract void _execute_noControl() throws InterruptedException, BrokenBarrierException;
 
-    protected abstract void _execute() throws InterruptedException,  BrokenBarrierException;
+    protected abstract void _execute() throws InterruptedException, BrokenBarrierException;
 
-    protected abstract void _profile() throws InterruptedException,  BrokenBarrierException;
+    protected abstract void _profile() throws InterruptedException, BrokenBarrierException;
 
     public int getExecutorID() {
         return executor.getExecutorID();

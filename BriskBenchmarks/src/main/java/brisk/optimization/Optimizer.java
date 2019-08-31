@@ -116,6 +116,10 @@ public class Optimizer {
 
         if (new_plan == null || !new_plan.success()) {
             LOG.info("failed to find valid new plan, use original plan instead.");
+            if (currentPlan == null) {
+                LOG.info("failed to find any plan. Program terminate..");
+                System.exit(-1);
+            }
             new_plan = new SchedulingPlan(currentPlan, true);
         } else {
             new_plan.planToString(false, true);

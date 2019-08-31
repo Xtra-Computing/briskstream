@@ -17,28 +17,28 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
 
 
 public class WordCountBolt extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(WordCountBolt.class);
-	private final Map<String, MutableLong> counts = new HashMap<>();
+    private static final Logger LOG = LoggerFactory.getLogger(WordCountBolt.class);
+    private final Map<String, MutableLong> counts = new HashMap<>();
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 
-		this.fields.put(Marker_STREAM_ID, new Fields(Field.WORD, Field.COUNT, MSG_ID, Field.SYSTEMTIMESTAMP));
-		return new Fields(Field.WORD, Field.COUNT);
-	}
+        this.fields.put(Marker_STREAM_ID, new Fields(Field.WORD, Field.COUNT, MSG_ID, Field.SYSTEMTIMESTAMP));
+        return new Fields(Field.WORD, Field.COUNT);
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //		long start = System.nanoTime();
-		String word = input.getStringByField(Field.WORD);
-		MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
-		count.increment();
+        String word = input.getStringByField(Field.WORD);
+        MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
+        count.increment();
 
 
-		Values objects = new Values(word, count.longValue());
-		collector.emit(objects);
+        Values objects = new Values(word, count.longValue());
+        collector.emit(objects);
 
 //		long end = System.nanoTime();
 //		LOG.info("Split:" + (end - start));
-	}
+    }
 }

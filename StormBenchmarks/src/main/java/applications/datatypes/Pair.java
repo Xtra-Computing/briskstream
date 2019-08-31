@@ -26,47 +26,47 @@ package applications.datatypes;
  * @author pranab
  */
 public class Pair<L, R> {
-	protected L left;
-	protected R right;
+    protected L left;
+    protected R right;
 
-	public Pair() {
-	}
+    public Pair() {
+    }
 
-	public Pair(L left, R right) {
-		this.left = left;
-		this.right = right;
-	}
+    public Pair(L left, R right) {
+        this.left = left;
+        this.right = right;
+    }
 
-	public L getLeft() {
-		return left;
-	}
+    public L getLeft() {
+        return left;
+    }
 
-	public void setLeft(L left) {
-		this.left = left;
-	}
+    public void setLeft(L left) {
+        this.left = left;
+    }
 
-	public R getRight() {
-		return right;
-	}
+    public R getRight() {
+        return right;
+    }
 
-	public void setRight(R right) {
-		this.right = right;
-	}
+    public void setRight(R right) {
+        this.right = right;
+    }
 
-	@Override
-	public int hashCode() {
-		return left.hashCode() ^ right.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return left.hashCode() ^ right.hashCode();
+    }
 
-	@Override
-	public boolean equals(Object other) {
-		boolean isEqual = false;
-		if (null != other && other instanceof Pair) {
-			Pair pairOther = (Pair) other;
-			isEqual = this.left.equals(pairOther.left) &&
-					this.right.equals(pairOther.right);
-		}
-		return isEqual;
-	}
+    @Override
+    public boolean equals(Object other) {
+        boolean isEqual = false;
+        if (null != other && other instanceof Pair) {
+            Pair pairOther = (Pair) other;
+            isEqual = this.left.equals(pairOther.left) &&
+                    this.right.equals(pairOther.right);
+        }
+        return isEqual;
+    }
 
 }

@@ -16,45 +16,45 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mayconbordin
  */
 public class ForwardSink_latency extends BaseSink {
-	private static final Logger LOG = LoggerFactory.getLogger(ForwardSink_latency.class);
-	stable_sink_helper helper;
+    private static final Logger LOG = LoggerFactory.getLogger(ForwardSink_latency.class);
+    stable_sink_helper helper;
 
-	public ForwardSink_latency() {
-		super();
-	}
+    public ForwardSink_latency() {
+        super();
+    }
 
-	@Override
-	public void initialize() {
+    @Override
+    public void initialize() {
 
-		helper = new stable_sink_helper(LOG
-				, config.getInt("runtimeInSeconds")
-				, config.getString("metrics.output"), config.getDouble("predict", 0), 0, context.getThisTaskId());
-	}
+        helper = new stable_sink_helper(LOG
+                , config.getInt("runtimeInSeconds")
+                , config.getString("metrics.output"), config.getDouble("predict", 0), 0, context.getThisTaskId());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 
-		if (input.getSourceStreamId().equalsIgnoreCase(Marker_STREAM_ID)) {
-			collector.emit(Marker_STREAM_ID, new Values(input, input.getLongByField(MSG_ID), input.getLongByField(SYSTEMTIMESTAMP)));
-		} else {
-			collector.emit(new Values(input));
-		}
+        if (input.getSourceStreamId().equalsIgnoreCase(Marker_STREAM_ID)) {
+            collector.emit(Marker_STREAM_ID, new Values(input, input.getLongByField(MSG_ID), input.getLongByField(SYSTEMTIMESTAMP)));
+        } else {
+            collector.emit(new Values(input));
+        }
 
-	}
+    }
 
-	@Override
-	protected Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 
-		this.fields.put(Marker_STREAM_ID, new Fields("", MSG_ID, SYSTEMTIMESTAMP));
+        this.fields.put(Marker_STREAM_ID, new Fields("", MSG_ID, SYSTEMTIMESTAMP));
 
-		return new Fields("");
-	}
+        return new Fields("");
+    }
 
 
 }

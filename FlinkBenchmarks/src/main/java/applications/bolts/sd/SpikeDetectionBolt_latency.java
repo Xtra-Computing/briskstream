@@ -20,47 +20,47 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author surajwaghulde
  */
 public class SpikeDetectionBolt_latency extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(SpikeDetectionBolt_latency.class);
-	double cnt = 0;
-	double cnt1 = 0;
-	int loop = 1;
-	private double spikeThreshold;
+    private static final Logger LOG = LoggerFactory.getLogger(SpikeDetectionBolt_latency.class);
+    double cnt = 0;
+    double cnt1 = 0;
+    int loop = 1;
+    private double spikeThreshold;
 
 
-	@Override
-	public void initialize() {
-		spikeThreshold = config.getDouble(SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THRESHOLD, 0.03d);
-	}
+    @Override
+    public void initialize() {
+        spikeThreshold = config.getDouble(SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THRESHOLD, 0.03d);
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 
-		String deviceID = input.getStringByField(SpikeDetectionConstants.Field.DEVICE_ID);
-		double movingAverageInstant = input.getDoubleByField(SpikeDetectionConstants.Field.MOVING_AVG);
-		double nextDouble = input.getDoubleByField(SpikeDetectionConstants.Field.VALUE);
+        String deviceID = input.getStringByField(SpikeDetectionConstants.Field.DEVICE_ID);
+        double movingAverageInstant = input.getDoubleByField(SpikeDetectionConstants.Field.MOVING_AVG);
+        double nextDouble = input.getDoubleByField(SpikeDetectionConstants.Field.VALUE);
 
-		Long msgId;
-		Long SYSStamp;
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		if (Math.abs(nextDouble - movingAverageInstant) > spikeThreshold * movingAverageInstant) {
-			collector.emit(new Values(deviceID,
-					movingAverageInstant, nextDouble, "spike detected", msgId, SYSStamp));
-		}
+        if (Math.abs(nextDouble - movingAverageInstant) > spikeThreshold * movingAverageInstant) {
+            collector.emit(new Values(deviceID,
+                    movingAverageInstant, nextDouble, "spike detected", msgId, SYSStamp));
+        }
 
-	}
+    }
 
-	public void display() {
+    public void display() {
 //        LOG.info("cnt:" + cnt + "\tcnt1:" + cnt1 + "\toutput selectivity:" + ((cnt1) / cnt));
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(SpikeDetectionConstants.Field.DEVICE_ID,
-				SpikeDetectionConstants.Field.MOVING_AVG,
-				SpikeDetectionConstants.Field.VALUE, SpikeDetectionConstants.Field.MESSAGE
-				, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(SpikeDetectionConstants.Field.DEVICE_ID,
+                SpikeDetectionConstants.Field.MOVING_AVG,
+                SpikeDetectionConstants.Field.VALUE, SpikeDetectionConstants.Field.MESSAGE
+                , MSG_ID, SYSTEMTIMESTAMP);
+    }
 }

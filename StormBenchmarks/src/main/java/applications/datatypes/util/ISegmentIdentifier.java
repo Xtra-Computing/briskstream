@@ -29,10 +29,10 @@ import java.io.Serializable;
  */
 public interface ISegmentIdentifier extends Serializable {
 
-	Integer getXWay();
+    Integer getXWay();
 
-	Short getSegment();
+    Short getSegment();
 
-	Short getDirection();
+    Short getDirection();
 
 }

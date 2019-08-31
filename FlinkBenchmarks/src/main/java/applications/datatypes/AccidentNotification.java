@@ -43,133 +43,133 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * @author mjsax
  */
 public class AccidentNotification extends AbstractOutputTuple {
-	/**
-	 * The index of the segment attribute.
-	 */
-	public final static int SEG_IDX = 3;
+    /**
+     * The index of the segment attribute.
+     */
+    public final static int SEG_IDX = 3;
 
-	// attribute indexes
-	/**
-	 * The index of the VID attribute. (Not part of LRB specification but necessary for "mimic" message delivery to
-	 * correct car.)
-	 */
-	public final static int VID_IDX = 4;
-	private static final long serialVersionUID = -2731071679224249483L;
+    // attribute indexes
+    /**
+     * The index of the VID attribute. (Not part of LRB specification but necessary for "mimic" message delivery to
+     * correct car.)
+     */
+    public final static int VID_IDX = 4;
+    private static final long serialVersionUID = -2731071679224249483L;
 
 
-	public AccidentNotification() {
-		super();
-	}
+    public AccidentNotification() {
+        super();
+    }
 
-	/**
-	 * Instantiates a new accident notification for the given attributes.
-	 *
-	 * @param time    the time or the position record triggering this notification
-	 * @param emit    the emit time of the notification
-	 * @param segment the accident segment
-	 * @param vid     the vehicle ID this notification has to be delivered to
-	 */
-	public AccidentNotification(Integer time, Integer emit, Short segment, Integer vid) {
-		super(ACCIDENT_NOTIFICATION, time, emit);
+    /**
+     * Instantiates a new accident notification for the given attributes.
+     *
+     * @param time    the time or the position record triggering this notification
+     * @param emit    the emit time of the notification
+     * @param segment the accident segment
+     * @param vid     the vehicle ID this notification has to be delivered to
+     */
+    public AccidentNotification(Integer time, Integer emit, Short segment, Integer vid) {
+        super(ACCIDENT_NOTIFICATION, time, emit);
 
-		assert (segment != null);
+        assert (segment != null);
 
-		super.add(SEG_IDX, segment);
-		super.add(VID_IDX, vid);
+        super.add(SEG_IDX, segment);
+        super.add(VID_IDX, vid);
 
-		assert (super.size() == 5);
-	}
+        assert (super.size() == 5);
+    }
 
-	public AccidentNotification(Integer time, Integer emit, Short segment, Integer vid, Long msgId, Long sysStamp) {
-		super(ACCIDENT_NOTIFICATION, time, emit);
+    public AccidentNotification(Integer time, Integer emit, Short segment, Integer vid, Long msgId, Long sysStamp) {
+        super(ACCIDENT_NOTIFICATION, time, emit);
 
-		assert (segment != null);
+        assert (segment != null);
 
-		super.add(SEG_IDX, segment);
-		super.add(VID_IDX, vid);
+        super.add(SEG_IDX, segment);
+        super.add(VID_IDX, vid);
 
-		assert (super.size() == 5);
-		super.add(msgId);
-		super.add(sysStamp);
-	}
+        assert (super.size() == 5);
+        super.add(msgId);
+        super.add(sysStamp);
+    }
 
-	/**
-	 * Returns the schema of an {@link AccidentNotification}.
-	 *
-	 * @return the schema of an {@link AccidentNotification}
-	 */
-	public static Fields getSchema() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
-				TopologyControl.EMIT_FIELD_NAME, TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME);
-	}
+    /**
+     * Returns the schema of an {@link AccidentNotification}.
+     *
+     * @return the schema of an {@link AccidentNotification}
+     */
+    public static Fields getSchema() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME, TopologyControl.TIME_FIELD_NAME,
+                TopologyControl.EMIT_FIELD_NAME, TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME);
+    }
 
-	public static Fields getSchema_latency() {
-		return new Fields(TopologyControl.TYPE_FIELD_NAME
-				, TopologyControl.TIME_FIELD_NAME, TopologyControl.EMIT_FIELD_NAME
-				, TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME
-				, MSG_ID, SYSTEMTIMESTAMP
-		);
-	}
+    public static Fields getSchema_latency() {
+        return new Fields(TopologyControl.TYPE_FIELD_NAME
+                , TopologyControl.TIME_FIELD_NAME, TopologyControl.EMIT_FIELD_NAME
+                , TopologyControl.SEGMENT_FIELD_NAME, TopologyControl.VEHICLE_ID_FIELD_NAME
+                , MSG_ID, SYSTEMTIMESTAMP
+        );
+    }
 
-	/**
-	 * Returns the segment of this {@link AccidentNotification}.
-	 *
-	 * @return the SEG of the accident
-	 */
-	public final Short getSegment() {
-		return (Short) super.get(SEG_IDX);
-	}
+    /**
+     * Returns the segment of this {@link AccidentNotification}.
+     *
+     * @return the SEG of the accident
+     */
+    public final Short getSegment() {
+        return (Short) super.get(SEG_IDX);
+    }
 
-	/**
-	 * Returns the vehicle ID of this {@link AccidentNotification}.
-	 *
-	 * @return the VID of this tuple
-	 */
-	public final Integer getVid() {
-		return (Integer) super.get(VID_IDX);
-	}
+    /**
+     * Returns the vehicle ID of this {@link AccidentNotification}.
+     *
+     * @return the VID of this tuple
+     */
+    public final Integer getVid() {
+        return (Integer) super.get(VID_IDX);
+    }
 
-	/**
-	 * Compares the specified object with this {@link AccidentNotification} object for equality. Returns true if and
-	 * only if the specified object is also a {@link AccidentNotification} and their TIME, SEGMENT, and VID attributes
-	 * are equals. The EMIT attribute is not considered. Furthermore, TYPE is known to be equal if the specified object
-	 * is of type {@link AccidentNotification}.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (this.getClass() != obj.getClass()) {
-			return false;
-		}
-		AccidentNotification other = (AccidentNotification) obj;
-		assert (this.getType().equals(other.getType()));
+    /**
+     * Compares the specified object with this {@link AccidentNotification} object for equality. Returns true if and
+     * only if the specified object is also a {@link AccidentNotification} and their TIME, SEGMENT, and VID attributes
+     * are equals. The EMIT attribute is not considered. Furthermore, TYPE is known to be equal if the specified object
+     * is of type {@link AccidentNotification}.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        AccidentNotification other = (AccidentNotification) obj;
+        assert (this.getType().equals(other.getType()));
 
-		if (this.getTime() == null) {
-			if (other.getTime() != null) {
-				return false;
-			}
-		} else if (!this.getTime().equals(other.getTime())) {
-			return false;
-		}
+        if (this.getTime() == null) {
+            if (other.getTime() != null) {
+                return false;
+            }
+        } else if (!this.getTime().equals(other.getTime())) {
+            return false;
+        }
 
-		if (this.getSegment() == null) {
-			if (other.getSegment() != null) {
-				return false;
-			}
-		} else if (!this.getSegment().equals(other.getSegment())) {
-			return false;
-		}
+        if (this.getSegment() == null) {
+            if (other.getSegment() != null) {
+                return false;
+            }
+        } else if (!this.getSegment().equals(other.getSegment())) {
+            return false;
+        }
 
-		if (this.getVid() == null) {
-			return other.getVid() == null;
-		} else {
-			return this.getVid().equals(other.getVid());
-		}
+        if (this.getVid() == null) {
+            return other.getVid() == null;
+        } else {
+            return this.getVid().equals(other.getVid());
+        }
 
-	}
+    }
 }

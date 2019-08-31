@@ -47,96 +47,96 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
  */
 public class AccountBalanceBolt_latency extends AbstractBolt {
 
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(AccountBalanceBolt_latency.class);
-	private final PositionReport inputPositionReport = new PositionReport();
-	double cnt = 0, cnt1 = 0, cnt2 = 0;
-	/**
-	 * Contains all vehicles and the accountinformation of the current day.
-	 */
-	private Map<Integer, VehicleAccount> allVehicles;
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(AccountBalanceBolt_latency.class);
+    private final PositionReport inputPositionReport = new PositionReport();
+    double cnt = 0, cnt1 = 0, cnt2 = 0;
+    /**
+     * Contains all vehicles and the accountinformation of the current day.
+     */
+    private Map<Integer, VehicleAccount> allVehicles;
 
-	@Override
-	public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
-		super.prepare(conf, context, collector);
-		this.allVehicles = new HashMap<>();
-	}
+    @Override
+    public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
+        super.prepare(conf, context, collector);
+        this.allVehicles = new HashMap<>();
+    }
 
-	@Override
-	public synchronized void execute(Tuple tuple) {
+    @Override
+    public synchronized void execute(Tuple tuple) {
 
-		if (tuple.getSourceStreamId().equals(TopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID)) {
-			this.getBalanceAndSend(tuple);
+        if (tuple.getSourceStreamId().equals(TopologyControl.ACCOUNT_BALANCE_REQUESTS_STREAM_ID)) {
+            this.getBalanceAndSend(tuple);
 
-		} else if (tuple.getSourceStreamId().equals(TopologyControl.TOLL_ASSESSMENTS_STREAM_ID)) {
-			this.updateBalance(tuple);
+        } else if (tuple.getSourceStreamId().equals(TopologyControl.TOLL_ASSESSMENTS_STREAM_ID)) {
+            this.updateBalance(tuple);
 
-		} else {
-			throw new RuntimeException(String.format("Erroneous stream subscription. Please report a bug at %s",
-					"tonyzhang19900609@gmail.com"));
-		}
-	}
+        } else {
+            throw new RuntimeException(String.format("Erroneous stream subscription. Please report a bug at %s",
+                    "tonyzhang19900609@gmail.com"));
+        }
+    }
 
-	private synchronized void updateBalance(Tuple tuple) {
-		Integer vid = tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME);
-		VehicleAccount account = this.allVehicles.get(vid);
-		PositionReport pos = (PositionReport) tuple.getValueByField(TopologyControl.POS_REPORT_FIELD_NAME);
+    private synchronized void updateBalance(Tuple tuple) {
+        Integer vid = tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME);
+        VehicleAccount account = this.allVehicles.get(vid);
+        PositionReport pos = (PositionReport) tuple.getValueByField(TopologyControl.POS_REPORT_FIELD_NAME);
 
-		if (account == null) {
-			int assessedToll = 0;
-			//TODO:assume it's 0 now.
-			account = new VehicleAccount(assessedToll, pos.getVid(), pos.getXWay(), Long.valueOf(pos.getTime()));
-			this.allVehicles.put(tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME), account);
-		} else {
-			account.updateToll(tuple.getIntegerByField(TopologyControl.TOLL_FIELD_NAME));
-		}
-	}
+        if (account == null) {
+            int assessedToll = 0;
+            //TODO:assume it's 0 now.
+            account = new VehicleAccount(assessedToll, pos.getVid(), pos.getXWay(), Long.valueOf(pos.getTime()));
+            this.allVehicles.put(tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME), account);
+        } else {
+            account.updateToll(tuple.getIntegerByField(TopologyControl.TOLL_FIELD_NAME));
+        }
+    }
 
-	private synchronized void getBalanceAndSend(Tuple tuple) {
-		Long msgId;
-		Long SYSStamp;
+    private synchronized void getBalanceAndSend(Tuple tuple) {
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = tuple.getLongByField(MSG_ID);
-		SYSStamp = tuple.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = tuple.getLongByField(MSG_ID);
+        SYSStamp = tuple.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		AccountBalanceRequest bal = new AccountBalanceRequest(
-				tuple.getIntegerByField(TopologyControl.TIME_FIELD_NAME),
-				tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME),
-				tuple.getIntegerByField(TopologyControl.QUERY_ID_FIELD_NAME));
+        AccountBalanceRequest bal = new AccountBalanceRequest(
+                tuple.getIntegerByField(TopologyControl.TIME_FIELD_NAME),
+                tuple.getIntegerByField(TopologyControl.VEHICLE_ID_FIELD_NAME),
+                tuple.getIntegerByField(TopologyControl.QUERY_ID_FIELD_NAME));
 
-		VehicleAccount account = this.allVehicles.get(bal.getVid());
+        VehicleAccount account = this.allVehicles.get(bal.getVid());
 
-		if (account == null) {
-			//LOG.DEBUG("No account information available yet: at:" + bal.getTime() + " for request" + bal);
-			AccountBalance accountBalance = new AccountBalance
-					(
-							bal.getTime(),
-							bal.getQid(),
-							0, // balance
-							0, // tollTime
-							bal.getTime()
-					);
-			accountBalance.add(msgId);
-			accountBalance.add(SYSStamp);
-			this.collector.emit(TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, accountBalance);
-		} else {
-			AccountBalance accountBalance
-					= account.getAccBalanceNotification(bal);
-			accountBalance.add(msgId);
-			accountBalance.add(SYSStamp);
-			this.collector.emit(TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, accountBalance);
-		}
-	}
+        if (account == null) {
+            //LOG.DEBUG("No account information available yet: at:" + bal.getTime() + " for request" + bal);
+            AccountBalance accountBalance = new AccountBalance
+                    (
+                            bal.getTime(),
+                            bal.getQid(),
+                            0, // balance
+                            0, // tollTime
+                            bal.getTime()
+                    );
+            accountBalance.add(msgId);
+            accountBalance.add(SYSStamp);
+            this.collector.emit(TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, accountBalance);
+        } else {
+            AccountBalance accountBalance
+                    = account.getAccBalanceNotification(bal);
+            accountBalance.add(msgId);
+            accountBalance.add(SYSStamp);
+            this.collector.emit(TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, accountBalance);
+        }
+    }
 
-	public Map<Integer, VehicleAccount> getAllVehicles() {
-		return this.allVehicles;
-	}
+    public Map<Integer, VehicleAccount> getAllVehicles() {
+        return this.allVehicles;
+    }
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declareStream(
-				TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, AccountBalance.getSchema_latency()
-		);
-	}
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declareStream(
+                TopologyControl.ACCOUNT_BALANCE_OUTPUT_STREAM_ID, AccountBalance.getSchema_latency()
+        );
+    }
 
 }

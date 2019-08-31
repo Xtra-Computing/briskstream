@@ -33,16 +33,16 @@ public class BasicBoltBatchExecutor extends BoltExecutor {
     }
 
 
-    public void execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
+    public void execute(TransferTuple in) throws InterruptedException, BrokenBarrierException {
         _op.execute(in);
     }
 
     @Override
-    public void execute(Tuple in) throws InterruptedException,  BrokenBarrierException {
+    public void execute(Tuple in) throws InterruptedException, BrokenBarrierException {
         _op.execute(in);
     }
 
-    public void profile_execute(TransferTuple in) throws InterruptedException,  BrokenBarrierException {
+    public void profile_execute(TransferTuple in) throws InterruptedException, BrokenBarrierException {
         _op.profile_execute(in);
     }
 

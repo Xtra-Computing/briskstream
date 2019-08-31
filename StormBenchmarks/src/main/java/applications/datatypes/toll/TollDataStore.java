@@ -30,39 +30,39 @@ import applications.models.TollEntry;
  */
 public interface TollDataStore {
 
-	/**
-	 * Retrieves the toll value of the underlying data store. The way the data is retrieved and how efficient and fast
-	 * this retrieval is depends on implementors.
-	 *
-	 * @param xWay              the {@code xWay} field of the query
-	 * @param day               the {@code day} field of the query
-	 * @param vehicleIdentifier the {@code vid} field of the query
-	 * @return the stored toll for the combination of the parameters or {@code null} if there's no such entry
-	 */
-	Integer retrieveToll(int xWay, int day, int vehicleIdentifier);
+    /**
+     * Retrieves the toll value of the underlying data store. The way the data is retrieved and how efficient and fast
+     * this retrieval is depends on implementors.
+     *
+     * @param xWay              the {@code xWay} field of the query
+     * @param day               the {@code day} field of the query
+     * @param vehicleIdentifier the {@code vid} field of the query
+     * @return the stored toll for the combination of the parameters or {@code null} if there's no such entry
+     */
+    Integer retrieveToll(int xWay, int day, int vehicleIdentifier);
 
-	/**
-	 * Stores the toll value in the underlying data store. The way the data is stored and how efficient and fast this
-	 * storage is depends on implementors.
-	 *
-	 * @param xWay              the {@code xWay} field of the query
-	 * @param day               the {@code day} field of the query
-	 * @param vehicleIdentifier the {@code vid} field of the query
-	 * @param toll              the amount to be stored
-	 */
-	/*
-	 * toll is of type int and not Integer because removing entries from the store should be done by eliminating the key
-	 * (in key-value-based stores)
-	 */
-	void storeToll(int xWay, int day, int vehicleIdentifier, int toll);
+    /**
+     * Stores the toll value in the underlying data store. The way the data is stored and how efficient and fast this
+     * storage is depends on implementors.
+     *
+     * @param xWay              the {@code xWay} field of the query
+     * @param day               the {@code day} field of the query
+     * @param vehicleIdentifier the {@code vid} field of the query
+     * @param toll              the amount to be stored
+     */
+    /*
+     * toll is of type int and not Integer because removing entries from the store should be done by eliminating the key
+     * (in key-value-based stores)
+     */
+    void storeToll(int xWay, int day, int vehicleIdentifier, int toll);
 
-	/**
-	 * removes the entry associated with {@code xWay}, {@code day} and {@code vehicleIdentifier}
-	 *
-	 * @param xWay
-	 * @param day
-	 * @param vehicleIdentifier
-	 * @return
-	 */
-	Integer removeEntry(int xWay, int day, int vehicleIdentifier);
+    /**
+     * removes the entry associated with {@code xWay}, {@code day} and {@code vehicleIdentifier}
+     *
+     * @param xWay
+     * @param day
+     * @param vehicleIdentifier
+     * @return
+     */
+    Integer removeEntry(int xWay, int day, int vehicleIdentifier);
 }

@@ -16,30 +16,30 @@ import static applications.constants.VoIPSTREAMConstants.Field;
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>
  */
 public class ENCRBolt extends AbstractFilterBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(ENCRBolt.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ENCRBolt.class);
 
 
-	public ENCRBolt() {
-		super("encr", Field.RATE, null);
-	}
+    public ENCRBolt() {
+        super("encr", Field.RATE, null);
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 
-		CallDetailRecord cdr = (CallDetailRecord) input.getValueByField(Field.RECORD);
-		boolean newCallee = input.getBooleanByField(Field.NEW_CALLEE);
+        CallDetailRecord cdr = (CallDetailRecord) input.getValueByField(Field.RECORD);
+        boolean newCallee = input.getBooleanByField(Field.NEW_CALLEE);
 
-		if (cdr.isCallEstablished() && newCallee) {
-			String caller = input.getStringByField(Field.CALLING_NUM);
-			long timestamp = cdr.getAnswerTime().getMillis() / 1000;
+        if (cdr.isCallEstablished() && newCallee) {
+            String caller = input.getStringByField(Field.CALLING_NUM);
+            long timestamp = cdr.getAnswerTime().getMillis() / 1000;
 
-			filter.add(caller, 1, timestamp);
-			double rate = filter.estimateCount(caller, timestamp);
+            filter.add(caller, 1, timestamp);
+            double rate = filter.estimateCount(caller, timestamp);
 
-			collector.emit(new Values(caller, timestamp, rate, cdr));
-		}
+            collector.emit(new Values(caller, timestamp, rate, cdr));
+        }
 
-	}
+    }
 
 
 }

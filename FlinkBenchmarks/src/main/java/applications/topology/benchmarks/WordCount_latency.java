@@ -18,58 +18,58 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 import static applications.constants.WordCountConstants.PREFIX;
 
 public class WordCount_latency extends BasicTopology {
-	private static final Logger LOG = LoggerFactory.getLogger(WordCount_latency.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WordCount_latency.class);
 
-	public WordCount_latency(String topologyName, Config config) {
-		super(topologyName, config);
-	}
+    public WordCount_latency(String topologyName, Config config) {
+        super(topologyName, config);
+    }
 
-	public void initialize() {
-		super.initialize();
-		sink = loadSink();
-		//  initilize_parser();
-	}
+    public void initialize() {
+        super.initialize();
+        sink = loadSink();
+        //  initilize_parser();
+    }
 
-	@Override
-	public FlinkTopology buildTopology() {
+    @Override
+    public FlinkTopology buildTopology() {
 
-		spout.setFields(
-				new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP)
-		);
+        spout.setFields(
+                new Fields(Field.TEXT, MSG_ID, SYSTEMTIMESTAMP)
+        );
 
-		builder.setSpout(Component.SPOUT, spout, spoutThreads);
+        builder.setSpout(Component.SPOUT, spout, spoutThreads);
 
-		builder.setBolt(Component.PARSER, new ParserBolt_latency(parser,
-						new Fields(Field.WORD, MSG_ID, SYSTEMTIMESTAMP))
+        builder.setBolt(Component.PARSER, new ParserBolt_latency(parser,
+                        new Fields(Field.WORD, MSG_ID, SYSTEMTIMESTAMP))
 //						new Fields(Field.WORD))
-				, config.getInt(WordCountConstants.Conf.PARSER_THREADS, 1))
-				.shuffleGrouping(Component.SPOUT);
+                , config.getInt(WordCountConstants.Conf.PARSER_THREADS, 1))
+                .shuffleGrouping(Component.SPOUT);
 
 
-		builder.setBolt(Component.SPLITTER, new SplitSentenceBolt()
-				, config.getInt(WordCountConstants.Conf.SPLITTER_THREADS, 1))
-				.shuffleGrouping(Component.PARSER);
+        builder.setBolt(Component.SPLITTER, new SplitSentenceBolt()
+                , config.getInt(WordCountConstants.Conf.SPLITTER_THREADS, 1))
+                .shuffleGrouping(Component.PARSER);
 
-		builder.setBolt(Component.COUNTER, new WordCountBolt()
-				, config.getInt(WordCountConstants.Conf.COUNTER_THREADS, 1))
-				.fieldsGrouping(Component.SPLITTER, new Fields(Field.WORD));
+        builder.setBolt(Component.COUNTER, new WordCountBolt()
+                , config.getInt(WordCountConstants.Conf.COUNTER_THREADS, 1))
+                .fieldsGrouping(Component.SPLITTER, new Fields(Field.WORD));
 
-		builder.setBolt(Component.SINK, sink, sinkThreads)
-				.shuffleGrouping(Component.COUNTER);
+        builder.setBolt(Component.SINK, sink, sinkThreads)
+                .shuffleGrouping(Component.COUNTER);
 //                .shuffleGrouping(Component.SPOUT)
 //                .globalGrouping(Component.SPOUT, Marker_STREAM_ID);
 
-		return FlinkTopology.createTopology(builder, config);
-	}
+        return FlinkTopology.createTopology(builder, config);
+    }
 
-	@Override
-	public Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    public Logger getLogger() {
+        return LOG;
+    }
 
-	@Override
-	public String getConfigPrefix() {
-		return PREFIX;
-	}
+    @Override
+    public String getConfigPrefix() {
+        return PREFIX;
+    }
 
 }

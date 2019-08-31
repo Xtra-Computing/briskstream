@@ -13,43 +13,43 @@ import static applications.spout.helper.Event.split_expression;
  * @author mayconbordin
  */
 public class ConsoleSink extends BaseSink {
-	private static final Logger LOG = LoggerFactory.getLogger(ConsoleSink.class);
-	stable_sink_helper_verbose helper;
-	int processed = 0;
-	private long end;
-	private long start;
+    private static final Logger LOG = LoggerFactory.getLogger(ConsoleSink.class);
+    stable_sink_helper_verbose helper;
+    int processed = 0;
+    private long end;
+    private long start;
 
-	public ConsoleSink() {
-		super();
-	}
+    public ConsoleSink() {
+        super();
+    }
 
-	public void initialize() {
-		super.initialize();
-		helper = new stable_sink_helper_verbose(LOG
-				, config.getInt("runtimeInSeconds")
-				, config.getString("metrics.output"), context.getThisTaskId());
-	}
+    public void initialize() {
+        super.initialize();
+        helper = new stable_sink_helper_verbose(LOG
+                , config.getInt("runtimeInSeconds")
+                , config.getString("metrics.output"), context.getThisTaskId());
+    }
 
-	@Override
-	public void execute(Tuple input) {
-		final String flag = input.getString(3);
-		if (flag.equals(null_expression)) {
-			if (helper.execute(null, false)) {
-				killTopology();
-			}
-		} else {
-			final long receive = System.nanoTime();
-			final long event_time = input.getLong(0);
-			final String state = "event_time" + split_expression + event_time + split_expression + flag + split_expression + "sink" + split_expression + receive;
-			if (helper.execute(state, true)) {
-				killTopology();
-			}
-		}
-	}
+    @Override
+    public void execute(Tuple input) {
+        final String flag = input.getString(3);
+        if (flag.equals(null_expression)) {
+            if (helper.execute(null, false)) {
+                killTopology();
+            }
+        } else {
+            final long receive = System.nanoTime();
+            final long event_time = input.getLong(0);
+            final String state = "event_time" + split_expression + event_time + split_expression + flag + split_expression + "sink" + split_expression + receive;
+            if (helper.execute(state, true)) {
+                killTopology();
+            }
+        }
+    }
 
-	@Override
-	protected Logger getLogger() {
-		return LOG;
-	}
+    @Override
+    protected Logger getLogger() {
+        return LOG;
+    }
 
 }

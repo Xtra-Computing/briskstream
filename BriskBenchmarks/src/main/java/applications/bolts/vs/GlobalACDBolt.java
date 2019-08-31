@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.datatype.util.VSTopologyControl.GlobalACD_STREAM_ID;
 import static applications.constants.VoIPSTREAMConstants.Conf;
 import static applications.constants.VoIPSTREAMConstants.Field;
+import static applications.datatype.util.VSTopologyControl.GlobalACD_STREAM_ID;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

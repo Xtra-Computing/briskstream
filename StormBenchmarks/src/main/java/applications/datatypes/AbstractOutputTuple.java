@@ -32,37 +32,37 @@ package applications.datatypes;
  * @author mjsax
  */
 public abstract class AbstractOutputTuple extends AbstractLRBTuple {
-	/**
-	 * The index of the EMIT attribute.
-	 */
-	public final static int EMIT_IDX = 2;
+    /**
+     * The index of the EMIT attribute.
+     */
+    public final static int EMIT_IDX = 2;
 
-	// attribute indexes
-	private static final long serialVersionUID = 6525749728643815820L;
-
-
-	protected AbstractOutputTuple() {
-		super();
-	}
-
-	protected AbstractOutputTuple(Short type, Integer time, Integer emit) {
-		super(type, time);
-
-		assert (emit != null);
-		assert (emit.longValue() >= time.longValue());
-		super.add(EMIT_IDX, emit);
-
-		assert (super.size() == 3);
-	}
+    // attribute indexes
+    private static final long serialVersionUID = 6525749728643815820L;
 
 
-	/**
-	 * Returns the emit timestamp (in LRB seconds) of this {@link AbstractOutputTuple}.
-	 *
-	 * @return the emit timestamp of this tuple
-	 */
-	public final Short getEmit() {
-		return (Short) super.get(EMIT_IDX);
-	}
+    protected AbstractOutputTuple() {
+        super();
+    }
+
+    protected AbstractOutputTuple(Short type, Integer time, Integer emit) {
+        super(type, time);
+
+        assert (emit != null);
+        assert (emit.longValue() >= time.longValue());
+        super.add(EMIT_IDX, emit);
+
+        assert (super.size() == 3);
+    }
+
+
+    /**
+     * Returns the emit timestamp (in LRB seconds) of this {@link AbstractOutputTuple}.
+     *
+     * @return the emit timestamp of this tuple
+     */
+    public final Short getEmit() {
+        return (Short) super.get(EMIT_IDX);
+    }
 
 }

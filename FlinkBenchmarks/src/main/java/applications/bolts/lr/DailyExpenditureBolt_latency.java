@@ -63,96 +63,96 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  */
 public class DailyExpenditureBolt_latency extends AbstractBolt {
 
-	private static final long serialVersionUID = 1L;
-	private static final Logger LOG = LoggerFactory.getLogger(DailyExpenditureBolt_latency.class);
-	private LinkedList<HistoryEvent> historyEvtList;
-	private transient TollDataStore dataStore;
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOG = LoggerFactory.getLogger(DailyExpenditureBolt_latency.class);
+    private LinkedList<HistoryEvent> historyEvtList;
+    private transient TollDataStore dataStore;
 
 
-	public TollDataStore getDataStore() {
-		return this.dataStore;
-	}
+    public TollDataStore getDataStore() {
+        return this.dataStore;
+    }
 
-	/**
-	 * initializes the used {@link TollDataStore} using the string specified as value to the
-	 * {@link Helper#TOLL_DATA_STORE_CONF_KEY} map key.
-	 *
-	 * @param conf
-	 * @param context
-	 * @param collector
-	 */
-	/*
-	 * internal implementation notes: - due to the fact that compatibility is incapable of serializing Class property, a String
-	 * has to be passed in conf
-	 */
-	@Override
-	public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
-		super.prepare(conf, context, collector);
-		@SuppressWarnings("unchecked")
+    /**
+     * initializes the used {@link TollDataStore} using the string specified as value to the
+     * {@link Helper#TOLL_DATA_STORE_CONF_KEY} map key.
+     *
+     * @param conf
+     * @param context
+     * @param collector
+     */
+    /*
+     * internal implementation notes: - due to the fact that compatibility is incapable of serializing Class property, a String
+     * has to be passed in conf
+     */
+    @Override
+    public void prepare(@SuppressWarnings("rawtypes") Map conf, TopologyContext context, OutputCollector collector) {
+        super.prepare(conf, context, collector);
+        @SuppressWarnings("unchecked")
 
-		String tollDataStoreClass = MemoryTollDataStore.class.getName();//(String) conf.get(Helper.TOLL_DATA_STORE_CONF_KEY);
-		try {
-			this.dataStore = (TollDataStore) Class.forName(tollDataStoreClass).newInstance();
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-			throw new RuntimeException(String.format("The data store instance '%s' could not be initialized (see "
-					+ "nested exception for details)", this.dataStore), ex);
-		}
-
-
-		//historyEvtList = new LinkedList<HistoryEvent>();
-		String OS_prefix = null;
-		if (OsUtils.isWindows()) {
-			OS_prefix = "win.";
-		} else {
-			OS_prefix = "unix.";
-		}
-
-		String historyFile;
-		if (OsUtils.isMac()) {
-			historyFile = System.getProperty("user.home").concat("/Documents/data/app/").concat((String) conf.get(OS_prefix.concat("test.linear-history-file")));
-		} else {
-			historyFile = System.getProperty("user.home").concat("/Documents/data/app/").concat((String) conf.get(OS_prefix.concat("linear-history-file")));
-		}
-		loadHistoricalInfo(historyFile);
-		Configuration config = Configuration.fromMap(conf);
-
-	}
-
-	public void loadHistoricalInfo(String inputFileHistory) {
-		BufferedReader in;
-		try {
-			in = new BufferedReader(new FileReader(inputFileHistory));
-
-			String line;
-			int counter = 0;
-			int batchCounter = 0;
-			int BATCH_LEN = 10000;//A batch fieldSize of 1000 to 10000 is usually OK
-			Statement stmt;
-			StringBuilder builder = new StringBuilder();
-
-			//log.info(Utilities.getTimeStamp() + " : Loading history data");
-			while ((line = in.readLine()) != null) {
+        String tollDataStoreClass = MemoryTollDataStore.class.getName();//(String) conf.get(Helper.TOLL_DATA_STORE_CONF_KEY);
+        try {
+            this.dataStore = (TollDataStore) Class.forName(tollDataStoreClass).newInstance();
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+            throw new RuntimeException(String.format("The data store instance '%s' could not be initialized (see "
+                    + "nested exception for details)", this.dataStore), ex);
+        }
 
 
-				String[] fields = line.split(" ");
-				fields[0] = fields[0].substring(2);
-				fields[3] = fields[3].substring(0, fields[3].length() - 1);
+        //historyEvtList = new LinkedList<HistoryEvent>();
+        String OS_prefix = null;
+        if (OsUtils.isWindows()) {
+            OS_prefix = "win.";
+        } else {
+            OS_prefix = "unix.";
+        }
 
-				//historyEvtList.add(new HistoryEvent(Integer.parseInt(fields[0]), Integer.parseInt(fields[1]), Integer.parseInt(fields[2]), Integer.parseInt(fields[3])));
-				this.dataStore.storeToll(Integer.parseInt(fields[0]), Integer.parseInt(fields[1]), Integer.parseInt(fields[2]), Integer.parseInt(fields[3]));
-			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        String historyFile;
+        if (OsUtils.isMac()) {
+            historyFile = System.getProperty("user.home").concat("/Documents/data/app/").concat((String) conf.get(OS_prefix.concat("test.linear-history-file")));
+        } else {
+            historyFile = System.getProperty("user.home").concat("/Documents/data/app/").concat((String) conf.get(OS_prefix.concat("linear-history-file")));
+        }
+        loadHistoricalInfo(historyFile);
+        Configuration config = Configuration.fromMap(conf);
 
-		//log.info(Utilities.getTimeStamp() + " : Done Loading history data");
-		//Just notfy this to the input event injector so that it can start the data emission process
+    }
+
+    public void loadHistoricalInfo(String inputFileHistory) {
+        BufferedReader in;
+        try {
+            in = new BufferedReader(new FileReader(inputFileHistory));
+
+            String line;
+            int counter = 0;
+            int batchCounter = 0;
+            int BATCH_LEN = 10000;//A batch fieldSize of 1000 to 10000 is usually OK
+            Statement stmt;
+            StringBuilder builder = new StringBuilder();
+
+            //log.info(Utilities.getTimeStamp() + " : Loading history data");
+            while ((line = in.readLine()) != null) {
+
+
+                String[] fields = line.split(" ");
+                fields[0] = fields[0].substring(2);
+                fields[3] = fields[3].substring(0, fields[3].length() - 1);
+
+                //historyEvtList.add(new HistoryEvent(Integer.parseInt(fields[0]), Integer.parseInt(fields[1]), Integer.parseInt(fields[2]), Integer.parseInt(fields[3])));
+                this.dataStore.storeToll(Integer.parseInt(fields[0]), Integer.parseInt(fields[1]), Integer.parseInt(fields[2]), Integer.parseInt(fields[3]));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //log.info(Utilities.getTimeStamp() + " : Done Loading history data");
+        //Just notfy this to the input event injector so that it can start the data emission process
 //        try {
 //            PrintWriter writer = new PrintWriter("done.txt", "UTF-8");
 //            writer.println("\n");
@@ -164,51 +164,51 @@ public class DailyExpenditureBolt_latency extends AbstractBolt {
 //            e.printStackTrace();
 //        }
 
-	}
+    }
 
-	@Override
-	public void execute(Tuple tuple) {
-		Long msgId;
-		Long SYSStamp;
+    @Override
+    public void execute(Tuple tuple) {
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = tuple.getLongByField(MSG_ID);
-		SYSStamp = tuple.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = tuple.getLongByField(MSG_ID);
+        SYSStamp = tuple.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		DailyExpenditureRequest exp = new DailyExpenditureRequest();
-		exp.addAll(tuple.getValues());
+        DailyExpenditureRequest exp = new DailyExpenditureRequest();
+        exp.addAll(tuple.getValues());
 
-		//.getValueByField(TopologyControl.DAILY_EXPEDITURE_REQUEST_FIELD_NAME);
-		int vehicleIdentifier = exp.getVid();
-		Values values;
-		Integer toll = this.dataStore.retrieveToll(exp.getXWay(), exp.getDay(), vehicleIdentifier);
-		if (toll != null) {
-			//LOG.DEBUG("ExpenditureRequest: found vehicle identifier %d", vehicleIdentifier);
+        //.getValueByField(TopologyControl.DAILY_EXPEDITURE_REQUEST_FIELD_NAME);
+        int vehicleIdentifier = exp.getVid();
+        Values values;
+        Integer toll = this.dataStore.retrieveToll(exp.getXWay(), exp.getDay(), vehicleIdentifier);
+        if (toll != null) {
+            //LOG.DEBUG("ExpenditureRequest: found vehicle identifier %d", vehicleIdentifier);
 
-			// //LOG.DEBUG("3, %d, %d, %d, %d", exp.getTime(), exp.getTimer().getOffset(), exp.getQueryIdentifier(),
-			// toll);
+            // //LOG.DEBUG("3, %d, %d, %d, %d", exp.getTime(), exp.getTimer().getOffset(), exp.getQueryIdentifier(),
+            // toll);
 
-			values = new Values(AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(), toll);
-		} else {
-			values = new Values(AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(),
-					Constants.INITIAL_TOLL);
+            values = new Values(AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(), toll);
+        } else {
+            values = new Values(AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(),
+                    Constants.INITIAL_TOLL);
 
-		}
+        }
 
-		values.add(msgId);
-		values.add(SYSStamp);
-		this.collector.emit(TopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID, values);
+        values.add(msgId);
+        values.add(SYSStamp);
+        this.collector.emit(TopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID, values);
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
 
-	@Override
-	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		declarer.declareStream(TopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID,
-				new Fields(TopologyControl.DAILY_EXPEDITURE_REQUEST_FIELD_NAME,
-						TopologyControl.TIME_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME
-						, TopologyControl.TOLL_FIELD_NAME
-						, MSG_ID, SYSTEMTIMESTAMP
-				));
-	}
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declareStream(TopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID,
+                new Fields(TopologyControl.DAILY_EXPEDITURE_REQUEST_FIELD_NAME,
+                        TopologyControl.TIME_FIELD_NAME, TopologyControl.QUERY_ID_FIELD_NAME
+                        , TopologyControl.TOLL_FIELD_NAME
+                        , MSG_ID, SYSTEMTIMESTAMP
+                ));
+    }
 
 }

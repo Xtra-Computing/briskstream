@@ -49,7 +49,7 @@ public class UniformedScheduler extends InputStreamController {
 //                for (int b = 0; b < batch; b++) {
 //                    t[b] = fetchFromqueue((P1C1Queue) getRQ().get(streamId).get(q_index));
 //                }
-                return fetchFromqueue_inorder(getRQ().get(streamId).get(q_index));
+                    return fetchFromqueue_inorder(getRQ().get(streamId).get(q_index));
             }
         }
         return null;
@@ -73,7 +73,7 @@ public class UniformedScheduler extends InputStreamController {
 //                for (int b = 0; b < batch; b++) {
 //                    t[b] = fetchFromqueue((P1C1Queue) getRQ().get(streamId).get(q_index));
 //                }
-                return fetchFromqueue(getRQ().get(streamId).get(q_index));
+                    return fetchFromqueue(getRQ().get(streamId).get(q_index));
             }
         }
         return null;

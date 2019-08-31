@@ -26,8 +26,8 @@ package applications.datatypes.util;
  * @author mjsax
  */
 public final class CarCount {
-	/**
-	 * The current count.
-	 */
-	public int count = 1;
+    /**
+     * The current count.
+     */
+    public int count = 1;
 }

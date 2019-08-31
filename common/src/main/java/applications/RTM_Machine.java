@@ -1,18 +1,17 @@
 package applications;
 
-public class HUAWEI_Machine extends Platform {
+public class RTM_Machine extends Platform {
 
-    private static final long serialVersionUID = 2511492570058016274L;
 
-    public HUAWEI_Machine() {
+    public RTM_Machine() {
         this.latency_L2 = 11.2;//measured latency in ns for each cache line sized tuple access.
         this.latency_LLC = 50;//measured latency in ns for each cache line sized tuple access.
         this.latency_LOCAL_MEM = 110;//measured latency in ns for each cache line access.
         this.cache_line = 64.0;//bytes
-        this.CLOCK_RATE = 1.2;//1.2GHz ... 2.5 cycles per nanosecond, in real, it's about 1.2. so we use UNHALTED_REFERENCE_CYCLES that does not affect.
-        this.num_socket = 8;
-        this.CoresPerSocket = 36;//36 cores per socket
-        this.num_cores = 288;
+        this.CLOCK_RATE = 1.9;//GHz
+        this.num_socket = 4;
+        this.CoresPerSocket = 10;//cores per socket
+        this.num_cores = 40;
         bandwidth_map = new double[][]{  //in MB/s
                 {55607.1, 13482.4, 13161.4, 14636.7, 6551.4, 6532.9, 5963.2, 5941.0},
                 {13426.7, 55401.0, 14538.7, 13182.1, 6642.1, 6603.0, 5907.5, 5893.8},

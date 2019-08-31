@@ -17,28 +17,28 @@ import static applications.constants.BaseConstants.BaseField.MSG_ID;
 
 
 public class WordCountBolt_latency extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(WordCountBolt_latency.class);
-	private final Map<String, MutableLong> counts = new HashMap<>();
+    private static final Logger LOG = LoggerFactory.getLogger(WordCountBolt_latency.class);
+    private final Map<String, MutableLong> counts = new HashMap<>();
 
-	@Override
-	public Fields getDefaultFields() {
+    @Override
+    public Fields getDefaultFields() {
 
 
-		return new Fields(Field.WORD, Field.COUNT, MSG_ID, Field.SYSTEMTIMESTAMP);
-	}
+        return new Fields(Field.WORD, Field.COUNT, MSG_ID, Field.SYSTEMTIMESTAMP);
+    }
 
-	@Override
-	public void execute(Tuple input) {
-		String word = input.getStringByField(Field.WORD);
-		MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
-		count.increment();
+    @Override
+    public void execute(Tuple input) {
+        String word = input.getStringByField(Field.WORD);
+        MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
+        count.increment();
 
-		Long msgId;
-		Long SYSStamp;
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
-		Values objects = new Values(word, count.longValue(), msgId, SYSStamp);
-		collector.emit(objects);
+        Long msgId;
+        Long SYSStamp;
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        Values objects = new Values(word, count.longValue(), msgId, SYSStamp);
+        collector.emit(objects);
 
-	}
+    }
 }

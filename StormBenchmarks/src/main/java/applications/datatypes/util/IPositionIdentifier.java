@@ -30,12 +30,12 @@ import java.io.Serializable;
  */
 public interface IPositionIdentifier extends Serializable {
 
-	Integer getXWay();
+    Integer getXWay();
 
-	Short getLane();
+    Short getLane();
 
-	Integer getPosition();
+    Integer getPosition();
 
-	Short getDirection();
+    Short getDirection();
 
 }

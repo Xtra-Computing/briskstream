@@ -12,8 +12,8 @@
         <module>common</module>
         <module>Affinity</module>
         <module>BriskBenchmarks</module>
-<!--        <module>StormBenchmarks</module>-->
-<!--        <module>FlinkBenchmarks</module>-->
+        <!--        <module>StormBenchmarks</module>-->
+        <!--        <module>FlinkBenchmarks</module>-->
         <!--<module>HeronBenchmarks</module>-->
     </modules>
     <properties>

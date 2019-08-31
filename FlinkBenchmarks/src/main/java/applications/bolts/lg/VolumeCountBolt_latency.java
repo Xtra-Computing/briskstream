@@ -23,51 +23,51 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  * This bolt will count number of log events per minute
  */
 public class VolumeCountBolt_latency extends AbstractBolt {
-	private static final Logger LOG = LoggerFactory.getLogger(VolumeCountBolt_latency.class);
+    private static final Logger LOG = LoggerFactory.getLogger(VolumeCountBolt_latency.class);
 
-	private CircularFifoBuffer buffer;
-	private Map<Long, MutableLong> counts;
+    private CircularFifoBuffer buffer;
+    private Map<Long, MutableLong> counts;
 
 
-	@Override
-	public void initialize() {
-		int windowSize = config.getInt(Conf.VOLUME_COUNTER_WINDOW, 60);
+    @Override
+    public void initialize() {
+        int windowSize = config.getInt(Conf.VOLUME_COUNTER_WINDOW, 60);
 
-		buffer = new CircularFifoBuffer(windowSize);
-		counts = new HashMap<>(windowSize);
-		LOG.info(Thread.currentThread().getName());
-	}
+        buffer = new CircularFifoBuffer(windowSize);
+        counts = new HashMap<>(windowSize);
+        LOG.info(Thread.currentThread().getName());
+    }
 
-	@Override
-	public void execute(Tuple input) {
+    @Override
+    public void execute(Tuple input) {
 //        if (stat != null) stat.start_measure();
-		long minute = input.getLongByField(Field.TIMESTAMP_MINUTES);
-		Long msgId;
-		Long SYSStamp;
+        long minute = input.getLongByField(Field.TIMESTAMP_MINUTES);
+        Long msgId;
+        Long SYSStamp;
 
-		msgId = input.getLongByField(MSG_ID);
-		SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
+        msgId = input.getLongByField(MSG_ID);
+        SYSStamp = input.getLongByField(BaseConstants.BaseField.SYSTEMTIMESTAMP);
 
-		MutableLong count = counts.get(minute);
+        MutableLong count = counts.get(minute);
 
-		if (count == null) {
-			if (buffer.isFull()) {
-				long oldMinute = (Long) buffer.remove();
-				counts.remove(oldMinute);
-			}
-			count = new MutableLong(1);
-			counts.put(minute, count);
-			buffer.add(minute);
-		} else {
-			count.increment();
-		}
+        if (count == null) {
+            if (buffer.isFull()) {
+                long oldMinute = (Long) buffer.remove();
+                counts.remove(oldMinute);
+            }
+            count = new MutableLong(1);
+            counts.put(minute, count);
+            buffer.add(minute);
+        } else {
+            count.increment();
+        }
 
-		collector.emit(new Values(minute, count.longValue(), msgId, SYSStamp));
+        collector.emit(new Values(minute, count.longValue(), msgId, SYSStamp));
 //        if (stat != null) stat.end_measure();
-	}
+    }
 
-	@Override
-	public Fields getDefaultFields() {
-		return new Fields(Field.TIMESTAMP_MINUTES, Field.COUNT, MSG_ID, SYSTEMTIMESTAMP);
-	}
+    @Override
+    public Fields getDefaultFields() {
+        return new Fields(Field.TIMESTAMP_MINUTES, Field.COUNT, MSG_ID, SYSTEMTIMESTAMP);
+    }
 }
