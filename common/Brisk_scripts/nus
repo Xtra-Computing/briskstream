@@ -1,5 +1,5 @@
 #!/bin/bash
-searchdir="--search-dir all:rp=$HOME/Documents/briskstream --search-dir all:rp=$JAVA_HOME/lib  --search-dir all:rp=/opt/intel/vtune_amplifier_xe_2017/bin64"
+searchdir="--search-dir all:rp=$HOME/briskstream --search-dir all:rp=$JAVA_HOME/lib  --search-dir all:rp=/opt/intel/vtune_amplifier_xe_2017/bin64"
 function profile {
 
     cnt=0
@@ -50,7 +50,7 @@ killall -9 java
 	gc_thread=$tt #$((288)) #$1*
 	echo "heap_size: $heap_size gc_threads: $gc_thread"
 	gc_flag="-Xms1024g -Xmx1024g -XX:+UseParallelGC -XX:ParallelGCThreads=18 " #-XX:+UseNUMA -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:ParallelCMSThreads=${gc_thread}
-	JVM_args_profile="$gc_flag -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -javaagent:$HOME/Documents/briskstream/common/lib/classmexer.jar " #  -XcompilationThreads=1
+	JVM_args_profile="$gc_flag -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -javaagent:$HOME/briskstream/common/lib/classmexer.jar " #  -XcompilationThreads=1
 	#######Application profiling
 	echo "=============== profiling phase:" $arg_benchmark "==================" #-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
 	numactl --localalloc -N 0,1 java $JVM_args_profile -jar $JAR_PATH $arg_benchmark -mp $outputPath --profile -a $2 --machine $machine >> profile\_$2\_$bt\_$5.txt
@@ -76,7 +76,7 @@ function execution {
         gc_flag=" -Xms50g -Xmx50g  -XX:+UseParallelGC" #-XX:ParallelGCThreads=$gc_thread #-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:ParallelCMSThreads=${gc_thread}
         GC_args="-Xloggc:$path-gc.log -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintTenuringDistribution -XX:+PrintGCCause -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=5M"
         JVM_args1="$gc_flag"  # -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005  -XX:ParallelGCThreads  -XX:+UseG1GC -Xmn${young_size}g -XX:+UseCondCardMark
-        JVM_args2="-agentpath:/home/shuhao/jprofiler10/bin/linux-x64/libjprofilerti.so=port=8848 -XX:CompileThreshold=100 -Xms4096g -Xmx4096g -XX:+UseG1GC -javaagent:$HOME/Documents/briskstream/common/lib/classmexer.jar"
+        JVM_args2="-agentpath:/home/shuhao/jprofiler10/bin/linux-x64/libjprofilerti.so=port=8848 -XX:CompileThreshold=100 -Xms4096g -Xmx4096g -XX:+UseG1GC -javaagent:$HOME/briskstream/common/lib/classmexer.jar"
 
         #Unfortuntly, I have no sudo right to use ``nice".
 		if [ $Profile != 0 ] ; then
@@ -119,7 +119,7 @@ function sim_execution {
 #require: $argument $path $input $bt $Profile $arg_application $app $machine $num_socket $num_cpu $hz
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 
-        JVM_args_sim="-javaagent:$HOME/Documents/briskstream/common/lib/classmexer.jar"
+        JVM_args_sim="-javaagent:$HOME/briskstream/common/lib/classmexer.jar"
 		if [ $Profile == 1 ] ; then
 			java $JVM_args_sim -jar $JAR_PATH $arg_benchmark  $arg_application >> $path/test\_$iteration\_$bt\_$gc_factor\_$CCOption.txt		&
 			profile $profile_type $path
@@ -629,7 +629,7 @@ do
     machine=0
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
-	outputPath=$HOME/Documents/briskstream/Tests/test-$timestamp/$app
+	outputPath=$HOME/briskstream/Tests/test-$timestamp/$app
 	mkdir -p $outputPath
 	cd $outputPath
 	# Save some system information
@@ -639,7 +639,7 @@ do
 
 	echo Benchmark initiated at $(date +%Y%m%d-%H%M)
 
-	JAR_PATH="$HOME/Documents/briskstream/BriskBenchmarks/target/briskstream-1.2.0-jar-with-dependencies.jar"
+	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.2.0-jar-with-dependencies.jar"
     ##The below is for the case that #theads=15
 	#SA=(5000	10000	15000	25000	 )
 	# WC=(5000	10000	15000	25000	53416  )
@@ -1097,16 +1097,16 @@ do
                         for percentile in 50 #90 99 # 100 #99 100 ##the percentile used in profiling..
                         do
                             END=20 #to get a ground-truth!!
-#
-#                            for((tt=1;tt<2;tt+=1));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
-#
-#                            for((tt=5;tt<=END;tt+=5));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
+
+                            for((tt=1;tt<2;tt+=1));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
+
+                            for((tt=5;tt<=END;tt+=5));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
 
                         done #end of percentile
 
