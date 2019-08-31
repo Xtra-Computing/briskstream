@@ -545,7 +545,10 @@ public class STAT implements Serializable {
 
             Writer w = new BufferedWriter(f);
             for (double i = 0.5; i <= 100.0; i += 0.5) {
-                w.write(String.valueOf(cycles_stats[0].getPercentile(i) + "\n"));
+                if (cycles_stats[0].getMax() == 0) {
+                    w.write(String.valueOf(0 + "\n"));
+                } else
+                    w.write(String.valueOf(cycles_stats[0].getPercentile(i) + "\n"));
             }
             w.write("=======Details=======");
             w.write(cycles_stats[0].toString() + "\n");

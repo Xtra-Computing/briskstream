@@ -2,7 +2,6 @@ package applications;
 
 import applications.constants.*;
 import applications.topology.*;
-import applications.topology.faulttolerance.WordCount_FT;
 import applications.topology.latency.LinearRoad_latency;
 import applications.topology.latency.WordCount_latency;
 import applications.util.Configuration;
@@ -52,10 +51,6 @@ public class BriskRunner extends abstractRunner {
         //test latency
         driver.addApp("WordCount_latency", WordCount_latency.class);
         driver.addApp("LinearRoad_latency", LinearRoad_latency.class);//
-
-
-        //Fault tolerance application
-        driver.addApp("WordCount_FT", WordCount_FT.class);//
 
     }
 
@@ -164,8 +159,6 @@ public class BriskRunner extends abstractRunner {
                 LOG.info("Simulation: use machine:" + config.getInt("machine")
                         + " with sockets:" + config.getInt("num_socket")
                         + " and cores:" + config.getInt("num_cpu"));
-//				config.put("num_socket", this.p.num_socket);
-//				config.put("num_cpu", this.p.num_cores / this.p.num_socket);
             }
 
             //configure database.
@@ -375,7 +368,6 @@ public class BriskRunner extends abstractRunner {
 
         // Run the topology
         double rt = runTopologyLocally(topology, config);
-
 
         Collection<TopologyComponent> topologyComponents = final_topology.getRecords().values();
 
