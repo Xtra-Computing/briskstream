@@ -432,188 +432,7 @@ killall -9 java
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
 		path=$outputPath/native/$2/$4\_$6
 		mkdir -p $path
-        execution   $4 $5 
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_transaction_native {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-        path=$outputPath/native/$2/$4\_$6\_$CCOption\_$theta
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--THz $2 --runtime 10  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction --TP $TP --CCOption $CCOption --checkpoint $checkpoint --theta $theta"
-		arg_application="-st $st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
-		mkdir -p $path
         execution $4 $5
-}
-
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_transaction_native_local {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-
-        path=$outputPath/native/$2/$4\_$6\_$CCOption
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--THz $2 --runtime 30  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction --TP $TP --CCOption $CCOption --checkpoint $checkpoint --theta $theta"
-		arg_application="-st $st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
-		mkdir -p $path
-        local_execution   $4 $5
-}
-
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_simple {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-#killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--THz $2 --runtime 30  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 1 -sit 2 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
-
-		#####native executionm
-		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native/$2/$4\_$6
-		mkdir -p $path
-        local_execution   $4 $5
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_ft {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--THz $2 --runtime 30  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--checkpoint $ck --Fault_tolerance -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native/$2/$4\_$6\_$ck
-		mkdir -p $path
-        execution   $4 $5
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_Linked {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spsc_linked/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_linked phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_spsc_linked/$2/$4\_$6
-		mkdir -p $path
-        execution $4 $5
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_MPSC {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--shared --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_mpsc phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_mpsc/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
-}
-	#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_MPSC_Linked {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--linked --shared --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc_linked
-		/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_mpsc_linked phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_mpsc_linked/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
-}
-
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_SPMC {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--common --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_spmc phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_spmc/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_SPMC_Linked {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--common --linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc_linked/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_spmc_linked phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_spmc_linked/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
-}
-
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_MPMC {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--shared --common --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_mpmc phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_mpmc/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
-}
-
-#$Profile $hz $pt $ct1 $ct2 $app --num_socket $7 --num_cpu
-function main_native_MPMC_Linked {
-# echo 3 | sudo tee /proc/sys/vm/drop_caches
-killall -9 java
-		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
-		# echo $argument
-		arg_benchmark="--shared --common --linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc_linked/$hz " # --tune  --random  --worst
-
-		#####native execution
-		echo "=============== native_mpmc_linked phase:" $argument $arg_benchmark $arg_application"=============="
-		path=$outputPath/native_mpmc_linked/$2/$4\_$6
-		mkdir -p $path
-        execution   $4 $5
 }
 
 
@@ -626,7 +445,7 @@ app_cnt=0
 cnt=0
 for app in "LinearRoad" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
 do
-    machine=0
+    machine=0 # 0 stands for NUS Machine.
     Profile=0 #vtune profile: 0 disable, 1 enable.
 	profile_type=4 # 1 for general..4 for hpc.
 	outputPath=$HOME/briskstream/Tests/test-$timestamp/$app
@@ -640,16 +459,7 @@ do
 	echo Benchmark initiated at $(date +%Y%m%d-%H%M)
 
 	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.2.0-jar-with-dependencies.jar"
-    ##The below is for the case that #theads=15
-	#SA=(5000	10000	15000	25000	 )
-	# WC=(5000	10000	15000	25000	53416  )
-	# FD=(5000	10000	15000   25000	86017  ) 
-	# SD=(5000	10000	15000   25000	66974 )
-	# TM=(5000	10000	15000   25000	38 )
-	# LG=(5000	10000	15000   25000	41182 )
-	# VS=(5000	10000	15000   25000	28817 )
-	# LR=(5000	10000	15000   25000	46506 )
-	
+
 	#10 different input HZ.
 	# SA=(150000) # 900 1800 2700 3600 4500 9000 18000 27000 36000 45000
 	# WC=(53416 )
@@ -676,153 +486,6 @@ do
     do
         echo "iterations:" $iteration
 		case "$app" in
-			"CrossTables")
-				for hz in "${CT[@]}"
-				do
-				    for bt in 1
-                    do
-					 for socket in 8 #2 4 8 #2 4 8 #4 2 1
-                        do
-                            for cpu in 18 #18
-                            do
-                                for percentile in 99 # 100 #99 100 ##the percentile used in profiling..
-                                do
-                                   for tt in 2 8 32 64
-                                   do
-                                       for gc_factor in 0
-                                        do
-                                            for TP in 10 50 100 150
-                                            do
-                                                echo "$socket"
-                                                CCOption=0
-                                                checkpoint=1
-                                                main_transaction_native_local $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint
-                                            done
-                                        done
-                                   done
-                                done
-                            done
-                        done
-                     done
-				done
-				;;
-			"MicroBenchmark")
-				for hz in "${MB[@]}"
-				do
-				    for theta in 0 #0.6 0.8
-				        do
-                        for bt in 1
-                        do
-                         for socket in 2 #2 4 8 #2 4 8 #4 2 1
-                            do
-                                for cpu in 18 #18
-                                do
-                                    for percentile in 99 # 100 #99 100 ##the percentile used in profiling..
-                                    do
-                                       for tt in 128 64 32 16 8 4 2
-                                       do
-                                           let "st = 1"
-                                           for gc_factor in 0
-                                            do
-                                                for CCOption in 0 1 2
-                                                do
-                                                    TP=1
-                                                    checkpoint=1
-                                                    main_transaction_native $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta
-                                                done
-
-                                                for checkpoint in 1 #2 4 8
-                                                do
-#                                                for TP in 10 20 30 40 #25 50 75 100
-#                                                do
-                                                    let "TP = $tt/2"
-                                                    let "tt = $tt/2"
-                                                    echo "$socket"
-                                                    CCOption=3
-                                                    main_transaction_native $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta
-#                                                done
-                                                done
-                                            done
-                                       done
-                                    done
-                                done
-                            done
-                         done
-                     done
-				done
-				;;
-			"StreamingAnalysis")
-				for hz in "${SA[@]}"
-				do
-						#8 configurations of profile plan
-					for profile_plan in 0 #1 #2 3 4 5 6 7
-					do
-							#10 configurations of tuple size
-						for size_tuple in 1 16 64 128 256 512 # 
-						do
-							for window in 2 #4 8
-							do
-								#complexity of sink
-								for complexity in 0 10 100 1000
-								do
-									# for repeate in 1 2 3 4 5
-									# do
-										statistics_profile $Profile $hz $app $size_tuple $profile_plan $complexity $window
-									# done
-								done
-							done
-						done
-					done
-				done
-				;;
-			"WordCount_FT")
-				for hz in "${WC[@]}"
-				do
-					echo "WordCount fault tolerance Study"
-					for bt in 50
-                    do
-#                        statistics_profile $hz $app 0 -1
-                        for socket in 1 2 4 8
-                        do
-                            let "tt = 288/8*$socket"
-                            for ck in 60
-                            do
-                                for percentile in 50 # 100 #99 100 ##the percentile used in profiling..
-                                do
-                                    main_opt_ft $Profile $hz $app $socket -1 $tt $iteration $bt $ck
-                                done
-                            done
-                        done
-                    done
-				done
-				;;
-            "WordCount_latency")
-				for hz in "${WC[@]}"
-				do
-                    echo "WordCount latency Study"
-					for bt in 50
-                    do
-                       echo "latency test"
-                        for percentile in 50 #90 99 # 100 #99 100 ##the percentile used in profiling..
-                        do
-                            for socket in 7 #4 2 1
-                            do
-                                for cpu in 18 #18
-                                do
-                                    for gc_factor in 0
-                                    do
-                                        echo "$socket"
-                                        let "tt = 144/8*$socket"
-                                        #main_opt $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $percentile
-                                        main_opt $Profile $hz $app $socket $cpu $tt iteration $bt $gc_factor $percentile
-                                    done
-                                done
-                            done
-                        done #end of percentile
-
-                    done #end of bt
-                  done
-				;;
 			"WordCount")
 				for hz in "${WC[@]}"
 				do
@@ -834,15 +497,15 @@ do
                         do
                         END=18 #to get a ground-truth!!
 
-#                            for((tt=5;tt<=END;tt+=5));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
-#
-#                            for((tt=1;tt<2;tt+=2));
-#                            do
-#                                statistics_profile $hz $app 0 $percentile $tt
-#                            done
+                            for((tt=5;tt<=END;tt+=5));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
+
+                            for((tt=1;tt<2;tt+=2));
+                            do
+                                statistics_profile $hz $app 0 $percentile $tt
+                            done
 
 				        done #end of percentile
 
@@ -859,8 +522,11 @@ do
                                         let "tt = 144/8*$socket"
                                         for r in -1
                                         do
-                                            st=2
-                                            main_random_tune_sim $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                            st=1
+                                            main_native $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                            main_toff_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                            main_roundrobin_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                            main_opt $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
                                         done
                                     done
                                 done
@@ -877,8 +543,6 @@ do
 #                                 main_native $Profile $hz $app $socket -1 $tt $input $bt
 #                            done
 #                         done
-
-
                         #random placement test
 #                        for iteration in 1 2 3 4 5 6 7 8 9 10
 #                        do
@@ -1000,94 +664,7 @@ do
 
                     done #end of bt
 				done
-				;;   
-			# "TrafficMonitoring")
-				# for hz in "${TM[@]}"
-				# do
-					# echo "TrafficMonitoring Study"
-                    # for bt in 100                     
-                    # do
-                       # statistics_profile $hz $app 0 -1 0 0 $bt
-                       # main_opt $Profile $hz $app 8 -1 -1 $input $bt 
-                    # done                   
-					# statistics_profile $hz $app 0 -1 0 0
-					# for num_socket in 2 4 8
-					# do
-						# for cores in 8
-						# do	
-							# for pt in 1 #4 16
-							# do                          
-                                # for ct1 in 1 #16 8 4
-                                # do
-                                    # for ct2 in 1 #16 8 4
-                                    # do
-                                       
-                                            # for tt in   1 
-                                            # do
-                                                # main_aware $Profile $hz $pt $ct1 $ct2 $app $num_socket $cores $tt $input
-                                            # done 
-                                       
-                                    # done
-                                # done
-                            # done
-						# done
-					# done
-                    # for tt in  5 25 45 65 85
-                    # do
-                        # main_aware $Profile $hz 1 1 1 $app 8 8 $tt $input
-                        # main_native $Profile $hz 1 1 1 $app 8 8 $tt $input   
-                    # done                        
-				# done
-				# ;; 		
-#			"LogProcessing")
-#				for hz in "${LG[@]}"
-#				do
-#					echo "Log Processing Study"
-#					for bt in 10
-#                    do
-#                        #scalability test
-#                        statistics_profile $hz $app 0 -1
-#                        for socket in 8 4 2 1
-#                        do
-#                            echo "$socket"
-##                            let "tt = 288/8*$socket"
-##                            for percentile in 90 99 # 100 #99 100 ##the percentile used in profiling..
-##                            do
-##                                main_opt $Profile $hz $app $socket -1 $tt $input $bt
-##                            done
-#                        done
-##                        statistics_profile $hz $app 0 -1
-##                        for socket in 8 #2 4 8 #4096 8 64 512
-##                        do
-##                             main_opt $Profile $hz $app 8 -1 1 $input $bt
-##                        done
-##
-##                        for tt in 288 #155 135 115 #15 25 35 45 90 135 #-1 5 15 25 35 45 55 65 75 85 95 105 135 165 185
-##                        do
-##                             main_toff $Profile $hz $app 8 -1 $tt $input $bt
-##                             main_roundrobin $Profile $hz $app 8 -1 $tt $input $bt
-##                             main_aware $Profile $hz $app 8 -1 $tt $input $bt
-##                             main_native $Profile $hz $app 8 -1 $tt $input $bt
-##                        done
-#                    done
-#				done
-#				;;
-			# "VoIPSTREAM")
-				# for hz in "${VS[@]}"
-				# do
-					# echo "VoIPSTREAM Study"
-                    # for bt in 10 100                     
-                    # do
-                       # statistics_profile $hz $app 0 -1 0 0 $bt
-                       # main_opt $Profile $hz $app 8 -1 -1 $input $bt           
-                       # for tt in 345 295 245 #15 25 35 45 90 135 #-1 5 15 25 35 45 55 65 75 85 95 105 135 165 185
-                       # do
-                           # main_native $Profile $hz $app 8 -1 $tt $input $bt
-                           # main_aware $Profile $hz $app 8 -1 $tt $input $bt                           
-                       # done   
-                    # done	  
-				# done
-				# ;; 		
+				;;
 			"LinearRoad")
 				for hz in "${LR[@]}"
 				do  
@@ -1123,43 +700,14 @@ do
                                         let "r = -1"
                                         let "tt = 144/8*$socket-1"
                                         st=1
-
-                                        for x in 25 50 75
-                                        do
-                                            let "hz = $hz*$x/100"
-                                            main_native $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
-                                            main_toff_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
-                                            main_roundrobin_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
-                                            main_opt $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
-                                        done
+                                        main_native $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                        main_toff_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                        main_roundrobin_tune $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
+                                        main_opt $Profile $hz $app $socket $cpu $tt $st $bt $gc_factor $r
                                     done
                                 done
                             done
                         done #end of percentile
-
-                        #native test.
-#                        for socket in 8
-#                        do
-#                            for tt in 150 180 200
-#                            do
-##                                main_toff $Profile $hz $app $socket -1 $tt $input $bt
-##                                main_roundrobin $Profile $hz $app $socket -1 $tt $input $bt
-#                                 main_native $Profile $hz $app $socket -1 $tt $input $bt
-#                            done
-#                         done
-#                        echo random placement test
-#                        for iteration in 1 2 3 4 5 6 7 8 9 10
-#                        do
-#                            for socket in 7 #4 2 1
-#                            do
-#                                for percentile in 50 # 100 #99 100 ##the percentile used in profiling..
-#                                do
-#                                    let "tt = 136/8*$socket"
-#                                    main_random_tune $Profile $hz $app $socket 18 $tt $input $bt
-#                                done
-#                            done
-#                        done #end of iteration
-
                     done #end of bt
                   done
 				;;

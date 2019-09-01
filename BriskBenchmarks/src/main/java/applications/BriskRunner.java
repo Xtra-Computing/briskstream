@@ -377,7 +377,9 @@ public class BriskRunner extends abstractRunner {
         LOG.info("Bounded throughput (k events/s):" + config.getDouble("bound", 0));
         LOG.info("predict throughput (k events/s):" + config.getDouble("predict", 0));
         LOG.info("finished measurement (k events/s):" + record.getPercentile(50) + "("
-                + (Math.abs(record.getPercentile(50) - config.getDouble("predict", 0)) / config.getDouble("predict", 0)) + ")");
+                + (Math.abs(record.getPercentile(50)
+                - config.getDouble("predict", 0))
+                / config.getDouble("predict", 0)) + ")");
 
         String algorithm;
         if (config.getBoolean("random", false)) {

@@ -55,12 +55,6 @@ public class WordCountBolt extends MapBolt {
 
     @Override
     public void execute(Tuple input) throws InterruptedException {
-//		String word = input.getString(0);
-//		MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
-//		count.increment();
-//		StreamValues objects = new StreamValues(word, count.longValue());
-//		collector.emit_force(objects);
-
         char[] word = input.getCharArray(0);
         int key = Arrays.hashCode(word);
         long v = counts.getOrDefault(key, 0L);
@@ -72,37 +66,16 @@ public class WordCountBolt extends MapBolt {
             counts.put(key, value);
             collector.force_emit(0, new StreamValues(word, value));
         }
-
     }
 
-    //a workaround to de-cache, otherwise, we have to profile Cpro under varying replication setting.
-    /*volatile String word;*/
-    /*volatile MutableLong count;*/
-
     /**
-     * MutableLong count = counts.computeIfAbsent(Arrays.hashCode(word), k -> new Long(0));
-     * count.increment();
-     *
      * @param input
      * @throws InterruptedException
      */
     @Override
     public void execute(TransferTuple input) throws InterruptedException {
-//		long start = System.nanoTime();
         int bound = input.length;
-//		final long bid = in.getBID();
         for (int i = 0; i < bound; i++) {
-
-			/*
-			String word = input.getString(0,i);
-			MutableLong count = counts.computeIfAbsent(word, k -> new MutableLong(0));
-			count.increment();
-
-			StreamValues objects = new StreamValues(word, count.longValue());
-			collector.emit(objects);
-			*/
-
-
             char[] word = input.getCharArray(0, i);
             int key = Arrays.hashCode(word);
             long v = counts.getOrDefault(key, 0L);
@@ -114,11 +87,7 @@ public class WordCountBolt extends MapBolt {
                 counts.put(key, value);
                 collector.emit(word, value);
             }
-
         }
-
-//		long end = System.nanoTime();
-//		LOG.info("Count:" + (end - start));
     }
 
     @Override
