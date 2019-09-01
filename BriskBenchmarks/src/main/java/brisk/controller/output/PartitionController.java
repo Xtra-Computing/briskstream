@@ -136,7 +136,11 @@ public abstract class PartitionController implements IPartitionController, Seria
 //        } else {
         queue_size_per_core = (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint") / conf.getInt("tthread"));
 //        }
-        threashold = queue_size_per_core - 1;//leave one space for watermark filling!
+
+        if (conf.getBoolean("profile"))
+            threashold = 10000;//reduce GC pressure.
+        else
+            threashold = queue_size_per_core - 1;//leave one space for watermark filling!
 
     }
 

@@ -54,24 +54,23 @@ public class boltThread extends executorThread {
      * @param HPCMonotor
      * @param optimizationManager
      * @param threadMap
-     * @param clock
      */
     public boltThread(ExecutionNode e, TopologyContext context, Configuration conf, long[] cpu
             , int node, CountDownLatch latch, OverHpc HPCMonotor, OptimizationManager optimizationManager
-            , HashMap<Integer, executorThread> threadMap, Clock clock) {
+            , HashMap<Integer, executorThread> threadMap) {
         super(e, conf, context, cpu, node, latch, HPCMonotor, threadMap);
         bolt = (BoltExecutor) e.op;
         scheduler = e.getInputStreamController();
         this.collector = new OutputCollector(e, context);
         batch = conf.getInt("batch", 100);
         bolt.setExecutionNode(e);
-        bolt.setclock(clock);
+
     }
 
     protected void _profile() throws InterruptedException, BrokenBarrierException {
         if (isUnix()) {
             UNIX = true;
-            // LOG.info("running in Linux environment");
+            LOG.info("running in Linux environment");
         }
         long time_out = (long) (60 * 1E3);
         for (TopologyComponent parent : executor.getParents_keySet()) {
@@ -89,7 +88,6 @@ public class boltThread extends executorThread {
                 TransferTuple in = fetchResult(stat, batch);
                 if (in != null) {
                     if (in.getSourceTask() == srcExecutorID && i > 30000) {//skip the non-compiled optimized part.
-
                         stat.start_measure();
                         bolt.profile_execute(in);//skip the blocking in emitting.
 //						if (cnt % 1E3 == 0) {
@@ -170,8 +168,6 @@ public class boltThread extends executorThread {
         } else {
             miss++;
         }
-
-
     }
 
     protected void _execute() throws InterruptedException, BrokenBarrierException {

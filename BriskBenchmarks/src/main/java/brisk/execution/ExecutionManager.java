@@ -31,7 +31,7 @@ import static xerial.jnuma.Numa.*;
 public class ExecutionManager {
     private final static Logger LOG = LoggerFactory.getLogger(ExecutionManager.class);
     private final static long migration_gaps = 10000;
-    public static Clock clock = null;
+//    public static Clock clock = null;
     public final HashMap<Integer, executorThread> ThreadMap = new HashMap<>();
     public final AffinityController AC;
     private final OptimizationManager optimizationManager;
@@ -67,11 +67,11 @@ public class ExecutionManager {
 
 
     private void initializeHPC() {
-        if (isUnix()) {
+//        if (isUnix()) {
             try {
                 HPCMonotor = OverHpc.getInstance();
                 if (HPCMonotor == null) {
-                    System.out.println("ERROR: unable to init OverHpc");
+                    LOG.info("ERROR: unable to init OverHpc");
                 }
 
                 // Init event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
@@ -88,7 +88,7 @@ public class ExecutionManager {
                 System.out.println("ERROR: unable to init OverHpc. " + e.getMessage());
                 HPCMonotor = null;
             }
-        }
+//        }
     }
 
     /**
@@ -113,7 +113,7 @@ public class ExecutionManager {
 //			}
         }
         g.build_inputScheduler();
-        clock = new Clock(conf.getDouble("checkpoint", 1));
+//        clock = new Clock(conf.getDouble("checkpoint", 1));
 
         if (conf.getBoolean("Fault_tolerance", false)) {
             Writer writer = null;
@@ -244,7 +244,7 @@ public class ExecutionManager {
         spoutThread st;
 
         st = new spoutThread(e, context, conf, cores, node, latch, loadTargetHz, timeSliceLengthMs
-                , HPCMonotor, ThreadMap, clock);
+                , HPCMonotor, ThreadMap);
 
         st.setDaemon(true);
         if (!(conf.getBoolean("monte", false) || conf.getBoolean("simulation", false))) {
@@ -259,7 +259,7 @@ public class ExecutionManager {
 
         boltThread wt;
         wt = new boltThread(e, context, conf, cores, node, latch,
-                HPCMonotor, optimizationManager, ThreadMap, clock);
+                HPCMonotor, optimizationManager, ThreadMap);
         wt.setDaemon(true);
         if (!(conf.getBoolean("monte", false) || conf.getBoolean("simulation", false))) {
             wt.start();
@@ -449,9 +449,6 @@ public class ExecutionManager {
      */
     public void exist() {
         LOG.info("Execution stops.");
-        if (clock != null) {
-            clock.close();
-        }
         this.getSinkThread().getContext().Sequential_stopAll();
     }
 

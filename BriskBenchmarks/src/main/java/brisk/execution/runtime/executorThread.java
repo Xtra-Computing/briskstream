@@ -303,7 +303,8 @@ public abstract class executorThread extends Thread {
 //        if (enable_latency_measurement) {
 //            executor.allocate_OutputQueue(conf.getBoolean("linked", false), 2);//no queueing delay.
 //        } else {
-        executor.allocate_OutputQueue(conf.getBoolean("linked", false), (int) (conf.getInt("targetHz") * conf.getDouble("checkpoint") / conf.getInt("tthread")));
+        executor.allocate_OutputQueue(conf.getBoolean("linked", false),
+                100000);
 //        }
     }
 

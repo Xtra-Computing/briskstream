@@ -162,7 +162,8 @@ public class ExecutionGraph extends RawExecutionGraph {
 
         build_streamController(conf.getInt("batch", 100));
         if (!conf.getBoolean("NAV", true)) {
-            Loading(conf, p);
+            if (!conf.getBoolean("profile"))
+                Loading(conf, p);
         }
     }
 
@@ -182,8 +183,7 @@ public class ExecutionGraph extends RawExecutionGraph {
         for (ExecutionNode executionNode : getExecutionNodeArrayList()) {
             executionNode.prepareProfilingStruct(conf, null, null, p);
             for (int srcId : executionNode.profiling.keySet()) {
-                if (!conf.getBoolean("profile"))
-                    executionNode.profiling.get(srcId).load();
+                executionNode.profiling.get(srcId).load();
             }
         }
     }

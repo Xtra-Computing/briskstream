@@ -443,7 +443,7 @@ timestamp=$(date +%Y%m%d-%H%M)
 # Create a temporary directory
 app_cnt=0
 cnt=0
-for app in "LinearRoad" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
+for app in "WordCount" #"WordCount" "FraudDetection" "SpikeDetection" "LogProcessing"  "LinearRoad"
 do
     machine=0 # 0 stands for NUS Machine.
     Profile=0 #vtune profile: 0 disable, 1 enable.
@@ -532,30 +532,6 @@ do
                                 done
                             done
                         done #end of percentile
-
-                        #native test.
-#                        for socket in 8
-#                        do
-#                            for tt in 1
-#                            do
-##                                main_toff $Profile $hz $app $socket -1 $tt $input $bt
-##                                main_roundrobin $Profile $hz $app $socket -1 $tt $input $bt
-#                                 main_native $Profile $hz $app $socket -1 $tt $input $bt
-#                            done
-#                         done
-                        #random placement test
-#                        for iteration in 1 2 3 4 5 6 7 8 9 10
-#                        do
-#                            for socket in 8 #4 2 1
-#                            do
-#                                for percentile in 50 # 100 #99 100 ##the percentile used in profiling..
-#                                do
-#                                    #let "tt = 136/8*$socket"
-#                                    let "tt = 1"
-#                                    main_random $Profile $hz $app $socket 18 $tt $input $bt
-#                                done
-#                            done
-#                        done #end of iteration
 				    done #end of batch
 				done #end of Hz
 				;;

@@ -97,7 +97,7 @@ public class STAT implements Serializable {
         if (loop == -1) {
             loop = config.getInt("loop", 1);
         }
-        if (useHPC && isUnix() && hpcMonotor != null) {
+        if (useHPC  && hpcMonotor != null) {
             pHPC = true;
             LOG.info("HPC enabled!");
         }

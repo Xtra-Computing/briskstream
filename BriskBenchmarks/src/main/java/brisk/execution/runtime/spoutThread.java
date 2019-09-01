@@ -41,11 +41,10 @@ public class spoutThread extends executorThread {
      * @param timeSliceLengthMs
      * @param HPCMonotor
      * @param threadMap
-     * @param clock
      */
     public spoutThread(ExecutionNode e, TopologyContext context, Configuration conf, long[] cpu,
                        int node, CountDownLatch latch, int loadTargetHz, int timeSliceLengthMs, OverHpc HPCMonotor,
-                       HashMap<Integer, executorThread> threadMap, Clock clock) {
+                       HashMap<Integer, executorThread> threadMap) {
         super(e, conf, context, cpu, node, latch, HPCMonotor, threadMap);
         this.sp = (BasicSpoutBatchExecutor) e.op;
         this.loadTargetHz = loadTargetHz;
@@ -54,7 +53,6 @@ public class spoutThread extends executorThread {
         batch = conf.getInt("batch", 100);
         elements = loadPerTimeslice();//how many elements are required to sent each time.
         sp.setExecutionNode(e);
-        sp.setclock(clock);
     }
 
     @Override

@@ -77,11 +77,11 @@ public class OptimizationManager extends executorThread {
 
                     thread.profiling = true;
                     while (thread.profiling) {
-                        //LOG.DEBUG("Wait for profiling gaps" + profiling_gaps + "...for executor:" + executionPlan.profile_executor);
+                        LOG.info("Wait for profiling gaps" + profiling_gaps + "...for executor:" + executionPlan.profile_executor);
                         sleep(profiling_gaps);
                     }
                 }
-                //LOG.DEBUG(executionPlan.profile_executor + " finished profile, go for the next");
+                LOG.info(executionPlan.profile_executor + " finished profile, go for the next");
                 executionPlan.profile_executor++;
 
             }
@@ -208,7 +208,6 @@ public class OptimizationManager extends executorThread {
                 latch = new CountDownLatch(g.getExecutionNodeArrayList().size() + 1 - 1);//+1:OM -1:virtual
 
                 if (conf.getBoolean("simulation", false)) {
-
                     LOG.info("Bounded throughput (k events/s):" + conf.getDouble("bound", 0));
                     LOG.info("predict throughput (k events/s):" + conf.getDouble("predict", 0));
                     System.exit(0);
@@ -386,10 +385,6 @@ public class OptimizationManager extends executorThread {
             e.printStackTrace();
         }
         //initialize queue set.
-
-        if (conf.getBoolean("Fault_tolerance", false)) {
-            ExecutionManager.clock.start();
-        }
 
 
         if (profile) {
