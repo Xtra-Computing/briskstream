@@ -12,9 +12,6 @@
         <module>common</module>
         <module>affinity</module>
         <module>BriskBenchmarks</module>
-        <!--        <module>StormBenchmarks</module>-->
-        <!--        <module>FlinkBenchmarks</module>-->
-        <!--<module>HeronBenchmarks</module>-->
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

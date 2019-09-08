@@ -52,6 +52,7 @@ public class BriskRunner extends abstractRunner {
         driver.addApp("WordCount_latency", WordCount_latency.class);
         driver.addApp("LinearRoad_latency", LinearRoad_latency.class);//
 
+        
     }
 
     public static void main(String[] args) {
