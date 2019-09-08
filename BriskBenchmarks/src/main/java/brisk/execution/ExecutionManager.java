@@ -22,7 +22,6 @@ import java.util.concurrent.CountDownLatch;
 
 import static applications.Constants.EVENTS.*;
 import static applications.Constants.*;
-import static applications.util.OsUtils.isUnix;
 import static xerial.jnuma.Numa.*;
 
 /**
@@ -31,7 +30,7 @@ import static xerial.jnuma.Numa.*;
 public class ExecutionManager {
     private final static Logger LOG = LoggerFactory.getLogger(ExecutionManager.class);
     private final static long migration_gaps = 10000;
-//    public static Clock clock = null;
+    //    public static Clock clock = null;
     public final HashMap<Integer, executorThread> ThreadMap = new HashMap<>();
     public final AffinityController AC;
     private final OptimizationManager optimizationManager;
@@ -39,7 +38,6 @@ public class ExecutionManager {
     private int timeSliceLengthMs;
     private OverHpc HPCMonotor;
     private ExecutionGraph g;
-    private boolean Txn_lock = true;
 
 
     public ExecutionManager(ExecutionGraph g, Configuration conf, OptimizationManager optimizationManager, Platform p) {
@@ -68,26 +66,26 @@ public class ExecutionManager {
 
     private void initializeHPC() {
 //        if (isUnix()) {
-            try {
-                HPCMonotor = OverHpc.getInstance();
-                if (HPCMonotor == null) {
-                    LOG.info("ERROR: unable to init OverHpc");
-                }
+        try {
+            HPCMonotor = OverHpc.getInstance();
+            if (HPCMonotor == null) {
+                LOG.info("ERROR: unable to init OverHpc");
+            }
 
-                // Init event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
-                if (!HPCMonotor.initEvents(
-                        LLC_MISSES
-                                + "," + LLC_REFERENCES
-                                + "," + PERF_COUNT_HW_CPU_CYCLES
+            // Init event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
+            if (!HPCMonotor.initEvents(
+                    LLC_MISSES
+                            + "," + LLC_REFERENCES
+                            + "," + PERF_COUNT_HW_CPU_CYCLES
 //								+ "," + L1_ICACHE_LOAD_MISSES
 //								+ "," + L1_DCACHE_LOAD_MISSES
-                )) {
-                    LOG.error("ERROR: invalid event");
-                }
-            } catch (java.lang.UnsatisfiedLinkError e) {
-                System.out.println("ERROR: unable to init OverHpc. " + e.getMessage());
-                HPCMonotor = null;
+            )) {
+                LOG.error("ERROR: invalid event");
             }
+        } catch (java.lang.UnsatisfiedLinkError e) {
+            System.out.println("ERROR: unable to init OverHpc. " + e.getMessage());
+            HPCMonotor = null;
+        }
 //        }
     }
 

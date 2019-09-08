@@ -1,0 +1,52 @@
+****************************************************
+Overseer suite v1.0b, Achille Peternier (C) USI 2011
+****************************************************
+
+
+
+*** INSTALL ***
+
+Overseer requires the following development tools to be installed and configured on the targeted systems:
+
+- libpfm (version 4.2.0, http://http://perfmon2.sourceforge.net/)
+- hwloc (version 1.2.0, http://www.open-mpi.org/projects/hwloc/)
+- freeipmi (version 0.8.12, http://www.gnu.org/software/freeipmi/)
+
+Please notice that Overseer has been successfully compiled with the version releases reported above. Newer versions of these external libraries might expose different APIs not fully compatible with our code. Overseer has been tested under Ubuntu 10.04+ and Red Hat Enterprise Linux 5+. Being based on libpfm4 and perf_events, a kernel version 2.6.31+ is required (2.6.35+ suggested for optimal performance).
+
+Please also make sure that a Java environment (providing java, javac, and jar commands) is also correctly installed and available from the prompt. 
+Make sure to have an OS global variable called JAVA_HOME pointing to the root of your JDK installation.
+To build and install Overseer, type:
+
+make
+(sudo) make install
+
+
+
+*** CONTENT ***
+
+/           Main makefile, additional notes
+/src        Overseer source code
+/examples   Usage examples, both in C++ and Java
+
+Runtime libraries are installed to /usr/local/bin by default. Edit makefiles if your Linux distribution doesn't follow this standard. 
+To access Overseer functionalities from Java, include the 'overseer.jar' file that is available in the /src/java/ directory.
+
+
+
+*** CONTACT ***
+
+For additional information, updates, etc., please have a look at our website:
+
+http://sosoa.inf.unisi.ch
+
+
+
+*** HISTORY ***
+
+1.0b
+- Added .log file to OverAgent, reporting about all the threads used during execution and daemon state
+- Compiled with libpfm 4.2.0 (bug fixes, support for AMD Bulldozer)
+
+1.0a 
+- Official release

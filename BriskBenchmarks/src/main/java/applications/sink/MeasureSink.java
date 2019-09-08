@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static applications.CONTROL.NUM_EVENTS;
 import static applications.CONTROL.enable_latency_measurement;
+import static applications.Constants.Event_Path;
 import static applications.Constants.STAT_Path;
 
 public class MeasureSink extends BaseSink {
@@ -71,13 +72,12 @@ public class MeasureSink extends BaseSink {
         profile = config.getBoolean("profile");
 
 
-        directory = STAT_Path + OsUtils.OS_wrapper("BriskStream")
+        directory = Event_Path + OsUtils.OS_wrapper("BriskStream")
                 + OsUtils.OS_wrapper(configPrefix)
                 + OsUtils.OS_wrapper(String.valueOf(config.getInt("num_socket"))
                 + OsUtils.OS_wrapper(String.valueOf(ccOption)))
                 + OsUtils.OS_wrapper(String.valueOf(config.getDouble("checkpoint")))
-                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("theta")))
-        ;
+                + OsUtils.OS_wrapper(String.valueOf(config.getDouble("theta")));
 
         File file = new File(directory);
         if (!file.mkdirs()) {

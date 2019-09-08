@@ -153,7 +153,7 @@ public class STAT implements Serializable {
 
     private void measure_start() {
         HPCMonotor.bindEventsToThread(pid);
-        HPCMonotor.start();
+//        HPCMonotor.start();
         previousValue[CYCLE_Index] = HPCMonotor.getEventFromThread(pid, CYCLE_Index);
         previousValue[LLC_Index] = HPCMonotor.getEventFromThread(pid, LLC_Index);
         previousValue[LLCR_Index] = HPCMonotor.getEventFromThread(pid, LLCR_Index);
@@ -162,7 +162,7 @@ public class STAT implements Serializable {
     }
 
     private void measure_end() {
-        HPCMonotor.stop();
+//        HPCMonotor.stop();
         currentvalue[CYCLE_Index] = HPCMonotor.getEventFromThread(pid, CYCLE_Index);
         currentvalue[LLC_Index] = HPCMonotor.getEventFromThread(pid, LLC_Index);
         currentvalue[LLCR_Index] = HPCMonotor.getEventFromThread(pid, LLCR_Index);
@@ -268,25 +268,58 @@ public class STAT implements Serializable {
     }
 
 
+    private void store(int percentile) {
+        LOG.info(this.executionNode.getOP() + " " + this.executionNode.getExecutorID() + " dump profiling statistics");
+        try {
+            String dir = STAT_Path + OsUtils.OS_wrapper(conf.getConfigPrefix())
+                    + OsUtils.OS_wrapper(String.valueOf(percentile))
+                    + OsUtils.OS_wrapper(String.valueOf(conf.getInt("batch")));
+            File file = new File(dir);
+            if (!file.mkdirs()) {
+            }
+
+            if (executionNode.op.IsStateful()) {
+                file = new File(dir + OsUtils.OS_wrapper(executionNode.getOP() + executionNode.operator.getNumTasks() + srcNode.getOP() + ".txt"));
+            } else {
+                file = new File(dir + OsUtils.OS_wrapper(executionNode.getOP() + srcNode.getOP() + ".txt"));
+
+            }
+
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(file), "utf-8"))) {
+                removeNAN();
+
+                for (int i = 0; i <= 1; i++) {
+                    writer.write(this.cycles_PS_inFetch[i] + "\t");
+                    writer.write(this.cycles_PS[i] + "\t");
+                    writer.write(this.LLC_MISS_PS_inFetch[i] + "\t");
+                    writer.write(this.LLC_MISS_PS[i] + "\t");
+                    writer.write(this.LLC_REF_PS_inFetch[i] + "\t");
+                    writer.write(this.LLC_REF_PS[i] + "\t");
+                    writer.write(this.L1_MISS_PS_inFetch[i] + "\t");
+                    writer.write(this.L1_MISS_PS[i] + "\t");
+                    writer.write(this.L1_DMISS_PS_inFetch[i] + "\t");
+                    writer.write(this.L1_DMISS_PS[i] + "\t");
+                }
+                writer.write(this.tuple_size + "\n");
+                writer.flush();
+            }
+        } catch (IOException e) {
+            LOG.error("Not able to dump the statistics");
+            System.exit(-1);
+        }
+    }
+
     public void load() {
         String dir = null;
-//				if (executionNode.isSourceNode() || executionNode.isLeafNode()) {
-//					dir = STAT_Path + OsUtils.OS_wrapper(conf.getConfigPrefix())
-//							+ OsUtils.OS_wrapper(String.valueOf(99))//be more conservative for spout and sink.
-//							+ OsUtils.OS_wrapper(String.valueOf(conf.getInt("batch")));
-//				} else {
         dir = STAT_Path + OsUtils.OS_wrapper(conf.getConfigPrefix())
                 + OsUtils.OS_wrapper(String.valueOf(conf.getInt("percentile")))
                 + OsUtils.OS_wrapper(String.valueOf(conf.getInt("batch")));
-//				}
 
         String target;
         if (executionNode.op.IsStateful()) {
-
             int numTasks = executionNode.operator.getNumTasks();
-
             target = executionNode.getOP() + numTasks + srcNode.getOP();
-
 //			LOG.info("load initial target: "+target);
             File tmpfile = new File(dir + OsUtils.OS_wrapper(target + ".txt"));
 
@@ -413,49 +446,6 @@ public class STAT implements Serializable {
                 this.L1_DMISS_PS[bit] = 0;
             }
 
-        }
-    }
-
-    private void store(int percentile) {
-        LOG.info(this.executionNode.getOP() + " " + this.executionNode.getExecutorID() + " dump profiling statistics");
-        try {
-            String dir = STAT_Path + OsUtils.OS_wrapper(conf.getConfigPrefix())
-                    + OsUtils.OS_wrapper(String.valueOf(percentile))
-                    + OsUtils.OS_wrapper(String.valueOf(conf.getInt("batch")));
-            File file = new File(dir);
-            if (!file.mkdirs()) {
-            }
-
-            if (executionNode.op.IsStateful()) {
-                file = new File(dir + OsUtils.OS_wrapper(executionNode.getOP() + executionNode.operator.getNumTasks() + srcNode.getOP() + ".txt"));
-            } else {
-                file = new File(dir + OsUtils.OS_wrapper(executionNode.getOP() + srcNode.getOP() + ".txt"));
-
-            }
-
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(file), "utf-8"))) {
-                removeNAN();
-
-                for (int i = 0; i <= 1; i++) {
-                    writer.write(this.cycles_PS_inFetch[i] + "\t");
-                    writer.write(this.cycles_PS[i] + "\t");
-                    writer.write(this.LLC_MISS_PS_inFetch[i] + "\t");
-                    writer.write(this.LLC_MISS_PS[i] + "\t");
-                    writer.write(this.LLC_REF_PS_inFetch[i] + "\t");
-                    writer.write(this.LLC_REF_PS[i] + "\t");
-                    writer.write(this.L1_MISS_PS_inFetch[i] + "\t");
-                    writer.write(this.L1_MISS_PS[i] + "\t");
-                    writer.write(this.L1_DMISS_PS_inFetch[i] + "\t");
-                    writer.write(this.L1_DMISS_PS[i] + "\t");
-                }
-                writer.write(this.tuple_size + "\n");
-                writer.flush();
-                writer.close();
-            }
-        } catch (IOException e) {
-            LOG.error("Not able to dump the statistics");
-            System.exit(-1);
         }
     }
 

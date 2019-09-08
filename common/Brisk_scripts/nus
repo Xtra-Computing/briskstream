@@ -50,9 +50,9 @@ killall -9 java
 	gc_thread=$tt #$((288)) #$1*
 	echo "heap_size: $heap_size gc_threads: $gc_thread"
 	gc_flag="-Xms1024g -Xmx1024g -XX:+UseParallelGC -XX:ParallelGCThreads=18 " #-XX:+UseNUMA -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:ParallelCMSThreads=${gc_thread}
-	JVM_args_profile="$gc_flag -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -javaagent:$HOME/briskstream/common/lib/classmexer.jar " #  -XcompilationThreads=1
+	JVM_args_profile="$gc_flag -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 -javaagent:$HOME/briskstream/common/lib/classmexer.jar " #  -XcompilationThreads=1
 	#######Application profiling
-	echo "=============== profiling phase:" $arg_benchmark "==================" #-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
+	echo "=============== profiling phase:" $arg_benchmark $JVM_args_profile "==================" #-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
 	numactl --localalloc -N 0,1 java $JVM_args_profile -jar $JAR_PATH $arg_benchmark -mp $outputPath --profile -a $2 --machine $machine >> profile\_$2\_$bt\_$5.txt
 	cat profile\_$2\_$bt\_$5.txt
 	#cat DUMP.txt
