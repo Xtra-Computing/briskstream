@@ -23,9 +23,6 @@ import java.util.Collection;
 import java.util.Properties;
 
 import static applications.Constants.System_Plan_Path;
-import static applications.constants.CrossTableConstants.Conf.CT_THREADS;
-import static applications.constants.OnlineBidingSystemConstants.Conf.OB_THREADS;
-import static applications.constants.PositionKeepingConstants.Conf.PK_THREADS;
 import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
 
 public class BriskRunner extends abstractRunner {
@@ -174,58 +171,6 @@ public class BriskRunner extends abstractRunner {
             config.put(BaseConstants.BaseConf.PARSER_THREADS, pthread);
             //set total parallelism, equally parallelism
             switch (application) {
-                case "CrossTables": {
-                    config.put("app", 1);
-                    int threads = Math.max(1, (int) Math.floor((tthread)));
-//                    config.put(DEG_THREADS, threads);
-//                    config.put(TEG_THREADS, threads);
-//                    config.put(DT_THREADS, threads);
-//                    config.put(TT_THREADS, threads);
-                    config.put(CT_THREADS, threads);
-                    break;
-                }
-                case "OnlineBiding": {
-                    config.put("app", 2);
-                    int threads = Math.max(1, (int) Math.floor((tthread)));
-//                    config.put(DEG_THREADS, threads);
-//                    config.put(TEG_THREADS, threads);
-//                    config.put(DT_THREADS, threads);
-//                    config.put(TT_THREADS, threads);
-                    config.put(OB_THREADS, threads);
-                    break;
-                }
-
-                case "PositionKeeping": {
-                    int threads = Math.max(1, (int) Math.floor((tthread)));
-//                    config.put(DEG_THREADS, threads);
-//                    config.put(TEG_THREADS, threads);
-//                    config.put(DT_THREADS, threads);
-//                    config.put(TT_THREADS, threads);
-                    config.put(PK_THREADS, threads);
-                    break;
-                }
-
-                case "MicroBenchmark": {
-                    config.put("app", 0);
-                    int threads = Math.max(1, (int) Math.floor((tthread)));
-                    config.put(MicroBenchmarkConstants.Conf.Executor_Threads, threads);
-//                    double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
-//                    int r_threads = (int) (threads * ratio_of_read);
-//                    int w_threads = threads - r_threads;
-//
-//                    config.put(MicroBenchmarkConstants.Conf.SELECTOR_THREADS, r_threads);
-//                    config.put(MicroBenchmarkConstants.Conf.INSERTOR_THREADS, w_threads);
-                    break;
-                }
-                case "StreamingAnalysis": {
-                    int threads = (int) Math.floor(tthread / 5.0);
-                    config.put(BaseConstants.BaseConf.PARSER_THREADS, threads);
-                    config.put(streamingAnalysisConstants.Conf.EXECUTOR_THREADS1, threads);
-                    config.put(streamingAnalysisConstants.Conf.EXECUTOR_THREADS2, threads);
-                    config.put(streamingAnalysisConstants.Conf.EXECUTOR_THREADS3, threads);
-                    config.put(streamingAnalysisConstants.Conf.EXECUTOR_THREADS4, threads);
-                    break;
-                }
                 case "WordCount": {
 
                     if (profile) {//profile under varying replication setting.
