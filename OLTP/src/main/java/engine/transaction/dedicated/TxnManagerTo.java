@@ -19,7 +19,7 @@ import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
- * Conventional occ from Cavalia.
+ * Conventional Timestamp ordering from Cavalia.
  */
 public class TxnManagerTo extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerTo.class);
@@ -28,7 +28,6 @@ public class TxnManagerTo extends TxnManagerDedicated {
         super(storageManager, thisComponentId, thisTaskId, thread_count);
         OsUtils.configLOG(LOG);
     }
-
 
 
     @Override

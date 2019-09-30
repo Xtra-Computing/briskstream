@@ -24,7 +24,7 @@ import static engine.transaction.impl.TxnAccess.Access;
 import static utils.PartitionHelper.key_to_partition;
 
 /**
- * mimic of ACEP's S2PL method. It is essentially a blocking-based order locking.
+ * mimic of S-Store
  */
 public class TxnManagerSStore extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerSStore.class);

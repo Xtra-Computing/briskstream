@@ -20,7 +20,7 @@ import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
- * mimic of ACEP's S2PL method. It is essentially a blocking-based order locking.
+ * mimic of ACEP's LWM method.
  */
 public class TxnManagerLWM extends TxnManagerDedicated {
     private static final Logger LOG = LoggerFactory.getLogger(TxnManagerLWM.class);

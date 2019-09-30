@@ -20,13 +20,13 @@ import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
- * ordering constrained occ.
+ * ordering constrained occ. in-completed
  */
-public class TxnManagerOccOcc extends TxnManagerDedicated {
-    private static final Logger LOG = LoggerFactory.getLogger(TxnManagerOccOcc.class);
+public class TxnManagerOrderedOcc extends TxnManagerDedicated {
+    private static final Logger LOG = LoggerFactory.getLogger(TxnManagerOrderedOcc.class);
     final OrderValidate orderValidate;
 
-    public TxnManagerOccOcc(StorageManager storageManager, OrderValidate orderValidate, String thisComponentId, int thisTaskId, int thread_count) {
+    public TxnManagerOrderedOcc(StorageManager storageManager, OrderValidate orderValidate, String thisComponentId, int thisTaskId, int thread_count) {
         super(storageManager, thisComponentId, thisTaskId, thread_count);
         OsUtils.configLOG(LOG);
         this.orderValidate = orderValidate;
