@@ -12,7 +12,6 @@
         <module>affinity</module>
         <module>common</module>
         <module>OLTP</module>
-        <module>CEP</module>
         <module>BriskBenchmarks</module>
     </modules>
     <properties>
