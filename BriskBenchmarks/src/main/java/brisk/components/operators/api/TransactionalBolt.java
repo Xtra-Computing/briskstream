@@ -1,6 +1,5 @@
 package brisk.components.operators.api;
 
-import applications.param.PKEvent;
 import applications.sink.SINKCombo;
 import applications.util.OsUtils;
 import brisk.components.operators.base.MapBolt;
@@ -15,9 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utils.SOURCE_CONTROL;
 
-import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 
+import static applications.CONTROL.combo_bid_size;
 import static applications.CONTROL.enable_latency_measurement;
 import static engine.profiler.MeasureTools.*;
 
@@ -47,6 +46,25 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         super(log);
         this.fid = fid;
         OsUtils.configLOG(LOG);
+    }
+
+
+    protected abstract void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException;
+
+    protected void nocc_execute(Tuple in) throws DatabaseException, InterruptedException {
+        PRE_EXECUTE(in);
+
+        //begin transaction processing.
+        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
+
+        TXN_PROCESS(_bid);
+
+        //end transaction processing.
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
+
+        POST_PROCESS(_bid, timestamp, combo_bid_size);
+
+        END_TOTAL_TIME_MEASURE_ACC(thread_Id, combo_bid_size);
     }
 
     public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long _bid, int tthread) {
@@ -181,7 +199,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 //        if (enable_pre_compute)
 //            rt = dummy_compute();
 
-        txn_context[0] = new TxnContext(thread_Id, this.fid, this.i);
+        txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
 
         sum = 0;
 

@@ -479,7 +479,7 @@ public class ExecutionManager {
             clock.close();
         }
         this.getSinkThread().getContext().Sequential_stopAll();
-        if (CONTROL.enable_shared_state)
+        if (CONTROL.enable_shared_state && tp_engine != null)
             tp_engine.engine_shutdown();
     }
 

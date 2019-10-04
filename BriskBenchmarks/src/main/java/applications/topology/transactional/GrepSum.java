@@ -1,7 +1,7 @@
 package applications.topology.transactional;
 
 
-import applications.bolts.gs.*;
+import applications.bolts.transactional.gs.*;
 import applications.constants.GrepSumConstants.Component;
 import applications.topology.transactional.initializer.MBInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;
@@ -94,12 +94,6 @@ public class GrepSum extends TransactionTopology {
 
             } else {
 
-//            builder.setBolt(Component.SEQUNCER, new MicroEventSequencer(-1)
-//                    , 1
-//                    , new GlobalGrouping(Component.SPOUT)
-//            );
-
-
                 switch (config.getInt("CCOption", 0)) {
                     case CCOption_LOCK: {//no-order
 
@@ -133,6 +127,13 @@ public class GrepSum extends TransactionTopology {
                     case CCOption_SStore: {//SStore
 
                         builder.setBolt(Component.EXECUTOR, new GSBolt_sstore(0)//
+                                , config.getInt(Executor_Threads, 2)
+                                , new ShuffleGrouping(Component.SPOUT));
+                        break;
+                    }
+                    case CCOption_OTS: {//Timestamp Ordering
+
+                        builder.setBolt(Component.EXECUTOR, new GSBolt_ots(0)//
                                 , config.getInt(Executor_Threads, 2)
                                 , new ShuffleGrouping(Component.SPOUT));
                         break;

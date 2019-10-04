@@ -1,6 +1,6 @@
 package applications.sink;
 
-import applications.bolts.sl.TransactionResult;
+import applications.bolts.transactional.sl.TransactionResult;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

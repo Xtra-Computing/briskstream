@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 
 import static applications.CONTROL.enable_shared_state;
-import static applications.CONTROL.kMaxThreadNum;
 import static brisk.controller.affinity.SequentialBinding.SequentialBindingInitilize;
 import static engine.profiler.Metrics.POST_COMPUTE_COMPLEXITY;
 
@@ -69,8 +68,10 @@ public class TopologySubmitter {
             long end = System.nanoTime();
 
             LOG.info("DB initialize takes:" + (end - start) / 1E6 + " ms");
-        }
-        OM.lanuch(topology, topology.getPlatform(), topology.db);
+            OM.lanuch(g.topology, topology.getPlatform(), topology.db);
+        } else
+            OM.lanuch(topology, topology.getPlatform(), topology.db);
+
         OM.start();
         return g.topology;
     }

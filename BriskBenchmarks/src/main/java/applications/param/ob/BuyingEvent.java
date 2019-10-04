@@ -1,6 +1,6 @@
 package applications.param.ob;
 
-import applications.bolts.ob.BidingResult;
+import applications.bolts.transactional.ob.BidingResult;
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 

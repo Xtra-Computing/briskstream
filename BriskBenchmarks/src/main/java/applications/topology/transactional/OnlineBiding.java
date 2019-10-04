@@ -1,10 +1,10 @@
 package applications.topology.transactional;
 
 
-import applications.bolts.ob.OBBolt_lwm;
-import applications.bolts.ob.OBBolt_olb;
-import applications.bolts.ob.OBBolt_sstore;
-import applications.bolts.ob.OBBolt_ts;
+import applications.bolts.transactional.ob.OBBolt_lwm;
+import applications.bolts.transactional.ob.OBBolt_olb;
+import applications.bolts.transactional.ob.OBBolt_sstore;
+import applications.bolts.transactional.ob.OBBolt_ts;
 import applications.constants.OnlineBidingSystemConstants.Component;
 import applications.topology.transactional.initializer.OBInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;

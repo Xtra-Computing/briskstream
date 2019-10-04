@@ -1,6 +1,6 @@
 package applications.param.sl;
 
-import applications.bolts.sl.TransactionResult;
+import applications.bolts.transactional.sl.TransactionResult;
 import applications.param.TxnEvent;
 import engine.storage.SchemaRecordRef;
 import engine.storage.TableRecordRef;

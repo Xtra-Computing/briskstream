@@ -1,10 +1,10 @@
 package applications.topology.transactional;
 
 
-import applications.bolts.sl.SLBolt_lwm;
-import applications.bolts.sl.SLBolt_olb;
-import applications.bolts.sl.SLBolt_sstore;
-import applications.bolts.sl.SLBolt_ts;
+import applications.bolts.transactional.sl.SLBolt_lwm;
+import applications.bolts.transactional.sl.SLBolt_olb;
+import applications.bolts.transactional.sl.SLBolt_sstore;
+import applications.bolts.transactional.sl.SLBolt_ts;
 import applications.constants.StreamLedgerConstants.Component;
 import applications.topology.transactional.initializer.SLInitializer;
 import applications.topology.transactional.initializer.TableInitilizer;

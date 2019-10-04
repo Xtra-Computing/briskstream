@@ -14,6 +14,7 @@ public interface Content {
     int CCOption_LWM = 2;
     int CCOption_TStream = 3;
     int CCOption_SStore = 4;
+    int CCOption_OTS = 5;//ordered timestamp
 
 
     boolean TryReadLock();

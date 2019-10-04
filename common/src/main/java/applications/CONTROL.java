@@ -12,7 +12,7 @@ public interface CONTROL {
     //application related.
     int NUM_EVENTS = 100_000; //different input events..
 
-    int TEST_NUM_EVENST = 200_000;//total runs per thread.
+    int TEST_NUM_EVENST = 100_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.

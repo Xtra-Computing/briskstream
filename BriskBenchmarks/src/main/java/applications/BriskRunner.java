@@ -39,6 +39,7 @@ import static engine.content.LWMContentImpl.LWM_CONTENT;
 import static engine.content.LockContentImpl.LOCK_CONTENT;
 import static engine.content.SStoreContentImpl.SSTORE_CONTENT;
 import static engine.content.T_StreamContentImpl.T_STREAMCONTENT;
+import static engine.content.ToContentImpl.TO_CONTENT;
 import static engine.content.common.ContentCommon.content_type;
 
 public class BriskRunner extends abstractRunner {
@@ -217,6 +218,11 @@ public class BriskRunner extends abstractRunner {
                 case CCOption_SStore://SStore
                     content_type = SSTORE_CONTENT;//records the multi-version of table record.
                     break;
+                case CCOption_OTS://SStore
+                    content_type = TO_CONTENT;//records the multi-version of table record.
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Please define correct content type!");
             }
 
             int max_hz = 0;

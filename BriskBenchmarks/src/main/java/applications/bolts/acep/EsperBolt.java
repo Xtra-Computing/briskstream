@@ -24,6 +24,7 @@ import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import com.espertech.esper.client.*;
 import com.espertech.esper.client.soda.EPStatementObjectModel;
+import engine.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,6 +198,11 @@ public class EsperBolt extends TransactionalBolt implements UpdateListener {
             }
         }
         return hasStatemens;
+    }
+
+    @Override
+    protected void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException {
+
     }
 
     /**
