@@ -46,7 +46,7 @@ function main_microbenmark {
 		argument="application：$3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 50  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple  $size_tuple  "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --native -m remote  --microbenchmark" # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --native -m remote  --microbenchmark" # --tune  --random  --worst
 		
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -133,7 +133,7 @@ function main_native {
 		argument="application：$app num_socket: $socket num_cpu: $cpu hz: $hz total threads: $tt  --machine $machine"
 		# echo $argument
 		arg_benchmark="--THz $hz --runtime 200  --loop 1000 --num_socket $socket --num_cpu $cpu"
-		arg_application="-st 2 -sit 8 -tt $tt -input $input -bt $bt --native -m remote -a $app -mp $outputPath/native/$hz" # --tune  --random  --worst
+		arg_application="-algo.st 2 -sit 8 -tt $tt -input $input -bt $bt --native -m remote -a $app -mp $outputPath/native/$hz" # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="

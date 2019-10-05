@@ -45,7 +45,7 @@ function profile {
 function statistics_profile {
 # echo 3 | sudo tee /proc/sys/vm/drop_caches
 killall -9 java
-	arg_benchmark=" -st 1 -sit 1 -tt $5 --num_socket 8 --num_cpu 18 --THz 500000 --runtime 5000 --loop 100000 --size_tuple $3 --repeat 1 -bt $bt
+	arg_benchmark=" -algo.st 1 -sit 1 -tt $5 --num_socket 8 --num_cpu 18 --THz 500000 --runtime 5000 --loop 100000 --size_tuple $3 --repeat 1 -bt $bt
 	 --percentile $4"
 	gc_thread=$tt #$((288)) #$1*
 	echo "heap_size: $heap_size gc_threads: $gc_thread"
@@ -158,7 +158,7 @@ killall -9 java
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
 		arg_application="--compressRatio 5
-		 -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/aware/$hz " #   --random  --worst
+		 -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/aware/$hz " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== aware phase:" $argument $arg_benchmark $arg_application "=============="
@@ -174,7 +174,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--compressRatio -1 --parallelism_tune --THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 1 -sit 10 -tt $6 -input $iteration -bt $bt --random  --relax 1 -a $app -mp $outputPath/random/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 1 -sit 10 -tt $6 -input $iteration -bt $bt --random  --relax 1 -a $app -mp $outputPath/random/$hz " # --tune  --random  --worst
 
 		#####Planed execution
 		echo "=============== random phase:" $argument $arg_benchmark $arg_application"=============="
@@ -190,7 +190,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 5 -tt $6 -input $iteration -bt $bt --random  --relax 1 -a $app -mp $outputPath/random/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 5 -tt $6 -input $iteration -bt $bt --random  --relax 1 -a $app -mp $outputPath/random/$hz " # --tune  --random  --worst
 		
 		#####Planed execution
 		echo "=============== random phase:" $argument $arg_benchmark $arg_application"=============="
@@ -205,7 +205,7 @@ function main_load_random {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 1000  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$hz --load --random" #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$hz --load --random" #   --random  --worst
 
 		#####Planed execution
 		echo "=============== load random phase:" $argument $arg_benchmark $arg_application"=============="
@@ -221,7 +221,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --toff  --relax 1 -a $app -mp $outputPath/toff/$hz " #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --toff  --relax 1 -a $app -mp $outputPath/toff/$hz " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== ff phase:" $argument $arg_benchmark $arg_application"=============="
@@ -237,7 +237,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--compressRatio -1 --parallelism_tune --THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --toff  --relax 1 -a $app -mp $outputPath/toff/$hz " #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --toff  --relax 1 -a $app -mp $outputPath/toff/$hz " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== ff phase:" $argument $arg_benchmark $arg_application"=============="
@@ -253,7 +253,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--compressRatio -1 --parallelism_tune --THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --roundrobin  --relax 1 -a $app -mp $outputPath/roundrobin/$hz " #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --roundrobin  --relax 1 -a $app -mp $outputPath/roundrobin/$hz " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== roundrobin phase:" $argument $arg_benchmark $arg_application"=============="
@@ -269,7 +269,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 150  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --roundrobin  --relax 1 -a $app -mp $outputPath/roundrobin/$hz " #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --roundrobin  --relax 1 -a $app -mp $outputPath/roundrobin/$hz " #   --random  --worst
 		
 		#####Planed execution
 		echo "=============== roundrobin phase:" $argument $arg_benchmark $arg_application"=============="
@@ -285,7 +285,7 @@ function main_opt_ft {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 250 --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--checkpoint $ck --Fault_tolerance --compressRatio -1 -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$percentile/$hz " #   --random  --worst
+		arg_application="--checkpoint $ck --Fault_tolerance --compressRatio -1 -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$percentile/$hz " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== opt phase =============="
@@ -301,7 +301,7 @@ function main_opt {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 30  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--gc_factor $gc_factor --backPressure --compressRatio -1 --parallelism_tune -st 1 -sit 1 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile " #   --random  --worst
+		arg_application="--gc_factor $gc_factor --backPressure --compressRatio -1 --parallelism_tune -algo.st 1 -sit 1 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile " #   --random  --worst
 		
 		#####Planed execution
 		echo "=============== opt phase =============="
@@ -316,7 +316,7 @@ function main_opt_sim {
         path=$outputPath/opt/$percentile/$hz/$4\_$6
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 100  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--gc_factor $gc_factor --backPressure  --simulation --compressRatio $r -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$percentile " #   --random  --worst
+		arg_application="--gc_factor $gc_factor --backPressure  --simulation --compressRatio $r -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt/$percentile " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== opt phase =============="
@@ -330,7 +330,7 @@ function main_load_opt {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 600  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--gc_factor $gc_factor -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile --load --parallelism_tune" #   --random  --worst
+		arg_application="--gc_factor $gc_factor -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile --load --parallelism_tune" #   --random  --worst
 
 		#####Planed execution
 		echo "=============== load opt phase:" $argument $arg_benchmark $arg_application"=============="
@@ -345,7 +345,7 @@ function main_load {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 250  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile --load " #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --relax 1 -a $app -mp $outputPath/opt/$percentile --load " #   --random  --worst
 		
 		#####Planed execution
 		echo "=============== load opt phase:" $argument $arg_benchmark $arg_application"=============="
@@ -361,7 +361,7 @@ function main_load_ft {
 killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		arg_benchmark="--THz $2 --runtime 1000  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--checkpoint $ck --Fault_tolerance -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt --load " #   --random  --worst
+		arg_application="--checkpoint $ck --Fault_tolerance -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --parallelism_tune --relax 1 -a $app -mp $outputPath/opt --load " #   --random  --worst
 
 		#####Planed execution
 		echo "=============== load opt phase:" $argument $arg_benchmark $arg_application"=============="
@@ -378,7 +378,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --random --worst  --relax 1 -a $app -mp $outputPath/worst " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --random --worst  --relax 1 -a $app -mp $outputPath/worst " # --tune  --random  --worst
 		
 		#####Planed execution
 		echo "=============== worst phase:" $argument $arg_benchmark $arg_application"=============="
@@ -395,7 +395,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--compressRatio -1 --parallelism_tune --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -411,7 +411,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 100  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 1 -sit 1 -tt $tt --TP $TP -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 1 -sit 1 -tt $tt --TP $TP -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
 		
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -428,7 +428,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 10  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction --TP $TP --CCOption $CCOption --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --ratio_of_read $ratio_of_read"
-		arg_application="-st $st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path " # --tune  --random  --worst
+		arg_application="-algo.st $algo.st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -444,7 +444,7 @@ function main_transaction_native_local {
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 10  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction --TP $TP --CCOption $CCOption --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --ratio_of_read $ratio_of_read"
-		arg_application="-st $st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path" #--measure --tune  --random  --worst
+		arg_application="-algo.st $algo.st -sit 1 -tt $tt -input $iteration -bt $bt --native --relax 1 -a $app -mp $path" #--measure --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -460,7 +460,7 @@ function main_native_simple {
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 15  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 1 -sit 2 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 1 -sit 2 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
 
 		#####native executionm
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -476,7 +476,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 30  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="--checkpoint $ck --Fault_tolerance -st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
+		arg_application="--checkpoint $ck --Fault_tolerance -algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -492,7 +492,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spsc_linked/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spsc_linked/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_linked phase:" $argument $arg_benchmark $arg_application"=============="
@@ -508,7 +508,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--shared --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_mpsc phase:" $argument $arg_benchmark $arg_application"=============="
@@ -523,7 +523,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--linked --shared --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc_linked
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpsc_linked
 		/$hz " # --tune  --random  --worst
 
 		#####native execution
@@ -541,7 +541,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--common --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_spmc phase:" $argument $arg_benchmark $arg_application"=============="
@@ -557,7 +557,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--common --linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc_linked/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_spmc_linked/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_spmc_linked phase:" $argument $arg_benchmark $arg_application"=============="
@@ -574,7 +574,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--shared --common --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_mpmc phase:" $argument $arg_benchmark $arg_application"=============="
@@ -590,7 +590,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6  --machine $machine "
 		# echo $argument
 		arg_benchmark="--shared --common --linked --THz $2 --runtime 200  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc_linked/$hz " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $iteration -bt $bt --native --relax 1 -a $app -mp $outputPath/native_mpmc_linked/$hz " # --tune  --random  --worst
 
 		#####native execution
 		echo "=============== native_mpmc_linked phase:" $argument $arg_benchmark $arg_application"=============="

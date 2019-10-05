@@ -1,4 +1,4 @@
-package onlinejoins;
+package algo.st.onlinejoins;
 
 /**
  * Symmetric hash joins

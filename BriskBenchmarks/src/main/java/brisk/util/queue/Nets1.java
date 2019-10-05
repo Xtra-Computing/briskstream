@@ -49,7 +49,7 @@ class Nets1 extends Frame {
         print("\nArrival Rate ( lambda ) : " + alpha + "\nService Rate ( u ) : " + beta + "\nMaximum MyQueue Length : " + ((buffers == N + 1) ? "Infinite" : (Integer.toString(buffers))) + " \n \n");
         print("\n\nSimulation started");
 
-        //____Computer at and st
+        //____Computer at and algo.st
         Random rnd = new Random();
 
         int i;

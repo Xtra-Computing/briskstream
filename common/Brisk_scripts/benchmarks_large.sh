@@ -38,7 +38,7 @@ function local_execution {
 
 function read_only_test {
         path=$outputPath/$hz/$CCOption/$checkpoint
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -49,7 +49,7 @@ function read_only_test {
 
 function read_only_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --measure" #
 
 		#####native execution
@@ -60,7 +60,7 @@ function read_only_breakdown {
 
 function write_intensive_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -71,7 +71,7 @@ function write_intensive_test {
 
 function write_intensive_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --measure" #--measure
 
 		#####native execution
@@ -82,7 +82,7 @@ function write_intensive_breakdown {
 
 function working_set_size_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$NUM_ACCESS
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -93,7 +93,7 @@ function working_set_size_test {
 
 function working_set_size_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$NUM_ACCESS
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --measure" #
 
 		#####native execution
@@ -104,7 +104,7 @@ function working_set_size_breakdown {
 
 function Read_Write_Mixture_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -115,7 +115,7 @@ function Read_Write_Mixture_test {
 
 function DB_SIZE_TEST {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -128,7 +128,7 @@ function DB_SIZE_TEST {
 
 function Read_Write_Mixture_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$ratio_of_read
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --measure" #--measure
 
 		#####native execution
@@ -139,7 +139,7 @@ function Read_Write_Mixture_breakdown {
 
 function checkpoint_interval_test {
         path=$outputPath/$hz/$CCOption/$checkpoint
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -150,7 +150,7 @@ function checkpoint_interval_test {
 
 function partition_test {
         path=$outputPath/$hz/$CCOption/$checkpoint
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read" #--measure
 
 		#####native execution
@@ -161,7 +161,7 @@ function partition_test {
 
 function multi_partition_test {
         path=$outputPath/$hz/$CCOption/$ratio_of_read/$number_partitions/$ratio_of_multi_partition
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --NUM_ACCESS $NUM_ACCESS --NUM_ITEMS $NUM_ITEMS --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
 		#####native execution
@@ -172,7 +172,7 @@ function multi_partition_test {
 
 function CrossTables_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
 		#####native execution
@@ -184,7 +184,7 @@ function CrossTables_test {
 
 function OnlineBiding_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
 		#####native execution
@@ -195,7 +195,7 @@ function OnlineBiding_test {
 
 function CrossTables_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --measure" #
 
 		#####native execution
@@ -206,7 +206,7 @@ function CrossTables_breakdown {
 
 function PositionKeeping_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $thetan --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
 
 		#####native execution
@@ -217,7 +217,7 @@ function PositionKeeping_test {
 
 function PositionKeeping_breakdown {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
-		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -algo.st $algo.st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
 		arg_application="--THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition --measure" #
 
 		#####native execution
@@ -370,7 +370,7 @@ do
                                   for NUM_ACCESS in 10 #8 6 4 2 1
                                   do
                                        let "TP = $tt/$x"
-#                                      checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                      checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
                                   done
                                done
                             done
@@ -382,7 +382,7 @@ do
 #                                    ratio_of_read=1
 #                                   checkpoint=0.1
 #                                    TP=$tt
-#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
 #                                done
 #                            done
                         done # Threads/Cores
@@ -401,7 +401,7 @@ do
                                   for NUM_ACCESS in 10 #8 6 4 2 1
                                   do
                                       ratio_of_read=0
-#                                     checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                     checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
                                   done
                                done
                             done
@@ -413,7 +413,7 @@ do
 #                                    ratio_of_read=0
 #                                   checkpoint=0.1
 #                                    TP=$tt
-#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
 #                                done
 #                            done
 
@@ -445,7 +445,7 @@ do
                                     ratio_of_read=0.5
                                     checkpoint=0.1
                                     TP=$tt
-#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                    checkpoint_interval_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
                                 done
                             done
 
@@ -665,7 +665,7 @@ do
                                        checkpoint=0.1
                                         ratio_of_multi_partition=0
                                         number_partitions=1
-    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                     done
                                 done
                             done
@@ -699,7 +699,7 @@ do
                                             TP=1
                                            checkpoint=0.1
                                             number_partitions=1
-    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -721,7 +721,7 @@ do
                                        checkpoint=0.1
                                         ratio_of_multi_partition=0
                                         number_partitions=1
-    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+    #                                    PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                     done
                                 done
                             done
@@ -738,7 +738,7 @@ do
                                       do
                                           number_partitions=1
                                           ratio_of_multi_partition=0
-    #                                      PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+    #                                      PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                       done
                                   done
                                done
@@ -755,7 +755,7 @@ do
                                             TP=1
                                            checkpoint=0.1
                                             number_partitions=1
-    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+    #                                        PositionKeeping_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done
                                 done
@@ -860,7 +860,7 @@ do
                                     for ratio_of_read in 0.5
                                     do
                                         TP=1
-#                                        Read_Write_Mixture_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read
+#                                        Read_Write_Mixture_breakdown $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $algo.st $theta $NUM_ACCESS $ratio_of_read
                                     done
                                 done
                             done

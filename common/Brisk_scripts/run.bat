@@ -1,5 +1,5 @@
 SET JRE_HOME="C:\Program Files\Java\jdk1.8.0_131"
-SET arg_benchmark= -a WordCount --THz 450000 --sim --num_socket 8 --num_cpu 8 --monte -st 5 -sit 5 
+SET arg_benchmark= -a WordCount --THz 450000 --sim --num_socket 8 --num_cpu 8 --monte -algo.st 5 -sit 5
 
 set /a P=1
 :loopP

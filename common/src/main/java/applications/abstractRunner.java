@@ -20,6 +20,9 @@ import java.util.Properties;
 public abstract class abstractRunner {
     private static final Logger LOG = LoggerFactory.getLogger(abstractRunner.class);
 
+    @Parameter
+    public List<String> parameters = Lists.newArrayList();//not useful.
+
     protected static final String RUN_LOCAL = "local";
     protected static final String RUN_REMOTE = "remote";
 
@@ -154,7 +157,7 @@ public abstract class abstractRunner {
     public int window = 2;
     @Parameter(names = {"-r", "--runtime"}, description = "Runtime in seconds for the Brisk.topology (local mode only)")
     public int runtimeInSeconds = 30;
-    @Parameter(names = {"-st"}, description = "spout.threads", required = false)
+    @Parameter(names = {"-algo.st"}, description = "spout.threads", required = false)
     public int sthread = 1;//default 5
     @Parameter(names = {"-sit"}, description = "sink.threads", required = false)
     public int sithread = 1;//default 10
@@ -177,8 +180,6 @@ public abstract class abstractRunner {
     @Parameter(names = {"--TP"}, description = "TP threads")
     public int TP = 2;// default TP threads
 
-    @Parameter
-    public List<String> parameters = Lists.newArrayList();
     @Parameter(names = {"-m", "--mode"}, description = "Mode for running the topology")
     public String mode = RUN_LOCAL;
     @Parameter(names = {"-a", "--app"}, description = "The application to be executed", required = false)

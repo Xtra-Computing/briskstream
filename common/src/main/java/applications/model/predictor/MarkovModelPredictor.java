@@ -186,8 +186,8 @@ public class MarkovModelPredictor extends ModelBasedPredictor {
             /*
             StringBuilder stBld = new StringBuilder(entityID);
             stBld.append(" : ");
-            for (String st : stateSeq) {
-                stBld.append(st).append(" ");
+            for (String algo.st : stateSeq) {
+                stBld.append(algo.st).append(" ");
             }
             stBld.append(": ");
             stBld.append(score);
@@ -261,8 +261,8 @@ public class MarkovModelPredictor extends ModelBasedPredictor {
             /*
             StringBuilder stBld = new StringBuilder(entityID);
             stBld.append(" : ");
-            for (String st : stateSeq) {
-                stBld.append(st).append(" ");
+            for (String algo.st : stateSeq) {
+                stBld.append(algo.st).append(" ");
             }
             stBld.append(": ");
             stBld.append(score);

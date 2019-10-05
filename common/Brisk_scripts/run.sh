@@ -132,7 +132,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt" #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt" #   --random  --worst
 		
 		#####Planed execution
 		echo "=============== streaming phase:" $argument $arg_benchmark $arg_application"=============="
@@ -166,7 +166,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --parallelism_tune" #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --parallelism_tune" #   --random  --worst
 		
 		#####Planed execution
 		echo "=============== streaming phase:" $argument $arg_benchmark $arg_application"=============="
@@ -199,7 +199,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --load" #   --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --load" #   --random  --worst
 
 		#####Planed execution
 		echo "=============== streaming phase:" $argument $arg_benchmark $arg_application"=============="
@@ -232,7 +232,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --random --worst" # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --random --worst" # --tune  --random  --worst
 		
 		#####Planed execution
 		echo "=============== worst phase:" $argument $arg_benchmark $arg_application"=============="
@@ -266,7 +266,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --random " # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --random " # --tune  --random  --worst
 		
 		#####Planed execution
 		echo "=============== streaming random phase:" $argument $arg_benchmark $arg_application"=============="
@@ -299,7 +299,7 @@ killall -9 java
 		argument="application: $3 num_socket: $4 num_cpu: $5 hz: $2 total threads: $6"
 		# echo $argument
 		arg_benchmark="--THz $2 --runtime 90  --loop 1000 --num_socket $4 --num_cpu $5  --size_tuple 256 "
-		arg_application="-st 5 -sit 10 -tt $6 -input $input -bt $bt --native" # --tune  --random  --worst
+		arg_application="-algo.st 5 -sit 10 -tt $6 -input $input -bt $bt --native" # --tune  --random  --worst
 		
 		#####native execution
 		echo "=============== native phase:" $argument $arg_benchmark $arg_application"=============="
@@ -342,7 +342,7 @@ killall -9 java
 }
 
 function benchmark {
-	arg_benchmark="--THz $1 --runtime 30 --loop 1000 --num_socket 8 --num_cpu 8  --size_tuple 256 -st 1 "	
+	arg_benchmark="--THz $1 --runtime 30 --loop 1000 --num_socket 8 --num_cpu 8  --size_tuple 256 -algo.st 1 "
 	##########Application benchmark
 	echo "Benchmark phase" "repeate:" $repeate		
 	for plan in 0 #1 2 3
