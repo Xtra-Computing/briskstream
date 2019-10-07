@@ -28,7 +28,7 @@ public final class OsUtils {
         if (HPCMonotor != null) {
             return HPCMonotor.getThreadId();
         }
-        return -1;
+        return Thread.currentThread().getId();
     }
 
     public static void detectOS() {

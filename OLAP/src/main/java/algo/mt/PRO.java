@@ -12,6 +12,10 @@ import struct.Result_t;
 public class PRO extends JoinAlgo {
     private static final Logger LOG = LoggerFactory.getLogger(PRO.class);
 
+    public PRO() {
+        super(LOG);
+    }
+
     @Override
     public String algo_name() {
         return "Parallel Radix Join Optimized (Hardware-conscious algo. in paper)";

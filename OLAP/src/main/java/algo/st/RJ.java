@@ -7,10 +7,14 @@ import struct.Relation_t;
 import struct.Result_t;
 
 /**
- *
+ * Single thread radix join.
  */
 public class RJ extends JoinAlgo {
     private static final Logger LOG = LoggerFactory.getLogger(RJ.class);
+
+    public RJ() {
+        super(LOG);
+    }
 
     @Override
     public String algo_name() {
@@ -24,7 +28,7 @@ public class RJ extends JoinAlgo {
 
     @Override
     public Result_t join(Relation_t relR, Relation_t relS, int nthreads) {
-        return null;
+        throw new UnsupportedOperationException();
     }
 
 
