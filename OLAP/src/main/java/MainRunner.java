@@ -1,4 +1,4 @@
-import algo.mt.ParallelRadixJoin;
+import algo.st.RJ;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
@@ -11,10 +11,19 @@ import struct.Tuple_t;
 
 import static util.Generator.*;
 
+
+/**
+ * - NPO:    No Partitioning Join Optimized (Hardware-oblivious algo. in paper)
+ * - PRO:    Parallel Radix Join Optimized (Hardware-conscious algo. in paper)
+ * - PRH:    Parallel Radix Join Histogram-based
+ * - PRHO:   Parallel Radix Join Histogram-based Optimized
+ * - RJ:     Radix Join (single-threaded)
+ * - NPO_st: No Partitioning Join Optimized (single-threaded)
+ */
 public class MainRunner {
     private static final Logger LOG = LoggerFactory.getLogger(MainRunner.class);
     @Parameter(names = {"--algo"}, description = "which algorithm to use")
-    public static Algo_t algo = new Algo_t("PRO", ParallelRadixJoin.get_result_t());
+    public static String algo_name = "RJ";
 
     @Parameter(names = {"--nthreads"}, description = "number of threads")
     public static int nthreads = 2;
@@ -35,7 +44,7 @@ public class MainRunner {
     public static float skew = 0.0f;
 
     @Parameter(names = {"--nonunique"}, description = "non-unique keys allowed?")
-    public static boolean nonunique = false;
+    public static boolean nonunique = true;
 
     @Parameter(names = {"--fullrange"}, description = "keys covers full int range?")
     public static boolean fullrange = false;
@@ -58,6 +67,24 @@ public class MainRunner {
             System.err.println("Argument error: " + ex.getMessage());
             cmd.usage();
         }
+
+        /**
+         * Initialize join algorithm
+         */
+
+
+        Algo_t algo = null;
+
+        switch (algo_name) {
+            case "RJ": {
+                algo = new Algo_t(new RJ());
+                LOG.info("Selected algorithm:" + algo.getName());
+                break;
+            }
+            default:
+                throw new UnsupportedOperationException();
+        }
+
 
         Relation_t relR = new Relation_t();
         Relation_t relS = new Relation_t();
@@ -86,7 +113,6 @@ public class MainRunner {
         create_relation(relS, loadS, ssize);
 
         LOG.info("Creating relation S finished.");
-
 
         /* Run the selected join algorithm */
         LOG.info("Running join algorithm %s ...\n", algo);

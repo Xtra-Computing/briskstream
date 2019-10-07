@@ -51,7 +51,7 @@ public class JoinTest extends SimpleDbTestBase {
   }
 
   /**
-   * Unit test for Join.getTupleDesc()
+   * Unit test for JoinAlgo.getTupleDesc()
    */
   @Test public void getTupleDesc() {
     JoinPredicate pred = new JoinPredicate(0, Predicate.Op.EQUALS, 0);
@@ -62,7 +62,7 @@ public class JoinTest extends SimpleDbTestBase {
   }
 
   /**
-   * Unit test for Join.rewind()
+   * Unit test for JoinAlgo.rewind()
    */
   @Test public void rewind() throws Exception {
     JoinPredicate pred = new JoinPredicate(0, Predicate.Op.EQUALS, 0);
@@ -81,7 +81,7 @@ public class JoinTest extends SimpleDbTestBase {
   }
 
   /**
-   * Unit test for Join.getNext() using a &gt; predicate
+   * Unit test for JoinAlgo.getNext() using a &gt; predicate
    */
   @Test public void gtJoin() throws Exception {
     JoinPredicate pred = new JoinPredicate(0, Predicate.Op.GREATER_THAN, 0);
@@ -92,7 +92,7 @@ public class JoinTest extends SimpleDbTestBase {
   }
 
   /**
-   * Unit test for Join.getNext() using an = predicate
+   * Unit test for JoinAlgo.getNext() using an = predicate
    */
   @Test public void eqJoin() throws Exception {
     JoinPredicate pred = new JoinPredicate(0, Predicate.Op.EQUALS, 0);

@@ -21,12 +21,18 @@ public class Generator {
     }
 
 
+    /**
+     * Generate relations that may contain duplicate keys..
+     *
+     * @param relation
+     * @param num_tuples
+     * @param maxid
+     */
     public static void create_relation_nonunique(Relation_t relation, int num_tuples, int maxid) {
 
         check_seed();
         relation.num_tuples = num_tuples;
         relation.tuples = new Tuple_t[num_tuples];
-
         random_gen(relation, maxid);
 
     }
@@ -41,6 +47,7 @@ public class Generator {
     private static void random_gen(Relation_t relation, int maxid) {
         int i;
         for (i = 0; i < relation.num_tuples; i++) {
+            relation.tuples[i] = new Tuple_t();
             relation.tuples[i].key = r.nextInt(maxid);
             relation.tuples[i].payload = i;
         }

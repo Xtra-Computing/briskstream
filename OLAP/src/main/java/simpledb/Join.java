@@ -3,7 +3,7 @@ package simpledb;
 import java.util.NoSuchElementException;
 
 /**
- * The Join operator implements the relational join operation.
+ * The JoinAlgo operator implements the relational join operation.
  */
 public class Join extends Operator {
 
@@ -85,7 +85,7 @@ public class Join extends Operator {
      * satisfies the join predicate. There are many possible implementations;
      * the simplest is a nested loops join.
      * <p>
-     * Note that the tuples returned from this particular implementation of Join
+     * Note that the tuples returned from this particular implementation of JoinAlgo
      * are simply the concatenation of joining tuples from the left and right
      * relation. Therefore, if an equality predicate is used there will be two
      * copies of the join attribute in the results. (Removing such duplicate

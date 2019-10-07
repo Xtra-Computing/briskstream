@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * JoinPredicate compares fields of two tuples using a predicate. JoinPredicate
- * is most likely used by the Join operator.
+ * is most likely used by the JoinAlgo operator.
  */
 public class JoinPredicate implements Serializable {
 
