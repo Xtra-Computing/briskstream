@@ -10,12 +10,7 @@ public class Metrics {
 
 
     public DescriptiveStatistics[] total = new DescriptiveStatistics[kMaxThreadNum];//Total execution time.
-
-    /**
-     * Specially for T-Stream..
-     */
-
-    public DescriptiveStatistics[] enqueue_time = new DescriptiveStatistics[kMaxThreadNum];//event enqueue
+    public DescriptiveStatistics[] build_time = new DescriptiveStatistics[kMaxThreadNum];//Build time.
 
 
     private Metrics() {

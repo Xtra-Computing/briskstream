@@ -10,5 +10,5 @@ class thread_result {
 public class Result_t {
     public long totalresults;
     thread_result[] resultlist;
-    int nthreads;
+    public int nthreads;
 }
