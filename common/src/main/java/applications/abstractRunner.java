@@ -1,3 +1,5 @@
+package applications;
+
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.internal.Lists;
 import org.slf4j.Logger;

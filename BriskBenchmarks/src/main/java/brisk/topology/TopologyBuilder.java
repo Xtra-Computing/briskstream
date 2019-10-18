@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import static Constants.*;
+import static applications.Constants.*;
 
 /**
  * Builder pattern for Topology_components class

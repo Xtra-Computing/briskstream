@@ -15,7 +15,7 @@ import util.OsUtils;
 
 import java.util.HashMap;
 
-//import static Brisk.utils.Utils.printAddresses;
+//import static Brisk.applications.utils.Utils.printAddresses;
 
 public class SplitSentenceBolt_latency extends splitBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt_latency.class);

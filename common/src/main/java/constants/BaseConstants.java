@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
+
 
 public interface BaseConstants {
     Logger LOG = LoggerFactory.getLogger(BaseConstants.class);

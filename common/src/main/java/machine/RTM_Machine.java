@@ -1,3 +1,5 @@
+package machine;
+
 public class RTM_Machine extends Platform {
 
 

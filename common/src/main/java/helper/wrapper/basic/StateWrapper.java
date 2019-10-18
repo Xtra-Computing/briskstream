@@ -1,6 +1,6 @@
 package helper.wrapper.basic;
 
-//import utils.Configuration;
+//import applications.utils.Configuration;
 
 import helper.Event;
 import tools.B_object;

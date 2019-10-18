@@ -1,6 +1,6 @@
 package applications.bolts.sa;
 
-import Constants;
+import applications.Constants;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.collector.OutputCollector;

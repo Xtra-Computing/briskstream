@@ -15,8 +15,8 @@ public final class TupleUtils {
 
 //	public static boolean isTick(Tuple tuple) {
 //		return tuple != null
-//				&& Constants.SYSTEM_COMPONENT_ID.equals(tuple.getSourceComponent())
-//				&& Constants.SYSTEM_TICK_STREAM_ID.equals(tuple.getSourceStreamId());
+//				&& applications.Constants.SYSTEM_COMPONENT_ID.equals(tuple.getSourceComponent())
+//				&& applications.Constants.SYSTEM_TICK_STREAM_ID.equals(tuple.getSourceStreamId());
 //	}
 
     public static <T> int chooseTaskIndex(List<T> keys, int numTasks) {

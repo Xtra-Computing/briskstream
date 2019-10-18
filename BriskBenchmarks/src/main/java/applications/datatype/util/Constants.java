@@ -21,7 +21,7 @@ package applications.datatype.util;
 
 
 /**
- * Constants related to the benchmark Constraints. (See page 483 "Linear Road: A Streaming Data Management Benchmark")
+ * applications.Constants related to the benchmark Constraints. (See page 483 "Linear Road: A Streaming Data Management Benchmark")
  *
  * @author richter
  * @author mjsax

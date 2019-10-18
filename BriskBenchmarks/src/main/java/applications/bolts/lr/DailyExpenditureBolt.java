@@ -203,7 +203,7 @@ public class DailyExpenditureBolt extends filterBolt {
                 this.collector.emit(LRTopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID, bid, AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(), toll);
             } else {
 //				values = new Object[]{AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(),
-//						Constants.INITIAL_TOLL};
+//						applications.Constants.INITIAL_TOLL};
                 this.collector.emit(LRTopologyControl.DAILY_EXPEDITURE_OUTPUT_STREAM_ID, bid, AbstractLRBTuple.DAILY_EXPENDITURE_REQUEST, exp.getTime(), exp.getQid(), Constants.INITIAL_TOLL);
 
             }

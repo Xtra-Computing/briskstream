@@ -72,7 +72,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>utils</mainClass>
+                            <mainClass>applications.utils</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

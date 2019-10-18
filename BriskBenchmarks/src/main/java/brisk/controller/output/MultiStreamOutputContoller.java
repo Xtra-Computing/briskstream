@@ -1,6 +1,6 @@
 package brisk.controller.output;
 
-import Constants;
+import applications.Constants;
 import applications.datatype.internal.AccidentTuple;
 import brisk.components.MultiStreamComponent;
 import brisk.components.context.TopologyContext;

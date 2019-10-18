@@ -239,7 +239,7 @@
   goto :eof
 
 :version
-  set CLASS=backtype.storm.utils.VersionInfo
+  set CLASS=backtype.storm.applications.utils.VersionInfo
   set STORM_OPTS=%STORM_CLIENT_OPTS% %STORM_OPTS%
   goto :eof
 

@@ -1,6 +1,6 @@
 package applications.sink;
 
-import Constants;
+import applications.Constants;
 import applications.datatype.util.LRTopologyControl;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static CONTROL.NUM_EVENTS;
-import static CONTROL.enable_latency_measurement;
-import static Constants.Event_Path;
+import static applications.CONTROL.NUM_EVENTS;
+import static applications.CONTROL.enable_latency_measurement;
+import static applications.Constants.Event_Path;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);

@@ -6,7 +6,7 @@ import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 
 /**
  * Created by shuhaozhang on 17/7/16.

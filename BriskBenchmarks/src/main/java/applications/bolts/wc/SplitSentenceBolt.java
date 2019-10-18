@@ -15,7 +15,7 @@ import util.OsUtils;
 
 import java.util.HashMap;
 
-//import static Brisk.utils.Utils.printAddresses;
+//import static Brisk.applications.utils.Utils.printAddresses;
 
 public class SplitSentenceBolt extends splitBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt.class);

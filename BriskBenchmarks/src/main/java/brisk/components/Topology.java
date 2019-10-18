@@ -1,13 +1,13 @@
 package brisk.components;
 
 
-import Platform;
 import brisk.controller.input.InputStreamController;
+import machine.Platform;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 
-import static Constants.sinkType;
+import static applications.Constants.sinkType;
 
 
 /**

@@ -1,3 +1,5 @@
+package machine;
+
 import util.CacheInfo;
 
 import java.io.Serializable;

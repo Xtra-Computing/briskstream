@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.datatypes.StreamValues;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 
 public class DataSource extends AbstractSpout {
     private static final Logger LOG = LoggerFactory.getLogger(DataSource.class);
@@ -37,7 +37,7 @@ public class DataSource extends AbstractSpout {
         String Wrapper = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_Wrapper));//config.getString("spout_parser");
         dataSource = new helper.DataSource(Wrapper, skew, false, tuple_size, false);
 //        this.parser = new ReceiveParser();
-//        Constants.application.SOURCE_RATE = loadTargetHz / 1000000000.0;
+//        applications.Constants.application.SOURCE_RATE = loadTargetHz / 1000000000.0;
 //        LOG.info("Use DataSource now");
     }
 

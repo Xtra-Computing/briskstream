@@ -1,3 +1,5 @@
+package applications;
+
 import util.OsUtils;
 
 /**

@@ -1,12 +1,12 @@
 package brisk.optimization;
 
-import Platform;
 import brisk.components.Topology;
 import brisk.execution.ExecutionGraph;
 import brisk.optimization.impl.SchedulingPlan;
 import brisk.optimization.impl.scaling.scalingOptimization;
 import brisk.optimization.impl.scheduling.*;
 import brisk.optimization.model.Constraints;
+import machine.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Configuration;

@@ -1,6 +1,6 @@
 package brisk.optimization.model;
 
-import Constants;
+import applications.Constants;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;

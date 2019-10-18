@@ -1,9 +1,9 @@
 package brisk.optimization.model;
 
-import Platform;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.SchedulingPlan;
+import machine.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

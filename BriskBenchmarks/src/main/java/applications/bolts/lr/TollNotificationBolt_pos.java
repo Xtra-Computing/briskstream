@@ -206,7 +206,7 @@ public class TollNotificationBolt_pos extends filterBolt {
                 // EASTBOUND == 0 => diff := 1
                 // WESTBOUNT == 1 => diff := -1
                 final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-//							assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
+//							assert (dir == applications.Constants.EASTBOUND ? diff == 1 : diff == -1);
 
                 if (diff != 1 && diff != -1) {
                     return;
@@ -321,7 +321,7 @@ public class TollNotificationBolt_pos extends filterBolt {
                     // EASTBOUND == 0 => diff := 1
                     // WESTBOUNT == 1 => diff := -1
                     final short diff = (short) -(dir - 1 + ((dir + 1) / 2));
-//							assert (dir == Constants.EASTBOUND ? diff == 1 : diff == -1);
+//							assert (dir == applications.Constants.EASTBOUND ? diff == 1 : diff == -1);
 
                     if (diff != 1 && diff != -1) {
                         continue;//position report is errored.

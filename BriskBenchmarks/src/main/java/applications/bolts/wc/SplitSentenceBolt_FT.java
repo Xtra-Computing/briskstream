@@ -20,7 +20,7 @@ import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 
-//import static Brisk.utils.Utils.printAddresses;
+//import static Brisk.applications.utils.Utils.printAddresses;
 
 public class SplitSentenceBolt_FT extends splitBolt implements Checkpointable {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt_FT.class);

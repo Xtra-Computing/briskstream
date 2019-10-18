@@ -1,6 +1,6 @@
 package parser;
 
-//import utils.Configuration;
+//import applications.utils.Configuration;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

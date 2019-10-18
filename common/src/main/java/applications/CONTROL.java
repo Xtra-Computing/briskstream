@@ -1,3 +1,5 @@
+package applications;
+
 public interface CONTROL {
 
     //application related.

@@ -1,6 +1,6 @@
 #!/bin/bash
 JAR_PATH="$HOME/NUMA-streamBenchmarks/common/target/common-1.0-SNAPSHOT-jar-with-dependencies.jar"
-MAIN="utils"
+MAIN="applications.utils"
 KAFKA_HOME="$HOME/kafka"
 cores="$(getconf _NPROCESSORS_ONLN)"
 #Only spark need multiple partitions...

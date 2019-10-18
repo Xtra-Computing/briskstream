@@ -665,7 +665,7 @@ def version():
   """
   cppaths = [CLUSTER_CONF_DIR]
   exec_storm_class(
-       "backtype.storm.utils.VersionInfo",
+       "backtype.storm.applications.utils.VersionInfo",
        jvmtype="-client",
        extrajars=[CLUSTER_CONF_DIR])
 

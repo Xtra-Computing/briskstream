@@ -1,6 +1,5 @@
 package brisk.execution;
 
-import Platform;
 import brisk.components.MultiStreamComponent;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
@@ -13,6 +12,7 @@ import brisk.controller.output.MultiStreamOutputContoller;
 import brisk.controller.output.OutputController;
 import brisk.controller.output.PartitionController;
 import brisk.controller.output.partition.*;
+import machine.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.Configuration;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import static Constants.virtualType;
+import static applications.Constants.virtualType;
 
 
 /**

@@ -1,6 +1,6 @@
 package model.gis;
 
-//import utils.Configuration;
+//import applications.utils.Configuration;
 
 import constants.TrafficMonitoringConstants.Conf;
 import org.geotools.data.FeatureSource;

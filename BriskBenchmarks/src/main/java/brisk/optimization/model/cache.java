@@ -1,6 +1,6 @@
 package brisk.optimization.model;
 
-import Constants;
+import applications.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

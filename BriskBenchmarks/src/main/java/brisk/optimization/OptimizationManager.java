@@ -1,6 +1,5 @@
 package brisk.optimization;
 
-import Platform;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.components.exception.UnhandledCaseException;
@@ -12,6 +11,7 @@ import brisk.optimization.impl.SchedulingPlan;
 import brisk.optimization.model.BackPressure;
 import brisk.optimization.routing.RoutingOptimizer;
 import brisk.optimization.routing.RoutingPlan;
+import machine.Platform;
 import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
-import static Constants.MAP_Path;
+import static applications.Constants.MAP_Path;
 
 /**
  * Created by I309939 on 11/8/2016.

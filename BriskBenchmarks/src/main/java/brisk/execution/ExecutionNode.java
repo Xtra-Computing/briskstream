@@ -1,8 +1,7 @@
 package brisk.execution;
 
 
-import Constants;
-import Platform;
+import applications.Constants;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.IExecutor;
@@ -16,6 +15,7 @@ import brisk.optimization.impl.SchedulingPlan;
 import brisk.optimization.model.RateModel;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
+import machine.Platform;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -51,7 +51,7 @@ public class Tests {
 //	@Test
 //	public void TestTopology() {
 //		LOG.info("==========TEST simple topology execution================");
-//		Platform p = new HUAWEI_Machine();
+//		machine.Platform p = new machine.HUAWEI_Machine();
 //		Configuration conf = new Configuration();
 //		conf.put("Fault_tolerance", false);
 //		conf.put("batch", 2);
@@ -76,7 +76,7 @@ public class Tests {
 //	@Test
 //	public void TestFTTopology() {
 //		LOG.info("==========TEST Fault tolerant topology execution================");
-//		Platform p = new HUAWEI_Machine();
+//		machine.Platform p = new machine.HUAWEI_Machine();
 //		Configuration conf = new Configuration();
 //		conf.put("Fault_tolerance", true);
 //		conf.put("batch", 5);
@@ -100,7 +100,7 @@ public class Tests {
 //	@Test
 //	public void TestAffinity1() {
 //		BasicConfigurator.configure();
-//		Platform p = new HUAWEI_Machine();
+//		machine.Platform p = new machine.HUAWEI_Machine();
 //		Configuration conf = new Configuration();
 //		conf.put("Fault_tolerance", true);
 //		conf.put("batch", 5);
@@ -124,7 +124,7 @@ public class Tests {
 //	@Test
 //	public void TestAffinity2() {
 //		BasicConfigurator.configure();
-//		Platform p = new HUAWEI_Machine();
+//		machine.Platform p = new machine.HUAWEI_Machine();
 //		Configuration conf = new Configuration();
 //		conf.put("Fault_tolerance", true);
 //		conf.put("batch", 5);

@@ -11,6 +11,10 @@ import brisk.topology.TopologySubmitter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import constants.*;
+import machine.HP_Machine;
+import machine.HUAWEI_Machine;
+import machine.Platform;
+import machine.RTM_Machine;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +26,7 @@ import java.io.*;
 import java.util.Collection;
 import java.util.Properties;
 
-import static Constants.System_Plan_Path;
+import static applications.Constants.System_Plan_Path;
 import static constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
 
 public class BriskRunner extends abstractRunner {

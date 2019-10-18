@@ -1,6 +1,6 @@
 package applications.bolts.sd;
 
-import Constants;
+import applications.Constants;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;

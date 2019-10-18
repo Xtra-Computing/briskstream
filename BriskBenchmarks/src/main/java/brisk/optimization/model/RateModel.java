@@ -1,11 +1,11 @@
 package brisk.optimization.model;
 
-import Constants;
-import Platform;
+import applications.Constants;
 import brisk.components.TopologyComponent;
 import brisk.components.operators.executor.IExecutor;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.SchedulingPlan;
+import machine.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.OsUtils;

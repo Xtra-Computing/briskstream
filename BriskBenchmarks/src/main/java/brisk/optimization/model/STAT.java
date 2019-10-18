@@ -1,8 +1,8 @@
 package brisk.optimization.model;
 
-import Platform;
 import brisk.execution.ExecutionNode;
 import ch.usi.overseer.OverHpc;
+import machine.Platform;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import util.OsUtils;
 import java.io.*;
 import java.util.Scanner;
 
-import static Constants.STAT_Path;
+import static applications.Constants.STAT_Path;
 
 //import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -604,7 +604,7 @@ public class STAT implements Serializable {
 //        LOG.info("======calculation=======");
 //        LOG.info("local data acc cycles:" + executionNode.RM.LocalAcc(this) + "\n");
 ////        LOG.info("coherencyOverhead:" + (tuple_size != 0 ? executionNode.RM.coherencyOverhead(0, 1//? cache trashing overhead
-////                , Constants.DEFAULT_STREAM_ID, context.getPlan().SP) : 0));
+////                , applications.Constants.DEFAULT_STREAM_ID, context.getPlan().SP) : 0));
 //
 //        double crma = executionNode.RM.CRMA(this, 0
 //                , 1);

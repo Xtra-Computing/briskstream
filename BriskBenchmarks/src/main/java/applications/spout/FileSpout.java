@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

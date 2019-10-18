@@ -30,7 +30,7 @@ public class Helper {
     public final static String ISSUE_REPORT_URL = "https://github.com/mjsax/aeolus/issues/new";
     /**
      * the key for the
-     * (java.utils.Map, TopologyContext, OutputCollector) }
+     * (java.applications.utils.Map, TopologyContext, OutputCollector) }
      * method's {@code conf} argument to access the {@code String} to initialize unseralizable instance
      */
     public final static String TOLL_DATA_STORE_CONF_KEY = "myDataStore";

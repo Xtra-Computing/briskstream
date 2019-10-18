@@ -1,3 +1,5 @@
+package machine;
+
 public class HUAWEI_Machine extends Platform {
 
     private static final long serialVersionUID = 2511492570058016274L;

@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 import static constants.BaseConstants.BaseField.TEXT;
 
 public abstract class Operator implements IOperator {

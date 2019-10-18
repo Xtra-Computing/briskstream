@@ -1,6 +1,6 @@
 package brisk.optimization.impl;
 
-import Constants;
+import applications.Constants;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
@@ -20,7 +20,7 @@ import util.OsUtils;
 import java.io.*;
 import java.util.*;
 
-import static Constants.*;
+import static applications.Constants.*;
 
 //import brisk.optimization.txn.scheduling.Decision;
 
@@ -414,7 +414,7 @@ public class SchedulingPlan implements Comparable<SchedulingPlan>, Serializable 
 
 //    public cache getCacheMap(ExecutionNode node) {
 //        try {
-//        return cacheMap.get(Constants.DEFAULT_STREAM_ID).get(node.getExecutorID());
+//        return cacheMap.get(applications.Constants.DEFAULT_STREAM_ID).get(node.getExecutorID());
 //        } catch (Exception ex) {
 //            System.nanoTime();
 //            return null;

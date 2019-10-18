@@ -4,7 +4,7 @@ import brisk.components.streaminfo;
 
 import java.util.HashMap;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 
 /**
  * Created by shuhaozhang on 13/7/16.

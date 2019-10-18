@@ -95,7 +95,7 @@ public class StateTransitionProbability extends TabularData {
     }
 
     /* (non-Javadoc)
-     * @see org.chombo.utils.TabularData#serializeRow(int)
+     * @see org.chombo.applications.utils.TabularData#serializeRow(int)
      */
     public String serializeRow(int row) {
         StringBuilder stBld = new StringBuilder();
@@ -111,7 +111,7 @@ public class StateTransitionProbability extends TabularData {
     }
 
     /* (non-Javadoc)
-     * @see org.chombo.utils.TabularData#deseralizeRow(java.lang.String, int)
+     * @see org.chombo.applications.utils.TabularData#deseralizeRow(java.lang.String, int)
      */
     public void deseralizeRow(String data, int row) {
         String[] items = data.split(DELIMETER);

@@ -1,3 +1,5 @@
+package applications;
+
 import helper.DataSource;
 import helper.Event;
 import kafka.javaapi.producer.Producer;

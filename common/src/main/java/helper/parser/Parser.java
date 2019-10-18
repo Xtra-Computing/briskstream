@@ -1,6 +1,6 @@
 package helper.parser;
 
-//import utils.Configuration;
+//import applications.utils.Configuration;
 
 import util.Configuration;
 import util.datatypes.StreamValues;

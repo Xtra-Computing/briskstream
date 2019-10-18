@@ -5,7 +5,7 @@ import brisk.execution.ExecutionGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static Constants.DEFAULT_STREAM_ID;
+import static applications.Constants.DEFAULT_STREAM_ID;
 
 public class GeneratorSpout extends AbstractSpout {
     private static final Logger LOG = LoggerFactory.getLogger(GeneratorSpout.class);

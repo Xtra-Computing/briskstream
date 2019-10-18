@@ -1,6 +1,6 @@
 package brisk.execution.runtime;
 
-import Constants;
+import applications.Constants;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.BasicSpoutBatchExecutor;
 import brisk.execution.ExecutionNode;

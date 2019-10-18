@@ -7,6 +7,7 @@ import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.msgs.GeneralMsg;
 import brisk.queue.impl.P1C1Queue;
 import ch.usi.overseer.OverHpc;
+import machine.HUAWEI_Machine;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.jctools.queues.MpscArrayQueue;
 import org.jctools.queues.SpscArrayQueue;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 
-import static Constants.EVENTS.PERF_COUNT_HW_CPU_CYCLES;
+import static applications.Constants.EVENTS.PERF_COUNT_HW_CPU_CYCLES;
 import static util.OsUtils.isUnix;
 
 /**
