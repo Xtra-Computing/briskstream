@@ -162,6 +162,8 @@ public class OBInitializer extends TableInitilizer {
     }
 
     /**
+     *
+     * 4 + 8 + 8
      * "INSERT INTO Table (key, value_list) VALUES (?, ?);"
      * initial account value_list is 0...?
      */

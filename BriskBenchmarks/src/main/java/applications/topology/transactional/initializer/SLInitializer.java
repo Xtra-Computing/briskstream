@@ -438,6 +438,16 @@ public class SLInitializer extends TableInitilizer {
         return null;
     }
 
+
+    /**
+     *
+     * @param partition_id
+     * @param bid_array
+     * @param number_of_partitions
+     * @param bid
+     * @param rnd
+     * @return
+     */
     private Object randomDepositEvent(int partition_id,
                                       long[] bid_array, int number_of_partitions, long bid, SplittableRandom rnd) {
 
