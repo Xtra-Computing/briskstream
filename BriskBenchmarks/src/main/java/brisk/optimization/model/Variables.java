@@ -2,7 +2,7 @@ package brisk.optimization.model;
 
 import java.io.Serializable;
 
-import static applications.util.Constants.default_sourceRate;
+import static util.Constants.default_sourceRate;
 
 /**
  * Created by tony on 7/4/2017.

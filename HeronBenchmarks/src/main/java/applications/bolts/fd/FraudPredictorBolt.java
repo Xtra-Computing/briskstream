@@ -1,10 +1,10 @@
 package applications.bolts.fd;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.FraudDetectionConstants;
-import applications.model.predictor.MarkovModelPredictor;
-import applications.model.predictor.ModelBasedPredictor;
-import applications.model.predictor.Prediction;
+import constants.FraudDetectionConstants;
+import model.predictor.MarkovModelPredictor;
+import model.predictor.ModelBasedPredictor;
+import model.predictor.Prediction;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;

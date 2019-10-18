@@ -1,23 +1,23 @@
 package applications.spout;
 
-import applications.constants.BaseConstants;
-import applications.constants.BaseConstants.BaseConf;
-import applications.constants.streamingAnalysisConstants;
-import applications.spout.helper.Event;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Fields;
+import constants.BaseConstants;
+import constants.BaseConstants.BaseConf;
+import constants.streamingAnalysisConstants;
+import helper.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
+import static Constants.DEFAULT_STREAM_ID;
 
 public class DataSource extends AbstractSpout {
     private static final Logger LOG = LoggerFactory.getLogger(DataSource.class);
     private static final long serialVersionUID = -2735379827145506668L;
     int count = 0;
-    private applications.spout.helper.DataSource dataSource;
+    private helper.DataSource dataSource;
 //    private ReceiveParser parser;
 
     private DataSource() {
@@ -35,7 +35,7 @@ public class DataSource extends AbstractSpout {
         int tuple_size = config.getInt("size_tuple");
         LOG.info("TransferTuple fieldSize to emit:" + tuple_size);
         String Wrapper = config.getString(getConfigKey(BaseConstants.BaseConf.SPOUT_Wrapper));//config.getString("spout_parser");
-        dataSource = new applications.spout.helper.DataSource(Wrapper, skew, false, tuple_size, false);
+        dataSource = new helper.DataSource(Wrapper, skew, false, tuple_size, false);
 //        this.parser = new ReceiveParser();
 //        Constants.application.SOURCE_RATE = loadTargetHz / 1000000000.0;
 //        LOG.info("Use DataSource now");

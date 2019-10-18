@@ -1,17 +1,17 @@
 package applications.bolts.lg;
 
 import applications.bolts.AbstractBolt;
-import applications.model.geoip.IPLocation;
-import applications.model.geoip.IPLocationFactory;
-import applications.model.geoip.Location;
+import model.geoip.IPLocation;
+import model.geoip.IPLocationFactory;
+import model.geoip.Location;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseConf;
-import static applications.constants.ClickAnalyticsConstants.Field;
+import static constants.BaseConstants.BaseConf;
+import static constants.ClickAnalyticsConstants.Field;
 
 /**
  * User: domenicosolazzo

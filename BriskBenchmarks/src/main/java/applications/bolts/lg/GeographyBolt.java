@@ -1,19 +1,19 @@
 package applications.bolts.lg;
 
-import applications.model.geoip.IPLocation;
-import applications.model.geoip.IPLocationFactory;
-import applications.model.geoip.Location;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import model.geoip.IPLocation;
+import model.geoip.IPLocationFactory;
+import model.geoip.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
-import static applications.constants.BaseConstants.BaseConf;
-import static applications.constants.ClickAnalyticsConstants.Field;
+import static constants.BaseConstants.BaseConf;
+import static constants.ClickAnalyticsConstants.Field;
 
 /**
  * User: domenicosolazzo

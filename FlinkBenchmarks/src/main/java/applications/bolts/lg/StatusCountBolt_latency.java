@@ -2,8 +2,8 @@ package applications.bolts.lg;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
-import applications.constants.LogProcessingConstants.Field;
+import constants.BaseConstants;
+import constants.LogProcessingConstants.Field;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * This bolt will count the status codes from http logs such as 200, 404, 503

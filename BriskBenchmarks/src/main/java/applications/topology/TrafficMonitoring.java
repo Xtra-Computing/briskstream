@@ -3,7 +3,6 @@ package applications.topology;
 import applications.bolts.comm.GeneralParserBolt;
 import applications.bolts.tm.MapMatchingBolt;
 import applications.bolts.tm.SpeedCalculatorBolt;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
@@ -12,8 +11,9 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.TrafficMonitoringConstants.*;
+import static constants.TrafficMonitoringConstants.*;
 
 /**
  * https://github.com/whughchen/RealTimeTraffic

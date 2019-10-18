@@ -1,8 +1,8 @@
 package applications.bolts.wc;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
-import applications.constants.WordCountConstants.Field;
+import constants.BaseConstants;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 public class SplitSentenceBolt_latency extends AbstractBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt_latency.class);

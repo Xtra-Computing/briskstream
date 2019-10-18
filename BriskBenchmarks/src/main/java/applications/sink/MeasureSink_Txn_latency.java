@@ -1,8 +1,8 @@
 package applications.sink;
 
-import applications.util.OsUtils;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
+import util.OsUtils;
 
 import java.io.*;
 

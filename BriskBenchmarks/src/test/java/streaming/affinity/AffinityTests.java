@@ -1,7 +1,6 @@
 package streaming.affinity;
 
 
-import applications.util.Configuration;
 import brisk.controller.affinity.AffinityController;
 import brisk.execution.runtime.executorThread;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -13,14 +12,15 @@ import org.jctools.queues.MpscArrayQueue;
 import org.jctools.queues.SpscArrayQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 
-import static applications.Constants.EVENTS.PERF_COUNT_HW_CPU_CYCLES;
-import static applications.util.OsUtils.isUnix;
+import static Constants.EVENTS.PERF_COUNT_HW_CPU_CYCLES;
+import static util.OsUtils.isUnix;
 
 /**
  * Created by tony on 5/14/2017.
@@ -55,7 +55,7 @@ public class AffinityTests {
                 LOG.error("ERROR: invalid event");
             }
         }
-        AC = new AffinityController(conf, new applications.HUAWEI_Machine());
+        AC = new AffinityController(conf, new HUAWEI_Machine());
     }
 
     public void warmup() {

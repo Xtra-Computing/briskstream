@@ -1,14 +1,14 @@
 package applications.bolts.sd;
 
-import applications.constants.SpikeDetectionConstants;
-import applications.util.Configuration;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.SpikeDetectionConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.HashMap;
 import java.util.LinkedList;

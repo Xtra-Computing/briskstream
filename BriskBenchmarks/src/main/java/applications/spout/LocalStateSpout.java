@@ -1,11 +1,11 @@
 package applications.spout;
 
-import applications.constants.BaseConstants.BaseConf;
-import applications.constants.MicroBenchmarkConstants;
-import applications.spout.helper.DataSource;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Fields;
+import constants.BaseConstants.BaseConf;
+import constants.MicroBenchmarkConstants;
+import helper.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
 package applications.bolts;
 
-import applications.constants.BaseConstants;
-import applications.constants.BaseConstants.BaseStream;
-import applications.util.Configuration;
+import constants.BaseConstants;
+import constants.BaseConstants.BaseStream;
+import util.Configuration;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;

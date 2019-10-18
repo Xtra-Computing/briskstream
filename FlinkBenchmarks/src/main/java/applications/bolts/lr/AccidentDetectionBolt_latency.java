@@ -20,7 +20,7 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.internal.AccidentTuple;
 import applications.datatypes.util.PositionIdentifier;
@@ -30,7 +30,7 @@ import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 import static applications.datatypes.util.TopologyControl.ACCIDENTS_STREAM_ID;
 
 /**

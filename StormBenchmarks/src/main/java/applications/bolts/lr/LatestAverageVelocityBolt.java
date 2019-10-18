@@ -20,7 +20,7 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.internal.AvgSpeedTuple;
 import applications.datatypes.internal.AvgVehicleSpeedTuple;
 import applications.datatypes.internal.LavTuple;
@@ -36,7 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 /**
  * {@link LatestAverageVelocityBolt} computes the "latest average velocity" (LAV), ie, the average speed over all

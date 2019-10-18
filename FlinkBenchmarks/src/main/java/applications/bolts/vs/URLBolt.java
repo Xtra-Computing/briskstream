@@ -1,7 +1,7 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.model.cdr.CallDetailRecord;
+import model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;

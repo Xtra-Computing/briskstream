@@ -1,10 +1,10 @@
 package applications;
 
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.topology.AbstractTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

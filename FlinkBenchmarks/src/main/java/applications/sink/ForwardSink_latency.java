@@ -1,15 +1,15 @@
 package applications.sink;
 
 
-import applications.sink.helper.stable_sink_helper;
+import helper.stable_sink_helper;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * @author mayconbordin

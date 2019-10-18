@@ -1,10 +1,10 @@
 package applications.bolts;
 
-import applications.constants.microbenchmarkConstants;
-import applications.tasks.fully_stateful_task;
-import applications.tasks.partial_stateful_task;
-import applications.tasks.stateful_task;
-import applications.tasks.stateless_taskImpl;
+import constants.microbenchmarkConstants;
+import tasks.fully_stateful_task;
+import tasks.partial_stateful_task;
+import tasks.stateful_task;
+import tasks.stateless_taskImpl;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Fields;

@@ -1,15 +1,15 @@
 package applications.bolts.tm;
 
-import applications.constants.TrafficMonitoringConstants;
-import applications.model.gis.Road;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.TrafficMonitoringConstants;
+import model.gis.Road;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.Date;
 import java.util.HashMap;

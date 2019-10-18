@@ -24,8 +24,8 @@ import applications.datatypes.AccountBalanceRequest;
 import applications.datatypes.util.TopologyControl;
 import org.apache.storm.tuple.Fields;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * The reply to a {@link AccountBalanceRequest}.

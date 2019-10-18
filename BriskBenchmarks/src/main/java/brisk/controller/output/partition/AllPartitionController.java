@@ -1,7 +1,5 @@
 package brisk.controller.output.partition;
 
-import applications.util.Configuration;
-import applications.util.datatypes.StreamValues;
 import brisk.components.TopologyComponent;
 import brisk.controller.output.PartitionController;
 import brisk.execution.ExecutionNode;
@@ -9,6 +7,8 @@ import brisk.execution.runtime.collector.impl.Meta;
 import brisk.execution.runtime.tuple.impl.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.LinkedList;

@@ -1,9 +1,9 @@
 package applications.bolts.vs;
 
 import applications.bolts.AbstractBolt;
-import applications.model.cdr.CallDetailRecord;
-import applications.util.OsUtils;
-import applications.util.hash.BloomFilter;
+import model.cdr.CallDetailRecord;
+import util.OsUtils;
+import util.hash.BloomFilter;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
@@ -19,7 +19,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.*;
+import static constants.VoIPSTREAMConstants.*;
 
 public class VoiceDispatcherBolt extends AbstractBolt {
     private static final Logger LOG = LoggerFactory.getLogger(VoiceDispatcherBolt.class);

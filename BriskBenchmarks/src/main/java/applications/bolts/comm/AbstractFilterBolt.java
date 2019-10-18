@@ -1,14 +1,14 @@
 package applications.bolts.comm;
 
-import applications.util.hash.ODTDBloomFilter;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.hash.ODTDBloomFilter;
 
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.Conf;
+import static constants.VoIPSTREAMConstants.Conf;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>
@@ -36,7 +36,7 @@ public abstract class AbstractFilterBolt extends filterBolt {
                                  Map<String, Double> input_selectivity, Map<String, Double> output_selectivity, double read_selectivity) {
         super(LOG, input_selectivity, output_selectivity, read_selectivity);
         this.configPrefix = configPrefix;
-        this.outputField = applications.constants.VoIPSTREAMConstants.Field.RATE;
+        this.outputField = constants.VoIPSTREAMConstants.Field.RATE;
         this.outputkeyField = null;
     }
 

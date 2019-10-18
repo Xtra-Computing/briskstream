@@ -1,9 +1,9 @@
 package applications.sink;
 
-import applications.constants.BaseConstants;
-import applications.sink.helper.helper;
-import applications.sink.helper.stable_sink_helper;
-import applications.util.OsUtils;
+import constants.BaseConstants;
+import helper.helper;
+import helper.stable_sink_helper;
+import util.OsUtils;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

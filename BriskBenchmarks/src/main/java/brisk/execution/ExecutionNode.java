@@ -1,9 +1,8 @@
 package brisk.execution;
 
 
-import applications.Constants;
-import applications.Platform;
-import applications.util.Configuration;
+import Constants;
+import Platform;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.IExecutor;
@@ -20,6 +19,7 @@ import ch.usi.overseer.OverHpc;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.io.Serializable;
 import java.util.*;

@@ -1,13 +1,13 @@
 package brisk.topology;
 
-import applications.constants.BaseConstants;
 import applications.sink.BaseSink;
-import applications.util.ClassLoaderUtils;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.operators.api.AbstractSpout;
+import constants.BaseConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ClassLoaderUtils;
+import util.Configuration;
 
 public abstract class AbstractTopology {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTopology.class);

@@ -1,8 +1,8 @@
 package applications.spout;
 
-import applications.constants.BaseConstants;
-import applications.constants.BaseConstants.BaseStream;
-import applications.util.Configuration;
+import constants.BaseConstants;
+import constants.BaseConstants.BaseStream;
+import util.Configuration;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;

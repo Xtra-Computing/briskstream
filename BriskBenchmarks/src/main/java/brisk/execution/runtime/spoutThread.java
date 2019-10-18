@@ -1,16 +1,15 @@
 package brisk.execution.runtime;
 
-import applications.Constants;
-import applications.util.Configuration;
+import Constants;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.BasicSpoutBatchExecutor;
-import brisk.execution.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.optimization.model.STAT;
 import ch.usi.overseer.OverHpc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.HashMap;
 import java.util.concurrent.BrokenBarrierException;

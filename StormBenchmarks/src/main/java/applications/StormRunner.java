@@ -1,7 +1,7 @@
 package applications;
 
 import applications.topology.benchmarks.*;
-import applications.util.Configuration;
+import util.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import org.apache.storm.Config;

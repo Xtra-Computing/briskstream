@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static applications.constants.ClickAnalyticsConstants.Field;
+import static constants.ClickAnalyticsConstants.Field;
 
 /**
  * User: domenicosolazzo

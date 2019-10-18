@@ -1,12 +1,8 @@
 package applications;
 
-import applications.constants.*;
 import applications.topology.*;
 import applications.topology.latency.LinearRoad_latency;
 import applications.topology.latency.WordCount_latency;
-import applications.util.Configuration;
-import applications.util.Constants;
-import applications.util.OsUtils;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
@@ -14,16 +10,20 @@ import brisk.execution.runtime.executorThread;
 import brisk.topology.TopologySubmitter;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import constants.*;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.Constants;
+import util.OsUtils;
 
 import java.io.*;
 import java.util.Collection;
 import java.util.Properties;
 
-import static applications.Constants.System_Plan_Path;
-import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
+import static Constants.System_Plan_Path;
+import static constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
 
 public class BriskRunner extends abstractRunner {
 
@@ -31,7 +31,7 @@ public class BriskRunner extends abstractRunner {
     private static Topology final_topology;
     private final AppDriver driver;
     private final Configuration config = new Configuration();
-    private applications.Platform p;
+    private Platform p;
 
 
     private BriskRunner() {
@@ -140,16 +140,16 @@ public class BriskRunner extends abstractRunner {
 
             switch (config.getInt("machine")) {
                 case 0:
-                    this.p = new applications.HUAWEI_Machine();
+                    this.p = new HUAWEI_Machine();
                     break;
                 case 1:
-                    this.p = new applications.HP_Machine();
+                    this.p = new HP_Machine();
                     break;
                 case 2:
-                    this.p = new applications.HP_Machine();
+                    this.p = new HP_Machine();
                     break;
                 default:
-                    this.p = new applications.RTM_Machine();
+                    this.p = new RTM_Machine();
             }
 
             if (simulation) {

@@ -1,14 +1,14 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.model.cdr.CallDetailRecord;
+import model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.VoIPSTREAMConstants.Conf;
-import static applications.constants.VoIPSTREAMConstants.Field;
+import static constants.VoIPSTREAMConstants.Conf;
+import static constants.VoIPSTREAMConstants.Field;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

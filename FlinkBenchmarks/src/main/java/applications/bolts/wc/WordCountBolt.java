@@ -1,7 +1,7 @@
 package applications.bolts.wc;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;

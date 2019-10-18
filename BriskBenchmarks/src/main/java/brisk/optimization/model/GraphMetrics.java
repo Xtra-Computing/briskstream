@@ -1,6 +1,6 @@
 package brisk.optimization.model;
 
-import applications.Constants;
+import Constants;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.SchedulingPlan;

@@ -1,14 +1,14 @@
 package brisk.optimization.model;
 
-import applications.Constants;
-import applications.Platform;
-import applications.util.OsUtils;
+import Constants;
+import Platform;
 import brisk.components.TopologyComponent;
 import brisk.components.operators.executor.IExecutor;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.SchedulingPlan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;

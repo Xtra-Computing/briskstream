@@ -3,9 +3,9 @@ package applications.topology.benchmarks;
 import applications.bolts.comm.ParserBolt;
 import applications.bolts.wc.SplitSentenceBolt;
 import applications.bolts.wc.WordCountBolt;
-import applications.constants.WordCountConstants;
-import applications.constants.WordCountConstants.Component;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants;
+import constants.WordCountConstants.Component;
+import constants.WordCountConstants.Field;
 import applications.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
@@ -13,7 +13,7 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.WordCountConstants.PREFIX;
+import static constants.WordCountConstants.PREFIX;
 
 public class WordCount extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(WordCount.class);

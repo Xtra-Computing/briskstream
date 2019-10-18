@@ -2,8 +2,8 @@ package applications.topology.benchmarks;
 
 
 import applications.bolts.comm.ParserBolt;
-import applications.constants.LinearRoadConstants;
-import applications.constants.LinearRoadConstants.Conf;
+import constants.LinearRoadConstants;
+import constants.LinearRoadConstants.Conf;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static applications.constants.LinearRoadConstants.PREFIX;
+import static constants.LinearRoadConstants.PREFIX;
 
 /**
  * @author mayconbordin

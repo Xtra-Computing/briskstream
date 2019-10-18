@@ -2,8 +2,8 @@ package applications.topology.benchmarks;
 
 
 import applications.bolts.comm.ParserBolt_latency;
-import applications.constants.LinearRoadConstants;
-import applications.constants.LinearRoadConstants.Conf;
+import constants.LinearRoadConstants;
+import constants.LinearRoadConstants.Conf;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
@@ -13,8 +13,8 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.*;
-import static applications.constants.LinearRoadConstants.PREFIX;
+import static constants.BaseConstants.BaseField.*;
+import static constants.LinearRoadConstants.PREFIX;
 
 /**
  * @author mayconbordin

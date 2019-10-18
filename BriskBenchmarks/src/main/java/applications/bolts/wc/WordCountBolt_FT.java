@@ -1,9 +1,5 @@
 package applications.bolts.wc;
 
-import applications.constants.WordCountConstants.Field;
-import applications.util.Configuration;
-import applications.util.OsUtils;
-import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.base.MapBolt;
@@ -13,9 +9,13 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
+import util.datatypes.StreamValues;
 
 import java.io.Serializable;
 import java.util.HashMap;

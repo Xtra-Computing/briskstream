@@ -22,8 +22,8 @@ package applications.datatype.internal;
 import applications.datatype.PositionReport;
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
-import applications.util.Time;
 import brisk.execution.runtime.tuple.impl.Fields;
+import util.Time;
 
 /**
  * {@link AccidentTuple} represents an intermediate result tuple; and reports and accident that occurred in a specific
@@ -39,7 +39,7 @@ import brisk.execution.runtime.tuple.impl.Fields;
  *
  * @author mjsax
  */
-public final class AccidentTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
+public final class AccidentTuple extends util.datatypes.StreamValues implements ISegmentIdentifier {
     /**
      * The index of the positionReport attribute.
      */

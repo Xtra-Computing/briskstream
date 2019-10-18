@@ -16,11 +16,11 @@ package brisk.queue.impl;
  * limitations under the License.
  */
 
-import applications.util.OsUtils;
 import brisk.queue.impl.wait.SleepWaitStrategy;
 import brisk.queue.impl.wait.WaitStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.util.Collection;
 import java.util.Iterator;

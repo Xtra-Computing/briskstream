@@ -21,12 +21,12 @@ package applications.datatypes.internal;
 
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import applications.util.Time;
+import util.Time;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * {@link LavTuple} represents an intermediate result tuple; the "latest average velocity" (LAV) of a segment within the

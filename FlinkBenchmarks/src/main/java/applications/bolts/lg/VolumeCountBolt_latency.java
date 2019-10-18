@@ -2,9 +2,9 @@ package applications.bolts.lg;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
-import applications.constants.LogProcessingConstants.Conf;
-import applications.constants.LogProcessingConstants.Field;
+import constants.BaseConstants;
+import constants.LogProcessingConstants.Conf;
+import constants.LogProcessingConstants.Field;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.storm.tuple.Fields;
@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * This bolt will count number of log events per minute

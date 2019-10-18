@@ -1,23 +1,23 @@
 package applications.bolts.vs;
 
 
-import applications.model.cdr.CallDetailRecord;
-import applications.util.datatypes.StreamValues;
-import applications.util.math.VariableEWMA;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import model.cdr.CallDetailRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
+import util.math.VariableEWMA;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.Conf;
-import static applications.constants.VoIPSTREAMConstants.Field;
 import static applications.datatype.util.VSTopologyControl.GlobalACD_STREAM_ID;
+import static constants.VoIPSTREAMConstants.Conf;
+import static constants.VoIPSTREAMConstants.Field;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

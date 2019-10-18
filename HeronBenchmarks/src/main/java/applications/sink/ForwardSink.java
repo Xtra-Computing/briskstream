@@ -1,7 +1,7 @@
 package applications.sink;
 
 
-import applications.sink.helper.stable_sink_helper;
+import helper.stable_sink_helper;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;

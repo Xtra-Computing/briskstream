@@ -61,8 +61,8 @@ class Pair<L, R> {
     @Override
     public boolean equals(Object other) {
         boolean isEqual = false;
-        if (null != other && other instanceof applications.model.predictor.Pair) {
-            applications.model.predictor.Pair pairOther = (applications.model.predictor.Pair) other;
+        if (null != other && other instanceof model.predictor.Pair) {
+            model.predictor.Pair pairOther = (model.predictor.Pair) other;
             isEqual = this.left.equals(pairOther.getLeft()) &&
                     this.right.equals(pairOther.getRight());
         }

@@ -1,12 +1,12 @@
 package brisk.topology;
 
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
 import brisk.optimization.OptimizationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.Collection;
 

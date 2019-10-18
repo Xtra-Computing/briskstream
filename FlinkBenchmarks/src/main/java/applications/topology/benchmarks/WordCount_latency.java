@@ -3,9 +3,9 @@ package applications.topology.benchmarks;
 import applications.bolts.comm.ParserBolt_latency;
 import applications.bolts.wc.SplitSentenceBolt;
 import applications.bolts.wc.WordCountBolt;
-import applications.constants.WordCountConstants;
-import applications.constants.WordCountConstants.Component;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants;
+import constants.WordCountConstants.Component;
+import constants.WordCountConstants.Field;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
@@ -13,9 +13,9 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.WordCountConstants.PREFIX;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.WordCountConstants.PREFIX;
 
 public class WordCount_latency extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(WordCount_latency.class);

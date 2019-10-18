@@ -5,7 +5,7 @@ import applications.bolts.lg.GeoStatsBolt_latency;
 import applications.bolts.lg.GeographyBolt_latency;
 import applications.bolts.lg.StatusCountBolt_latency;
 import applications.bolts.lg.VolumeCountBolt_latency;
-import applications.constants.WordCountConstants;
+import constants.WordCountConstants;
 import applications.sink.BaseSink;
 import applications.topology.BasicTopology;
 import org.apache.storm.Config;
@@ -14,9 +14,9 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.LogProcessingConstants.*;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.LogProcessingConstants.*;
 
 /**
  * https://github.com/ashrithr/LogEventsProcessing

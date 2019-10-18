@@ -25,7 +25,7 @@ import applications.datatypes.internal.AvgVehicleSpeedTuple;
 import applications.datatypes.util.AvgValue;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import applications.util.Time;
+import util.Time;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.storm.topology.OutputFieldsDeclarer;

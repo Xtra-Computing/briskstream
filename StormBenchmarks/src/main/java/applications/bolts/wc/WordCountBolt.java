@@ -1,7 +1,7 @@
 package applications.bolts.wc;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static applications.Constants.Marker_STREAM_ID;
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 
 public class WordCountBolt extends AbstractBolt {

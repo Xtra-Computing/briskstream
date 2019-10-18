@@ -3,10 +3,6 @@ package applications.topology;
 import applications.bolts.comm.SensorParserBolt;
 import applications.bolts.sd.MovingAverageBolt;
 import applications.bolts.sd.SpikeDetectionBolt;
-import applications.constants.SpikeDetectionConstants;
-import applications.constants.SpikeDetectionConstants.Component;
-import applications.constants.SpikeDetectionConstants.Field;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
@@ -14,12 +10,16 @@ import brisk.components.grouping.ShuffleGrouping;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
+import constants.SpikeDetectionConstants;
+import constants.SpikeDetectionConstants.Component;
+import constants.SpikeDetectionConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
-import static applications.constants.SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THREADS;
-import static applications.constants.SpikeDetectionConstants.PREFIX;
+import static constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
+import static constants.SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THREADS;
+import static constants.SpikeDetectionConstants.PREFIX;
 
 public class SpikeDetection extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(SpikeDetection.class);

@@ -2,8 +2,8 @@ package applications.bolts.comm;
 
 
 import applications.bolts.AbstractBolt;
-import applications.spout.helper.parser.Parser;
-import applications.util.datatypes.StreamValues;
+import helper.parser.Parser;
+import util.datatypes.StreamValues;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Fields;
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * Created by tony on 5/5/2017.

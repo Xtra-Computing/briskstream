@@ -1,8 +1,6 @@
 package brisk.optimization.impl;
 
-import applications.Constants;
-import applications.util.Configuration;
-import applications.util.OsUtils;
+import Constants;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
@@ -16,11 +14,13 @@ import brisk.util.myIntegerMap;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.*;
 import java.util.*;
 
-import static applications.Constants.*;
+import static Constants.*;
 
 //import brisk.optimization.txn.scheduling.Decision;
 

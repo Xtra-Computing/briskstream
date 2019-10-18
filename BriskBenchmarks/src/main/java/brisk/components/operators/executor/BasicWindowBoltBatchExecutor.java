@@ -1,6 +1,5 @@
 package brisk.components.operators.executor;
 
-import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.AbstractWindowedBolt;
 import brisk.components.operators.api.BaseWindowedBolt;
@@ -9,6 +8,7 @@ import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import util.Configuration;
 
 import java.util.Collection;
 import java.util.List;

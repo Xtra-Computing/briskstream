@@ -1,11 +1,9 @@
 package brisk.execution.runtime;
 
-import applications.util.Configuration;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.executor.BoltExecutor;
 import brisk.controller.input.InputStreamController;
-import brisk.execution.Clock;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -16,6 +14,7 @@ import ch.usi.overseer.OverHpc;
 import com.javamex.classmexer.MemoryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
@@ -25,8 +24,8 @@ import java.util.HashSet;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 
-import static applications.util.OsUtils.isUnix;
 import static com.javamex.classmexer.MemoryUtil.VisibilityFilter.ALL;
+import static util.OsUtils.isUnix;
 
 /**
  * Task thread that hosts bolt logic. Receives input Brisk.execution.runtime.tuple,

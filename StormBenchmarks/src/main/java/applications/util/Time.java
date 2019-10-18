@@ -17,7 +17,7 @@
  * #_
  */
 
-package applications.util;
+package util;
 
 /**
  * Helper class to compute the current minute of given millisecond.

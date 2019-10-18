@@ -20,7 +20,7 @@
 package applications.datatypes;
 
 
-import applications.util.Time;
+import util.Time;
 import org.apache.storm.tuple.Values;
 
 /**

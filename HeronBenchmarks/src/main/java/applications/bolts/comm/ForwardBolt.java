@@ -1,7 +1,7 @@
 package applications.bolts.comm;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.TrafficMonitoringConstants;
+import constants.TrafficMonitoringConstants;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;

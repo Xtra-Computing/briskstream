@@ -1,18 +1,18 @@
 package applications.topology;
 
-import applications.constants.streamingAnalysisConstants.Component;
-import applications.constants.streamingAnalysisConstants.Field;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.GlobalGrouping;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
+import constants.streamingAnalysisConstants.Component;
+import constants.streamingAnalysisConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.streamingAnalysisConstants.PREFIX;
+import static constants.streamingAnalysisConstants.PREFIX;
 
 public class StreamingAnalysis extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(StreamingAnalysis.class);

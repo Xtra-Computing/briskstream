@@ -4,7 +4,7 @@ import brisk.execution.runtime.tuple.impl.Fields;
 
 import java.io.Serializable;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
+import static Constants.DEFAULT_STREAM_ID;
 
 /**
  * Created by shuhaozhang on 12/7/16.

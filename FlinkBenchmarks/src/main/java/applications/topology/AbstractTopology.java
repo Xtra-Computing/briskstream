@@ -1,10 +1,10 @@
 package applications.topology;
 
-import applications.constants.BaseConstants.BaseConf;
+import constants.BaseConstants.BaseConf;
 import applications.sink.BaseSink;
 import applications.spout.AbstractSpout;
-import applications.util.ClassLoaderUtils;
-import applications.util.Configuration;
+import util.ClassLoaderUtils;
+import util.Configuration;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;

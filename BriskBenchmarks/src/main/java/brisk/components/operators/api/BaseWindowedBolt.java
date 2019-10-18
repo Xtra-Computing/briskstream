@@ -1,9 +1,9 @@
 package brisk.components.operators.api;
 
-import applications.util.Configuration;
 import brisk.components.windowing.TimestampExtractor;
 import brisk.components.windowing.TupleFieldTimestampExtractor;
 import org.slf4j.Logger;
+import util.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;

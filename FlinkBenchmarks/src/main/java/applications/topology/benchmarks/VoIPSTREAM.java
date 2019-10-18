@@ -8,9 +8,9 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.VoIPSTREAMConstants.*;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.VoIPSTREAMConstants.*;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

@@ -1,10 +1,10 @@
 package brisk.controller.affinity;
 
-import applications.Platform;
-import applications.util.Configuration;
-import applications.util.OsUtils;
+import Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

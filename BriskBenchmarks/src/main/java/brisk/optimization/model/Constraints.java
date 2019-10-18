@@ -1,6 +1,6 @@
 package brisk.optimization.model;
 
-import applications.Platform;
+import Platform;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.SchedulingPlan;

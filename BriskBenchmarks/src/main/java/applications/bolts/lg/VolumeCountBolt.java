@@ -1,17 +1,17 @@
 package applications.bolts.lg;
 
-import applications.constants.LogProcessingConstants.Conf;
-import applications.constants.LogProcessingConstants.Field;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.LogProcessingConstants.Conf;
+import constants.LogProcessingConstants.Field;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package brisk.execution.runtime;
 
-import applications.Platform;
-import applications.util.Configuration;
+import Platform;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
@@ -9,6 +8,7 @@ import ch.usi.overseer.OverHpc;
 import net.openhft.affinity.AffinityLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.Arrays;
 import java.util.HashMap;

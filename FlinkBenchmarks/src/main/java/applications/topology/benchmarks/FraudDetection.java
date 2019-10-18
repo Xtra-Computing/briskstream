@@ -2,9 +2,9 @@ package applications.topology.benchmarks;
 
 import applications.bolts.comm.ParserBolt;
 import applications.bolts.fd.FraudPredictorBolt;
-import applications.constants.FraudDetectionConstants;
-import applications.constants.FraudDetectionConstants.Component;
-import applications.constants.FraudDetectionConstants.Field;
+import constants.FraudDetectionConstants;
+import constants.FraudDetectionConstants.Component;
+import constants.FraudDetectionConstants.Field;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
@@ -12,7 +12,7 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.FraudDetectionConstants.PREFIX;
+import static constants.FraudDetectionConstants.PREFIX;
 
 public class FraudDetection extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(FraudDetection.class);

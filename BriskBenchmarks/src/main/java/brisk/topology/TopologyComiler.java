@@ -1,8 +1,8 @@
 package brisk.topology;
 
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.execution.ExecutionGraph;
+import util.Configuration;
 
 /**
  * Created by shuhaozhang on 11/7/16.

@@ -2,16 +2,16 @@ package applications.bolts.sd;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
-import applications.constants.SpikeDetectionConstants;
+import constants.BaseConstants;
+import constants.SpikeDetectionConstants;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * Emits a tuple if the current value surpasses a pre-defined threshold.

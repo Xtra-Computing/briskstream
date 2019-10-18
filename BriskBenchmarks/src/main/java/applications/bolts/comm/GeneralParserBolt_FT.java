@@ -1,11 +1,11 @@
 package applications.bolts.comm;
 
-import applications.spout.helper.parser.Parser;
 import brisk.components.operators.api.Checkpointable;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.faulttolerance.impl.ValueState;
+import helper.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

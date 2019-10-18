@@ -1,14 +1,14 @@
 package applications.bolts.comm;
 
 import applications.bolts.AbstractBolt;
-import applications.model.cdr.CallDetailRecord;
+import model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Fields;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.*;
+import static constants.VoIPSTREAMConstants.*;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

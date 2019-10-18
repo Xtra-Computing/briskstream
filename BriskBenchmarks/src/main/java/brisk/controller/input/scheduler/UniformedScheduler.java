@@ -1,12 +1,12 @@
 package brisk.controller.input.scheduler;
 
-import applications.util.CompactHashMap.QuickHashMap;
 import brisk.controller.input.InputStreamController;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.optimization.model.STAT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.CompactHashMap.QuickHashMap;
 
 import java.util.Arrays;
 

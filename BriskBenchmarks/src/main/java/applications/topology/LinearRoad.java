@@ -3,24 +3,24 @@ package applications.topology;
 
 import applications.bolts.comm.StringParserBolt;
 import applications.bolts.lr.*;
-import applications.constants.LinearRoadConstants;
-import applications.constants.LinearRoadConstants.Conf;
-import applications.constants.LinearRoadConstants.Field;
 import applications.datatype.util.LRTopologyControl;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.ShuffleGrouping;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
+import constants.LinearRoadConstants;
+import constants.LinearRoadConstants.Conf;
+import constants.LinearRoadConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static applications.constants.LinearRoadConstants.PREFIX;
+import static constants.LinearRoadConstants.PREFIX;
 
 /**
  * @author mayconbordin

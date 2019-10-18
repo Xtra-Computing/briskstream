@@ -1,12 +1,12 @@
 package brisk.faulttolerance;
 
-import applications.util.OsUtils;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import net.jpountz.lz4.LZ4BlockOutputStream;
 import org.apache.commons.lang3.SerializationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.io.*;
 import java.nio.MappedByteBuffer;

@@ -1,9 +1,9 @@
 package applications.sink;
 
-import applications.constants.BaseConstants;
-import applications.sink.helper.helper;
-import applications.sink.helper.stable_sink_helper;
-import applications.util.OsUtils;
+import constants.BaseConstants;
+import helper.helper;
+import helper.stable_sink_helper;
+import util.OsUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static applications.Constants.System_Plan_Path;
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 public class MeasureSink_latency_LR extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink_latency_LR.class);

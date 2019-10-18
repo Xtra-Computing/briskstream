@@ -16,7 +16,7 @@
  * limitations under the License.
  * #_
  */
-package applications.util;
+package util;
 
 /**
  * Helper class to compute the current minute of given millisecond.

@@ -1,15 +1,15 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractScoreBolt;
-import applications.constants.VoIPSTREAMConstants;
 import applications.datatype.util.VSTopologyControl;
-import applications.model.cdr.CallDetailRecord;
-import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.VoIPSTREAMConstants;
+import model.cdr.CallDetailRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.Map;

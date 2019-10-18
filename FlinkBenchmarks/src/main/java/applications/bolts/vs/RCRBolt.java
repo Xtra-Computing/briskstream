@@ -1,14 +1,14 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractFilterBolt;
-import applications.constants.VoIPSTREAMConstants;
-import applications.model.cdr.CallDetailRecord;
+import constants.VoIPSTREAMConstants;
+import model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.VoIPSTREAMConstants.Field;
+import static constants.VoIPSTREAMConstants.Field;
 
 /**
  * Per-user received call rate.

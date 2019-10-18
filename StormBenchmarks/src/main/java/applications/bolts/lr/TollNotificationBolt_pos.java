@@ -29,7 +29,7 @@ import applications.datatypes.util.Constants;
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import applications.util.datatypes.StreamValues;
+import util.datatypes.StreamValues;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

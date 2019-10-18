@@ -1,7 +1,6 @@
 package streaming.impl.ft;
 
 
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
@@ -12,6 +11,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.impl.ValueState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 /**
  * Created by shuhaozhang on 17/7/16.

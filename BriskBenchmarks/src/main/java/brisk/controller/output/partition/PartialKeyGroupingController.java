@@ -1,7 +1,6 @@
 package brisk.controller.output.partition;
 
 import applications.datatype.AbstractLRBTuple;
-import applications.util.Configuration;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.impl.Meta;
@@ -10,6 +9,7 @@ import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.HashMap;
 import java.util.LinkedList;

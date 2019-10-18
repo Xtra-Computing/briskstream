@@ -23,8 +23,8 @@ package applications.datatypes;
 import applications.datatypes.util.TopologyControl;
 import org.apache.storm.tuple.Fields;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * An {@link AccidentNotification} represent an alert that must be sent to vehicle approaching an accident.

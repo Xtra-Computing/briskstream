@@ -1,7 +1,7 @@
 package applications.bolts.lg;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
@@ -13,9 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.ClickAnalyticsConstants.Field;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.ClickAnalyticsConstants.Field;
 
 /**
  * User: domenicosolazzo

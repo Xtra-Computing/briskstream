@@ -20,7 +20,7 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.TollNotification;
 import applications.datatypes.internal.AccidentTuple;
@@ -40,7 +40,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 import static applications.datatypes.util.TopologyControl.CAR_COUNTS_STREAM_ID;
 import static applications.datatypes.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
 

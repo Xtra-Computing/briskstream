@@ -1,6 +1,6 @@
 package brisk.execution.runtime.tuple.impl;
 
-import applications.util.datatypes.StreamValues;
+import util.datatypes.StreamValues;
 
 import java.io.Serializable;
 import java.util.*;

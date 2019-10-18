@@ -22,7 +22,7 @@ package applications.models;
 import applications.datatypes.PositionReport;
 import applications.datatypes.util.Constants;
 import applications.datatypes.util.SegmentIdentifier;
-import applications.util.Time;
+import util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

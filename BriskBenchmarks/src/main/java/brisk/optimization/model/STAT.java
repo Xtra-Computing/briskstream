@@ -1,20 +1,19 @@
 package brisk.optimization.model;
 
-import applications.Platform;
-import applications.util.CacheInfo;
-import applications.util.Configuration;
-import applications.util.OsUtils;
+import Platform;
 import brisk.execution.ExecutionNode;
 import ch.usi.overseer.OverHpc;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.CacheInfo;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.*;
 import java.util.Scanner;
 
-import static applications.Constants.STAT_Path;
-import static applications.util.OsUtils.isUnix;
+import static Constants.STAT_Path;
 
 //import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 

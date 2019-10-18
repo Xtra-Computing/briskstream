@@ -21,9 +21,9 @@ package applications.bolts.lr.model;
 import applications.datatype.PositionReport;
 import applications.datatype.util.Constants;
 import applications.datatype.util.SegmentIdentifier;
-import applications.util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Time;
 
 import java.io.Serializable;
 import java.util.HashSet;

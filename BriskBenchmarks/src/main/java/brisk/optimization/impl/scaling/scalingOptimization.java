@@ -1,6 +1,5 @@
 package brisk.optimization.impl.scaling;
 
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
@@ -15,11 +14,12 @@ import brisk.optimization.model.Constraints;
 import brisk.optimization.model.cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.*;
 
-import static applications.constants.BaseConstants.BaseComponent.SPOUT;
-import static applications.util.Constants.default_sourceRate;
+import static constants.BaseConstants.BaseComponent.SPOUT;
+import static util.Constants.default_sourceRate;
 
 
 /**

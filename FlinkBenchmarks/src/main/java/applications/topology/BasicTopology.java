@@ -1,10 +1,10 @@
 package applications.topology;
 
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.sink.BaseSink;
 import applications.spout.AbstractSpout;
-import applications.spout.helper.parser.Parser;
-import applications.util.ClassLoaderUtils;
+import helper.parser.Parser;
+import util.ClassLoaderUtils;
 import org.apache.storm.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

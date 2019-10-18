@@ -1,9 +1,9 @@
 package applications.spout;
 
 
-import applications.constants.BaseConstants;
-import applications.spout.helper.wrapper.StringStatesWrapper;
-import applications.util.OsUtils;
+import constants.BaseConstants;
+import helper.wrapper.StringStatesWrapper;
+import util.OsUtils;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

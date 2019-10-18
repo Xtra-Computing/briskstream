@@ -1,13 +1,13 @@
 package applications.spout;
 
-import applications.constants.BaseConstants;
-import applications.spout.helper.parser.Parser;
-import applications.util.OsUtils;
-import applications.util.datatypes.StreamValues;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
+import constants.BaseConstants;
+import helper.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
+import util.datatypes.StreamValues;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
+import static Constants.DEFAULT_STREAM_ID;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

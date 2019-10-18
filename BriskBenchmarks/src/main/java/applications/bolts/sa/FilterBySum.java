@@ -1,16 +1,16 @@
 package applications.bolts.sa;
 
-import applications.Constants;
-import applications.constants.streamingAnalysisConstants.Field;
-import applications.util.datatypes.StreamValues;
+import Constants;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.streamingAnalysisConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,5 @@
 package brisk.components.operators.executor;
 
-import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.Checkpointable;
 import brisk.components.operators.api.Operator;
@@ -11,6 +10,7 @@ import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.Tuple;
 import brisk.faulttolerance.Writer;
+import util.Configuration;
 
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;

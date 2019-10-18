@@ -1,26 +1,25 @@
 package applications.sink;
 
-import applications.Constants;
+import Constants;
 import applications.datatype.util.LRTopologyControl;
-import applications.sink.helper.stable_sink_helper;
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import helper.stable_sink_helper;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static applications.CONTROL.NUM_EVENTS;
-import static applications.CONTROL.enable_latency_measurement;
-import static applications.Constants.Event_Path;
-import static applications.Constants.STAT_Path;
+import static CONTROL.NUM_EVENTS;
+import static CONTROL.enable_latency_measurement;
+import static Constants.Event_Path;
 
 public class MeasureSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
@@ -66,7 +65,7 @@ public class MeasureSink extends BaseSink {
                 , size
                 , thisTaskId
                 , config.getBoolean("measure", false));
-//        applications.sink.helper.helper helper2 = new stable_sink_helper(LOG
+//        helper.helper helper2 = new stable_sink_helper(LOG
 //                , config.getInt("runtimeInSeconds")
 //                , metric_path, config.getDouble("predict", 0), size, thisTaskId);
         profile = config.getBoolean("profile");

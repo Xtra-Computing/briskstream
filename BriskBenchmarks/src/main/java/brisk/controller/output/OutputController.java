@@ -1,10 +1,10 @@
 package brisk.controller.output;
 
 import applications.datatype.internal.AccidentTuple;
-import applications.util.datatypes.StreamValues;
 import brisk.components.context.TopologyContext;
 import brisk.execution.runtime.collector.impl.MetaGroup;
 import brisk.execution.runtime.tuple.impl.Marker;
+import util.datatypes.StreamValues;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -1,7 +1,7 @@
 package applications.bolts.wc;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;

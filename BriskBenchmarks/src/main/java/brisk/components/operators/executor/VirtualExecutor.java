@@ -1,6 +1,5 @@
 package brisk.components.operators.executor;
 
-import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
@@ -10,6 +9,7 @@ import brisk.faulttolerance.Writer;
 import brisk.topology.TopologyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.Map;
 

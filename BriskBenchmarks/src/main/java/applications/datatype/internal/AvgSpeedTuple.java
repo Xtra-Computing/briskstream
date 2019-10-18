@@ -20,9 +20,9 @@ package applications.datatype.internal;
 
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
-import applications.util.Time;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
+import util.Time;
 
 /**
  * {@link AvgSpeedTuple} represents an intermediate result tuple; the average speed of all vehicle in a segment within a

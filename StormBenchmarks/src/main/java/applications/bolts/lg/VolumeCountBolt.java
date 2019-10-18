@@ -2,8 +2,8 @@ package applications.bolts.lg;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.LogProcessingConstants.Conf;
-import applications.constants.LogProcessingConstants.Field;
+import constants.LogProcessingConstants.Conf;
+import constants.LogProcessingConstants.Field;
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.storm.tuple.Fields;

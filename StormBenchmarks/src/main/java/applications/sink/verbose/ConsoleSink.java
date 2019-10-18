@@ -1,13 +1,13 @@
 package applications.sink.verbose;
 
 import applications.sink.BaseSink;
-import applications.sink.helper.stable_sink_helper_verbose;
+import helper.stable_sink_helper_verbose;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.spout.helper.Event.null_expression;
-import static applications.spout.helper.Event.split_expression;
+import static helper.Event.null_expression;
+import static helper.Event.split_expression;
 
 /**
  * @author mayconbordin

@@ -1,8 +1,6 @@
 package brisk.optimization;
 
-import applications.Platform;
-import applications.util.Configuration;
-import applications.util.OsUtils;
+import Platform;
 import brisk.components.Topology;
 import brisk.execution.ExecutionGraph;
 import brisk.optimization.impl.SchedulingPlan;
@@ -11,6 +9,8 @@ import brisk.optimization.impl.scheduling.*;
 import brisk.optimization.model.Constraints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

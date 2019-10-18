@@ -1,10 +1,10 @@
 package brisk.optimization.impl;
 
-import applications.util.Configuration;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.model.Constraints;
 import brisk.optimization.model.Variables;
+import util.Configuration;
 
 /**
  * Created by tony on 7/11/2017.

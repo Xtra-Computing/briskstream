@@ -21,7 +21,7 @@ package applications.datatypes.internal;
 
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import applications.util.Time;
+import util.Time;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
 

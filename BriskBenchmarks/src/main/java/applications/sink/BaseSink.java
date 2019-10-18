@@ -1,15 +1,15 @@
 package applications.sink;
 
-import applications.constants.BaseConstants.BaseConf;
 import applications.sink.formatter.BasicFormatter;
 import applications.sink.formatter.Formatter;
-import applications.util.ClassLoaderUtils;
-import applications.util.Configuration;
 import brisk.components.operators.base.unionBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.impl.Fields;
+import constants.BaseConstants.BaseConf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ClassLoaderUtils;
+import util.Configuration;
 
 import java.util.Map;
 

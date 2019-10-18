@@ -1,23 +1,23 @@
 package applications.bolts.wc;
 
-import applications.constants.WordCountConstants.Field;
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.WordCountConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 
 public class WordCountBolt_latency extends MapBolt {

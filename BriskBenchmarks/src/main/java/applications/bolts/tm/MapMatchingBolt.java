@@ -1,23 +1,23 @@
 package applications.bolts.tm;
 
-import applications.constants.BaseConstants;
-import applications.model.gis.GPSRecord;
-import applications.model.gis.RoadGridList;
-import applications.util.OsUtils;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.BaseConstants;
+import model.gis.GPSRecord;
+import model.gis.RoadGridList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import static applications.constants.TrafficMonitoringConstants.Conf;
-import static applications.constants.TrafficMonitoringConstants.Field;
+import static constants.TrafficMonitoringConstants.Conf;
+import static constants.TrafficMonitoringConstants.Field;
 
 /**
  * Copyright 2013 Xdata@SIAT

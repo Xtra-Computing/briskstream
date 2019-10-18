@@ -1,11 +1,11 @@
 package brisk.faulttolerance;
 
-import applications.util.OsUtils;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.tuple.impl.Marker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.io.IOException;
 import java.io.Serializable;

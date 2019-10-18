@@ -20,13 +20,13 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.internal.AvgVehicleSpeedTuple;
 import applications.datatypes.util.AvgValue;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import applications.util.Time;
+import util.Time;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 
 /**

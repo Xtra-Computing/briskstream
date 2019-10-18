@@ -6,7 +6,6 @@ import applications.bolts.lg.GeographyBolt;
 import applications.bolts.lg.StatusCountBolt;
 import applications.bolts.lg.VolumeCountBolt;
 import applications.sink.BaseSink;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
@@ -15,8 +14,9 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.LogProcessingConstants.*;
+import static constants.LogProcessingConstants.*;
 
 /**
  * https://github.com/ashrithr/LogEventsProcessing

@@ -2,10 +2,6 @@ package applications.topology;
 
 import applications.bolts.comm.FraudDetectionParserBolt;
 import applications.bolts.fd.FraudPredictorBolt;
-import applications.constants.FraudDetectionConstants;
-import applications.constants.FraudDetectionConstants.Component;
-import applications.constants.FraudDetectionConstants.Field;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
@@ -13,10 +9,14 @@ import brisk.components.grouping.ShuffleGrouping;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
+import constants.FraudDetectionConstants;
+import constants.FraudDetectionConstants.Component;
+import constants.FraudDetectionConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.FraudDetectionConstants.PREFIX;
+import static constants.FraudDetectionConstants.PREFIX;
 
 public class FraudDetection extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(FraudDetection.class);

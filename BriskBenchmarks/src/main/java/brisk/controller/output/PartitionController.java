@@ -1,8 +1,5 @@
 package brisk.controller.output;
 
-import applications.util.Configuration;
-import applications.util.OsUtils;
-import applications.util.datatypes.StreamValues;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionNode;
@@ -22,6 +19,9 @@ import brisk.queue.SPSCController;
 import org.jctools.queues.MpscArrayQueue;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
+import util.Configuration;
+import util.OsUtils;
+import util.datatypes.StreamValues;
 
 import java.io.Serializable;
 import java.util.*;

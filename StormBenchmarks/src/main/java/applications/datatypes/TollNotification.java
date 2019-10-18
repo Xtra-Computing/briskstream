@@ -22,8 +22,8 @@ package applications.datatypes;
 import applications.datatypes.util.TopologyControl;
 import org.apache.storm.tuple.Fields;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * An {@link TollNotification} represent an toll information that must be sent to vehicles entering a new segment.<br />

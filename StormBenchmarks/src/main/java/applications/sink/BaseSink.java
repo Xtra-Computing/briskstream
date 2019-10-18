@@ -2,10 +2,10 @@ package applications.sink;
 
 import applications.StormRunner;
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants.BaseConf;
+import constants.BaseConstants.BaseConf;
 import applications.sink.formatter.BasicFormatter;
 import applications.sink.formatter.Formatter;
-import applications.util.ClassLoaderUtils;
+import util.ClassLoaderUtils;
 import org.apache.storm.generated.KillOptions;
 import org.apache.storm.generated.Nimbus;
 import org.apache.storm.generated.NotAliveException;

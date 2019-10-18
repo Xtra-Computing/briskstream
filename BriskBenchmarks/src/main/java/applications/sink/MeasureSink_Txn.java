@@ -4,7 +4,7 @@ import brisk.execution.runtime.tuple.impl.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.CONTROL.enable_latency_measurement;
+import static CONTROL.enable_latency_measurement;
 
 public class MeasureSink_Txn extends MeasureSink {
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink_Txn.class);

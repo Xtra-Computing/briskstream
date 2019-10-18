@@ -21,7 +21,7 @@ package applications.bolts.lr;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.AccountBalanceRequest;
 import applications.datatypes.PositionReport;
 import applications.datatypes.util.TopologyControl;
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 
 /**

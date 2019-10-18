@@ -1,10 +1,10 @@
 package applications.sink;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants.BaseConf;
+import constants.BaseConstants.BaseConf;
 import applications.sink.formatter.BasicFormatter;
 import applications.sink.formatter.Formatter;
-import applications.util.ClassLoaderUtils;
+import util.ClassLoaderUtils;
 import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 

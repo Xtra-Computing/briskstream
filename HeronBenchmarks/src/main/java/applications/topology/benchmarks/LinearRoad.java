@@ -2,9 +2,9 @@ package applications.topology.benchmarks;
 
 
 import applications.bolts.comm.ParserBolt;
-import applications.constants.LinearRoadConstants;
-import applications.constants.LinearRoadConstants.Conf;
-import applications.constants.LinearRoadConstants.Field;
+import constants.LinearRoadConstants;
+import constants.LinearRoadConstants.Conf;
+import constants.LinearRoadConstants.Field;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static applications.constants.LinearRoadConstants.PREFIX;
+import static constants.LinearRoadConstants.PREFIX;
 
 /**
  * @author mayconbordin

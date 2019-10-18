@@ -1,13 +1,13 @@
 package applications.bolts.comm;
 
 import applications.bolts.AbstractBolt;
-import applications.util.hash.ODTDBloomFilter;
+import util.hash.ODTDBloomFilter;
 import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.VoIPSTREAMConstants.Conf;
-import static applications.constants.VoIPSTREAMConstants.Field;
+import static constants.VoIPSTREAMConstants.Conf;
+import static constants.VoIPSTREAMConstants.Field;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

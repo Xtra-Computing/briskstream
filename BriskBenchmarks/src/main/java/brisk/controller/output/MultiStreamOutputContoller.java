@@ -1,17 +1,16 @@
 package brisk.controller.output;
 
-import applications.Constants;
+import Constants;
 import applications.datatype.internal.AccidentTuple;
-import applications.util.datatypes.StreamValues;
 import brisk.components.MultiStreamComponent;
 import brisk.components.context.TopologyContext;
 import brisk.components.streaminfo;
 import brisk.execution.runtime.collector.impl.MetaGroup;
 import brisk.execution.runtime.tuple.impl.Marker;
+import util.datatypes.StreamValues;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 

@@ -3,10 +3,6 @@ package applications.topology;
 import applications.bolts.comm.StringParserBolt;
 import applications.bolts.wc.SplitSentenceBolt;
 import applications.bolts.wc.WordCountBolt;
-import applications.constants.WordCountConstants;
-import applications.constants.WordCountConstants.Component;
-import applications.constants.WordCountConstants.Field;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
@@ -14,10 +10,14 @@ import brisk.components.grouping.ShuffleGrouping;
 import brisk.controller.input.scheduler.SequentialScheduler;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
+import constants.WordCountConstants;
+import constants.WordCountConstants.Component;
+import constants.WordCountConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.WordCountConstants.PREFIX;
+import static constants.WordCountConstants.PREFIX;
 
 public class WordCount extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(WordCount.class);

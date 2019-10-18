@@ -1,12 +1,12 @@
 package applications.sink;
 
-import applications.sink.helper.stable_sink_helper;
-import applications.util.datatypes.StreamValues;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import helper.stable_sink_helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 /**
  * @author mayconbordin

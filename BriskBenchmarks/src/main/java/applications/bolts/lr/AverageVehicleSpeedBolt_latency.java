@@ -25,7 +25,6 @@ import applications.datatype.internal.AvgVehicleSpeedTuple;
 import applications.datatype.util.AvgValue;
 import applications.datatype.util.LRTopologyControl;
 import applications.datatype.util.SegmentIdentifier;
-import applications.util.Time;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
@@ -34,6 +33,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Time;
 
 import java.util.HashMap;
 import java.util.Map;

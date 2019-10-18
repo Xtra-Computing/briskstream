@@ -1,6 +1,5 @@
 package brisk.optimization.impl.scheduling;
 
-import applications.util.Configuration;
 import brisk.components.TopologyComponent;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;
@@ -12,6 +11,7 @@ import brisk.optimization.model.cache;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.util.*;
 import java.util.stream.IntStream;

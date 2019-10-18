@@ -1,16 +1,16 @@
 package applications.bolts.comm;
 
-import applications.model.cdr.CallDetailRecord;
 import brisk.components.operators.base.filterBolt;
 import brisk.execution.ExecutionGraph;
+import model.cdr.CallDetailRecord;
 import org.slf4j.Logger;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.Component;
-import static applications.constants.VoIPSTREAMConstants.Conf;
+import static constants.VoIPSTREAMConstants.Component;
+import static constants.VoIPSTREAMConstants.Conf;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

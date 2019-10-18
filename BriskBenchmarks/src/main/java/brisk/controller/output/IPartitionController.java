@@ -1,8 +1,8 @@
 package brisk.controller.output;
 
-import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.collector.impl.Meta;
 import brisk.execution.runtime.tuple.impl.Marker;
+import util.datatypes.StreamValues;
 
 import java.io.Serializable;
 import java.util.LinkedList;

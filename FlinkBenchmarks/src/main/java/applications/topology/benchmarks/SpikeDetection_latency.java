@@ -3,9 +3,9 @@ package applications.topology.benchmarks;
 import applications.bolts.comm.ParserBolt_latency;
 import applications.bolts.sd.MovingAverageBolt_latency;
 import applications.bolts.sd.SpikeDetectionBolt_latency;
-import applications.constants.SpikeDetectionConstants;
-import applications.constants.SpikeDetectionConstants.Component;
-import applications.constants.SpikeDetectionConstants.Field;
+import constants.SpikeDetectionConstants;
+import constants.SpikeDetectionConstants.Component;
+import constants.SpikeDetectionConstants.Field;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
@@ -13,11 +13,11 @@ import org.apache.storm.tuple.Fields;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
-import static applications.constants.SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THREADS;
-import static applications.constants.SpikeDetectionConstants.PREFIX;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.SpikeDetectionConstants.Conf.MOVING_AVERAGE_THREADS;
+import static constants.SpikeDetectionConstants.Conf.SPIKE_DETECTOR_THREADS;
+import static constants.SpikeDetectionConstants.PREFIX;
 
 public class SpikeDetection_latency extends BasicTopology {
     private static final Logger LOG = LoggerFactory.getLogger(SpikeDetection_latency.class);

@@ -20,17 +20,17 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.BaseConstants;
+import constants.BaseConstants;
 import applications.datatypes.AbstractLRBTuple;
 import applications.datatypes.DailyExpenditureRequest;
 import applications.datatypes.toll.MemoryTollDataStore;
 import applications.datatypes.toll.TollDataStore;
 import applications.datatypes.util.Constants;
 import applications.datatypes.util.TopologyControl;
-import applications.util.Configuration;
-import applications.util.OsUtils;
-import applications.util.events.HistoryEvent;
-import applications.util.lr.Helper;
+import util.Configuration;
+import util.OsUtils;
+import util.events.HistoryEvent;
+import util.lr.Helper;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -48,8 +48,8 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 
 /**

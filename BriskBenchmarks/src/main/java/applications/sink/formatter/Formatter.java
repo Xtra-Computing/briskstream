@@ -1,8 +1,8 @@
 package applications.sink.formatter;
 
-import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import util.Configuration;
 
 public abstract class Formatter {
     TopologyContext context;

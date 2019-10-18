@@ -2,7 +2,6 @@ package applications.topology;
 
 import applications.bolts.comm.GeneralParserBolt;
 import applications.bolts.vs.*;
-import applications.util.Configuration;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.AllGrouping;
@@ -13,10 +12,11 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.topology.BasicTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
-import static applications.constants.VoIPSTREAMConstants.*;
-import static applications.constants.VoIPSTREAMConstants.Field.*;
 import static applications.datatype.util.VSTopologyControl.*;
+import static constants.VoIPSTREAMConstants.*;
+import static constants.VoIPSTREAMConstants.Field.*;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

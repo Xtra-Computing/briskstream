@@ -1,7 +1,7 @@
 package applications.bolts.wc;
 
 import applications.bolts.AbstractBolt;
-import applications.constants.WordCountConstants.Field;
+import constants.WordCountConstants.Field;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.Constants.Marker_STREAM_ID;
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 public class SplitSentenceBolt extends AbstractBolt {
     private static final Logger LOG = LoggerFactory.getLogger(SplitSentenceBolt.class);

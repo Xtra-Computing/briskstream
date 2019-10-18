@@ -19,8 +19,8 @@
 package applications.datatype;
 
 
-import applications.util.Time;
-import applications.util.datatypes.StreamValues;
+import util.Time;
+import util.datatypes.StreamValues;
 
 /**
  * Base class for all LRB tuples.<br />

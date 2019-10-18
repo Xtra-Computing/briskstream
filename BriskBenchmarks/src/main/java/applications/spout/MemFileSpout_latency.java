@@ -1,14 +1,14 @@
 package applications.spout;
 
-import applications.constants.BaseConstants;
-import applications.spout.helper.wrapper.StringStatesWrapper;
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionGraph;
+import constants.BaseConstants;
+import helper.wrapper.StringStatesWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;

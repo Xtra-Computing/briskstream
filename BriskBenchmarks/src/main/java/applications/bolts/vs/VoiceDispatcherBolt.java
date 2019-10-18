@@ -1,16 +1,16 @@
 package applications.bolts.vs;
 
-import applications.model.cdr.CallDetailRecord;
-import applications.util.OsUtils;
-import applications.util.datatypes.StreamValues;
-import applications.util.hash.BloomFilter;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import model.cdr.CallDetailRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
+import util.datatypes.StreamValues;
+import util.hash.BloomFilter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,7 +21,7 @@ import java.lang.management.RuntimeMXBean;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.*;
+import static constants.VoIPSTREAMConstants.*;
 
 public class VoiceDispatcherBolt extends MapBolt {
     private static final Logger LOG = LoggerFactory.getLogger(VoiceDispatcherBolt.class);

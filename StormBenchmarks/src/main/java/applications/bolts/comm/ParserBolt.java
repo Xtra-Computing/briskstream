@@ -2,8 +2,8 @@ package applications.bolts.comm;
 
 
 import applications.bolts.AbstractBolt;
-import applications.spout.helper.parser.Parser;
-import applications.util.datatypes.StreamValues;
+import helper.parser.Parser;
+import util.datatypes.StreamValues;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Fields;

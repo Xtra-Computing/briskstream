@@ -1,11 +1,11 @@
 package brisk.components.operators.executor;
 
-import applications.util.Configuration;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.api.AbstractSpout;
 import brisk.execution.ExecutionNode;
 import brisk.execution.runtime.collector.OutputCollector;
 import brisk.execution.runtime.tuple.impl.Marker;
+import util.Configuration;
 
 import java.util.Map;
 

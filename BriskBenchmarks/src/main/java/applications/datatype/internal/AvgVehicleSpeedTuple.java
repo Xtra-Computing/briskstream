@@ -21,11 +21,11 @@ package applications.datatype.internal;
 
 import applications.datatype.util.ISegmentIdentifier;
 import applications.datatype.util.LRTopologyControl;
-import applications.util.Time;
 import brisk.execution.runtime.tuple.impl.Fields;
+import util.Time;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 /**
  * {@link AvgVehicleSpeedTuple} represents an intermediate result tuple; the average speed of an vehicle in a segment
@@ -43,7 +43,7 @@ import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
  *
  * @author mjsax
  */
-public final class AvgVehicleSpeedTuple extends applications.util.datatypes.StreamValues implements ISegmentIdentifier {
+public final class AvgVehicleSpeedTuple extends util.datatypes.StreamValues implements ISegmentIdentifier {
     /**
      * The index of the VID attribute.
      */

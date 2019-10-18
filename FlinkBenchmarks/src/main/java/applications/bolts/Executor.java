@@ -1,9 +1,9 @@
 package applications.bolts;
 
-import applications.tasks.fully_stateful_task;
-import applications.tasks.partial_stateful_task;
-import applications.tasks.stateful_task;
-import applications.tasks.stateless_taskImpl;
+import tasks.fully_stateful_task;
+import tasks.partial_stateful_task;
+import tasks.stateful_task;
+import tasks.stateless_taskImpl;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Fields;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class Executor extends AbstractBolt {
     private static final Logger LOG = LoggerFactory.getLogger(Executor.class);
-    protected applications.tasks.Executor executor;
+    protected tasks.Executor executor;
 
     public Executor() {
     }
@@ -40,7 +40,7 @@ public class Executor extends AbstractBolt {
         } else {
             mytask = null;
         }
-        executor = new applications.tasks.Executor(mystatelesstask, mytask);
+        executor = new tasks.Executor(mystatelesstask, mytask);
         LOG.info("I'm running with take type:" + task_type);
     }
 

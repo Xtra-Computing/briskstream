@@ -1,7 +1,5 @@
 package brisk.execution.runtime.collector;
 
-import applications.util.OsUtils;
-import applications.util.datatypes.StreamValues;
 import brisk.components.TopologyComponent;
 import brisk.components.context.TopologyContext;
 import brisk.controller.output.OutputController;
@@ -15,11 +13,13 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
+import util.datatypes.StreamValues;
 
 import java.util.LinkedList;
 import java.util.Set;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
+import static Constants.DEFAULT_STREAM_ID;
 
 /**
  * Created by shuhaozhang on 13/7/16.

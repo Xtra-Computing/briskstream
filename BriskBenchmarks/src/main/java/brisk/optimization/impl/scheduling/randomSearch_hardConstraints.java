@@ -1,7 +1,5 @@
 package brisk.optimization.impl.scheduling;
 
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.ExecutionNode;
 import brisk.optimization.impl.PlanScheduler;
@@ -10,6 +8,8 @@ import brisk.optimization.model.Constraints;
 import brisk.optimization.model.Variables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

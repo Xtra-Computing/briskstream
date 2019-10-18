@@ -1,13 +1,13 @@
 package brisk.topology;
 
-import applications.constants.BaseConstants;
 import applications.sink.BaseSink;
-import applications.spout.helper.parser.Parser;
-import applications.util.ClassLoaderUtils;
-import applications.util.Configuration;
 import brisk.components.operators.api.AbstractSpout;
+import constants.BaseConstants;
+import helper.parser.Parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ClassLoaderUtils;
+import util.Configuration;
 
 /**
  * The basic topology has only one spout and one sink, configured by the default

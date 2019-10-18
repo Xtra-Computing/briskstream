@@ -2,7 +2,7 @@ package applications.bolts.sd;
 
 
 import applications.bolts.AbstractBolt;
-import applications.constants.SpikeDetectionConstants;
+import constants.SpikeDetectionConstants;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;

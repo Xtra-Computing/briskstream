@@ -1,15 +1,15 @@
 package applications.sink.verbose;
 
 import applications.sink.BaseSink;
-import applications.sink.helper.stable_sink_helper_verbose;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import helper.stable_sink_helper_verbose;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static applications.spout.helper.Event.null_expression;
-import static applications.spout.helper.Event.split_expression;
+import static helper.Event.null_expression;
+import static helper.Event.split_expression;
 
 public class ConsoleSink extends BaseSink {
     private static final Logger LOG = LoggerFactory.getLogger(ConsoleSink.class);

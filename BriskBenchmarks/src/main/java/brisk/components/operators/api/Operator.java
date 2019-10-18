@@ -1,8 +1,5 @@
 package brisk.components.operators.api;
 
-import applications.constants.BaseConstants;
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.execution.Clock;
 import brisk.execution.ExecutionGraph;
@@ -12,17 +9,20 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Marker;
 import brisk.execution.runtime.tuple.impl.OutputFieldsDeclarer;
 import brisk.faulttolerance.State;
+import constants.BaseConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
-import static applications.constants.BaseConstants.BaseField.TEXT;
+import static Constants.DEFAULT_STREAM_ID;
+import static constants.BaseConstants.BaseField.TEXT;
 
 public abstract class Operator implements IOperator {
     /**

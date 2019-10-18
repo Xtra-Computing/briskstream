@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 import static applications.Constants.Marker_STREAM_ID;
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
-import static applications.constants.ClickAnalyticsConstants.Field;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.ClickAnalyticsConstants.Field;
 
 /**
  * User: domenicosolazzo

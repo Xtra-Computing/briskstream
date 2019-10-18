@@ -8,7 +8,7 @@ import brisk.execution.runtime.tuple.impl.Fields;
 import java.io.Serializable;
 import java.util.*;
 
-import static applications.Constants.DEFAULT_STREAM_ID;
+import static Constants.DEFAULT_STREAM_ID;
 
 /**
  * Helper class. SchemaRecord all necessary information about a spout/bolt.

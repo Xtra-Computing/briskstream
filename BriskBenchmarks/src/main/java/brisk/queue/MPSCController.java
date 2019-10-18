@@ -1,11 +1,11 @@
 package brisk.queue;
 
-import applications.util.OsUtils;
 import brisk.execution.ExecutionNode;
 import org.jctools.queues.MpscArrayQueue;
 import org.jctools.queues.MpscLinkedQueue8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
 import java.util.HashMap;
 import java.util.Map;

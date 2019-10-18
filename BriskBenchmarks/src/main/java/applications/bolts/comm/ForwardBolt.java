@@ -1,10 +1,10 @@
 package applications.bolts.comm;
 
-import applications.constants.TrafficMonitoringConstants;
 import brisk.components.operators.base.MapBolt;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.TrafficMonitoringConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

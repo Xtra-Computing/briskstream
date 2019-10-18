@@ -22,8 +22,8 @@ package applications.datatype;
 import applications.datatype.util.LRTopologyControl;
 import brisk.execution.runtime.tuple.impl.Fields;
 
-import static applications.constants.BaseConstants.BaseField.MSG_ID;
-import static applications.constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
+import static constants.BaseConstants.BaseField.MSG_ID;
+import static constants.BaseConstants.BaseField.SYSTEMTIMESTAMP;
 
 
 /**

@@ -1,17 +1,17 @@
 package applications.bolts.wc;
 
-import applications.constants.BaseConstants;
-import applications.constants.WordCountConstants.Field;
-import applications.util.Configuration;
-import applications.util.OsUtils;
 import brisk.components.context.TopologyContext;
 import brisk.components.operators.base.splitBolt;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import constants.BaseConstants;
+import constants.WordCountConstants.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
+import util.OsUtils;
 
 import java.util.HashMap;
 

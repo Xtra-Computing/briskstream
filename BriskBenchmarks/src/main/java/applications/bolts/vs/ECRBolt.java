@@ -1,20 +1,20 @@
 package applications.bolts.vs;
 
 import applications.bolts.comm.AbstractFilterBolt;
-import applications.model.cdr.CallDetailRecord;
-import applications.util.datatypes.StreamValues;
 import brisk.execution.runtime.tuple.TransferTuple;
 import brisk.execution.runtime.tuple.impl.Fields;
 import brisk.execution.runtime.tuple.impl.Tuple;
+import model.cdr.CallDetailRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static applications.constants.VoIPSTREAMConstants.Field;
 import static applications.datatype.util.VSTopologyControl.ECR24_STREAM_ID;
 import static applications.datatype.util.VSTopologyControl.ECR_STREAM_ID;
+import static constants.VoIPSTREAMConstants.Field;
 
 /**
  * Per-user received call rate.
