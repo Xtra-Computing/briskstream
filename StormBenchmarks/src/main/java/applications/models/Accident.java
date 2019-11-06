@@ -22,9 +22,9 @@ package applications.models;
 import applications.datatypes.PositionReport;
 import applications.datatypes.util.Constants;
 import applications.datatypes.util.SegmentIdentifier;
-import util.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Time;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -151,12 +151,12 @@ public class Accident implements Serializable {
         return this.over;
     }
 
-    public void setOver(boolean over) {
-        this.over = over;
-    }
-
     public void setOver(long timeinseconds) {
         this.over = true;
+    }
+
+    public void setOver(boolean over) {
+        this.over = over;
     }
 
     /**

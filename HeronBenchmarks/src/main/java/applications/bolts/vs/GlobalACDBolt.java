@@ -2,12 +2,12 @@ package applications.bolts.vs;
 
 import applications.bolts.AbstractBolt;
 import model.cdr.CallDetailRecord;
-import util.math.VariableEWMA;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.math.VariableEWMA;
 
 import static constants.VoIPSTREAMConstants.Conf;
 import static constants.VoIPSTREAMConstants.Field;

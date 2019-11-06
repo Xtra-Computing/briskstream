@@ -2,10 +2,10 @@ package applications.topology.benchmarks;
 
 import applications.bolts.comm.ParserBolt_latency;
 import applications.bolts.fd.FraudPredictor_latencyBolt;
+import applications.topology.BasicTopology;
 import constants.FraudDetectionConstants;
 import constants.FraudDetectionConstants.Component;
 import constants.FraudDetectionConstants.Field;
-import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.tuple.Fields;

@@ -1,10 +1,10 @@
 package applications.spout;
 
 import constants.BaseConstants;
-import util.OsUtils;
-import util.datatypes.StreamValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
+import util.datatypes.StreamValues;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;

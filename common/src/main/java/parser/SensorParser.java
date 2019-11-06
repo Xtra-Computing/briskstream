@@ -47,6 +47,7 @@ public class SensorParser extends Parser {
             .put("volt", VOLT_FIELD)
             .build();
     private static final long serialVersionUID = 7401525897300325924L;
+    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
     int deviceId = 0;
     LocalDateTime bkdate = formatterMillis.parseLocalDateTime("2004-02-28 01:54:46.362044");
     private String valueField;
@@ -120,8 +121,6 @@ public class SensorParser extends Parser {
         }
         return null;
     }
-
-    private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public List<StreamValues> parse(String input) {

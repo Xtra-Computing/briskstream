@@ -2,9 +2,8 @@ package util;
 
 public class STREAM {
 
-    static Object lock = new Object();
-
     static final Object lock2 = new Object();
+    static Object lock = new Object();
     static volatile int _barrier;
     static double total_bandwidth[] = new double[4];
     static String[] label = {"Copy: ", "Scale: ", "Add: ", "Triad: "};

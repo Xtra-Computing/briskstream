@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 
 public class Configuration extends HashMap {
-    private static final long serialVersionUID = -694570235097133148L;
-
     public static final String TOPOLOGY_WORKER_CHILDOPTS = "work_opt";
     public static final String METRICS_ENABLED = "metrics.enabled";
     public static final String METRICS_REPORTER = "metrics.reporter";
@@ -34,7 +32,6 @@ public class Configuration extends HashMap {
      */
 
     public static final String TOPOLOGY_BOLTS_TUPLE_TIMESTAMP_MAX_LAG_MS = "topology.bolts.tuple.timestamp.max.lag.ms";
-
     /*
      * Bolt-specific configuration for windowed bolts to specify the time interval for generating
      * watermark events. Watermark event tracks the progress of time when tuple timestamp is used.
@@ -43,8 +40,7 @@ public class Configuration extends HashMap {
     public static final String TOPOLOGY_BOLTS_WATERMARK_EVENT_INTERVAL_MS = "topology.bolts.watermark.event.interval.ms";
     public static final String TOPOLOGY_ENABLE_MESSAGE_TIMEOUTS = "topology.enable.message.timeouts";
     public static final String TOPOLOGY_MESSAGE_TIMEOUT_SECS = "topology.message.timeout.secs";
-
-
+    private static final long serialVersionUID = -694570235097133148L;
     //	public int loadTargetHz = 10000000;
     public int timeSliceLengthMs = 100;
     public boolean useLocalEventGenerator;

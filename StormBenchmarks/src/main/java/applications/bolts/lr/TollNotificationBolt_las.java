@@ -28,11 +28,11 @@ import applications.datatypes.internal.LavTuple;
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import util.datatypes.StreamValues;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.datatypes.StreamValues;
 
 import java.util.HashMap;
 import java.util.HashSet;

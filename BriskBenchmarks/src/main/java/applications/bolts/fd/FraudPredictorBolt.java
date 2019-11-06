@@ -27,6 +27,13 @@ public class FraudPredictorBolt extends filterBolt {
     private ModelBasedPredictor predictor;
 
 
+    public FraudPredictorBolt() {
+        super(LOG, new HashMap<>());
+        this.read_selectivity = 3;
+        this.output_selectivity.put(BaseConstants.BaseStream.DEFAULT, 1.0);//workaround to ensure same output selectivity
+        this.setStateful();
+    }
+
     @Override
     public Integer default_scale(Configuration conf) {
 
@@ -36,13 +43,6 @@ public class FraudPredictorBolt extends filterBolt {
         } else {
             return 1;
         }
-    }
-
-    public FraudPredictorBolt() {
-        super(LOG, new HashMap<>());
-        this.read_selectivity = 3;
-        this.output_selectivity.put(BaseConstants.BaseStream.DEFAULT, 1.0);//workaround to ensure same output selectivity
-        this.setStateful();
     }
 
     @Override

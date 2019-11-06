@@ -3,12 +3,13 @@ package applications.sink;
 import constants.BaseConstants;
 import helper.helper;
 import helper.stable_sink_helper;
-import util.OsUtils;
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
 
+import java.io.*;
 import java.util.LinkedHashMap;
 
 import static applications.Constants.System_Plan_Path;
@@ -21,15 +22,14 @@ public class MeasureSink extends BaseSink {
     int processed2 = 0;
     int size = 1;
     int tn = 0, an = 0, ab = 0, de = 0;
+    DescriptiveStatistics latency = new DescriptiveStatistics();
+    String directory;
     private long end;
     private long start;
     private boolean helper_finished = false;
     private boolean helper2_finished = false;
     private boolean profile = false;
-
     private LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
-    DescriptiveStatistics latency = new DescriptiveStatistics();
-    String directory;
 
 
     public MeasureSink() {

@@ -1,7 +1,5 @@
 package applications;
 
-import applications.topology.benchmarks.*;
-import util.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import org.apache.storm.Config;
@@ -12,6 +10,7 @@ import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.generated.StormTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.io.IOException;
 import java.util.Properties;

@@ -23,11 +23,10 @@ import java.util.Collection;
  * @author Magnus Skjegstad <magnus@skjegstad.com>
  */
 public class BloomFilter<E> implements Serializable {
-    private static final long serialVersionUID = 14L;
-
     static final Charset charset = Charset.forName("UTF-8"); // encoding used for storing hash values as strings
     static final String hashName = "MD5"; // MD5 gives good enough accuracy in most circumstances. Change to SHA1 if it's needed
     static final MessageDigest digestFunction;
+    private static final long serialVersionUID = 14L;
 
     static { // The digest method is reused between instances
         MessageDigest tmp;

@@ -19,8 +19,8 @@
 package applications.datatypes;
 
 
-import util.Time;
 import org.apache.storm.tuple.Values;
+import util.Time;
 
 
 /**

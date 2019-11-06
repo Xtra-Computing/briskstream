@@ -20,9 +20,9 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants;
 import applications.datatypes.*;
 import applications.datatypes.util.TopologyControl;
+import constants.BaseConstants;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

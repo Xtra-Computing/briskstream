@@ -22,16 +22,18 @@ import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.Event_Path;
 
 public class MeasureSink extends BaseSink {
+    protected static final LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(MeasureSink.class);
     private static final DescriptiveStatistics latency = new DescriptiveStatistics();
-    protected static final LinkedHashMap<Long, Long> latency_map = new LinkedHashMap<>();
     private static final long serialVersionUID = 6249684803036342603L;
     protected static String directory;
     protected static String algorithm;
     protected static boolean profile = false;
     protected stable_sink_helper helper;
     protected int ccOption;
+    int cnt = 0;
     private boolean LAST = false;
+
 
     public MeasureSink() {
         super(new HashMap<>());
@@ -43,7 +45,6 @@ public class MeasureSink extends BaseSink {
 //		this.input_selectivity.put(LRTopologyControl.ACCIDENTS_STREAM_ID, 1.0);
 
     }
-
 
     @Override
     public Integer default_scale(Configuration conf) {
@@ -96,8 +97,6 @@ public class MeasureSink extends BaseSink {
         LAST = thisTaskId == graph.getSink().getExecutorID();
 
     }
-
-    int cnt = 0;
 
     @Override
     public void execute(Tuple input) {

@@ -2,10 +2,9 @@ package applications.sink;
 
 import applications.StormRunner;
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants.BaseConf;
 import applications.sink.formatter.BasicFormatter;
 import applications.sink.formatter.Formatter;
-import util.ClassLoaderUtils;
+import constants.BaseConstants.BaseConf;
 import org.apache.storm.generated.KillOptions;
 import org.apache.storm.generated.Nimbus;
 import org.apache.storm.generated.NotAliveException;
@@ -15,6 +14,7 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.utils.NimbusClient;
 import org.apache.storm.utils.Utils;
 import org.slf4j.Logger;
+import util.ClassLoaderUtils;
 
 import java.util.List;
 import java.util.Map;

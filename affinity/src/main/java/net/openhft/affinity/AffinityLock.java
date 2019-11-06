@@ -220,6 +220,19 @@ public class AffinityLock implements Closeable {
         return debug;
     }
 
+    public static void reset() {
+
+        for (int cpu = 0; cpu < PROCESSORS; cpu++) {
+            final String lockFilePath = LockCheck.toFile(cpu).getAbsolutePath();
+            try {
+                Files.delete(Paths.get(lockFilePath));
+            } catch (IOException e) {
+                LOGGER.debug("Failed to delete lock file at " + lockFilePath);
+            }
+
+        }
+    }
+
     /**
      * Assigning the current thread has a side effect of preventing the lock being used again until
      * it is released.
@@ -358,18 +371,5 @@ public class AffinityLock implements Closeable {
             sb.append("CPU not available");
         }
         return sb.toString();
-    }
-
-    public static void reset() {
-
-        for (int cpu = 0; cpu < PROCESSORS; cpu++) {
-            final String lockFilePath = LockCheck.toFile(cpu).getAbsolutePath();
-            try {
-                Files.delete(Paths.get(lockFilePath));
-            } catch (IOException e) {
-                LOGGER.debug("Failed to delete lock file at " + lockFilePath);
-            }
-
-        }
     }
 }

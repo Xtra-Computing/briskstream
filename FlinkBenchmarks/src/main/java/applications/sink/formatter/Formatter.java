@@ -1,8 +1,8 @@
 package applications.sink.formatter;
 
-import util.Configuration;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Tuple;
+import util.Configuration;
 
 /**
  * @author Maycon Viana Bordin <mayconbordin@gmail.com>

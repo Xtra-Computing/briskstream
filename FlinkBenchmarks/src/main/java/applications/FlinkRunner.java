@@ -1,9 +1,9 @@
 package applications;
 
 import applications.topology.benchmarks.*;
-import util.Configuration;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import constants.*;
 import org.apache.flink.storm.api.FlinkLocalCluster;
 import org.apache.flink.storm.api.FlinkSubmitter;
 import org.apache.flink.storm.api.FlinkTopology;
@@ -12,6 +12,7 @@ import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.InvalidTopologyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Configuration;
 
 import java.io.IOException;
 import java.util.Properties;

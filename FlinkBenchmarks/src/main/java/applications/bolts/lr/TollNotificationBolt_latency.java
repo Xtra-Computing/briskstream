@@ -20,7 +20,6 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.TollNotification;
 import applications.datatypes.internal.AccidentTuple;
@@ -30,6 +29,7 @@ import applications.datatypes.util.Constants;
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
+import constants.BaseConstants;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
@@ -40,9 +40,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static constants.BaseConstants.BaseField.MSG_ID;
 import static applications.datatypes.util.TopologyControl.CAR_COUNTS_STREAM_ID;
 import static applications.datatypes.util.TopologyControl.TOLL_ASSESSMENTS_STREAM_ID;
+import static constants.BaseConstants.BaseField.MSG_ID;
 
 /**
  * {@link TollNotificationBolt_latency} calculates the toll for each vehicle and reports it back to the vehicle if a vehicle

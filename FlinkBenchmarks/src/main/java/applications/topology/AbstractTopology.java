@@ -1,15 +1,15 @@
 package applications.topology;
 
-import constants.BaseConstants.BaseConf;
 import applications.sink.BaseSink;
 import applications.spout.AbstractSpout;
-import util.ClassLoaderUtils;
-import util.Configuration;
+import constants.BaseConstants.BaseConf;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;
 import org.apache.storm.topology.TopologyBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ClassLoaderUtils;
+import util.Configuration;
 
 import java.util.LinkedList;
 

@@ -2,12 +2,12 @@ package applications.topology.benchmarks;
 
 
 import applications.bolts.comm.ParserBolt;
-import constants.LinearRoadConstants;
-import constants.LinearRoadConstants.Conf;
-import constants.LinearRoadConstants.Field;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
+import constants.LinearRoadConstants;
+import constants.LinearRoadConstants.Conf;
+import constants.LinearRoadConstants.Field;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;
 import org.apache.storm.tuple.Fields;

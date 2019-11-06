@@ -20,12 +20,12 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants;
 import applications.datatypes.internal.AvgSpeedTuple;
 import applications.datatypes.internal.AvgVehicleSpeedTuple;
 import applications.datatypes.internal.LavTuple;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
+import constants.BaseConstants;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;

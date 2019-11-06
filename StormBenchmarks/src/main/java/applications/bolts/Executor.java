@@ -1,9 +1,5 @@
 package applications.bolts;
 
-import tasks.fully_stateful_task;
-import tasks.partial_stateful_task;
-import tasks.stateful_task;
-import tasks.stateless_taskImpl;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.tuple.Fields;
@@ -11,6 +7,10 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tasks.fully_stateful_task;
+import tasks.partial_stateful_task;
+import tasks.stateful_task;
+import tasks.stateless_taskImpl;
 
 import java.util.Map;
 

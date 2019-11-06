@@ -20,9 +20,9 @@ package applications.datatypes.internal;
 
 import applications.datatypes.util.ISegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import util.Time;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
+import util.Time;
 
 /**
  * {@link LavTuple} represents an intermediate result tuple; the "latest average velocity" (LAV) of a segment within the

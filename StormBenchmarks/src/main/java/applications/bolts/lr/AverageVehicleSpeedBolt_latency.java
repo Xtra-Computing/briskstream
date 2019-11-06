@@ -20,19 +20,19 @@
 package applications.bolts.lr;
 
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants;
 import applications.datatypes.PositionReport;
 import applications.datatypes.internal.AvgVehicleSpeedTuple;
 import applications.datatypes.util.AvgValue;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
-import util.Time;
+import constants.BaseConstants;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.Time;
 
 import java.util.HashMap;
 import java.util.Map;

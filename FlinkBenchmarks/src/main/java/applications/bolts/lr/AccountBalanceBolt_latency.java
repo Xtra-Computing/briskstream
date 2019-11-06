@@ -21,12 +21,12 @@ package applications.bolts.lr;
 
 
 import applications.bolts.AbstractBolt;
-import constants.BaseConstants;
 import applications.datatypes.AccountBalanceRequest;
 import applications.datatypes.PositionReport;
 import applications.datatypes.util.TopologyControl;
 import applications.models.AccountBalance;
 import applications.models.VehicleAccount;
+import constants.BaseConstants;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;

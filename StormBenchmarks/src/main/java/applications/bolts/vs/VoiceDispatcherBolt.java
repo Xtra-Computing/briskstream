@@ -2,13 +2,13 @@ package applications.bolts.vs;
 
 import applications.bolts.AbstractBolt;
 import model.cdr.CallDetailRecord;
-import util.OsUtils;
-import util.hash.BloomFilter;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.OsUtils;
+import util.hash.BloomFilter;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -4,12 +4,12 @@ package applications.spout;
 
 import constants.BaseConstants;
 import constants.BaseConstants.BaseStream;
-import util.Configuration;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
+import util.Configuration;
 
 import java.util.HashMap;
 import java.util.Map;

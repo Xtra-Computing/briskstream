@@ -115,6 +115,10 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      */
     final static int NO_INDEX = -2;
     /**
+     * Value to use if keyIndexShift is 0.
+     */
+    final static Object DUMMY_VALUE = new Object();
+    /**
      * Maximum allowed load factor, since element index bits
      * cannot exceed number of hash bits (other bits are used to Store hashcode).
      */
@@ -149,10 +153,6 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      */
     private final static int CONTROL_END = 0xC0000000;
     /**
-     * Value to use if keyIndexShift is 0.
-     */
-    final static Object DUMMY_VALUE = new Object();
-    /**
      * The maximum capacity, used if a higher value is implicitly specified
      * by either of the constructors with arguments.
      * MUST be a power of two <= 1<<30.
@@ -178,13 +178,6 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      */
     private final float loadFactor;
     /**
-     * True if this map contains null key.
-     * This makes iteration faster:
-     * null key in table == empty cell,
-     * no need for index table lookup.
-     */
-    private transient boolean nullKeyPresent;
-    /**
      * The number of key-value mappings contained in this map.
      */
     transient int size = 0;
@@ -200,11 +193,6 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      */
     transient int keyIndexShift;
     /**
-     * Index of the first not occupied position in array.
-     * All elements starting with this index are free.
-     */
-    private transient int firstUnusedIndex = 0;
-    /**
      * The next fieldSize value at which to resize (capacity * load factor).
      *
      * @serial
@@ -218,6 +206,18 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      * the HashMap fail-fast.  (See ConcurrentModificationException).
      */
     transient int modCount;
+    /**
+     * True if this map contains null key.
+     * This makes iteration faster:
+     * null key in table == empty cell,
+     * no need for index table lookup.
+     */
+    private transient boolean nullKeyPresent;
+    /**
+     * Index of the first not occupied position in array.
+     * All elements starting with this index are free.
+     */
+    private transient int firstUnusedIndex = 0;
     /**
      * Array of complex indices.
      * <profiling>
@@ -1356,10 +1356,10 @@ public class QuickHashMap<K, V> extends HashMap<K, V>
      */
     final class HashIterator<E> implements Iterator<E> {
         final boolean simpleOrder = !(QuickHashMap.this instanceof FastLinkedHashMap<?, ?>);
+        final int iteratorType;
         int nextIndex = iterateFirst();
         int lastIndex = NO_INDEX;
         int expectedModCount = modCount; // For fast-fail
-        final int iteratorType;
 
         HashIterator(int iteratorType) {
             this.iteratorType = iteratorType;
