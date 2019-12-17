@@ -23,7 +23,6 @@ import static engine.profiler.MeasureTools.*;
 public abstract class TransactionalBolt<T> extends MapBolt implements Checkpointable {
     protected static final Logger LOG = LoggerFactory.getLogger(TransactionalBolt.class);
     private static final long serialVersionUID = -3899457584889441657L;
-
     public TxnManager transactionManager;
     protected int thread_Id;
     protected int tthread;
@@ -48,10 +47,11 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         OsUtils.configLOG(LOG);
     }
 
-
     protected abstract void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException;
 
     protected void nocc_execute(Tuple in) throws DatabaseException, InterruptedException {
+        BEGIN_TOTAL_TIME_MEASURE(thread_Id);//start measure prepare and total.
+
         PRE_EXECUTE(in);
 
         //begin transaction processing.
@@ -148,6 +148,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+        BEGIN_TOTAL_TIME_MEASURE(thread_Id);//start measure prepare and total.
 
         //pre stream processing phase..
 
@@ -172,19 +173,9 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
     protected long _bid;
     protected Object input_event;
 
-
     int sum = 0;
-//
-//    private int dummy_compute() {
-//
-//        for (int j = 0; j < COMPUTE_COMPLEXITY; ++j)
-//            sum += System.nanoTime();
-//        return sum;
-//    }
 
     protected void PRE_EXECUTE(Tuple in) {
-
-        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
 
         if (enable_latency_measurement)
             timestamp = in.getLong(1);
@@ -194,10 +185,6 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         _bid = in.getBID();
 
         input_event = in.getValue(0);
-
-//        int rt = 0;
-//        if (enable_pre_compute)
-//            rt = dummy_compute();
 
         txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
 
@@ -242,6 +229,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         sink.configPrefix = this.getConfigPrefix();
         sink.prepare(config, context, collector);
         SOURCE_CONTROL.getInstance().config(tthread);
+
     }
 
 }

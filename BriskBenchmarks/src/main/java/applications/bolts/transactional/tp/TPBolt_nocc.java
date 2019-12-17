@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.combo_bid_size;
-import static engine.profiler.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_ACCESS_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_ACCESS_TIME_MEASURE_ACC;
 
 
 /**
@@ -61,9 +61,9 @@ public class TPBolt_nocc extends TPBolt {
 
     private void txn_process(LREvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
         TXN_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         TXN_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 
 

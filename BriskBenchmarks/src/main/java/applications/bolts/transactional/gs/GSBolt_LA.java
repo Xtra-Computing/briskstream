@@ -55,30 +55,18 @@ public abstract class GSBolt_LA extends GSBolt {
 
         //txn process phase.
         for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-
             MicroEvent event = (MicroEvent) input_event;
-
             boolean flag = event.READ_EVENT();
-
             if (flag) {//read
-
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
                 read_request_noLock(event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
-
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                BEGIN_ACCESS_TIME_MEASURE(thread_Id);
                 READ_CORE(event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
-
+                END_ACCESS_TIME_MEASURE_ACC(thread_Id);
             } else {
-
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
                 write_request_noLock(event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
-
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                BEGIN_ACCESS_TIME_MEASURE(thread_Id);
                 WRITE_CORE(event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+                END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             }
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);

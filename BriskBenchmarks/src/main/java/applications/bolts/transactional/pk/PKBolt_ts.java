@@ -55,7 +55,7 @@ public class PKBolt_ts extends PKBolt {
 //    private void event_handle(long bid, Set<Integer> deviceID) throws DatabaseException {
 //        BEGIN_WRITE_HANDLE_TIME_MEASURE(thread_Id);
 //
-//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//        BEGIN_MEASURE(thread_Id);
 //        PKEvent input_event = generatePKEvent(bid, deviceID, value);
 //        END_PREPARE_TIME_MEASURE(thread_Id);
 //
@@ -101,7 +101,7 @@ public class PKBolt_ts extends PKBolt {
             //Perform computation on each input_event and emit.
 
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
             //Spike detection.
             for (PKEvent event : PKEvents) {
                 for (int i = 0; i < SIZE_EVENT; i++) {
@@ -113,7 +113,7 @@ public class PKBolt_ts extends PKBolt {
                 }
             }
 
-            END_COMPUTE_TIME_MEASURE(thread_Id);
+            END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
 
             final Marker marker = in.getMarker();

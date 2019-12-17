@@ -109,7 +109,7 @@ public class OBBolt_ts extends OBBolt {
 
             END_TP_TIME_MEASURE(thread_Id);// overhead_total TP time.
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 
             BUYING_REQUEST_CORE();
 

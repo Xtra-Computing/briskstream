@@ -67,31 +67,30 @@ public abstract class OBBolt_LA extends OBBolt {
 
             if (event instanceof BuyingEvent) {
 
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                BUYING_REQUEST_NOLOCK((BuyingEvent) event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                BUYING_REQUEST_NOLOCK((BuyingEvent) event, txn_context[(int) (i - _bid)]);
+
+                BEGIN_ACCESS_TIME_MEASURE(thread_Id);
                 BUYING_REQUEST_CORE((BuyingEvent) event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+                END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             } else if (event instanceof AlertEvent) {
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                ALERT_REQUEST_NOLOCK((AlertEvent) event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                ALERT_REQUEST_NOLOCK((AlertEvent) event, txn_context[(int) (i - _bid)]);
+
+
+                BEGIN_ACCESS_TIME_MEASURE(thread_Id);
                 ALERT_REQUEST_CORE((AlertEvent) event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+                END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             } else {
-                BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
-                TOPPING_REQUEST_NOLOCK((ToppingEvent) event, txn_context[(int) (i - _bid)]);
-                END_TP_CORE_TIME_MEASURE_ACC(thread_Id);
 
-                BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+                TOPPING_REQUEST_NOLOCK((ToppingEvent) event, txn_context[(int) (i - _bid)]);
+
+
+                BEGIN_ACCESS_TIME_MEASURE(thread_Id);
                 TOPPING_REQUEST_CORE((ToppingEvent) event);
-                END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+                END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             }
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);

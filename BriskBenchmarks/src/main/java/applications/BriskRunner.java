@@ -485,26 +485,26 @@ public class BriskRunner extends abstractRunner {
             double txn_processing = 0;
 
 
-            double useful_time = 0;
+            double useful_ratio = 0;
             double abort_time = 0;
             double ts_alloc_time = 0;
-            double index_time = 0;
-            double wait_time = 0;
-            double lock_time = 0;
+            double index_ratio = 0;
+            double wait_ratio = 0;
+            double lock_ratio = 0;
             double compute_time = 0;
 //            double sum = 0;
 
             for (int i = 0; i < tthread; i++) {
 
-                useful_time += metrics.useful_ratio[i].getMean();
+                useful_ratio += metrics.useful_ratio[i].getMean();
 //                abort_time += metrics.abort_ratio[i].getPercentile(50);
 //                ts_alloc_time += metrics.ts_allocation[i].getPercentile(50);
-                index_time += metrics.index_ratio[i].getMean();
-                wait_time += metrics.sync_ratio[i].getMean();
+                index_ratio += metrics.index_ratio[i].getMean();
+                wait_ratio += metrics.sync_ratio[i].getMean();
 
 
                 if (config.getInt("CCOption", 0) != CCOption_TStream)
-                    lock_time += metrics.lock_ratio[i].getMean();
+                    lock_ratio += metrics.lock_ratio[i].getMean();
 
 //                compute_time += metrics.exe_ratio[i].getMean();
 //                sum += metrics.useful_ratio[i].getN();
@@ -518,12 +518,12 @@ public class BriskRunner extends abstractRunner {
 
             //get average ratio per thread.
 
-            useful_time = useful_time / tthread;
+            useful_ratio = useful_ratio / tthread;
             abort_time = abort_time / tthread;
             ts_alloc_time = ts_alloc_time / tthread;
-            index_time = index_time / tthread;
-            wait_time = wait_time / tthread;
-            lock_time = lock_time / tthread;
+            index_ratio = index_ratio / tthread;
+            wait_ratio = wait_ratio / tthread;
+            lock_ratio = lock_ratio / tthread;
             compute_time = compute_time / tthread;
 
             stream_processing = stream_processing / tthread;
@@ -556,21 +556,21 @@ public class BriskRunner extends abstractRunner {
                 w.write(",");
                 w.write(String.format("%.2f", stream_processing));//average stream processing.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing * (useful_time)));//average txn processing * useful = state access.
+                w.write(String.format("%.2f", txn_processing * (useful_ratio)));//average txn processing * useful = state access.
                 w.write(",");
-                w.write(String.format("%.2f", txn_processing * (1 - (useful_time))));//state access overhead.
+                w.write(String.format("%.2f", txn_processing * (1 - (useful_ratio))));//state access overhead.
                 w.write(",");
                 w.write(String.format("%.2f", txn_processing));//average txn processing time.
                 w.write(",");
-                w.write(String.format("%.2f", useful_time));//useful ratio.
+                w.write(String.format("%.2f", useful_ratio));//useful ratio.
                 w.write(",");
                 w.write(String.format("%.2f", abort_time));//abort ratio.
                 w.write(",");
-                w.write(String.format("%.2f", wait_time));//sync ratio.
+                w.write(String.format("%.2f", wait_ratio));//sync ratio.
                 w.write(",");
-                w.write(String.format("%.2f", lock_time));//lock ratio.
+                w.write(String.format("%.2f", lock_ratio));//lock ratio.
                 w.write(",");
-                w.write(String.format("%.2f", 1 - (useful_time + abort_time + wait_time + lock_time)));//others ratio.
+                w.write(String.format("%.2f", 1 - (useful_ratio + abort_time + wait_ratio + lock_ratio)));//others ratio.
                 w.write(",");
                 w.write(String.format("%.2f", rt));//throughput
                 w.write("\n");
@@ -615,12 +615,12 @@ public class BriskRunner extends abstractRunner {
             LOG.info("TXN Processing on one input_event:" + String.format("%.2f", txn_processing));
 
             LOG.info("===BREAKDOWN TXN===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_time));
+            LOG.info("Useful time:\t" + String.format("%.2f", useful_ratio));
 //            LOG.info("Abort time:\t" + String.format("%.2f", abort_time));
 //            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time ));
-            LOG.info("Index_time time:\t" + String.format("%.2f", index_time));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_time));
-            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_time));
+            LOG.info("Index_time time:\t" + String.format("%.2f", index_ratio));
+            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_ratio));
+            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_ratio));
 
             LOG.info("====Details ====");
             LOG.info("\n" + sb.toString());

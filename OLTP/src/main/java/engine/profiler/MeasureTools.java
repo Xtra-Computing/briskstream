@@ -17,64 +17,133 @@ public class MeasureTools {
     static long[] prepare_time = new long[kMaxThreadNum];
     static long[] post_time_start = new long[kMaxThreadNum];
     static long[] post_time = new long[kMaxThreadNum];
-    static long[] compute_start = new long[kMaxThreadNum];
+    //control.
+    public static long[] measure_counts = new long[kMaxThreadNum];
     static long[] compute_end = new long[kMaxThreadNum];
-    static double[] compute_total = new double[kMaxThreadNum];
+    public static boolean[] profile_start = new boolean[kMaxThreadNum];
     static long[] index_start = new long[kMaxThreadNum];
     static long[] index_time = new long[kMaxThreadNum];
     static long[] abort_start = new long[kMaxThreadNum];
     static long[] abort_time = new long[kMaxThreadNum];
     static long[] ts_allocate_start = new long[kMaxThreadNum];
     static long[] ts_allocate = new long[kMaxThreadNum];
+
     //t-stream special.
     static long[] pre_txn_start = new long[kMaxThreadNum];
     static long[] pre_txn_total = new long[kMaxThreadNum];
     static long[] write_handle_start = new long[kMaxThreadNum];
     static long[] write_handle = new long[kMaxThreadNum];
-
     static long[] tp_start = new long[kMaxThreadNum];
     static long[] tp = new long[kMaxThreadNum];//tp=tp_core + tp_submit
     static long[] tp_core_start = new long[kMaxThreadNum];
     static double[] tp_core = new double[kMaxThreadNum];
     static long[] tp_submit_start = new long[kMaxThreadNum];
     static double[] tp_submit = new double[kMaxThreadNum];
-    static long[] sync = new long[kMaxThreadNum];//further sync
-    static long[] tp_core_event = new long[kMaxThreadNum];
+    static long[] access_start = new long[kMaxThreadNum];
+    static double[] access_total = new double[kMaxThreadNum];
 
-    public static long[] measure_counts = new long[kMaxThreadNum];
-
-    public static void BEGIN_TRANSACTION_TIME_MEASURE(int thread_id) {
-
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound)
-            txn_start[thread_id] = System.nanoTime();
+    public MeasureTools() {
+        for (int i = 0; i < kMaxThreadNum; i++) {
+            profile_start[i] = false;
+            total_start[i] = 0;
+            txn_lock[i] = 0;
+            txn_wait[i] = 0;
+        }
     }
 
-    public static void BEGIN_PREPARE_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            prepare_start[thread_id] = System.nanoTime();
-            if (total_start[thread_id] == 0) {//first time measurement.
-                total_start[thread_id] = prepare_start[thread_id];
-            }
+    public static void BEGIN_TOTAL_TIME_MEASURE(int thread_id) {
+        if (CONTROL.enable_profile) {
+            if (measure_counts[thread_id] >= CONTROL.MeasureStart && measure_counts[thread_id] < CONTROL.MeasureBound) {
+                profile_start[thread_id] = true;
+                prepare_start[thread_id] = System.nanoTime();
+                if (total_start[thread_id] == 0) {//first time measurement.
+                    total_start[thread_id] = prepare_start[thread_id];
+                }
+            } else
+                profile_start[thread_id] = false;
         }
     }
 
     public static void END_PREPARE_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
+        if (profile_start[thread_id]) {
             prepare_time[thread_id] = System.nanoTime() - prepare_start[thread_id];
         }
     }
 
 
+    public static void BEGIN_TRANSACTION_TIME_MEASURE(int thread_id) {
+
+        if (profile_start[thread_id])
+            txn_start[thread_id] = System.nanoTime();
+    }
+
+    public static void END_TRANSACTION_TIME_MEASURE(int thread_id) {
+
+        if (profile_start[thread_id] && !Thread.currentThread().isInterrupted()) {
+            txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
+            metrics.index_ratio[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
+            metrics.useful_ratio[thread_id].addValue(access_total[thread_id] / txn_total[thread_id]);
+            //should be zero under NO_LOCK.
+            metrics.lock_ratio[thread_id].addValue(txn_lock[thread_id] / txn_total[thread_id]);
+            metrics.sync_ratio[thread_id].addValue(txn_wait[thread_id] / txn_total[thread_id]);
+        }
+    }
+
+    public static void BEGIN_INDEX_TIME_MEASURE(int thread_id) {
+        if (profile_start[thread_id])
+            index_start[thread_id] = System.nanoTime();
+    }
+
+    public static void END_INDEX_TIME_MEASURE_ACC(int thread_id, boolean is_retry_) {
+        if (profile_start[thread_id]) {
+            if (!is_retry_)
+                index_time[thread_id] += System.nanoTime() - index_start[thread_id];
+        }
+    }
+
+    public static void BEGIN_ACCESS_TIME_MEASURE(int thread_id) {
+        if (profile_start[thread_id])
+            access_start[thread_id] = System.nanoTime();
+    }
+
+    public static void END_ACCESS_TIME_MEASURE_ACC(int thread_id) {
+        if (profile_start[thread_id]) {
+            access_total[thread_id] += System.nanoTime() - access_start[thread_id];
+        }
+    }
+
     public static void BEGIN_POST_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound)
+        if (profile_start[thread_id])
             post_time_start[thread_id] = System.nanoTime();
     }
 
     public static void END_POST_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
+        if (profile_start[thread_id]) {
             post_time[thread_id] = System.nanoTime() - post_time_start[thread_id];
         }
     }
+
+    //compute per event time spent.
+    public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id, int combo_bid_size) {
+
+        if (profile_start[thread_id] && !Thread.currentThread().isInterrupted()) {
+            long overall_processing_time_per_batch = System.nanoTime() - total_start[thread_id];
+            metrics.overhead_total[thread_id].addValue((overall_processing_time_per_batch - txn_total[thread_id]
+                    - post_time[thread_id] - prepare_time[thread_id]) / combo_bid_size);
+            metrics.stream_total[thread_id].addValue((post_time[thread_id] + prepare_time[thread_id]) / combo_bid_size);
+            metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
+
+            //clean.
+            access_total[thread_id] = 0;
+            index_time[thread_id] = 0;
+
+            tp_core[thread_id] = 0;
+            txn_lock[thread_id] = 0;
+            txn_wait[thread_id] = 0;
+        }
+        measure_counts[thread_id]++;
+    }
+
 
     public static void END_POST_TIME_MEASURE_ACC(int thread_id) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
@@ -100,7 +169,7 @@ public class MeasureTools {
     public static void END_LOCK_TIME_MEASURE_NOCC(int thread_id) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
             long rt = System.nanoTime() - txn_lock_start[thread_id];
-            txn_lock[thread_id] += rt - tp_core_event[thread_id] - index_time[thread_id];
+            txn_lock[thread_id] += rt - tp_core[thread_id] - index_time[thread_id];
         }
     }
 
@@ -114,39 +183,26 @@ public class MeasureTools {
             txn_wait[thread_id] += (System.nanoTime() - txn_wait_start[thread_id] - lock_time_measure);
     }
 
-    public static void BEGIN_COMPUTE_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound)
-            compute_start[thread_id] = System.nanoTime();
-    }
 
-    public static void END_COMPUTE_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            compute_total[thread_id] = System.nanoTime() - compute_start[thread_id];
-        }
-    }
+//    public static void END_COMPUTE_TIME_MEASURE(int thread_id) {
+//        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
+//            access_total[thread_id] = System.nanoTime() - access_start[thread_id];
+//        }
+//    }
 
-    public static void END_COMPUTE_TIME_MEASURE_ACC(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            compute_total[thread_id] += System.nanoTime() - compute_start[thread_id];
-        }
-    }
 
     //needs to include write compute time also for TS.
     public static void END_COMPUTE_TIME_MEASURE_TS(int thread_id, double write_useful_time, int read_size, int write_size) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
             if (read_size == 0) {
-                compute_total[thread_id] = (write_useful_time * write_size);
+                access_total[thread_id] = (write_useful_time * write_size);
             } else {
-                compute_total[thread_id] = (double) (System.nanoTime() - compute_start[thread_id]) + (write_useful_time * write_size);
+                access_total[thread_id] = (double) (System.nanoTime() - access_start[thread_id]) + (write_useful_time * write_size);
 
             }
         }
     }
 
-    public static void BEGIN_INDEX_TIME_MEASURE(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound)
-            index_start[thread_id] = System.nanoTime();
-    }
 
     public static void END_INDEX_TIME_MEASURE(int thread_id, boolean is_retry_) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
@@ -155,12 +211,6 @@ public class MeasureTools {
         }
     }
 
-    public static void END_INDEX_TIME_MEASURE_ACC(int thread_id, boolean is_retry_) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            if (!is_retry_)
-                index_time[thread_id] += System.nanoTime() - index_start[thread_id];
-        }
-    }
 
     public static void BEGIN_ABORT_TIME_MEASURE(int thread_id) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound)
@@ -230,20 +280,6 @@ public class MeasureTools {
             tp_core_start[thread_id] = System.nanoTime();
     }
 
-    public static void END_TP_CORE_TIME_MEASURE_ACC(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            tp_core[thread_id] += System.nanoTime() - tp_core_start[thread_id];
-        }
-    }
-
-    public static void END_TP_CORE_TIME_MEASURE_NOCC(int thread_id) {
-        if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-            long duration = System.nanoTime() - tp_core_start[thread_id];
-            tp_core[thread_id] += duration;
-//                tp_core_event[thread_id] = duration;
-        }
-    }
-
     public static void END_TP_CORE_TIME_MEASURE_TS(int thread_id, int size) {
         if (CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
             tp_core[thread_id] = (System.nanoTime() - tp_core_start[thread_id] - tp_submit[thread_id]);
@@ -260,54 +296,6 @@ public class MeasureTools {
             tp[thread_id] = System.nanoTime() - tp_start[thread_id];
     }
 
-    public static void END_TRANSACTION_TIME_MEASURE(int thread_id) {
-
-        if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-
-            txn_total[thread_id] = (System.nanoTime() - txn_start[thread_id]);
-
-            metrics.useful_ratio[thread_id].addValue((tp_core[thread_id] + compute_total[thread_id]) / txn_total[thread_id]);
-
-            metrics.index_ratio[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
-
-            metrics.lock_ratio[thread_id].addValue((txn_lock[thread_id]) / txn_total[thread_id]);
-
-            metrics.sync_ratio[thread_id].addValue((txn_wait[thread_id]) / txn_total[thread_id]);
-
-            metrics.abort_ratio[thread_id].addValue(abort_time[thread_id] / txn_total[thread_id]);
-
-
-        }
-    }
-
-    //compute per event time spent.
-    public static void END_TOTAL_TIME_MEASURE_ACC(int thread_id, int combo_bid_size) {
-
-
-        if (!Thread.currentThread().isInterrupted() && CONTROL.enable_profile && CONTROL.MeasureStart <= measure_counts[thread_id] && measure_counts[thread_id] < CONTROL.MeasureBound) {
-
-            long current_time = System.nanoTime();
-            long overall_processing_time_per_batch = current_time - total_start[thread_id];
-
-            total_start[thread_id] = current_time;
-
-            metrics.overhead_total[thread_id].addValue((overall_processing_time_per_batch - txn_total[thread_id] - post_time[thread_id] - prepare_time[thread_id]) / combo_bid_size);
-
-            metrics.stream_total[thread_id].addValue((post_time[thread_id] + prepare_time[thread_id]) / combo_bid_size);
-//                metrics.overhead_total[thread_id].addValue((double) (prepare_time[thread_id] + post_time[thread_id]) / combo_bid_size);
-            metrics.txn_total[thread_id].addValue(txn_total[thread_id] / combo_bid_size);
-
-            //clean.
-            compute_total[thread_id] = 0;
-            tp_core[thread_id] = 0;
-            index_time[thread_id] = 0;
-            txn_lock[thread_id] = 0;
-            txn_wait[thread_id] = 0;
-            post_time[thread_id] = 0;
-        }
-        measure_counts[thread_id]++;
-    }
-
 
     static long end_time;
 
@@ -321,13 +309,11 @@ public class MeasureTools {
 
             txn_total[thread_id] = ((end_time - txn_start[thread_id] + pre_txn_total[thread_id]));
 
-            metrics.useful_ratio[thread_id].addValue((compute_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
+            metrics.useful_ratio[thread_id].addValue((access_total[thread_id] + tp_core[thread_id]) / txn_total[thread_id]);
 
             metrics.index_ratio[thread_id].addValue(index_time[thread_id] / txn_total[thread_id]);
 
             metrics.lock_ratio[thread_id].addValue(0);
-
-            metrics.abort_ratio[thread_id].addValue(0);
 
             metrics.sync_ratio[thread_id].addValue((tp[thread_id] - tp_core[thread_id]) / txn_total[thread_id]);
 
@@ -353,7 +339,7 @@ public class MeasureTools {
 
             //clean;
             total_start[thread_id] = current_time;
-            compute_total[thread_id] = 0;
+            access_total[thread_id] = 0;
             index_time[thread_id] = 0;
             pre_txn_total[thread_id] = 0;
             write_handle[thread_id] = 0;

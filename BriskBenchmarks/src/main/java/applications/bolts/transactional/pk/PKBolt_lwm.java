@@ -56,7 +56,7 @@ public class PKBolt_lwm extends PKBolt {
 //        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 //        txn_context = new TxnContext(thread_Id, this.fid, bid);
 //
-//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//        BEGIN_MEASURE(thread_Id);
 //        PKEvent input_event = generatePKEvent(bid, deviceID, value);
 //        END_PREPARE_TIME_MEASURE(thread_Id);
 //
@@ -79,7 +79,7 @@ public class PKBolt_lwm extends PKBolt {
 //        PK_request(input_event, this.fid, bid);
 //        END_TP_TIME_MEASURE(thread_Id);
 //
-//        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+//        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 //
 //        PK_core(input_event);
 //

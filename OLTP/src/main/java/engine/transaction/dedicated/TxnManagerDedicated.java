@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 import static engine.Meta.MetaTypes.kMaxAccessNum;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_INDEX_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_INDEX_TIME_MEASURE_ACC;
 
 /**
  * TxnManagerDedicated is a thread-local structure.
@@ -389,7 +389,7 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean SelectKeyRecord(TxnContext txn_context, String table_name, String primary_key, SchemaRecordRef record_, AccessType access_type) throws DatabaseException, InterruptedException {
 
         BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
-        TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);
+        TableRecord t_record = storageManager_.getTable(table_name).SelectKeyRecord(primary_key);//index look up.
         END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 //
         if (t_record != null) {

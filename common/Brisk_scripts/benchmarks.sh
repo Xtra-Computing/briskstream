@@ -289,7 +289,7 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "MultiPartition" "Read_Write_Mixture" "Read_Only" "Write_Intensive"  "Working_Set_Size" "DB_SIZE"  "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "Write_Intensive" "Working_Set_Size"
+for benchmark in "StreamLedger"
 do
     app="StreamLedger"
     machine=3 #RTM.
@@ -377,24 +377,21 @@ do
                         for tt in 10 40 #1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 1 2 3 4
+                            for CCOption in 0 #1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 1
-                                        do
-                                            ratio_of_multi_partition=0.25
-                                            number_partitions=4
-#                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
-                                        done
+                                        ratio_of_multi_partition=0.25
+                                        number_partitions=4
+                                        StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                     done
                                 done
                             done
                          done
-                        for tt in 40
+                        for tt in 10 40
                         do
                             for CCOption in 3 #0 1 2 3 4
                             do
@@ -403,7 +400,7 @@ do
                                     for ratio_of_read in 1
                                     do
                                         TP=$tt
-                                        for checkpoint in 10 50 100 250 500 750 1000
+                                        for checkpoint in 500 #10 50 100 250 500 750 1000
                                         do
                                             ratio_of_multi_partition=0.25
                                             number_partitions=4

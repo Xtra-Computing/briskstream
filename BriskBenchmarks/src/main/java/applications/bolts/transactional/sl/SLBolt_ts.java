@@ -67,7 +67,7 @@ public class SLBolt_ts extends SLBolt {
             transactionManager.start_evaluate(thread_Id, in.getBID());//start lazy evaluation in transaction manager.
             END_TP_TIME_MEASURE(thread_Id);
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 
             TRANSFER_REQUEST_CORE();
 

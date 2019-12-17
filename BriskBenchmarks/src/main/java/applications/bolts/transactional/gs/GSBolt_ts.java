@@ -145,7 +145,7 @@ public class GSBolt_ts extends GSBolt {
 
             END_TP_TIME_MEASURE(thread_Id);// overhead_total TP time.
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 
             READ_REQUEST_CORE();
 

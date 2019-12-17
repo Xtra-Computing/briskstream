@@ -16,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.combo_bid_size;
-import static engine.profiler.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_ACCESS_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_ACCESS_TIME_MEASURE_ACC;
 
 public class OBBolt_nocc extends OBBolt {
     private static final Logger LOG = LoggerFactory.getLogger(OBBolt_nocc.class);
@@ -60,22 +60,22 @@ public class OBBolt_nocc extends OBBolt {
 
     private void topping_txn_process(ToppingEvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
         TOPPING_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         TOPPING_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 
     private void alert_txn_process(AlertEvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
         ALERT_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         ALERT_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 
     private void buying_txn_process(BuyingEvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
         BUYING_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         BUYING_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 }

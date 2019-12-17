@@ -135,7 +135,7 @@ public class TxnManagerLWM extends TxnManagerDedicated {
         //Different from locking scheme, LWM returns only local copy... The actual install happens later at commit stage.
 
         if (accessType == READ_ONLY) {
-            //The following makes sure the lock_ratio is added in event sequence as in ACEP.
+            //The following makes sure the lock_ratio is added in event sequence
 
             InsertLock(t_record, txn_context, accessType);
 

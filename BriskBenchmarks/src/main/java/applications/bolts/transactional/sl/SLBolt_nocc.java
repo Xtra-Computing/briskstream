@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 import static applications.CONTROL.combo_bid_size;
-import static engine.profiler.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
 
 
 /**
@@ -53,7 +51,6 @@ public class SLBolt_nocc extends SLBolt {
     @Override
     protected void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException {
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
-
             if (input_event instanceof DepositEvent) {
                 depo_txn_process((DepositEvent) input_event, i, _bid);
             } else {
@@ -63,18 +60,12 @@ public class SLBolt_nocc extends SLBolt {
     }
 
     private void trans_txn_process(TransactionEvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
-        TRANSFER_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-        TRANSFER_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        TRANSFER_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success contains index time and other overhead.
+        TRANSFER_REQUEST_CORE(input_event);//time to access shared states.
     }
 
     private void depo_txn_process(DepositEvent input_event, long i, long _bid) throws DatabaseException, InterruptedException {
-        DEPOSITE_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success
-
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
-        DEPOSITE_REQUEST_CORE(input_event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        DEPOSITE_REQUEST(input_event, txn_context[(int) (i - _bid)]);//always success contains index time and other overhead.
+        DEPOSITE_REQUEST_CORE(input_event);//time to access shared states.
     }
-
 }

@@ -21,8 +21,8 @@ import static applications.CONTROL.enable_app_combo;
 import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.Metrics.MeasureTools.BEGIN_POST_TIME_MEASURE;
-import static engine.profiler.Metrics.MeasureTools.END_POST_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_POST_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_POST_TIME_MEASURE;
 
 public abstract class TPBolt extends TransactionalBolt {
     /**
@@ -124,14 +124,13 @@ public abstract class TPBolt extends TransactionalBolt {
 
     @Override
     protected void POST_PROCESS(long bid, long timestamp, int combo_bid_size) throws InterruptedException {
-
+        BEGIN_POST_TIME_MEASURE(thread_Id);
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
             LREvent event = (LREvent) input_event;
             ((LREvent) input_event).setTimestamp(timestamp);
-            BEGIN_POST_TIME_MEASURE(thread_Id);
             REQUEST_POST(event);
-            END_POST_TIME_MEASURE_ACC(thread_Id);
         }
+        END_POST_TIME_MEASURE(thread_Id);
     }
 
     protected void TXN_REQUEST_CORE(LREvent event) {

@@ -33,9 +33,9 @@ public class GSBolt_ots extends GSBolt {
         END_LOCK_TIME_MEASURE_NOCC(thread_Id);//if success, lock-tp_core-index; if failed, lock -0-index;
 
         if (success) {
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
             WRITE_CORE(event);
-            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+            END_ACCESS_TIME_MEASURE_ACC(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
             txn_context[(int) (i - _bid)].is_retry_ = true;
@@ -43,9 +43,9 @@ public class GSBolt_ots extends GSBolt {
             while (!write_request(event, txn_context[(int) (i - _bid)]) && !Thread.currentThread().isInterrupted()) ;
             END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
             WRITE_CORE(event);
-            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+            END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }
@@ -56,9 +56,9 @@ public class GSBolt_ots extends GSBolt {
         boolean success = read_request(event, txn_context[(int) (i - _bid)]);
 
         if (success) {
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
             READ_CORE(event);
-            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+            END_ACCESS_TIME_MEASURE_ACC(thread_Id);
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         } else {//being aborted.
             txn_context[(int) (i - _bid)].is_retry_ = true;
@@ -66,9 +66,9 @@ public class GSBolt_ots extends GSBolt {
             while (!read_request(event, txn_context[(int) (i - _bid)])) ;
             END_ABORT_TIME_MEASURE_ACC(thread_Id);
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
             READ_CORE(event);
-            END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+            END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 
             transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
         }

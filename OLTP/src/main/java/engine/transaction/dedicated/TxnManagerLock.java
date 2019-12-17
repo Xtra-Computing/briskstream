@@ -20,7 +20,6 @@ import static applications.CONTROL.enable_debug;
 import static engine.Meta.MetaTypes.AccessType.*;
 import static engine.Meta.MetaTypes.kMaxAccessNum;
 import static engine.profiler.MeasureTools.BEGIN_TP_CORE_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_TP_CORE_TIME_MEASURE_NOCC;
 import static engine.transaction.impl.TxnAccess.Access;
 
 /**
@@ -172,16 +171,12 @@ public class TxnManagerLock extends TxnManagerDedicated {
                 this.AbortTransaction();
                 return false;
             } else {
-//                if (!txn_context.is_retry_)
-                    BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
                 Access access = access_list_.NewAccess();
                 access.access_type_ = READ_ONLY;
                 access.access_record_ = t_record;
                 access.local_record_ = null;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-//                if (!txn_context.is_retry_)
-                    END_TP_CORE_TIME_MEASURE_NOCC(txn_context.thread_Id);
                 return true;
             }
         } else if (accessType == READ_WRITE) {
@@ -191,9 +186,6 @@ public class TxnManagerLock extends TxnManagerDedicated {
                 this.AbortTransaction();
                 return false;
             } else {
-//                LOG.trace(txn_context.getThisOpId() + " success to get lock_ratio" + DateTime.now());
-
-//                if (!txn_context.is_retry_)
                     BEGIN_TP_CORE_TIME_MEASURE(txn_context.thread_Id);
                 /**
                  * 	 const RecordSchema *schema_ptr = t_record->record_->schema_ptr_;
@@ -219,9 +211,6 @@ public class TxnManagerLock extends TxnManagerDedicated {
                 access.local_record_ = local_record;
                 access.table_id_ = table_name;
                 access.timestamp_ = t_record.content_.GetTimestamp();
-
-//                if (!txn_context.is_retry_)
-                    END_TP_CORE_TIME_MEASURE_NOCC(txn_context.thread_Id);
                 return true;
             }
         } else if (accessType == DELETE_ONLY) {

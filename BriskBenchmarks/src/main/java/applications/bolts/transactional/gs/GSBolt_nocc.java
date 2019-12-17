@@ -8,8 +8,8 @@ import engine.transaction.dedicated.TxnManagerNoLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static engine.profiler.MeasureTools.BEGIN_COMPUTE_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_COMPUTE_TIME_MEASURE_ACC;
+import static engine.profiler.MeasureTools.BEGIN_ACCESS_TIME_MEASURE;
+import static engine.profiler.MeasureTools.END_ACCESS_TIME_MEASURE_ACC;
 
 
 /**
@@ -28,9 +28,9 @@ public class GSBolt_nocc extends GSBolt_Locks {
 
         write_request(event, txn_context[(int) (i - _bid)]);//always success
 
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         WRITE_CORE(event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 //        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
 
     }
@@ -39,9 +39,9 @@ public class GSBolt_nocc extends GSBolt_Locks {
 
         read_request(event, txn_context[(int) (i - _bid)]);//always success..
 
-        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         READ_CORE(event);
-        END_COMPUTE_TIME_MEASURE_ACC(thread_Id);
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
 //        transactionManager.CommitTransaction(txn_context[(int) (i - _bid)]);//always success..
     }
 

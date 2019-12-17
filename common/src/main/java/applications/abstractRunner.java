@@ -43,7 +43,7 @@ public abstract class abstractRunner {
 
 
     @Parameter(names = {"--checkpoint"}, description = "checkpoint interval")
-    public double checkpoint = 1;// default checkpoint interval.
+    public double checkpoint = 500;// default checkpoint interval.
 
     @Parameter(names = {"--NUM_ACCESS"}, description = "NUM_ACCESS per transaction")
     public int NUM_ACCESS = 10;//
@@ -59,7 +59,7 @@ public abstract class abstractRunner {
     public int NUM_ITEMS = 100_000;//
 
     @Parameter(names = {"--CCOption"}, description = "CC options")
-    public int CCOption = 0;
+    public int CCOption = 3;
     //  int CCOption_LOCK = 0;
     //  int CCOption_OrderLOCK = 1;
     //  int CCOption_LWM = 2;

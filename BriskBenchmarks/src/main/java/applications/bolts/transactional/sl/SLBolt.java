@@ -16,8 +16,7 @@ import static applications.CONTROL.enable_app_combo;
 import static applications.CONTROL.enable_latency_measurement;
 import static applications.Constants.DEFAULT_STREAM_ID;
 import static engine.Meta.MetaTypes.AccessType.READ_WRITE;
-import static engine.profiler.MeasureTools.BEGIN_POST_TIME_MEASURE;
-import static engine.profiler.MeasureTools.END_POST_TIME_MEASURE;
+import static engine.profiler.MeasureTools.*;
 
 public abstract class SLBolt extends TransactionalBolt {
 
@@ -30,6 +29,7 @@ public abstract class SLBolt extends TransactionalBolt {
     protected void TXN_PROCESS(long _bid) throws DatabaseException, InterruptedException {
 
     }
+
     protected void DEPOSITE_REQUEST_NOLOCK(DepositEvent event, TxnContext txnContext) throws DatabaseException {
         transactionManager.SelectKeyRecord_noLock(txnContext, "accounts", event.getAccountId(), event.account_value, READ_WRITE);
         transactionManager.SelectKeyRecord_noLock(txnContext, "bookEntries", event.getBookEntryId(), event.asset_value, READ_WRITE);
@@ -75,6 +75,7 @@ public abstract class SLBolt extends TransactionalBolt {
 
 
     protected void TRANSFER_REQUEST_CORE(TransactionEvent event) throws InterruptedException {
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         // measure_end the preconditions
 
         DataBox sourceAccountBalance_value = event.src_account_value.getRecord().getValues().get(1);
@@ -114,23 +115,20 @@ public abstract class SLBolt extends TransactionalBolt {
         } else {
             event.transaction_result = new TransactionResult(event, false, sourceAccountBalance, targetAccountBalance);
         }
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 
 
     protected void DEPOSITE_REQUEST_CORE(DepositEvent event) {
+        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
         List<DataBox> values = event.account_value.getRecord().getValues();
-
         long newAccountValue = values.get(1).getLong() + event.getAccountTransfer();
-
         values.get(1).setLong(newAccountValue);
-
         List<DataBox> asset_values = event.asset_value.getRecord().getValues();
-
         long newAssetValue = values.get(1).getLong() + event.getBookEntryTransfer();
-
         asset_values.get(1).setLong(newAssetValue);
-
 //        collector.force_emit(input_event.getBid(), null, input_event.getTimestamp());
+        END_ACCESS_TIME_MEASURE_ACC(thread_Id);
     }
 
     //post stream processing phase..

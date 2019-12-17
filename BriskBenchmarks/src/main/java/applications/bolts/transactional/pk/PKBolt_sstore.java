@@ -18,7 +18,6 @@ import java.util.Set;
 
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_EVENT;
 import static applications.constants.PositionKeepingConstants.Constant.SIZE_VALUE;
-import static utils.PartitionHelper.key_to_partition;
 
 public class PKBolt_sstore extends PKBolt {
 
@@ -58,7 +57,7 @@ public class PKBolt_sstore extends PKBolt {
 //        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);
 //        txn_context = new TxnContext(thread_Id, this.fid, bid, -1);
 //
-//        BEGIN_PREPARE_TIME_MEASURE(thread_Id);
+//        BEGIN_MEASURE(thread_Id);
 //        PKEvent input_event = generatePKEvent(-1, deviceID, value);
 //        END_PREPARE_TIME_MEASURE(thread_Id);
 //
@@ -85,7 +84,7 @@ public class PKBolt_sstore extends PKBolt {
 //        PK_request(input_event, this.fid);
 //        END_TP_TIME_MEASURE(thread_Id);
 //
-//        BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+//        BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 //        PK_core(input_event);
 //        END_COMPUTE_TIME_MEASURE(thread_Id);
 //

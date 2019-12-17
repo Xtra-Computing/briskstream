@@ -112,7 +112,7 @@ public class TPBolt_ts extends TPBolt {
 
             END_TP_TIME_MEASURE(thread_Id);
 
-            BEGIN_COMPUTE_TIME_MEASURE(thread_Id);
+            BEGIN_ACCESS_TIME_MEASURE(thread_Id);
 
             REQUEST_REQUEST_CORE();
 
