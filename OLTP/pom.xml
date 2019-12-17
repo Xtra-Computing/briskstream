@@ -7,9 +7,9 @@
         <groupId>org.tony</groupId>
         <version>3.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Database</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>OLTP</artifactId>
     <version>3.0</version>
 
     <build>

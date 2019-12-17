@@ -131,13 +131,13 @@ public class GrepSum extends TransactionTopology {
                                 , new ShuffleGrouping(Component.SPOUT));
                         break;
                     }
-                    case CCOption_OTS: {//Timestamp Ordering
-
-                        builder.setBolt(Component.EXECUTOR, new GSBolt_ots(0)//
-                                , config.getInt(Executor_Threads, 2)
-                                , new ShuffleGrouping(Component.SPOUT));
-                        break;
-                    }
+//                    case CCOption_OTS: {//Timestamp Ordering
+//
+//                        builder.setBolt(Component.EXECUTOR, new GSBolt_ots(0)//
+//                                , config.getInt(Executor_Threads, 2)
+//                                , new ShuffleGrouping(Component.SPOUT));
+//                        break;
+//                    }
 
                 }
 

@@ -313,11 +313,6 @@
             <version>4.12</version>
             <!--<scope>test</scope>-->
         </dependency>
-        <dependency>
-            <groupId>org.tony</groupId>
-            <artifactId>Database</artifactId>
-            <version>3.0</version>
-        </dependency>
 
         <dependency>
             <groupId>org.jctools</groupId>
@@ -339,13 +334,13 @@
             <groupId>org.tony</groupId>
             <artifactId>affinity</artifactId>
             <version>3.1.8-SNAPSHOT</version>
-            <scope>compile</scope>
+            <!--<scope>compile</scope>-->
         </dependency>
         <dependency>
             <groupId>org.tony</groupId>
-            <artifactId>Database</artifactId>
+            <artifactId>OLTP</artifactId>
             <version>3.0</version>
-            <scope>compile</scope>
+            <!--<scope>compile</scope>-->
         </dependency>
     </dependencies>
 

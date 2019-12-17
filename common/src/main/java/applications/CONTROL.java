@@ -10,9 +10,9 @@ public interface CONTROL {
     int MeasureBound = 200_000;
 
     //application related.
-    int NUM_EVENTS = 100_000; //different input events..
+    int NUM_EVENTS = 500_000; //different input events..
 
-    int TEST_NUM_EVENST = 100_000;//total runs per thread.
+    int TEST_NUM_EVENST = 500_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
@@ -33,7 +33,7 @@ public interface CONTROL {
 
     boolean enable_states_partition = true;//must be enabled for PAT/SSTORE.
 
-    boolean enable_TSTREAM = false;
+    boolean enable_TSTREAM = true;
 
     //pre- and post -compute
 
@@ -46,7 +46,7 @@ public interface CONTROL {
 //    boolean enable_admission_control = enable_latency_measurement;//only enable for TStream
 
     //profile related.
-    boolean enable_profile = false;//enable this only when we want to test for breakdown.
+    boolean enable_profile = true;//enable this only when we want to test for breakdown.
 
     boolean enable_debug = false;//some critical debug section.
 

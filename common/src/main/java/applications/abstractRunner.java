@@ -59,13 +59,13 @@ public abstract class abstractRunner {
     public int NUM_ITEMS = 100_000;//
 
     @Parameter(names = {"--CCOption"}, description = "CC options")
-    public int CCOption = 5;
+    public int CCOption = 0;
     //  int CCOption_LOCK = 0;
     //  int CCOption_OrderLOCK = 1;
     //  int CCOption_LWM = 2;
     //  int CCOption_TStream = 3;
     //  int CCOption_SStore = 4;
-    //  int CCOption_OTS = 5;//ordered timestamp
+    //  int CCOption_OTS = 5;//ordered timestamp not possible.
 
     @Parameter(names = {"--backPressure"}, description = "backPressure")
     public boolean backPressure = false;
@@ -198,7 +198,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"-m", "--mode"}, description = "Mode for running the topology")
     public String mode = RUN_LOCAL;
     @Parameter(names = {"-a", "--app"}, description = "The application to be executed", required = false)
-    public String application = "GrepSum";
+    public String application = "StreamLedger";
 
     @Parameter(names = {"-t", "--Brisk.topology-name"}, required = false, description = "The name of the Brisk.topology")
     public String topologyName;
