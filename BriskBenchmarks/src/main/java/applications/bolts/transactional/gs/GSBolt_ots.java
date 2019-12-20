@@ -110,7 +110,7 @@ public class GSBolt_ots extends GSBolt {
 
         POST_PROCESS(_bid, timestamp, combo_bid_size);
 
-        END_TOTAL_TIME_MEASURE_ACC(thread_Id, combo_bid_size);
+        END_TOTAL_TIME_MEASURE(thread_Id, combo_bid_size);
 
         LOG.info(Thread.currentThread().getName() + " finished bid:" + in.getBID());
     }

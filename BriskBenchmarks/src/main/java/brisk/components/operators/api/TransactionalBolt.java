@@ -54,6 +54,8 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         PRE_EXECUTE(in);
 
+        END_PREPARE_TIME_MEASURE(thread_Id);
+
         //begin transaction processing.
         BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
 
@@ -64,7 +66,39 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         POST_PROCESS(_bid, timestamp, combo_bid_size);
 
-        END_TOTAL_TIME_MEASURE_ACC(thread_Id, combo_bid_size);
+        END_TOTAL_TIME_MEASURE(thread_Id, combo_bid_size);
+    }
+
+
+    /**
+     * This is used for all LAL based schemes including LOCK and MVLK.
+     *
+     * @param in
+     * @throws InterruptedException
+     * @throws DatabaseException
+     * @throws BrokenBarrierException
+     */
+    @Override
+    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
+        BEGIN_TOTAL_TIME_MEASURE(thread_Id);//start measure prepare and total.
+
+        PRE_EXECUTE(in);
+
+        END_PREPARE_TIME_MEASURE(thread_Id);
+
+        //begin transaction processing.
+        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
+
+        LAL_PROCESS(_bid);
+
+        PostLAL_process(_bid);
+
+        //end transaction processing.
+        END_TRANSACTION_TIME_MEASURE(thread_Id);
+
+        POST_PROCESS(_bid, timestamp, 1);//otherwise deadlock.
+
+        END_TOTAL_TIME_MEASURE(thread_Id, 1);//otherwise deadlock.
     }
 
     public static void LA_LOCK(int _pid, int num_P, TxnManager txnManager, long _bid, int tthread) {
@@ -99,7 +133,7 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         }
     }
 
-    public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, long _bid, int tthread) {
+    public static void LA_UNLOCK(int _pid, int num_P, TxnManager txnManager, int tthread) {
 
         for (int k = 0; k < num_P; k++) {
             txnManager.getOrderLock(_pid).advance();
@@ -146,28 +180,6 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
         return false;
     }
 
-    @Override
-    public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
-        BEGIN_TOTAL_TIME_MEASURE(thread_Id);//start measure prepare and total.
-
-        //pre stream processing phase..
-
-        PRE_EXECUTE(in);
-
-        //begin transaction processing.
-        BEGIN_TRANSACTION_TIME_MEASURE(thread_Id);//need to amortize.
-
-        LAL_PROCESS(_bid);
-
-        PostLAL_process(_bid);
-
-        //end transaction processing.
-        END_TRANSACTION_TIME_MEASURE(thread_Id);
-
-        POST_PROCESS(_bid, timestamp, 1);//otherwise deadlock.
-
-        END_TOTAL_TIME_MEASURE_ACC(thread_Id, 1);//otherwise deadlock.
-    }
 
     protected long timestamp;
     protected long _bid;
@@ -190,19 +202,22 @@ public abstract class TransactionalBolt<T> extends MapBolt implements Checkpoint
 
         sum = 0;
 
-        END_PREPARE_TIME_MEASURE(thread_Id);
+
     }
 
     protected void execute_ts_normal(Tuple in) throws DatabaseException, InterruptedException {
         //pre stream processing phase..
 
+        BEGIN_TOTAL_TIME_MEASURE_TS(thread_Id);
+
         PRE_EXECUTE(in);
+
+        END_PREPARE_TIME_MEASURE_TS(thread_Id);
 
         PRE_TXN_PROCESS(_bid, timestamp);
     }
 
-    protected long PRE_TXN_PROCESS(long bid, long timestamp) throws DatabaseException, InterruptedException {
-        return -1;
+    protected void PRE_TXN_PROCESS(long bid, long timestamp) throws DatabaseException, InterruptedException {
     }//only used by TSTREAM.
 
 

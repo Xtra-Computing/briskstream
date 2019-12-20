@@ -85,9 +85,9 @@ public class OBBolt_ts_nopush extends OBBolt_ts {
 
             TOPPING_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize, alertSize + toppingSize);//overhead_total compute time.
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize, 0, alertSize + toppingSize);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, 0);//overhead_total txn time.
 
             BUYING_REQUEST_POST();
 

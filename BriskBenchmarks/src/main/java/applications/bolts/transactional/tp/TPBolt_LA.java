@@ -39,10 +39,10 @@ public abstract class TPBolt_LA extends TPBolt {
             LAL(event, i, _bid);
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            lock_time_measure += END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            END_LOCK_TIME_MEASURE(thread_Id);
         }
         transactionManager.getOrderLock().advance();
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+        END_WAIT_TIME_MEASURE(thread_Id);
     }
 
 

@@ -38,7 +38,6 @@ public class OBBolt_sstore extends OBBolt_LA {
     }
 
 
-
     public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
 //        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().GetAndUpdate(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
@@ -46,30 +45,28 @@ public class OBBolt_sstore extends OBBolt_LA {
     }
 
 
-
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
 
 
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-            TxnEvent event = (TxnEvent) input_event;
+        txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
+        TxnEvent event = (TxnEvent) input_event;
 
-            int _pid = event.getPid();
+        int _pid = event.getPid();
 
-            BEGIN_WAIT_TIME_MEASURE(thread_Id);
-            //ensures that locks are added in the input_event sequence order.
-            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
+        BEGIN_WAIT_TIME_MEASURE(thread_Id);
+        //ensures that locks are added in the input_event sequence order.
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
 
-            BEGIN_LOCK_TIME_MEASURE(thread_Id);
+        BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            LAL(event, i, _bid);
+        LAL(event, 0, _bid);
 
-            LA_UNLOCK(_pid, event.num_p(), transactionManager, _bid, tthread);
+        END_LOCK_TIME_MEASURE(thread_Id);
 
-            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
-        }
+        END_WAIT_TIME_MEASURE(thread_Id);
+
     }
 }

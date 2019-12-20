@@ -5,21 +5,21 @@ public interface CONTROL {
     //global settings.
     int kMaxThreadNum = 40;
 
-    int MeasureStart = 100_000;//server needs at least 10,000 to compile, so skip them.
+    int MeasureStart = 0;//10_000;//server needs at least 10,000 to compile, so skip them.
 
-    int MeasureBound = 200_000;
+    int MeasureBound = 1_000;
 
     //application related.
-    int NUM_EVENTS = 500_000; //different input events..
+    int NUM_EVENTS = 1_000; //different input events.. TODO: It must be kept small as GC pressure increases rapidly. Fix this in future work.
 
-    int TEST_NUM_EVENST = 500_000;//total runs per thread.
+    int TEST_NUM_EVENST = 1_000;//total runs per thread.
 
     //combo optimization
     boolean enable_app_combo = true;//compose all operators into one.
 
     int combo_bid_size = 1;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
 
-    int sink_combo_bid_size = 1000;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
+    int sink_combo_bid_size = 200;//reduce conflict. NOT applicable to LAL, LWM and PAT (must set to one).
 
     int MIN_EVENTS_PER_THREAD = NUM_EVENTS / combo_bid_size / kMaxThreadNum;
 
@@ -64,7 +64,7 @@ public interface CONTROL {
     //single engine with work-stealing.
     boolean enable_work_stealing = true; // won't affect is island=-1 under partition.
 
-    boolean enable_mvcc = false;//  never use. mvcc is only required in CT for cross-dependency reading.
+    boolean enable_mvcc = false;// mvcc is only required in StreamLedger for cross-dependency reading.
 
     boolean enable_speculative = false;//work in future!
 

@@ -16,12 +16,9 @@ public class MyList<O> extends ConcurrentSkipListSet<O> {
     private final String table_name;
     private final String primaryKey;
 
-    int cnt = 0;
-
 
     public MyList(String table_name, String primaryKey) {
         this.table_name = table_name;
-
         this.primaryKey = primaryKey;
     }
 }

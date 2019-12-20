@@ -54,8 +54,8 @@ public class GSBolt_sstore extends GSBolt_LA {
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
 
 
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+
+            txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
             MicroEvent event = (MicroEvent) input_event;
             int _pid = event.getPid();
 
@@ -65,14 +65,13 @@ public class GSBolt_sstore extends GSBolt_LA {
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            LAL(event, i, _bid);
+            LAL(event, 0, _bid);
 
-            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+            END_LOCK_TIME_MEASURE(thread_Id);
 
-            LA_UNLOCK(_pid, event.num_p(), transactionManager, _bid, tthread);
+            LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
 
-            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+            END_WAIT_TIME_MEASURE(thread_Id);
         }
-    }
 
 }

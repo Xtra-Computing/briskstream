@@ -31,7 +31,7 @@ public class SLBolt_ts extends SLBolt {
 
     private static final Logger LOG = LoggerFactory.getLogger(SLBolt_ts.class);
     private static final long serialVersionUID = -5968750340131744744L;
-    private final static double write_useful_time = 1556.713743100476;//write-compute time pre-measured.
+    private final static double write_useful_time = 3316;//write-compute time pre-measured.
     ArrayDeque<TransactionEvent> transactionEvents;
     private int depositeEvents;
 
@@ -44,7 +44,8 @@ public class SLBolt_ts extends SLBolt {
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
-        transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, NUM_ACCOUNTS, this.context.getThisComponent().getNumTasks());
+        transactionManager = new TxnManagerTStream(db.getStorageManager(), this.context.getThisComponentId(), thread_Id,
+                NUM_ACCOUNTS, this.context.getThisComponent().getNumTasks());
         transactionEvents = new ArrayDeque<>();
     }
 
@@ -52,7 +53,6 @@ public class SLBolt_ts extends SLBolt {
 //        prepareEvents();
         loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().get(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
     }
-
 
 
     @Override
@@ -68,12 +68,10 @@ public class SLBolt_ts extends SLBolt {
             END_TP_TIME_MEASURE(thread_Id);
 
             BEGIN_ACCESS_TIME_MEASURE(thread_Id);
-
             TRANSFER_REQUEST_CORE();
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize, write_useful_time, depositeEvents);
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, depositeEvents);
-
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id,  write_useful_time * depositeEvents);//overhead_total txn time
 
             TRANSFER_REQUEST_POST();
 
@@ -90,7 +88,7 @@ public class SLBolt_ts extends SLBolt {
         }
     }
 
-    protected long PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
+    protected void PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
         BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
@@ -108,7 +106,7 @@ public class SLBolt_ts extends SLBolt {
             }
         }
 
-        return END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
+        END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);//includes post time deposite..
 
     }
 

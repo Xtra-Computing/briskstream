@@ -512,7 +512,7 @@ public class BriskRunner extends abstractRunner {
                 overhead += metrics.overhead_total[i].getMean();
                 txn_processing += metrics.txn_total[i].getMean();
 
-                LOG.info(metrics.stream_total[i].toString());
+//                LOG.info(metrics.stream_total[i].toString());
             }
 
 
@@ -614,13 +614,12 @@ public class BriskRunner extends abstractRunner {
             LOG.info("Stream Processing on one input_event:" + String.format("%.2f", stream_processing));
             LOG.info("TXN Processing on one input_event:" + String.format("%.2f", txn_processing));
 
+            LOG.warn("Due to NUMA, useful ratio of TStream may be very inaccurate. It is currently an estimation. Fix it later.");
             LOG.info("===BREAKDOWN TXN===");
-            LOG.info("Useful time:\t" + String.format("%.2f", useful_ratio));
-//            LOG.info("Abort time:\t" + String.format("%.2f", abort_time));
-//            LOG.info("Ts_alloc. time:\t" + String.format("%.2f", ts_alloc_time ));
-            LOG.info("Index_time time:\t" + String.format("%.2f", index_ratio));
-            LOG.info("Wait_time time:\t" + String.format("%.2f", wait_ratio));
-            LOG.info("lock_ratio time:\t" + String.format("%.2f", lock_ratio));
+            LOG.info("Useful ratio:\t" + String.format("%.2f", useful_ratio));
+            LOG.info("Index ratio:\t" + String.format("%.2f", index_ratio));
+            LOG.info("Wait ratio:\t" + String.format("%.2f", wait_ratio));
+            LOG.info("lock ratio:\t" + String.format("%.2f", lock_ratio));
 
             LOG.info("====Details ====");
             LOG.info("\n" + sb.toString());

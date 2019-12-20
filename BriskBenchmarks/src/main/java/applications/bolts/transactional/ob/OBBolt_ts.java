@@ -113,9 +113,9 @@ public class OBBolt_ts extends OBBolt {
 
             BUYING_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, write_useful_time, readSize, alertEvents + toppingEvents);//overhead_total compute time.
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize, write_useful_time, alertEvents + toppingEvents);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, write_useful_time * toppingEvents);//overhead_total txn time.
 
 
 //            BEGIN_POST_TIME_MEASURE(thread_Id);
@@ -145,7 +145,7 @@ public class OBBolt_ts extends OBBolt {
     }
 
 
-    protected long PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
+    protected void PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException, InterruptedException {
         BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
         for (long i = _bid; i < _bid + combo_bid_size; i++) {
@@ -166,7 +166,7 @@ public class OBBolt_ts extends OBBolt {
             }
         }
 
-        return END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
+          END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
 
     }
 

@@ -34,21 +34,14 @@ public abstract class GSBolt_LA extends GSBolt {
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);
+        txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
+        MicroEvent event = (MicroEvent) input_event;
+        LAL(event, 0, _bid);
+        BEGIN_LOCK_TIME_MEASURE(thread_Id);
+        END_LOCK_TIME_MEASURE(thread_Id);
 
-        long lock_time_measure = 0;
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-
-            MicroEvent event = (MicroEvent) input_event;
-            LAL(event, i, _bid);
-            BEGIN_LOCK_TIME_MEASURE(thread_Id);
-
-
-            lock_time_measure += END_LOCK_TIME_MEASURE_ACC(thread_Id);
-        }
         transactionManager.getOrderLock().advance();
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+        END_WAIT_TIME_MEASURE(thread_Id);
     }
 
     protected void PostLAL_process(long _bid) throws DatabaseException, InterruptedException {

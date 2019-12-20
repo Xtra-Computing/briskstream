@@ -497,7 +497,7 @@ public final class TxnProcessingEngine {
 
     private int evaluation(int thread_Id, long mark_ID) throws InterruptedException {
 
-        BEGIN_TP_SUBMIT_TIME_MEASURE(thread_Id);
+//        BEGIN_TP_SUBMIT_TIME_MEASURE(thread_Id);
 
         //LOG.DEBUG(thread_Id + "\tall source marked checkpoint, starts TP evaluation for watermark bid\t" + bid);
 
@@ -510,7 +510,7 @@ public final class TxnProcessingEngine {
             task += submit_task(thread_Id, holder, callables, mark_ID);
         }
 
-        END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
+//        END_TP_SUBMIT_TIME_MEASURE(thread_Id, task);
 
 //
 //        for (Callable<Object> callable : callables) {
@@ -546,14 +546,9 @@ public final class TxnProcessingEngine {
      */
     public void start_evaluation(int thread_Id, long mark_ID) throws InterruptedException {
 
-
-        //It first needs to make sure checkpoints from all producers are received.
-//        if (!enable_app_combo)//otherwise, already synchronized at spout side.
-//            barrier.await();
-//        else
         SOURCE_CONTROL.getInstance().Wait_Start(thread_Id);//sync for all threads to come to this line to ensure chains are constructed for the current batch.
 
-        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
+//        BEGIN_TP_CORE_TIME_MEASURE(thread_Id);
 
         int size = evaluation(thread_Id, previous_ID - kMaxThreadNum);
 
@@ -561,7 +556,7 @@ public final class TxnProcessingEngine {
 //        SOURCE_CONTROL.getInstance().CLEARWM();//sync_ratio for all threads to come to this line.
 
 
-        END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
+//        END_TP_CORE_TIME_MEASURE_TS(thread_Id, size);//exclude task submission and synchronization time.
 
 //        SOURCE_CONTROL.getInstance().Wait_Start();//no sync here. sync later.
 

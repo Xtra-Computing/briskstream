@@ -191,7 +191,7 @@ public abstract class abstractRunner {
     public int threads5 = 1;
 
     @Parameter(names = {"--TP"}, description = "TP threads")
-    public int TP = 2;// default TP threads
+    public int TP = -1;// default TP threads
 
     @Parameter
     public List<String> parameters = Lists.newArrayList();

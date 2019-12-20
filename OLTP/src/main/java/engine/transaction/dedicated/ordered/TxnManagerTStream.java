@@ -379,7 +379,6 @@ public class TxnManagerTStream extends TxnManagerDedicated {
 
         return true;
 
-
     }
 
     @Override

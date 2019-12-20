@@ -45,31 +45,31 @@ public class SLBolt_sstore extends SLBolt_LA {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
-        int _combo_bid_size = 1;
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
-            TxnEvent event = (TxnEvent) input_event;
 
-            int _pid = (event).getPid();
 
-            BEGIN_WAIT_TIME_MEASURE(thread_Id);
-            //ensures that locks are added in the input_event sequence order.
-            LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
+        txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
+        TxnEvent event = (TxnEvent) input_event;
 
-            BEGIN_LOCK_TIME_MEASURE(thread_Id);
+        int _pid = (event).getPid();
 
-            if (event instanceof DepositEvent) {
-                DEPOSITE_LOCK_AHEAD((DepositEvent) event, txn_context[(int) (i - _bid)]);
-            } else {
-                TRANSFER_LOCK_AHEAD((TransactionEvent) event, txn_context[(int) (i - _bid)]);
-            }
+        BEGIN_WAIT_TIME_MEASURE(thread_Id);
+        //ensures that locks are added in the input_event sequence order.
+        LA_LOCK(_pid, event.num_p(), transactionManager, event.getBid_array(), _bid, tthread);
 
-            LA_UNLOCK(_pid, event.num_p(), transactionManager, _bid, tthread);
+        BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
-
-            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+        if (event instanceof DepositEvent) {
+            DEPOSITE_LOCK_AHEAD((DepositEvent) event, txn_context[0]);
+        } else {
+            TRANSFER_LOCK_AHEAD((TransactionEvent) event, txn_context[0]);
         }
+
+
+
+        END_LOCK_TIME_MEASURE(thread_Id);
+        LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
+        END_WAIT_TIME_MEASURE(thread_Id);
+
     }
 
 

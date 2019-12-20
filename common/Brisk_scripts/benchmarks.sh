@@ -26,7 +26,7 @@ function local_execution {
         # echo "streaming phase:" $argument >> $path/test\_$input\_$bt.txt
 #killall -9 java
 #clean_cache -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
-        JVM_args_local="-Xms25g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
+        JVM_args_local="-Xms50g -Xmx50g -server" #-Xms1g -Xmx10g -XX:ParallelGCThreads=$tt -XX:CICompilerCount=2
 
 		if [ $Profile == 1 ] ; then
 			 perf stat -e mem_load_uops_retired.l2_hit,mem_load_uops_retired.l3_hit,mem_load_uops_l3_hit_retired.xsnp_hit,mem_load_uops_l3_hit_retired.xsnp_hitm,mem_load_uops_l3_hit_retired.xsnp_miss,mem_load_uops_l3_miss_retired.local_dram,mem_load_uops_l3_miss_retired.remote_dram,mem_load_uops_l3_miss_retired.remote_hitm,mem_load_uops_l3_miss_retired.remote_fwd,mem_load_uops_retired.hit_lfb numactl --localalloc java $JVM_args_local -jar $JAR_PATH $arg_benchmark $arg_application>> $path/$tt\_$TP.txt
@@ -293,7 +293,7 @@ for benchmark in "StreamLedger"
 do
     app="StreamLedger"
     machine=3 #RTM.
-    Profile=0 # 0 disable, 1 enable.
+    Profile=1 # 0 disable, 1 enable.
 	profile_type=3 #
 	JAR_PATH="$HOME/briskstream/BriskBenchmarks/target/BriskBenchmarks-1.3.0-jar-with-dependencies.jar"
 
@@ -374,10 +374,10 @@ do
                 do
                     for theta in 0.6
                     do
-                        for tt in 10 40 #1 5 10 15 20 25 30 35 39
+                        for tt in 40  #1 5 10 15 20 25 30 35 39
                         do
                             #rm $HOME/briskstream/EVENT -r #save space..
-                            for CCOption in 0 #1 2 4
+                            for CCOption in 0 1 2 4
                             do
                                 for NUM_ACCESS in 10 #8 6 4 2 1
                                 do
@@ -386,12 +386,12 @@ do
                                         TP=$tt
                                         ratio_of_multi_partition=0.25
                                         number_partitions=4
-                                        StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+#                                        StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                     done
                                 done
                             done
                          done
-                        for tt in 10 40
+                        for tt in 40 #10 40
                         do
                             for CCOption in 3 #0 1 2 3 4
                             do
@@ -404,7 +404,7 @@ do
                                         do
                                             ratio_of_multi_partition=0.25
                                             number_partitions=4
-#                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                            StreamLedger_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
 #                                            StreamLedger_test_nopush $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
                                         done
                                     done

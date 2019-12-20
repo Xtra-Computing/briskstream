@@ -51,7 +51,7 @@ public class TPBolt_ts extends TPBolt {
      * THIS IS ONLY USED BY TSTREAM.
      * IT CONSTRUCTS and POSTPONES TXNS.
      */
-    protected long PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException {
+    protected void PRE_TXN_PROCESS(long _bid, long timestamp) throws DatabaseException {
 
         BEGIN_PRE_TXN_TIME_MEASURE(thread_Id);
 
@@ -65,8 +65,7 @@ public class TPBolt_ts extends TPBolt {
 
         }
 
-        return END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
-
+        END_PRE_TXN_TIME_MEASURE_ACC(thread_Id);
     }
 
     protected void REQUEST_CONSTRUCT(LREvent event, TxnContext txnContext) throws DatabaseException {
@@ -95,8 +94,6 @@ public class TPBolt_ts extends TPBolt {
     }
 
 
-
-
     @Override
     public void execute(Tuple in) throws InterruptedException, DatabaseException, BrokenBarrierException {
 
@@ -116,9 +113,9 @@ public class TPBolt_ts extends TPBolt {
 
             REQUEST_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize, 0);
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize, 0, 0);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, 0);
 
             REQUEST_POST();
 

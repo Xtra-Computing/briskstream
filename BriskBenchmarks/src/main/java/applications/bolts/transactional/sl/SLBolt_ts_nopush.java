@@ -67,9 +67,9 @@ public class SLBolt_ts_nopush extends SLBolt_ts {
             DEPOSITE_REQUEST_CORE();
 
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize + depoSize, 0);
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize + depoSize, 0, 0);
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, 0 );//overhead_total txn time
 
             TRANSFER_REQUEST_POST();
 
@@ -136,20 +136,6 @@ public class SLBolt_ts_nopush extends SLBolt_ts {
     }
 
     protected void DEPOSITE_REQUEST_CORE(DepositEvent event) {
-//        List<DataBox> values = event.account_value.getRecord().getValues();
-//
-//        long newAccountValue = values.get(1).getLong() + event.getAccountTransfer();
-//
-//        values.get(1).setLong(newAccountValue);
-//
-//        List<DataBox> asset_values = event.asset_value.getRecord().getValues();
-//
-//        long newAssetValue = values.get(1).getLong() + event.getBookEntryTransfer();
-//
-//        asset_values.get(1).setLong(newAssetValue);
-
-//        collector.force_emit(input_event.getBid(), null, input_event.getTimestamp());
-
 
         SchemaRecord srcRecord = event.account_values.getRecord().content_.readPreValues(event.getBid());
         List<DataBox> values = srcRecord.getValues();

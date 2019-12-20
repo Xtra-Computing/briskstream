@@ -213,9 +213,9 @@ public abstract class TxnManagerDedicated implements TxnManager {
     public boolean Asy_ModifyRecord(TxnContext txn_context, String srcTable, String key, Function function) throws DatabaseException {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE;
 
-//        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
+        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         TableRecord t_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
-//        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
+        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (t_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, t_record, t_record, function, accessType, 1);
@@ -330,10 +330,13 @@ public abstract class TxnManagerDedicated implements TxnManager {
         MetaTypes.AccessType accessType = AccessType.READ_WRITE_COND;
         TableRecord[] condition_records = new TableRecord[condition_source.length];
 
+        BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
         for (int i = 0; i < condition_source.length; i++) {
             condition_records[i] = storageManager_.getTable(condition_sourceTable[i]).SelectKeyRecord(condition_source[i]);//TODO: improve this later.
         }
         TableRecord s_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
+
+        END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
 
         if (s_record != null) {
             return Asy_ModifyRecordCC(txn_context, srcTable, s_record, function, condition_records, condition, accessType, success);
@@ -350,14 +353,13 @@ public abstract class TxnManagerDedicated implements TxnManager {
         TableRecord[] condition_records = new TableRecord[condition_source.length];
 
         for (int i = 0; i < condition_source.length; i++) {
+//            BEGIN_INDEX_TIME_MEASURE(txn_context.thread_Id);
             condition_records[i] = storageManager_.getTable(condition_sourceTable[i]).SelectKeyRecord(condition_source[i]);//TODO: improve this later.
-
+//            END_INDEX_TIME_MEASURE_ACC(txn_context.thread_Id, txn_context.is_retry_);
             if (condition_records[i] == null) {
                 LOG.info("No record is found for condition source:" + condition_source[i]);
                 return false;
             }
-
-
         }
         TableRecord s_record = storageManager_.getTable(srcTable).SelectKeyRecord(key);
 

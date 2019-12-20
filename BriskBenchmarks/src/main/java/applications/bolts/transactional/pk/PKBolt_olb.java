@@ -67,13 +67,13 @@ public class PKBolt_olb extends PKBolt {
 //
 //        BEGIN_LOCK_TIME_MEASURE(thread_Id);
 //        PK_request_lock_ahead(input_event, this.fid, bid);
-//        long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+//        long lock_time_measure = END_LOCK_TIME_MEASURE(thread_Id);
 //
 //
 //        transactionManager.getOrderLock().advance();//ensures that locks are added in the input_event sequence order.
 //
 //
-//        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+//        END_WAIT_TIME_MEASURE(thread_Id, lock_time_measure);
 //
 //
 //        BEGIN_TP_TIME_MEASURE(thread_Id);

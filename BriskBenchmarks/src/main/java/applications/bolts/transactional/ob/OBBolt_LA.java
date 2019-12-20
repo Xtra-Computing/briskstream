@@ -40,21 +40,17 @@ public abstract class OBBolt_LA extends OBBolt {
         //ensures that locks are added in the input_event sequence order.
         transactionManager.getOrderLock().blocking_wait(_bid);
 
-        long lock_time_measure = 0;
-
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+        txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
 
 
-            BEGIN_LOCK_TIME_MEASURE(thread_Id);
+        BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            LAL(input_event, i, _bid);
+        LAL(input_event, 0, _bid);
 
-            lock_time_measure += END_LOCK_TIME_MEASURE_ACC(thread_Id);
-        }
+        END_LOCK_TIME_MEASURE(thread_Id);
+
         transactionManager.getOrderLock().advance();
-        END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+        END_WAIT_TIME_MEASURE(thread_Id);
     }
 
 

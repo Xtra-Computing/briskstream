@@ -69,9 +69,9 @@ public class GSBolt_ts_nopush extends GSBolt_ts {
 
             WRITE_REQUEST_CORE();
 
-            END_COMPUTE_TIME_MEASURE_TS(thread_Id, 0, readSize + writeEvents, 0);//overhead_total compute time.
+            END_ACCESS_TIME_MEASURE_TS(thread_Id, readSize + writeEvents, 0, 0);//overhead_total compute time.
 
-            END_TRANSACTION_TIME_MEASURE_TS(thread_Id);//overhead_total txn time.
+            END_TRANSACTION_TIME_MEASURE_TS(thread_Id, 0);//overhead_total txn time.
 
             READ_POST();
 

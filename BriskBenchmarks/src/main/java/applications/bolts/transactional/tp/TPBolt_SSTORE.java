@@ -48,31 +48,29 @@ public class TPBolt_SSTORE extends TPBolt_LA {
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
-        int _combo_bid_size = 1;
-        for (long i = _bid; i < _bid + _combo_bid_size; i++) {
-            txn_context[(int) (i - _bid)] = new TxnContext(thread_Id, this.fid, i);
+
+
+            txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
             LREvent event = (LREvent) input_event;
 
             int _pid = (event).getPid();
 
             BEGIN_WAIT_TIME_MEASURE(thread_Id);
             //ensures that locks are added in the input_event sequence order.
-            LA_LOCK(_pid, 1, transactionManager, i, tthread);
+            LA_LOCK(_pid, 1, transactionManager, _bid, tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
-            LAL(event, i, _bid);
+            LAL(event, 0, _bid);
 
-            long lock_time_measure = END_LOCK_TIME_MEASURE_ACC(thread_Id);
+             END_LOCK_TIME_MEASURE(thread_Id);
 
             LA_UNLOCKALL(transactionManager, tthread);
 
-//            LA_UNLOCK(_pid, 1, transactionManager, _bid, tthread);
-
-            END_WAIT_TIME_MEASURE_ACC(thread_Id, lock_time_measure);
+            END_WAIT_TIME_MEASURE(thread_Id);
 
             if (enable_debug)
                 LOG.trace(thread_Id + " finished event " + _bid + " with pid of: " + _pid);
-        }
+
     }
 
 
