@@ -75,7 +75,7 @@ public class BriskRunner extends abstractRunner {
         driver.addApp("StreamLedger", StreamLedger.class);//SL
         driver.addApp("OnlineBiding", OnlineBiding.class);//OB
         driver.addApp("TP_Txn", TP_Txn.class);//TP
-
+        driver.addApp("S_STORE", S_STORE.class);//S_STORE
 
         //special
         driver.addApp("TP", TP.class);//TP w/o shared states.
@@ -306,6 +306,18 @@ public class BriskRunner extends abstractRunner {
 //                    config.put(DT_THREADS, threads);
 //                    config.put(TT_THREADS, threads);
                     config.put(Executor_Threads, threads);
+                    break;
+                }
+                case "S_STORE": {
+                    config.put("app", 4);
+                    int threads = Math.max(1, (int) Math.floor((tthread)));
+                    config.put(GrepSumConstants.Conf.Executor_Threads, threads);
+//                    double ratio_of_read = config.getDouble("ratio_of_read", 0.5);
+//                    int r_threads = (int) (threads * ratio_of_read);
+//                    int w_threads = threads - r_threads;
+//
+//                    config.put(GrepSumConstants.Conf.SELECTOR_THREADS, r_threads);
+//                    config.put(GrepSumConstants.Conf.INSERTOR_THREADS, w_threads);
                     break;
                 }
                 case "PositionKeeping": {

@@ -138,7 +138,7 @@ public class TP_Txn extends TransactionTopology {
                     }
 //                case CCOption_SStore: {//SStore
 //
-//                    builder.setBolt(GrepSumConstants.Component.EXECUTOR, new GSBolt_sstore(0)//
+//                    builder.setBolt(GrepSumConstants.Component.EXECUTOR, new SSBolt_sstore(0)//
 //                            , config.getInt(Executor_Threads, 2)
 //                            , new ShuffleGrouping(GrepSumConstants.Component.SPOUT));
 //                    break;

@@ -1,9 +1,7 @@
-package applications.bolts.transactional.sl;
+package applications.bolts.transactional.ss;
 
 
-import applications.param.TxnEvent;
-import applications.param.sl.DepositEvent;
-import applications.param.sl.TransactionEvent;
+import applications.param.mb.MicroEvent;
 import brisk.components.context.TopologyContext;
 import brisk.execution.ExecutionGraph;
 import brisk.execution.runtime.collector.OutputCollector;
@@ -16,18 +14,18 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static applications.CONTROL.enable_states_partition;
 import static engine.profiler.MeasureTools.*;
 
 
 /**
- * Combine Read-Write for nocc.
+ * Different from OLB, each executor in SStore has an associated partition id.
  */
-public class SLBolt_sstore extends SLBolt_LA {
-    private static final Logger LOG = LoggerFactory.getLogger(SLBolt_sstore.class);
+public class SSBolt_sstore extends SSBolt_LA {
+    private static final Logger LOG = LoggerFactory.getLogger(SSBolt_sstore.class);
     private static final long serialVersionUID = -5968750340131744744L;
 
-
-    public SLBolt_sstore(int fid) {
+    public SSBolt_sstore(int fid) {
         super(LOG, fid);
         state = new ValueState();
     }
@@ -36,21 +34,28 @@ public class SLBolt_sstore extends SLBolt_LA {
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
         super.initialize(thread_Id, thisTaskId, graph);
         transactionManager = new TxnManagerSStore(db.getStorageManager(), this.context.getThisComponentId(), thread_Id, this.context.getThisComponent().getNumTasks());
+
+        if (!enable_states_partition) {
+            LOG.info("Please enable `enable_states_partition` for PAT scheme");
+            System.exit(-1);
+        }
+
     }
 
     public void loadDB(Map conf, TopologyContext context, OutputCollector collector) {
 //        prepareEvents();
+//        loadDB(context.getThisTaskId() - context.getThisComponent().getExecutorList().GetAndUpdate(0).getExecutorID(), context.getThisTaskId(), context.getGraph());
         context.getGraph().topology.tableinitilizer.loadDB(thread_Id, context.getGraph().topology.spinlock, this.context);
+
+
     }
 
     @Override
     protected void LAL_PROCESS(long _bid) throws DatabaseException {
 
-
         txn_context[0] = new TxnContext(thread_Id, this.fid, _bid);
-        TxnEvent event = (TxnEvent) input_event;
-
-        int _pid = (event).getPid();
+        MicroEvent event = (MicroEvent) input_event;
+        int _pid = event.getPid();
 
         BEGIN_WAIT_TIME_MEASURE(thread_Id);
         //ensures that locks are added in the input_event sequence order.
@@ -58,17 +63,13 @@ public class SLBolt_sstore extends SLBolt_LA {
 
         BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-        if (event instanceof DepositEvent) {
-            DEPOSITE_LOCK_AHEAD((DepositEvent) event, txn_context[0]);
-        } else {
-            TRANSFER_LOCK_AHEAD((TransactionEvent) event, txn_context[0]);
-        }
+        LAL(event, _bid, _bid);
 
         END_LOCK_TIME_MEASURE(thread_Id);
+
         LA_UNLOCK(_pid, event.num_p(), transactionManager, tthread);
+
         END_WAIT_TIME_MEASURE(thread_Id);
-
     }
-
 
 }

@@ -83,13 +83,13 @@ public abstract class abstractRunner {
     public double scale_factor = 1; //<=1
 
     @Parameter(names = {"--ratio_of_read"}, description = "ratio_of_read")
-    public double ratio_of_read = 0.5; //<=1
+    public double ratio_of_read = 0.0; //<=1
 
     @Parameter(names = {"--ratio_of_multi_partition"}, description = "ratio_of_multi_partition")
     public double ratio_of_multi_partition = 0; //<=1
 
     @Parameter(names = {"--number_partitions"}, description = "number_partitions")
-    public int number_partitions = 6;
+    public int number_partitions = 3;
 
     @Parameter(names = {"--theta"}, description = "theta")
     public double theta = 0.6; //0.6==medium contention
@@ -198,7 +198,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"-m", "--mode"}, description = "Mode for running the topology")
     public String mode = RUN_LOCAL;
     @Parameter(names = {"-a", "--app"}, description = "The application to be executed", required = false)
-    public String application = "StreamLedger";
+    public String application = "S_STORE";
 
     @Parameter(names = {"-t", "--Brisk.topology-name"}, required = false, description = "The name of the Brisk.topology")
     public String topologyName;

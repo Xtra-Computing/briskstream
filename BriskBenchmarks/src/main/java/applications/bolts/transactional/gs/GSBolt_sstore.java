@@ -65,7 +65,7 @@ public class GSBolt_sstore extends GSBolt_LA {
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
 
-            LAL(event, 0, _bid);
+            LAL(event, _bid, _bid);
 
             END_LOCK_TIME_MEASURE(thread_Id);
 

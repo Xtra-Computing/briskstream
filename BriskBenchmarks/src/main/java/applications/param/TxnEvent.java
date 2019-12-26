@@ -27,6 +27,7 @@ public class TxnEvent {
         this.number_of_partitions = number_of_partitions;
 
         success = new boolean[1];
+
         success[0] = false;
     }
 

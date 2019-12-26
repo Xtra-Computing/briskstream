@@ -60,7 +60,7 @@ public class TPBolt_SSTORE extends TPBolt_LA {
             LA_LOCK(_pid, 1, transactionManager, _bid, tthread);
 
             BEGIN_LOCK_TIME_MEASURE(thread_Id);
-            LAL(event, 0, _bid);
+            LAL(event, _bid, _bid);
 
              END_LOCK_TIME_MEASURE(thread_Id);
 

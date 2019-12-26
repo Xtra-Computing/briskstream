@@ -205,6 +205,18 @@ function StreamLedger_test {
         local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
 }
 
+function S_STORE_test {
+        path=$outputPath/$hz/$CCOption/$checkpoint/$theta
+		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
+		arg_application=" --POST_COMPUTE $post_complexity --THz $hz -tt $tt --CCOption $CCOption --TP $TP --checkpoint $checkpoint --theta $theta --ratio_of_read $ratio_of_read --number_partitions $number_partitions --ratio_of_multi_partition $ratio_of_multi_partition" #--measure
+
+		#####native execution
+		echo "==benchmark:$benchmark settings:$arg_application path:$path=="
+		mkdir -p $path
+        local_execution $path $hz $tt $CCOption $TP $checkpoint $theta $NUM_ACCESS $ratio_of_read $theta
+}
+
+
 function TP_Txn_test {
         path=$outputPath/$hz/$CCOption/$checkpoint/$theta
 		arg_benchmark="--machine $machine --runtime 30 --loop 1000 -st $st -input $iteration -sit 1 --num_socket $4 --num_cpu $5  --size_tuple 256 --transaction -bt $bt --native --relax 1 -a $app -mp $path"
@@ -289,9 +301,9 @@ output=test.csv
 timestamp=$(date +%Y%m%d-%H%M)
 FULL_SPEED_TEST=("GrepSum" "StreamLedger" "OnlineBiding" "TP_Txn" "MultiPartition" "Read_Write_Mixture" "Read_Only" "Write_Intensive"  "Working_Set_Size" "DB_SIZE"  "Interval" ) # "Working_Set_Size"
 FULL_BREAKDOWN_TEST=("PositionKeepingBreakdown" "StreamLedgerBreakdown" "Read_Only_Breakdown" "Write_Intensive_Breakdown" "Read_Write_Mixture_Breakdown")
-for benchmark in "StreamLedger"
+for benchmark in "S_STORE"
 do
-    app="StreamLedger"
+    app="S_STORE"
     machine=3 #RTM.
     Profile=1 # 0 disable, 1 enable.
 	profile_type=3 #
@@ -365,6 +377,32 @@ do
                                 done
                             done
                         done
+                    done #Theta
+                done #Input Hz
+                ;;
+            "S_STORE") # 5 * 5 * 6 * 1 * 3 * (2 mins) = 900 mins ~ 15 hours.
+                app="S_STORE"
+                for hz in "${HZ[@]}"
+                do
+                    for theta in 0.0
+                    do
+                        for tt in 1
+                        do
+                            #rm $HOME/briskstream/EVENT -r #save space..
+                            for CCOption in 4
+                            do
+                                for NUM_ACCESS in 3 #8 6 4 2 1
+                                do
+                                    for ratio_of_read in 0
+                                    do
+                                        TP=$tt
+                                        ratio_of_multi_partition=0
+                                        number_partitions=3
+                                        S_STORE_test $Profile $hz $app $socket $cpu $tt $iteration $bt $gc_factor $TP $CCOption $checkpoint $st $theta $NUM_ACCESS $ratio_of_read $ratio_of_multi_partition
+                                    done
+                                done
+                            done
+                         done
                     done #Theta
                 done #Input Hz
                 ;;

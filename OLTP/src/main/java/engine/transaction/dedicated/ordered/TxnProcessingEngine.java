@@ -80,7 +80,7 @@ public final class TxnProcessingEngine {
         } else if (app == 3) {//TP
             holder_by_stage.put("segment_speed", new Holder_in_range(num_op));
             holder_by_stage.put("segment_cnt", new Holder_in_range(num_op));
-        } else {//MB
+        } else {//MB or S_STORE
             holder_by_stage.put("MicroTable", new Holder_in_range(num_op));
         }
 
