@@ -59,7 +59,7 @@ The original commit history of briskstream can be found at https://bitbucket.org
 
 - stable: the branch to test BriskStream with NUMA-aware optimization.
 - TStream: a variant of BriskStream that supports concurrent stateful stream processing.
-- others: experimental only.
+- others: under development.
 
 
 ## How to Cite BriskStream
