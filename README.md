@@ -55,11 +55,20 @@ BriskStream is still under heavily active development, expect more bug-fixing an
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
+### Branches
+
+- stable: the branch to test BriskStream with NUMA-aware optimization.
+- TStream: a variant of BriskStream that supports concurrent stateful stream processing.
+- others: experimental only.
+
+
 ## How to Cite BriskStream
 
 If you use BriskStream in your paper, please cite our work.
 
 * **[SIGMOD]** Shuhao Zhang, Jiong He, Chi Zhou (Amelie), Bingsheng He. BriskStream: Scaling Stream Processing on Multicore Architectures, SIGMOD, 2019
+
+* **[ICDE]** Shuhao Zhang, Yingjun Wu, Feng Zhang, Bingsheng He. Towards Concurrent Stateful Stream Processing on Multicore Processors, ICDE, 2020
 
 ```
 @article{zhangbriskstream19,
