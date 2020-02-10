@@ -68,7 +68,7 @@ If you use BriskStream in your paper, please cite our work.
 
 * **[SIGMOD]** Shuhao Zhang, Jiong He, Chi Zhou (Amelie), Bingsheng He. BriskStream: Scaling Stream Processing on Multicore Architectures, SIGMOD, 2019
 
-* **[ICDE]** Shuhao Zhang, Yingjun Wu, Feng Zhang, Bingsheng He. Towards Concurrent Stateful Stream Processing on Multicore Processors, ICDE, 2020
+* **[ICDE]** Shuhao Zhang, Yingjun Wu, Feng Zhang, Bingsheng He. Towards Concurrent Stateful Stream Processing on Multicore Processors, ICDE, 2020 (To appear)
 
 ```
 @article{zhangbriskstream19,
@@ -95,4 +95,7 @@ Each executor may need to fetch from multiple different input queues (Multiple s
 ### Stream Processing Model
 There are two popular stream processing model nowadays: 1) Discretized stream processing model and 2) Continuous stream processing model.
 We select the later one because we aim at building a stream processing system with a truely streaming engine (like Flink).
-
+### Parser as the Spout
+I use Parser operator to shift the workload of Spout so that Spout has nothing to do but keep emitting next tuple to keep the system busy.
+This ensures that different applications will have the same maximum rate of input (if the subsequent pipelines can handle it).
+Logically, the Parser is hence the usual Spout of an application, and the Spout of BriskStream is nothing but a data generator running at the maximum speed.
