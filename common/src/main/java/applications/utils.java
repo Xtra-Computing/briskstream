@@ -50,14 +50,14 @@ public class utils {
                     while (true) {
                         final Event event = dataSource.generateEvent(verbose);
                         KeyedMessage<String, String> data = new KeyedMessage<>("mb", event.getKey(), event.getEvent());
-                        producer.send(data);
+//                        producer.send(data);
                     }
 
                 } else {
                     while (true) {
                         final Event event = dataSource.generateEvent();
                         KeyedMessage<String, String> data = new KeyedMessage<>("mb", event.getKey(), event.getEvent());
-                        producer.send(data);
+//                        producer.send(data);
                     }
 
                 }
