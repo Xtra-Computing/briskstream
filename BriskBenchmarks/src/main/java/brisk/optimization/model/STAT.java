@@ -356,7 +356,8 @@ public class STAT implements Serializable {
                         setAllZero();
                     }
                 } else {
-                    LOG.info("not able to load any statistic file for operator " + executionNode.getOP_full() + ", please profile it first.");
+                    LOG.info("not able to load any statistic file for operator " + executionNode.getOP_full());
+                    LOG.info("please profile them first, or use --native to enable native execution without execution plan optimization.");
                     System.exit(-1);
                 }
                 //Store information to hashmap.

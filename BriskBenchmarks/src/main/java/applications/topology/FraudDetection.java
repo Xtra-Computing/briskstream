@@ -44,7 +44,7 @@ public class FraudDetection extends BasicTopology {
             builder.setBolt(Component.PARSER, new FraudDetectionParserBolt(parser,
                             new Fields(Field.ENTITY_ID, Field.RECORD_DATA))
                     , config.getInt(FraudDetectionConstants.Conf.PARSER_THREADS, 1)
-                    , new ShuffleGrouping(Component.SPOUT));
+                    , new FieldsGrouping(Component.SPOUT, new Fields(Field.ENTITY_ID)));
 //
             builder.setBolt(Component.PREDICTOR, new FraudPredictorBolt()
                     , config.getInt(FraudDetectionConstants.Conf.PREDICTOR_THREADS, 1)
