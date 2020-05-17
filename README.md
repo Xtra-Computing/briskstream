@@ -58,6 +58,7 @@ The original commit history of briskstream can be found at https://bitbucket.org
 
 ### Slack Group
 Join the slack group for discussion!
+
 https://join.slack.com/t/briskstream/shared_invite/zt-eesom1qb-p0dznWqwprzT5EmVgfg2YQ
 
 ### Branches
