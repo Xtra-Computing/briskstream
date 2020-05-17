@@ -17,13 +17,19 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #include <err.h>
 #include <regex.h>
 #include <string.h>
+//prctl is not available on MAC, but only on Linux.
 #include <sys/prctl.h>
 #include <perfmon/pfmlib.h>
 #include <perfmon/pfmlib_perf_event.h>
+
+#if defined(__MACH__)
+#include <stdlib.h>
+#else
+#include <malloc.h>
+
 using namespace std;
 
 

@@ -68,10 +68,6 @@ public class ExecutionManager {
 //        if (isUnix()) {
         try {
             HPCMonotor = OverHpc.getInstance();
-            if (HPCMonotor == null) {
-                LOG.info("ERROR: unable to init OverHpc");
-            }
-
             // Init event: LLC miss for memory fetch. + "," + LLC_PREFETCHES+ "," + L1_ICACHE_LOADS
             if (!HPCMonotor.initEvents(
                     LLC_MISSES
@@ -83,7 +79,8 @@ public class ExecutionManager {
                 LOG.error("ERROR: invalid event");
             }
         } catch (java.lang.UnsatisfiedLinkError e) {
-            System.out.println("ERROR: unable to init OverHpc. " + e.getMessage());
+            LOG.info("ERROR: unable to init OverHpc. " + e.getMessage());
+            LOG.info("System profiling is impossible, the system can only run in native mode without NUMA-awareness.");
             HPCMonotor = null;
         }
 //        }

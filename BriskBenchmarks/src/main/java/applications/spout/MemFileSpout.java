@@ -47,7 +47,7 @@ public class MemFileSpout extends AbstractSpout {
 
     @Override
     public void initialize(int thread_Id, int thisTaskId, ExecutionGraph graph) {
-        LOG.info("Spout initialize is being called");
+        LOG.info("Spout initialize is being called ...");
         long start = System.nanoTime();
         cnt = 0;
         counter = 0;
@@ -76,6 +76,7 @@ public class MemFileSpout extends AbstractSpout {
         try {
             openFile(s);
         } catch (FileNotFoundException e) {
+            LOG.info("Spout initialize is failed.");
             LOG.info("Please configure your input data path at ./common/src/main/resources/config/xxx.properties");
             System.exit(-1);
         }
