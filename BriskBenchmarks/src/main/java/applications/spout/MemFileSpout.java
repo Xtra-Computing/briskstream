@@ -76,13 +76,8 @@ public class MemFileSpout extends AbstractSpout {
         try {
             openFile(s);
         } catch (FileNotFoundException e) {
-
-            s = "/data/DATA/tony/data/".concat(path);
-            try {
-                openFile(s);
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            }
+            LOG.info("Please configure your input data path at ./common/src/main/resources/config/xxx.properties");
+            System.exit(-1);
         }
         long pid = OsUtils.getPID(TopologyContext.HPCMonotor);
         LOG.info("JVM PID  = " + pid);
