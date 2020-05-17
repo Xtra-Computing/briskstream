@@ -106,7 +106,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"--DO"}, description = "dynamic optimization")
     public boolean DO = false;
     @Parameter(names = {"--native"}, description = "native execution")
-    public boolean NAV = false;
+    public boolean NAV = true; //native by default.
     @Parameter(names = {"--random"}, description = "random plan")
     public boolean random = false;
     @Parameter(names = {"--roundrobin", "-RR"}, description = "roundrobin plan")

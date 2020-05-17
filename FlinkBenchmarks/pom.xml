@@ -5,7 +5,7 @@
     <parent>
         <artifactId>briskstream</artifactId>
         <groupId>org.tony</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>Flink</artifactId>
@@ -144,17 +144,6 @@
             <version>2.1.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.47</version>
-        </dependency>
 
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -175,54 +164,20 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Twitter4j -->
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-core</artifactId>
-            <version>3.0.5</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.twitter4j</groupId>
-            <artifactId>twitter4j-stream</artifactId>
-            <version>3.0.5</version>
-        </dependency>
-
-        <!-- Geo -->
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-shapefile</artifactId>
-            <version>11.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-xml</artifactId>
-            <version>11.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgis</groupId>
-            <artifactId>postgis-jdbc</artifactId>
-            <version>1.3.3</version>
-        </dependency>
-
-        <!-- Testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>19.0</version>
         </dependency>
+
+
+        <!--my common files-->
         <dependency>
             <groupId>org.tony</groupId>
             <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
 
 
