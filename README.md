@@ -56,6 +56,10 @@ BriskStream is still under heavily active development, expect more bug-fixing an
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
+### Slack Group
+Join the slack group for discussion!
+https://join.slack.com/t/briskstream/shared_invite/zt-eesom1qb-p0dznWqwprzT5EmVgfg2YQ
+
 ### Branches
 
 - stable: the branch to test BriskStream with NUMA-aware optimization.
