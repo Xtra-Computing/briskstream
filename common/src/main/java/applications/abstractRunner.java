@@ -36,7 +36,7 @@ public abstract class abstractRunner {
 
 
     @Parameter(names = {"--transaction"}, description = "transaction enable")
-    public boolean transaction = false;
+    public boolean transaction = true;
 
     @Parameter(names = {"--measure"}, description = "measure enable")
     public boolean measure = false;
@@ -124,7 +124,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"--DO"}, description = "dynamic optimization")
     public boolean DO = false;
     @Parameter(names = {"--native"}, description = "native execution")
-    public boolean NAV = false;
+    public boolean NAV = true;
     @Parameter(names = {"--random"}, description = "random plan")
     public boolean random = false;
     @Parameter(names = {"--roundrobin", "-RR"}, description = "roundrobin plan")
@@ -178,7 +178,7 @@ public abstract class abstractRunner {
     public int pthread = 1;
 
     @Parameter(names = {"-tt"}, description = "parallelism", required = false)
-    public int tthread = -1;
+    public int tthread = 1;
     @Parameter(names = {"-ct1"}, description = "bolt.threads", required = false)
     public int threads1 = 1;
     @Parameter(names = {"-ct2"}, description = "bolt.threads", required = false)
@@ -198,7 +198,7 @@ public abstract class abstractRunner {
     @Parameter(names = {"-m", "--mode"}, description = "Mode for running the topology")
     public String mode = RUN_LOCAL;
     @Parameter(names = {"-a", "--app"}, description = "The application to be executed", required = false)
-    public String application = "S_STORE";
+    public String application = "GrepSum";
 
     @Parameter(names = {"-t", "--Brisk.topology-name"}, required = false, description = "The name of the Brisk.topology")
     public String topologyName;
@@ -250,15 +250,11 @@ public abstract class abstractRunner {
 
     public abstractRunner() {
         if (OsUtils.isWindows()) {
-            CFG_PATH = System.getProperty("user.home")
-                    .concat("\\Documents\\briskstream\\common\\src\\main\\resources\\config\\%s.properties");
-            metric_path = System.getProperty("user.home")
-                    .concat("\\Documents\\briskstream\\metric_output");
+            CFG_PATH = "..\\briskstream\\common\\src\\main\\resources\\config\\%s.properties";
+            metric_path = "..\\Documents\\briskstream\\metric_output";
         } else {
-            CFG_PATH = System.getProperty("user.home")
-                    .concat("/briskstream/common/src/main/resources/config/%s.properties");
-            metric_path = System.getProperty("user.home")
-                    .concat("/briskstream/metric_output");
+            CFG_PATH = "../briskstream/common/src/main/resources/config/%s.properties";
+            metric_path = "../briskstream/metric_output";
         }
     }
 
