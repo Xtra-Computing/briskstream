@@ -98,9 +98,6 @@ public abstract class OutputController implements Serializable {
     public abstract void emitOnStream_bid(MetaGroup MetaGroup, String streamId, Object output) throws InterruptedException;
 
 
-    public abstract void emitOnStream_bid(MetaGroup MetaGroup, String streamId, char[] data) throws InterruptedException;
-
-
     /**
      * As OutputController is shared, we need to know ``who is sending the tuple"
      *

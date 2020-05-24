@@ -72,6 +72,7 @@ public class MemFileSpout extends AbstractSpout {
 
         String s = System.getProperty("user.home").concat("/data/app/").concat(path);
 
+
         array = new ArrayList<>();
         try {
             openFile(s);
@@ -80,6 +81,8 @@ public class MemFileSpout extends AbstractSpout {
             LOG.info("Please configure your input data path at ./common/src/main/resources/config/xxx.properties");
             System.exit(-1);
         }
+
+
         long pid = OsUtils.getPID(TopologyContext.HPCMonotor);
         LOG.info("JVM PID  = " + pid);
 
@@ -189,24 +192,6 @@ public class MemFileSpout extends AbstractSpout {
         array_array = array.toArray(new char[array.size()][]);
         counter = 0;
 
-//		int bound = 0;
-////		if (OsUtils.isMac()) {
-////			bound = 805872;
-////		} else {
-////			bound = str_l.size();
-////		}
-//
-//		bound = 100;
-//
-//		array = new char[bound][];//str_l.toArray(new String[str_l.size()]);
-//
-//
-
-//		for (int i = 0; i < bound; i++) {
-//			array[i] = str_l.get(i).toCharArray();
-//		}
-//
-
     }
 
     private void spout_pid() {
@@ -236,41 +221,22 @@ public class MemFileSpout extends AbstractSpout {
         }
     }
 
-//	protected void reset_index() {
-//		if (timestamp_counter == array.length) {
-//			timestamp_counter = 0;
-//		}
-//	}
-
-
-//	int control = 1;
-
-//	volatile String emit;
-
 
     @Override
     public void nextTuple() throws InterruptedException {
-//        String[] value_list = new String[batch];
-//        for (int i = 0; i < batch; i++) {
-//            value_list[i] = array[timestamp_counter];
-//        }
-//
-//		emit = array[timestamp_counter]+"";
-//		if (control > 0) {
-        collector.emit(array_array[counter]);//Arrays.copyOf(array_array[timestamp_counter], array_array[timestamp_counter].length) a workaround to ensure char array instead of string is used in transmission.
-//		collector.emit_nowait(new StreamValues(array[timestamp_counter]));
+        // Arrays.copyOf(array_array[timestamp_counter], array_array[timestamp_counter].length)
+        // A workaround to ensure char array instead of string is used in transmission.
+        collector.emit(array_array[counter]);
         counter++;
         if (counter == array_array.length) {
             counter = 0;
         }
-//		reset_index();
-//			control--;
     }
 
     @Override
     public void nextTuple_nonblocking() throws InterruptedException {
-
-//		collector.emit(array[timestamp_counter]);//Arrays.copyOf(array[timestamp_counter], array[timestamp_counter].length) a workaround to ensure char array instead of string is used in transmission.
+        // Arrays.copyOf(array[timestamp_counter], array[timestamp_counter].length)
+        // a workaround to ensure char array instead of string is used in transmission.
         collector.emit_nowait(array_array[counter]);
         counter++;
         if (counter == array_array.length) {

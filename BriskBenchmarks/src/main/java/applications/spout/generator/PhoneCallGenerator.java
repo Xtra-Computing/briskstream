@@ -1,8 +1,6 @@
-package applications.spout;
+package applications.spout.generator;
 
-import java.util.Random;
-
-public class PhoneCallGenerator {
+public class PhoneCallGenerator extends Generator<PhoneCallGenerator.PhoneCall> {
 
     // Initialize some common constants and variables
     private static final String[] AREA_CODE_STRS = ("907,205,256,334,251,870,501,479" +
@@ -33,7 +31,7 @@ public class PhoneCallGenerator {
     }
 
     private final int contestantCount;
-    private final Random rand = new Random();
+
     private final int[] votingMap = new int[AREA_CODES.length];
     private long nextVoteId;
 
@@ -55,7 +53,8 @@ public class PhoneCallGenerator {
      *
      * @return Call details (calling number and contestant to whom the vote is given)
      */
-    public PhoneCall receive() {
+    @Override
+    public PhoneCall next() {
         // For the purpose of a benchmark, issue random voting activity
         // (including invalid votes to demonstrate transaction validationg in the database)
 

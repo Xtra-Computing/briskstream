@@ -166,13 +166,13 @@ public class OutputCollector<T> {
      * @param data
      * @return
      */
-    public void emit(String streamId, long bid, Object... data) throws InterruptedException {
+    public void emit_bid(String streamId, long bid, Object... data) throws InterruptedException {
         assert data != null && sc != null;
         sc.emitOnStream(meta, streamId, bid, data);
     }
 
 
-    public void emit(String streamId, long bid, Object data) throws InterruptedException {
+    public void emit_bid(String streamId, long bid, Object data) throws InterruptedException {
         assert data != null && sc != null;
         sc.emitOnStream(meta, streamId, bid, data);
     }
@@ -239,9 +239,9 @@ public class OutputCollector<T> {
      * @param data
      * @return
      */
-    public void emit_bid(String streamId, Object... data) throws InterruptedException {
+    public void emit(String streamId, Object... data) throws InterruptedException {
         assert data != null && sc != null;
-        sc.emitOnStream_bid(meta, streamId, data);
+        sc.emitOnStream(meta, streamId, -1, data);//no batch id indicator.
     }
 
     public void emit_bid(String streamId, Object data) throws InterruptedException {
@@ -249,12 +249,8 @@ public class OutputCollector<T> {
         sc.emitOnStream_bid(meta, streamId, data);
     }
 
-    public void emit_bid(char[] data) throws InterruptedException {
-        assert data != null && sc != null;
-        sc.emitOnStream_bid(meta, DEFAULT_STREAM_ID, data);
-    }
-//	public void emit_bid(Object... values) throws InterruptedException {
-//		emit_bid(DEFAULT_STREAM_ID, values);
+//	public void emit(Object... values) throws InterruptedException {
+//		emit(DEFAULT_STREAM_ID, values);
 //	}
 
     /**

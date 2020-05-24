@@ -16,7 +16,7 @@ import java.util.TreeSet;
 public abstract class InputStreamController implements IISC {
     private static final long serialVersionUID = 3675914097463516987L;
     /**
-     * for an executor (except spout's executor), there's a receive queue
+     * for an executor (except spout's executor), there's a next queue
      * for *each* upstream executor's *each* stream output (if subscribed).
      * TODO:current design is restricted by ``partition parent operator" structure. This needs to be removed in future version.
      * streamId, SourceId -> queue

@@ -61,7 +61,7 @@ public class WordCountBolt_FT extends MapBolt implements Checkpointable {
         for (int i = 0; i < bound; i++) {
             final Marker marker = in.getMarker(i);
             if (marker != null) {
-                //LOG.DEBUG(this.getContext().getThisTaskId() + " receive marker:" + marker.msgId + "from " + in.getSourceTask());
+                //LOG.DEBUG(this.getContext().getThisTaskId() + " next marker:" + marker.msgId + "from " + in.getSourceTask());
                 forward_checkpoint(in.getSourceTask(), bid, marker);
                 continue;
             }

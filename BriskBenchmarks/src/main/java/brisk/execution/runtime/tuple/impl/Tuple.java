@@ -1,6 +1,6 @@
 package brisk.execution.runtime.tuple.impl;
 
-import applications.spout.PhoneCallGenerator;
+import applications.spout.generator.PhoneCallGenerator;
 import brisk.components.context.TopologyContext;
 
 /**

@@ -294,15 +294,6 @@ public class MultiStreamOutputContoller extends OutputController {
     }
 
     @Override
-    public void emitOnStream_bid(MetaGroup MetaGroup, String streamId, char[] data) throws InterruptedException {
-        PartitionController[] it = collections.get(streamId);
-        for (int i = 0; i < it.length; i++) {
-            PartitionController p = it[i];
-            p.emit_bid(MetaGroup.get(p.childOP), streamId, data);
-        }
-    }
-
-    @Override
     public void emitOnStream_nowait(MetaGroup MetaGroup, String streamId, Object... output) {
         PartitionController[] it = collections.get(streamId);
         for (int i = 0; i < it.length; i++) {
