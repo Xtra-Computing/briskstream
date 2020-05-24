@@ -146,12 +146,12 @@ public class Accident implements Serializable {
         return this.over;
     }
 
-    public void setOver(long timeinseconds) {
-        this.over = true;
-    }
-
     public void setOver(boolean over) {
         this.over = over;
+    }
+
+    public void setOver(long timeinseconds) {
+        this.over = true;
     }
 
     /**
