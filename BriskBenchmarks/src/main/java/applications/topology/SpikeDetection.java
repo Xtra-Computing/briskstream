@@ -1,8 +1,8 @@
 package applications.topology;
 
-import applications.bolts.comm.SensorParserBolt;
-import applications.bolts.sd.MovingAverageBolt;
-import applications.bolts.sd.SpikeDetectionBolt;
+import applications.bolts.udf.comm.SensorParserBolt;
+import applications.bolts.udf.sd.MovingAverageBolt;
+import applications.bolts.udf.sd.SpikeDetectionBolt;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;

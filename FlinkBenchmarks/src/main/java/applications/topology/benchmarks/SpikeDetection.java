@@ -1,8 +1,8 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.sd.MovingAverageBolt;
-import applications.bolts.sd.SpikeDetectionBolt;
+import applications.bolts.udf.comm.ParserBolt;
+import applications.bolts.udf.sd.MovingAverageBolt;
+import applications.bolts.udf.sd.SpikeDetectionBolt;
 import applications.topology.BasicTopology;
 import constants.SpikeDetectionConstants;
 import constants.SpikeDetectionConstants.Component;

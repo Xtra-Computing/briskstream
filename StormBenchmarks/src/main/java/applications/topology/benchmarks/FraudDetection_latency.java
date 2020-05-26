@@ -1,7 +1,7 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.fd.FraudPredictorBolt_latency;
+import applications.bolts.udf.comm.ParserBolt_latency;
+import applications.bolts.udf.fd.FraudPredictorBolt_latency;
 import applications.topology.BasicTopology;
 import constants.FraudDetectionConstants;
 import constants.FraudDetectionConstants.Component;

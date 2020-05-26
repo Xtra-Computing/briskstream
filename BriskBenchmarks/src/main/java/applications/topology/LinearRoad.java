@@ -1,8 +1,8 @@
 package applications.topology;
 
 
-import applications.bolts.comm.StringParserBolt;
-import applications.bolts.lr.*;
+import applications.bolts.udf.comm.StringParserBolt;
+import applications.bolts.udf.lr.*;
 import applications.datatype.util.LRTopologyControl;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;

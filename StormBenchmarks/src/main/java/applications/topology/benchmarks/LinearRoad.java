@@ -1,8 +1,8 @@
 package applications.topology.benchmarks;
 
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.lr.*;
+import applications.bolts.udf.comm.ParserBolt;
+import applications.bolts.udf.lr.*;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;
 import constants.LinearRoadConstants;

@@ -1,8 +1,8 @@
 package applications.topology.latency;
 
 
-import applications.bolts.comm.StringParserBolt_latency;
-import applications.bolts.lr.*;
+import applications.bolts.udf.comm.StringParserBolt_latency;
+import applications.bolts.udf.lr.*;
 import applications.datatype.util.LRTopologyControl;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;

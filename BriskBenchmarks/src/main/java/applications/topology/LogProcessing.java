@@ -1,10 +1,10 @@
 package applications.topology;
 
-import applications.bolts.comm.GeneralParserBolt;
-import applications.bolts.lg.GeoStatsBolt;
-import applications.bolts.lg.GeographyBolt;
-import applications.bolts.lg.StatusCountBolt;
-import applications.bolts.lg.VolumeCountBolt;
+import applications.bolts.udf.comm.GeneralParserBolt;
+import applications.bolts.udf.lg.GeoStatsBolt;
+import applications.bolts.udf.lg.GeographyBolt;
+import applications.bolts.udf.lg.StatusCountBolt;
+import applications.bolts.udf.lg.VolumeCountBolt;
 import applications.sink.BaseSink;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;

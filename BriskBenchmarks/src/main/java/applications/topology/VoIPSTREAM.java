@@ -1,7 +1,7 @@
 package applications.topology;
 
-import applications.bolts.comm.GeneralParserBolt;
-import applications.bolts.vs.*;
+import applications.bolts.udf.comm.GeneralParserBolt;
+import applications.bolts.udf.vs.*;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.AllGrouping;

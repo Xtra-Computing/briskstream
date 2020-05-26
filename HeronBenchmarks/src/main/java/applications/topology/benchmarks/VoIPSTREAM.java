@@ -1,6 +1,6 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
+import applications.bolts.udf.comm.ParserBolt;
 import applications.topology.BasicTopology;
 import org.apache.storm.Config;
 import org.apache.storm.generated.StormTopology;

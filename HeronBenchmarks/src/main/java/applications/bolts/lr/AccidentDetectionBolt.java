@@ -16,7 +16,7 @@
  * limitations under the License.
  * #_
  */
-package applications.bolts.lr;
+package applications.bolts.udf.lr;
 
 import applications.bolts.AbstractBolt;
 import applications.datatypes.PositionReport;

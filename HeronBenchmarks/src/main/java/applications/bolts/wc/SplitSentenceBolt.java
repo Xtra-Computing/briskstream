@@ -1,4 +1,4 @@
-package applications.bolts.wc;
+package applications.bolts.udf.wc;
 
 import applications.bolts.AbstractBolt;
 import constants.WordCountConstants.Field;

@@ -18,7 +18,7 @@
  */
 package applications.datatype.toll;
 
-import applications.bolts.lr.model.TollEntry;
+import applications.bolts.udf.lr.model.TollEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

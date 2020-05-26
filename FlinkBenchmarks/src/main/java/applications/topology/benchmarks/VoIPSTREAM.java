@@ -1,7 +1,7 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.vs.*;
+import applications.bolts.udf.comm.ParserBolt;
+import applications.bolts.udf.vs.*;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;
 import org.apache.storm.Config;

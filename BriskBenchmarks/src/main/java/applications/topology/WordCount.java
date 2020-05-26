@@ -1,8 +1,8 @@
 package applications.topology;
 
-import applications.bolts.comm.StringParserBolt;
-import applications.bolts.wc.SplitSentenceBolt;
-import applications.bolts.wc.WordCountBolt;
+import applications.bolts.udf.comm.StringParserBolt;
+import applications.bolts.udf.wc.SplitSentenceBolt;
+import applications.bolts.udf.wc.WordCountBolt;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;

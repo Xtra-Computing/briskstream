@@ -1,10 +1,10 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.lg.GeoStatsBolt_latency;
-import applications.bolts.lg.GeographyBolt_latency;
-import applications.bolts.lg.StatusCountBolt_latency;
-import applications.bolts.lg.VolumeCountBolt_latency;
+import applications.bolts.udf.comm.ParserBolt_latency;
+import applications.bolts.udf.lg.GeoStatsBolt_latency;
+import applications.bolts.udf.lg.GeographyBolt_latency;
+import applications.bolts.udf.lg.StatusCountBolt_latency;
+import applications.bolts.udf.lg.VolumeCountBolt_latency;
 import applications.sink.BaseSink;
 import applications.topology.BasicTopology;
 import constants.WordCountConstants;

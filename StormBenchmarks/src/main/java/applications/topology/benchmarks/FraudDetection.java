@@ -1,7 +1,7 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.fd.FraudPredictorBolt;
+import applications.bolts.udf.comm.ParserBolt;
+import applications.bolts.udf.fd.FraudPredictorBolt;
 import applications.topology.BasicTopology;
 import constants.FraudDetectionConstants;
 import constants.FraudDetectionConstants.Component;

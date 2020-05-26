@@ -18,7 +18,7 @@
  */
 package applications.datatype.toll;
 
-import applications.bolts.lr.model.TollEntry;
+import applications.bolts.udf.lr.model.TollEntry;
 
 /**
  * An interface for the storage of toll data (encapsulated in {@link TollEntry}) for historical queries. Allows to Store

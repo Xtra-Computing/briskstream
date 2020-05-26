@@ -1,4 +1,4 @@
-package applications.bolts.comm;
+package applications.bolts.udf.comm;
 
 import applications.bolts.AbstractBolt;
 import constants.TrafficMonitoringConstants;

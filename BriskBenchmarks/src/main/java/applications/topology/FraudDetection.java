@@ -1,7 +1,7 @@
 package applications.topology;
 
-import applications.bolts.comm.FraudDetectionParserBolt;
-import applications.bolts.fd.FraudPredictorBolt;
+import applications.bolts.udf.comm.FraudDetectionParserBolt;
+import applications.bolts.udf.fd.FraudPredictorBolt;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;

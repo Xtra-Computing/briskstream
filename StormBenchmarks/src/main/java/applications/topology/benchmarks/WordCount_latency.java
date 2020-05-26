@@ -1,8 +1,8 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt_latency;
-import applications.bolts.wc.SplitSentenceBolt_latency;
-import applications.bolts.wc.WordCountBolt_latency;
+import applications.bolts.udf.comm.ParserBolt_latency;
+import applications.bolts.udf.wc.SplitSentenceBolt_latency;
+import applications.bolts.udf.wc.WordCountBolt_latency;
 import applications.topology.BasicTopology;
 import constants.WordCountConstants;
 import constants.WordCountConstants.Component;

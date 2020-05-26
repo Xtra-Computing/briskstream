@@ -1,7 +1,7 @@
 package applications.topology.benchmarks;
 
 
-import applications.bolts.comm.ParserBolt;
+import applications.bolts.udf.comm.ParserBolt;
 import applications.datatypes.util.SegmentIdentifier;
 import applications.datatypes.util.TopologyControl;
 import applications.topology.BasicTopology;

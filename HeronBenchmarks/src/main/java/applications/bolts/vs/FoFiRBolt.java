@@ -1,7 +1,7 @@
-package applications.bolts.vs;
+package applications.bolts.udf.vs;
 
 
-import applications.bolts.comm.AbstractScoreBolt;
+import applications.bolts.udf.comm.AbstractScoreBolt;
 import model.cdr.CallDetailRecord;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;

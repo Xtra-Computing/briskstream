@@ -1,8 +1,8 @@
 package applications.topology.latency;
 
-import applications.bolts.comm.StringParserBolt_latency;
-import applications.bolts.wc.SplitSentenceBolt_latency;
-import applications.bolts.wc.WordCountBolt_latency;
+import applications.bolts.udf.comm.StringParserBolt_latency;
+import applications.bolts.udf.wc.SplitSentenceBolt_latency;
+import applications.bolts.udf.wc.WordCountBolt_latency;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;

@@ -1,10 +1,10 @@
 package applications.topology.benchmarks;
 
-import applications.bolts.comm.ParserBolt;
-import applications.bolts.lg.GeoStatsBolt;
-import applications.bolts.lg.GeographyBolt;
-import applications.bolts.lg.StatusCountBolt;
-import applications.bolts.lg.VolumeCountBolt;
+import applications.bolts.udf.comm.ParserBolt;
+import applications.bolts.udf.lg.GeoStatsBolt;
+import applications.bolts.udf.lg.GeographyBolt;
+import applications.bolts.udf.lg.StatusCountBolt;
+import applications.bolts.udf.lg.VolumeCountBolt;
 import applications.sink.BaseSink;
 import applications.topology.BasicTopology;
 import org.apache.flink.storm.api.FlinkTopology;

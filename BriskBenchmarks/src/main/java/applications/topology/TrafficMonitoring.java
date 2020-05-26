@@ -1,8 +1,8 @@
 package applications.topology;
 
-import applications.bolts.comm.GeneralParserBolt;
-import applications.bolts.tm.MapMatchingBolt;
-import applications.bolts.tm.SpeedCalculatorBolt;
+import applications.bolts.udf.comm.GeneralParserBolt;
+import applications.bolts.udf.tm.MapMatchingBolt;
+import applications.bolts.udf.tm.SpeedCalculatorBolt;
 import brisk.components.Topology;
 import brisk.components.exception.InvalidIDException;
 import brisk.components.grouping.FieldsGrouping;
