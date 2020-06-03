@@ -87,6 +87,17 @@ If you use BriskStream in your paper, please cite our work.
  url = {https://doi.acm.org/10.1145/3299869.3300067},
  doi = {10.1145/3299869.3300067},
 }
+
+@INPROCEEDINGS{9101749,  
+ author={S. {Zhang} and Y. {Wu} and F. {Zhang} and B. {He}},  
+ booktitle={2020 IEEE 36th International Conference on Data Engineering (ICDE)},   
+ title={Towards Concurrent Stateful Stream Processing on Multicore Processors},   
+ year={2020},  
+ volume={},  
+ number={}, 
+ pages={1537-1548},
+}
+
 ```
 
 ### Other related publications
