@@ -3,7 +3,8 @@
 ===
 
 ## What?
-This project aims at building scalable data stream processing system on modern multicore architectures, with an API similar to Storm (Heron).
+- This project aims at building scalable data stream processing system on modern multicore architectures, with an API similar to Storm (Heron).
+- Note that, the project has been migrated to https://github.com/intellistream/MorphStream with more recent updates.
 
 ## Why?
 One of the trend in computer architecture is putting more and more processors into a single server.
@@ -56,17 +57,11 @@ BriskStream is still under heavily active development, expect more bug-fixing an
 
 The original commit history of briskstream can be found at https://bitbucket.org/briskStream/briskstream/src/Brisk/, where you may find earlier version of BriskStream. This may help you to understand the project better.
 
-### Slack Group
-Join the slack group for discussion!
-
-https://join.slack.com/t/briskstream/shared_invite/zt-eesom1qb-p0dznWqwprzT5EmVgfg2YQ
-
 ### Branches
 
 - stable: the branch to test BriskStream with NUMA-aware optimization.
-- TStream: a variant of BriskStream that supports concurrent stateful stream processing.
+- TStream: a variant of BriskStream that supports concurrent stateful stream processing. 
 - others: under development.
-
 
 ## How to Cite BriskStream
 
